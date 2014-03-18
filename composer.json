@@ -1,0 +1,21 @@
+{
+    "name": "IISH/timecard",
+    "description": "Timecard",
+    "minimum-stability": "stable",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "author's name",
+            "email": "email@example.com"
+        }
+    ],
+    "require": {
+        "PHPOffice/PHPExcel": "master"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:PHPOffice/PHPExcel.git"
+        }
+    ]
+}
