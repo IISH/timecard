@@ -45,9 +45,6 @@
 $(document).ready(function () {
 	$('#tabs').tabs({ selected: {opentab} }); // 0, 1, 2, ...
 });
-function changeTab( opentab ) {
-	$('#tabs').tabs({ selected: opentab });
-}
 </script>
 
 </body>

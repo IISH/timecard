@@ -1,10 +1,10 @@
 <?php 
-// version: 2012-11-07
+// modified: 2012-11-07
 
 require_once("./classes/class_view/fieldtypes/class_field.inc.php");
 
 class class_field_date extends class_field {
-	var $m_format;
+    private $m_format;
 
 	// TODOEXPLAIN
 	function class_field_date($fieldsettings) {
@@ -64,12 +64,12 @@ class class_field_date extends class_field {
 					$url_onclick = " onClick=\"" . $url_onclick . "\"";
 				}
 
-				$target = $this->m_target;
+				$target = $this->get_target();
 				if ( $target <> "" ) {
 					$target = " target=\"" . $target . "\" ";
 				}
 
-				$alttitle = $this->m_alttitle;
+				$alttitle = $this->get_alttitle();
 				if ( $alttitle != '' ) {
 					$alttitle = " alt=\"" . $alttitle . "\" title=\"" . $alttitle . "\" ";
 				}
@@ -79,7 +79,7 @@ class class_field_date extends class_field {
 			}
 
 			// no break - keep together
-			if ( $this->m_nobr === true ) {
+			if ( $this->get_nobr() === true ) {
 				$retval = "<nobr>" . $retval . "</nobr>";
 			}
 
@@ -102,7 +102,7 @@ class class_field_date extends class_field {
 			}
 
 			// no break - keep together
-			if ( $this->m_nobr === true ) {
+			if ( $this->get_nobr() === true ) {
 				$retval = "<nobr>" . $retval . "</nobr>";
 			}
 		}

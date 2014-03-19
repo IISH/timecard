@@ -53,11 +53,11 @@ function createMonthContent( $date ) {
 		if ( class_datetime::is_legacy( $oDate ) ) {
 			$add_new_url = '';
 		} else {
-			$add_new_url = "edit.php?ID=0&d=" . $date["y"] . substr("0" . $date["m"], -2) . substr("0" . $date["d"], -2) . "&backurl=[BACKURL]";
+			$add_new_url = "edit.php?ID=0&d=" . $oDate->get("Ymd") . "&backurl=[BACKURL]";
 		}
 
 		$oView->set_view( array(
-			'query' => 'SELECT * FROM vw_hours2011_user WHERE Employee=' . $oWebuser->getTimecardId() . ' AND Month(DateWorked)=' . (int)($date["m"]) . ' AND Year(DateWorked)=' . $date["y"]
+			'query' => 'SELECT * FROM vw_hours2011_user WHERE Employee=' . $oWebuser->getTimecardId() . ' AND DateWorked LIKE \'' . $oDate->get("Y-m") . '-%\' '
 			, 'count_source_type' => 'query'
 			, 'order_by' => 'DateWorked, Description, TimeInMinutes DESC '
 			, 'anchor_field' => 'ID'
@@ -70,8 +70,8 @@ function createMonthContent( $date ) {
 
 		$oView->add_field( new class_field_date ( array(
 			'fieldname' => 'DateWorked'
-			, 'fieldlabel' => 'Date (m/d)'
-			, 'format' => 'D j'
+			, 'fieldlabel' => 'Date'
+			, 'format' => 'D j F'
 			, 'nobr' => true
 			, 'href' => 'day.php?d=[FLD:yyyymmdd]&backurl=[BACKURL]&backurllabel=Month'
 			, 'href_alttitle' => 'Go to day'
@@ -80,7 +80,7 @@ function createMonthContent( $date ) {
 		// if legacy, then no edit link
 		$href = '';
 		if ( !class_datetime::is_legacy( $oDate ) ) {
-			$href = 'edit.php?ID=[FLD:ID]&d=' . $date["y"] . substr("0" . $date["m"], -2) . substr("0" . $date["d"], -2) . '&backurl=[BACKURL]';
+			$href = 'edit.php?ID=[FLD:ID]&d=' . $oDate->get("Ymd") . '&backurl=[BACKURL]';
 		}
 
 		$oView->add_field( new class_field_string ( array(

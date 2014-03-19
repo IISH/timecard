@@ -1,11 +1,11 @@
 <?php 
-// version: 2013-09-24
+// modified: 2013-09-24
 
 class class_protime_user {
-	var $protime_id = 0;
-	var $connection_settings;
-	var $firstname = '';
-	var $lastname = '';
+    private $protime_id = 0;
+    private $connection_settings;
+    private $firstname = '';
+    private $lastname = '';
 
 	// TODOEXPLAIN
 	function class_protime_user($protime_id, $connection_settings) {

@@ -1,5 +1,5 @@
 <?php 
-// version: 2013-01-02
+// modified: 2013-01-02
 
 class class_misc {
 
@@ -31,7 +31,7 @@ class class_misc {
 			if ( "[FLD:" . $this->m_form["primarykey"] . "]" == $matches[0] ) {
 				$return_value = str_replace($matches[0], $this->m_doc_id, $return_value);
 			} else {
-				$return_value = str_replace($matches[0], addslashes_mssql($_GET[str_replace("]", "", str_replace("[FLD:", "", $matches[0]))]), $return_value);
+				$return_value = str_replace($matches[0], addslashes($_GET[str_replace("]", '', str_replace("[FLD:", '', $matches[0]))]), $return_value);
 			}
 
 			$matches = null;
@@ -67,7 +67,7 @@ class class_misc {
 		$pattern = '\[FLD\:[a-zA-Z0-9_]*\]';
 		ereg($pattern, $return_value, $matches);
 		while ( count($matches) > 0 ) { 
-			$return_value = str_replace($matches[0], addslashes_mssql($row[str_replace("]", "", str_replace("[FLD:", "", $matches[0]))]), $return_value);
+			$return_value = str_replace($matches[0], addslashes($row[str_replace("]", '', str_replace("[FLD:", '', $matches[0]))]), $return_value);
 			$matches = null;
 			ereg($pattern, $return_value, $matches);
 		}
@@ -90,7 +90,7 @@ class class_misc {
 		$pattern = '\[QUERYSTRING\:[a-zA-Z0-9_]*\]';
 		ereg($pattern, $return_value, $matches);
 		while ( count($matches) > 0 ) { 
-			$return_value = str_replace($matches[0], addslashes_mssql($_GET[str_replace("]", "", str_replace("[QUERYSTRING:", "", $matches[0]))]), $return_value);
+			$return_value = str_replace($matches[0], addslashes($_GET[str_replace("]", '', str_replace("[QUERYSTRING:", '', $matches[0]))]), $return_value);
 			$matches = null;
 			ereg($pattern, $return_value, $matches);
 		}

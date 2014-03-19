@@ -1,5 +1,5 @@
 <?php 
-// version: 2012-11-07
+// modified: 2012-11-07
 
 require_once("./classes/class_form/fieldtypes/class_field.inc.php");
 
@@ -71,10 +71,10 @@ class class_field_date extends class_field {
 		$tmp_data = str_replace("::LABEL::", $this->get_fieldlabel(), $tmp_data);
 
 		// place if necessary required sign in row template
-		$tmp_data = str_replace("::REQUIRED::", $this->get_required(), $tmp_data);
+		$tmp_data = str_replace("::REQUIRED::", $this->get_required_sign(), $tmp_data);
 
-		$tmp_data = str_replace("::REFRESH::", "", $tmp_data);
-		$tmp_data = str_replace("::ADDNEW::", "", $tmp_data);
+		$tmp_data = str_replace("::REFRESH::", '', $tmp_data);
+		$tmp_data = str_replace("::ADDNEW::", '', $tmp_data);
 
 		return $tmp_data;
 	}

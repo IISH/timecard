@@ -22,7 +22,7 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createProjectContent() {
-	global $protect, $dbhandleTimecard, $connection_settings;
+	global $protect;
 
 	$id = $protect->request_positive_number_or_empty('get', "ID");
 	if ( $id == '' ) {
@@ -106,7 +106,6 @@ td.project4 {
 	<th class=\"projects\">Show in<br>select list</th>
 </tr>
 ";
-//	<th class=\"projects\">Oracle Export</th>
 	$ret .= showProjectTree($id, 0, $show_all);
 	$ret .= "</table>";
 
@@ -160,24 +159,6 @@ function showProjectTree($id = 0, $level = 1, $show_all) {
 			$ret .= $oDate->get('j M Y');
 		}
 		$ret .= "</td>";
-
-//		// show separate in reports
-//		$ret .= "<td class=\"project0\">";
-//		if ( $row["show_separate_in_reports"] == 1 ) {
-//			$ret .= 'yes';
-//		} else {
-//			$ret .= 'no';
-//		}
-//		$ret .= "</td>";
-
-//		// show oracle export
-//		$ret .= "<td class=\"project0\">";
-//		if ( $row["oracle_export"] == 1 ) {
-//			$ret .= 'yes';
-//		} else {
-//			$ret .= 'no';
-//		}
-//		$ret .= "</td>";
 
 		// show in select list
 		$ret .= "<td class=\"project0\">";

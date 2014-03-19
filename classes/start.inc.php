@@ -7,7 +7,6 @@ session_start(); ///////////////
 $connection_settings = array();
 
 require_once "classes/settings.inc.php";
-require_once "design/templates.php";
 require_once "classes/class_authentication.inc.php";
 require_once "classes/class_calendar.inc.php";
 require_once "classes/class_date.inc.php";
@@ -34,7 +33,6 @@ require_once "classes/_db_connect_protime.inc.php";
 
 //
 $protect = new class_website_protection();
-//$protect->class_website_protection();
 
 //
 $oWebuser = new class_employee($_SESSION["timecard"]["id"], $connection_settings);

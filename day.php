@@ -17,8 +17,8 @@ $oPage->setContent(createDayContent( $date ) . getCheckedInCheckedOut($oWebuser-
 
 // add shortcuts and recently used
 if ( $date["y"] >= "2013" ) {
-	$oPage->setShortcuts(getUserShortcuts($oWebuser->getTimecardId(), $oDate, $connection_settings, 2011));
-	$oPage->setRecentlyUsed(getUserRecentlyUsed($oWebuser->getTimecardId(), $oDate, $connection_settings, 2011));
+	$oPage->setShortcuts(getUserShortcuts($oWebuser->getTimecardId(), $oDate, $connection_settings));
+	$oPage->setRecentlyUsed(getUserRecentlyUsed($oWebuser->getTimecardId(), $oDate, $connection_settings));
 }
 
 // show page
@@ -81,7 +81,7 @@ function getUserDay( $date ) {
 
 	$timecard_deeltotaal = 0;
 
-	$query = 'SELECT * FROM vw_hours2011_user WHERE Employee=' . $oWebuser->getTimecardId() . ' AND DateWorked LIKE "' . $date["y"] . '-' . $date["m"] . '-' . $date["d"] . '%" AND protime_absence_recnr>=0 ORDER BY Description, TimeInMinutes DESC ';
+	$query = 'SELECT * FROM vw_hours2011_user WHERE Employee=' . $oWebuser->getTimecardId() . ' AND DateWorked LIKE "' . $oDate->get("Y-m-d") . '%" AND protime_absence_recnr>=0 ORDER BY Description, TimeInMinutes DESC ';
 
 	$result = mysql_query($query, $dbhandleTimecard);
 	while ($row = mysql_fetch_assoc($result)) {
@@ -127,7 +127,7 @@ function getUserDay( $date ) {
 	}
 	mysql_free_result($result);
 
-	$dagvakantie = getEerderNaarHuisDayTotal($oWebuser->getTimecardId(), $date);
+	$dagvakantie = getEerderNaarHuisDayTotal($oWebuser->getTimecardId(), $oDate);
 	if ( $dagvakantie > 0 ) {
 		$ret .= "
 	<tr><td colspan=\"5\"><hr></td></tr>
@@ -158,8 +158,8 @@ function getUserDay( $date ) {
 }
 
 // TODOEXPLAIN
-function getUserShortcuts($userid, $oDate, $connection_settings, $year) {
-	global $template;
+function getUserShortcuts($userid, $oDate, $connection_settings) {
+	global $settings_from_database;
 
 	if ( $userid == '' || $userid == '0' || $userid == '-1' ) {
 		return '';
@@ -168,7 +168,7 @@ function getUserShortcuts($userid, $oDate, $connection_settings, $year) {
 	$ret = '';
 	$records = '';
 
-	$oShortcuts = new class_shortcuts($userid, $year, $connection_settings, $oDate);
+	$oShortcuts = new class_shortcuts($userid, $connection_settings, $oDate);
 
 	// record
 	foreach ( $oShortcuts->getEnabledShortcuts() as $shortcut) {
@@ -196,20 +196,20 @@ function getUserShortcuts($userid, $oDate, $connection_settings, $year) {
 
 		$shortcut["hourminutes"] = class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes($shortcut["minutes"]);
 
-		$records .= fillTemplate($template["shortcuts"]["records"], $shortcut);
+		$records .= fillTemplate($settings_from_database["page_div_shortcuts_records"], $shortcut);
 	}
 
 	// add header
 	if ( $records != '' ) {
-		$ret = fillTemplate( $template["shortcuts"]["table"], array("records" => $records) );
+		$ret = fillTemplate( $settings_from_database["page_div_shortcuts_table"], array("records" => $records) );
 	}
 
 	return $ret;
 }
 
 // TODOEXPLAIN
-function getUserRecentlyUsed($userid, $oDate, $connection_settings, $year) {
-	global $template;
+function getUserRecentlyUsed($userid, $oDate, $connection_settings) {
+	global $settings_from_database;
 
 	if ( $userid == '' || $userid == '0' || $userid == '-1' ) {
 		return '';
@@ -218,17 +218,17 @@ function getUserRecentlyUsed($userid, $oDate, $connection_settings, $year) {
 	$records = '';
 	$ret = '';
 
-	$oRecentlyUsed = new class_recentlyused($userid, $year, $connection_settings, $oDate);
+	$oRecentlyUsed = new class_recentlyused($userid, $connection_settings, $oDate);
 
 	// record
 	foreach ( $oRecentlyUsed->getRecentlyUsed() as $recentlyUsed) {
 		$recentlyUsed["url"] = "edit.php?ID=0&d=" . $oDate->get("Ymd") . "&p=" . $recentlyUsed["id"] . "&backurl=" . urlencode(get_current_url());
-		$records .= fillTemplate($template["recentlyused"]["records"], $recentlyUsed);
+		$records .= fillTemplate($settings_from_database["div_recentlyused_records"], $recentlyUsed);
 	}
 
 	// add header
 	if ( $records != '' ) {
-		$ret = fillTemplate( $template["recentlyused"]["table"], array("records" => $records) );
+		$ret = fillTemplate( $settings_from_database["div_recentlyused_table"], array("records" => $records) );
 	}
 
 	return $ret;

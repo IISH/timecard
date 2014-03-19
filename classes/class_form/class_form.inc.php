@@ -3,17 +3,17 @@ require_once("./classes/class_file.inc.php");
 require_once("./classes/class_misc.inc.php");
 
 class class_form {
-	var $m_form;
-	var $m_connection_settings;
-	var $m_array_of_fields = array();
+    private $m_form;
+    private $m_connection_settings;
+    private $m_array_of_fields = array();
 
-	var $oDb;
-	var $oClassFile;
-	var $oClassMisc;
+    protected $oDb;
+    protected $oClassFile;
+    protected $oClassMisc;
 
-	var $m_errors = array();
-	var $m_doc_id;
-	var $m_old_doc_id;
+    private $m_errors = array();
+    private $m_doc_id;
+    private $m_old_doc_id;
 
 	// TODOEXPLAIN
 	function class_form($connection_settings, $oDb) {
@@ -81,14 +81,14 @@ class class_form {
 		$extra_query_fields = $this->MakeExtraQueryChanges();
 
 		if ( $this->m_doc_id == "0" ) {
-			$query = $this->MakeQuery($query_fields, "insert", "", $extra_query_fields);
+			$query = $this->MakeQuery($query_fields, "insert", '', $extra_query_fields);
 		} else {
 			$query_where = " WHERE " . $this->m_form["primarykey"] . "=" . $_GET[$this->m_form["primarykey"]];
 			$query = $this->MakeQuery($query_fields, "update", $query_where, $extra_query_fields);
 		}
 
 		// execute query
-		$res = mysql_query($query, $this->oDb->conn) or die(mysql_error());
+		$res = mysql_query($query, $this->oDb->connection()) or die(mysql_error());
 
 		// if current id = 0
 		// get the last id
@@ -120,7 +120,7 @@ class class_form {
 		$retval = '0';
 
 		$query = "SELECT TOP 1 ID FROM $table ORDER BY ID DESC ";
-		$result = mssql_query($query, $this->oDb->conn);
+		$result = mssql_query($query, $this->oDb->connection());
 		if ( $row = mssql_fetch_assoc($result) ) {
 			$retval = $row["ID"];
 		}
@@ -261,7 +261,7 @@ class class_form {
 					$backurl = getBackUrl();
 
 					// verwijder anchor
-					$backurl = str_replace("#" . $this->m_doc_id, "", $backurl);
+					$backurl = str_replace("#" . $this->m_doc_id, '', $backurl);
 					header("Location: " . $backurl);
 
 				}
@@ -304,7 +304,7 @@ class class_form {
 		$this->m_form["query"] = $this->oClassMisc->PlaceURLParametersInQuery($this->m_form["query"], "no");
 
 		// execute query
-		$res = mysql_query($this->m_form["query"], $this->oDb->conn) or die(mysql_error());
+		$res = mysql_query($this->m_form["query"], $this->oDb->connection()) or die(mysql_error());
 
 		if ($res){
 
@@ -345,12 +345,7 @@ class class_form {
 
 			$return_value .= str_replace("::CONTENT::", $all_fields, $form_template);
 
-		} else {
-			// echo '<br>Resource not available';
 		}
-
-		// extra menu
-		$extra_menu = '';
 
 		// free result set
 		mysql_free_result($res);

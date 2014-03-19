@@ -1,5 +1,5 @@
 <?php 
-// version: 2014-03-17
+// modified: 2014-03-17
 
 class class_settings {
 

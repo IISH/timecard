@@ -1,23 +1,21 @@
 <?php 
-// version: 2012-12-02
+// modified: 2012-12-02
 
 require_once "settings.inc.php";
 require_once "class_db.inc.php";
 
 class class_shortcuts {
-	var $user;
-	var $yearversion;
-	var $connection_settings;
-	var $oDate;
+    private $user;
+    private $connection_settings;
+    private $oDate;
 
 	// TODOEXPLAIN
-	function class_shortcuts($user, $yearversion, $connection_settings, $oDate) {
+	function class_shortcuts($user, $connection_settings, $oDate) {
 		if ( $user == '' ) {
 			$user = 0;
 		}
 		$this->user = $user;
-		$this->yearversion = $yearversion;
-		$this->settings = $connection_settings;
+		$this->connection_settings = $connection_settings;
 		$this->oDate = $oDate;
 	}
 
@@ -25,22 +23,19 @@ class class_shortcuts {
 	function getEnabledShortcuts() {
 		$arr = array();
 
-		$oConn = new class_db($this->settings);
+		$oConn = new class_db($this->connection_settings);
 		$oConn->connect();
 
-		// TODOTODO YEAR
-		$query = "SELECT Workcodes::YEAR::.Description, UserCreatedQuickAdds.ID, UserCreatedQuickAdds.Employee, UserCreatedQuickAdds.WorkCode, UserCreatedQuickAdds.WorkDescription, UserCreatedQuickAdds.isvisible, UserCreatedQuickAdds.isdeleted, UserCreatedQuickAdds.TimeInMinutes, UserCreatedQuickAdds.onNewAutoSave
-FROM UserCreatedQuickAdds INNER JOIN Workcodes::YEAR:: ON UserCreatedQuickAdds.WorkCode = Workcodes::YEAR::.ID 
-WHERE UserCreatedQuickAdds.Employee = ::USER:: AND UserCreatedQuickAdds.isvisible = 1 AND UserCreatedQuickAdds.isdeleted = 0 AND Workcodes::YEAR::.isdisabled = 0
+		// TODOTODO
+		$query = "SELECT Workcodes2011.Description, UserCreatedQuickAdds.ID, UserCreatedQuickAdds.Employee, UserCreatedQuickAdds.WorkCode, UserCreatedQuickAdds.WorkDescription, UserCreatedQuickAdds.isvisible, UserCreatedQuickAdds.isdeleted, UserCreatedQuickAdds.TimeInMinutes, UserCreatedQuickAdds.onNewAutoSave
+FROM UserCreatedQuickAdds INNER JOIN Workcodes2011 ON UserCreatedQuickAdds.WorkCode = Workcodes2011.ID
+WHERE UserCreatedQuickAdds.Employee = ::USER:: AND UserCreatedQuickAdds.isvisible = 1 AND UserCreatedQuickAdds.isdeleted = 0 AND Workcodes2011.isdisabled = 0
 AND (
-( Workcodes::YEAR::.isdisabled = 0 AND Workcodes::YEAR::.show_in_selectlist = 1 AND (Workcodes::YEAR::.enddate IS NULL OR Workcodes::YEAR::.enddate = '' OR Workcodes::YEAR::.enddate >= '" . $this->oDate->get("Y-m-d") . "') )
+( Workcodes2011.isdisabled = 0 AND Workcodes2011.show_in_selectlist = 1 AND (Workcodes2011.enddate IS NULL OR Workcodes2011.enddate = '' OR Workcodes2011.enddate >= '" . $this->oDate->get("Y-m-d") . "') )
 )
-ORDER BY Workcodes::YEAR::.Description, UserCreatedQuickAdds.TimeInMinutes DESC ";
+ORDER BY Workcodes2011.Description, UserCreatedQuickAdds.TimeInMinutes DESC ";
 
-		$query = str_replace('::YEAR::', $this->yearversion, $query);
 		$query = str_replace('::USER::', $this->user, $query);
-
-//die( $query );
 
 		$result = mysql_query($query, $oConn->connection());
 		if ( mysql_num_rows($result) > 0 ) {
@@ -60,19 +55,18 @@ ORDER BY Workcodes::YEAR::.Description, UserCreatedQuickAdds.TimeInMinutes DESC 
 	function getAllShortcuts() {
 		$arr = array();
 
-		$oConn = new class_db($this->settings);
+		$oConn = new class_db($this->connection_settings);
 		$oConn->connect();
 
-		// TODOTODO YEAR
+		// TODOTODO
 		$query = "SELECT vw_UserCreatedQuickAdds.ID, vw_UserCreatedQuickAdds.Description, vw_UserCreatedQuickAdds.WorkCode, vw_UserCreatedQuickAdds.TimeInMinutes, vw_UserCreatedQuickAdds.onNewAutoSave, vw_UserCreatedQuickAdds.WorkDescription, vw_UserCreatedQuickAdds.isvisible, vw_UserCreatedQuickAdds.Projectnummer
-FROM vw_UserCreatedQuickAdds INNER JOIN Workcodes::YEAR:: ON vw_UserCreatedQuickAdds.WorkCode = Workcodes::YEAR::.ID 
+FROM vw_UserCreatedQuickAdds INNER JOIN Workcodes2011 ON vw_UserCreatedQuickAdds.WorkCode = Workcodes2011.ID
 WHERE vw_UserCreatedQuickAdds.Employee=::USER::
 AND (
-( Workcodes::YEAR::.isdisabled = 0 AND Workcodes::YEAR::.show_in_selectlist = 1 AND (Workcodes::YEAR::.enddate IS NULL OR Workcodes::YEAR::.enddate = '' OR Workcodes::YEAR::.enddate >= '" . $this->oDate->get("Y-m-d") . "') )
+( Workcodes2011.isdisabled = 0 AND Workcodes2011.show_in_selectlist = 1 AND (Workcodes2011.enddate IS NULL OR Workcodes2011.enddate = '' OR Workcodes2011.enddate >= '" . $this->oDate->get("Y-m-d") . "') )
 )
 ORDER BY Projectnummer, Description, TimeInMinutes DESC ";
 
-		$query = str_replace('::YEAR::', $this->yearversion, $query);
 		$query = str_replace('::USER::', $this->user, $query);
 
 		$result = mysql_query($query, $oConn->connection());

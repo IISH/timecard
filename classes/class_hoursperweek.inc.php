@@ -1,11 +1,11 @@
 <?php 
-// version: 2012-12-27
+// modified: 2012-12-27
 
 class class_hoursperweek {
-	var $connection_settings;
-	var $hours;
-	var $startmonth;
-	var $endmonth;
+    private $connection_settings;
+    private $hours;
+    private $startmonth;
+    private $endmonth;
 
 	// TODOEXPLAIN
 	function class_hoursperweek($id, $connection_settings) {

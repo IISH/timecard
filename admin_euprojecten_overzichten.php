@@ -22,113 +22,68 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createEuProjectenContent() {
-	global $protect, $dbhandleTimecard, $connection_settings;
+	global $protect, $settings_from_database;
 
-	$ret = "<h2>Exports - Employee Project totals</h2>";
+	$fields = array();
 
 	require_once("./classes/class_db.inc.php");
 
-	$oDb = new class_db($connection_settings, 'timecard');
-
-	// connection to the database
-	$dbhandleTimecard = mysql_connect($connection_settings["timecard_server"], $connection_settings["timecard_user"], $connection_settings["timecard_password"]) or die("Couldn't connect to SQL Server on: " . $connection_settings["timecard_server"]);
-
-	// select a database to work with
-	$selectedTimecard = mysql_select_db($connection_settings["timecard_database"], $dbhandleTimecard) or die("Couldn't open database " . $connection_settings["timecard_database"]);
-
+	// get selected year from url
 	$selyear = substr($protect->request_positive_number_or_empty('get', "selyear"),0,4);
 	if ( $selyear == '' ) {
 		$selyear = date("Y");
 	}
 
-	$ret .= "
-<script type=\"text/javascript\">
-<!--
-function createOverzicht(id) {
-	var monthValue = 0;
-	for (var i=0; i < document.frmOverzicht.fldMonth.length; i++) {
-		if (document.frmOverzicht.fldMonth[i].checked) {
-			monthValue = document.frmOverzicht.fldMonth[i].value;
+	//
+	if ( $selyear < date("Y") ) {
+		$checkedMonth = 12;
+	} else {
+		$checkedMonth = date("m")-1;
+		if ( $checkedMonth == 0 ) {
+			$checkedMonth = 1;
 		}
 	}
-	var url = '';
-	if ( monthValue == '0' ) {
-		url = 'admin_euprojecten_overzichten_xls_year.php?id=' + id + '&y=' + " . $selyear . ";
-	} else {
-		url = 'admin_euprojecten_overzichten_xls_month.php?id=' + id + '&y=' + " . $selyear . " + '&m=' + monthValue;
-	}
 
-	var newwindow = window.open(url, '_top');
-	if (window.focus) {
-		newwindow.focus();
-	}
-}
-// -->
-</script>
+	//
+	$fields["selected_year"] = $selyear;
 
-<form name=\"frmOverzicht\" action=\"\">
-<table>
-<tr>
-	<td>Year: </td>
-	<td>
-";
+	//
+	$fields["url_year"] = 'admin_euprojecten_overzichten_xls_year.php';
+	$fields["url_month"] = 'admin_euprojecten_overzichten_xls_month.php';
 
+	// make html list of years
+	$list_of_years = '';
 	for ($i = (date("Y")-1); $i <= date("Y"); $i++) {
 		if ( $i == $selyear ) {
-			$ret .= "<a href=\"?selyear=" . $i . "\"><b>" . $i . "</b></a>";
+			$list_of_years .= "<a href=\"?selyear=" . $i . "\"><b>" . $i . "</b></a>";
 		} else {
-			$ret .= "<a href=\"?selyear=" . $i . "\">" . $i . "</a>";
+			$list_of_years .= "<a href=\"?selyear=" . $i . "\">" . $i . "</a>";
 		}
-		$ret .= " &nbsp; &nbsp; ";
+		$list_of_years .= " &nbsp; &nbsp; ";
 	}
+	$fields['list_of_years'] = $list_of_years;
 
-	$ret .= "</td>
-</tr>
-<tr>
-	<td>&nbsp;</td>
-</tr>
-<tr>
-	<td valign=\"top\">Month: </td>
-	<td>
-";
-
-	$checkedMonth = date("m")-1;
-	if ( $checkedMonth == 0 ) {
-		$checkedMonth = 12;
-	}
+	// make html list of months
+	$list_of_months = '';
 	for ( $i=1; $i<=12; $i++) {
 		if ( $i>1 ) {
-			$ret .= ' &nbsp; ';
+			$list_of_months .= ' &nbsp; ';
 		}
-
-		$ret .= "<input type=\"radio\" name=\"fldMonth\" id=\"fldMonth\" value=\"" . $i . "\" " . (($i == $checkedMonth) ? 'CHECKED' : '') . " > " . date("M", mktime(0,0,0,$i,1,date("Y")));
+		$list_of_months .= "<input type=\"radio\" name=\"fldMonth\" id=\"fldMonth\" value=\"" . $i . "\" " . (($i == $checkedMonth) ? 'CHECKED' : '') . " > " . date("M", mktime(0,0,0,$i,1,date("Y")));
 	}
+	$list_of_months .= "<br><input type=\"radio\" name=\"fldMonth\" id=\"fldMonth\" value=\"0\" " . (('0' == $checkedMonth) ? 'CHECKED' : '') . " > Grouped by Month/Quarter/Year</td>";
+	$fields['list_of_months'] = $list_of_months;
 
-	$ret .= "<br><input type=\"radio\" name=\"fldMonth\" id=\"fldMonth\" value=\"0\" " . (('0' == $checkedMonth) ? 'CHECKED' : '') . " > Grouped by Month/Quarter/Year</td>";
-
-	$ret .= "
-</tr>
-<tr>
-	<td>&nbsp;</td>
-</tr>
-<tr>
-	<td valign=\"top\">Employee: </td><td>";
-
- 	$selected_employee = "Please select an employee...";
-
+	// make html list of employees
+	$list_of_employees = '';
 	$separator = '';
 	foreach ( getListOfUsersActiveInSpecificYear($selyear) as $user ) {
-		$ret .= $separator . '<a href="#" onclick="createOverzicht(' . $user['id'] . ');return false;">' . trim($user["lastname"] .  ', ' . $user["firstname"]) . '</a>';
-		$separator = ' &nbsp; ';
+		$list_of_employees .= $separator . '<a href="#" onclick="createOverzicht(' . $user['id'] . ');return false;">' . trim($user["lastname"] .  ', ' . $user["firstname"]) . '</a>';
+		$separator = '<br>';
 	}
+	$fields['list_of_employees'] = $list_of_employees;
 
-	$ret .= "
-	</td>
-</tr>
-</table>
-</form>
-";
-
-	return $ret;
+	// return template with variables replaced by values
+	return fillTemplate($settings_from_database["page_admin_euprojecten_overzichten"], $fields);
 }
 ?>

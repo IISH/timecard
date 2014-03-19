@@ -43,9 +43,7 @@ require_once "classes/_db_disconnect.inc.php";
 function createDayEditContent( $date ) {
 	global $autoSave, $protect, $oDate;
 
-	$error = '';
-
-	$ret = "<h2>Time Card</h2>";
+	$ret = "<h2>Day (edit)</h2>";
 
 	// 
 	$ret .= getUserDayEdit( $date );
@@ -71,7 +69,7 @@ doc_submit('saveclose')
 
 	// TODOEXPLAIN
 	function getUserDayEdit( $date ) {
-		global $connection_settings, $dbhandleTimecard, $autoSave, $desc, $onNew, $oWebuser, $oDate, $protect;
+		global $connection_settings, $dbhandleTimecard, $desc, $onNew, $oWebuser, $oDate, $protect;
 
 		// achterhaal hoeveel op de betreffende dag is gewerkt
 		// bereken hoeveel minuten er nog 'over' zijn
@@ -80,7 +78,7 @@ doc_submit('saveclose')
 		$protime_day_total = $oEmployee->getProtimeDayTotal($date);
 
 		if ( $protime_day_total > 0 ) {
-			$vandaagGewerkt = advancedSingleRecordSelectMysql($dbhandleTimecard, "Workhours", "AANTAL", "Employee=" . $oWebuser->getTimecardId() . " AND DateWorked LIKE '" . $date["y"] . "-" . $date["m"] . "-" . $date["d"] . "%'" , "SUM(TimeInMinutes) AS AANTAL");
+			$vandaagGewerkt = advancedSingleRecordSelectMysql($dbhandleTimecard, "Workhours", "AANTAL", "Employee=" . $oWebuser->getTimecardId() . " AND DateWorked LIKE '" . $oDate->get("Y-m-d") . "%'" , "SUM(TimeInMinutes) AS AANTAL");
 			if ( $vandaagGewerkt["aantal"] == '' ) {
 				$vandaagGewerkt["aantal"] = 0;
 			}
@@ -112,7 +110,7 @@ doc_submit('saveclose')
 		require_once("./classes/class_form/fieldtypes/class_field_time_single_field.inc.php");
 
 		// TODOTODO DIRTY
-		$connection_settings["eid"] = $oWebuser->getTimecardId();
+		//$connection_settings["eid"] = $oWebuser->getTimecardId();
 		$oDb = new class_db($connection_settings, 'timecard');
 		$oForm = new workhours_class_form($connection_settings, $oDb);
 
@@ -123,7 +121,7 @@ doc_submit('saveclose')
 			, 'primarykey' => 'ID'
 			));
 
-		// verplicht !!!
+		// required !!!
 		$oForm->add_field( new class_field_hidden ( array(
 			'fieldname' => 'ID'
 			, 'fieldlabel' => 'Internal no.'

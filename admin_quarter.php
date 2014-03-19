@@ -61,21 +61,15 @@ function createAdminQuarterContent( $date ) {
 			$extra_month_criterium = $oPrevNext->getExtraMonthCriterium();
 
 			if ( $oEmployee->getTimecardId() == -1 ) {
-				$tmp_query = 'SELECT * FROM vw_hours2011_admin WHERE Year(DateWorked)=' . $date["y"] . $extra_month_criterium . ' AND isdeleted=0 ';
-				$nrofcols = 7;
-				$totalcol = 5;
+				$tmp_query = 'SELECT * FROM vw_hours2011_admin WHERE DateWorked LIKE \'' . $oDate->get("Y") . '-%\' ' . $extra_month_criterium . ' AND isdeleted=0 ';
 			} else {
-				$tmp_query = 'SELECT * FROM vw_hours2011_admin WHERE Employee=' . $oEmployee->getTimecardId() . ' AND Year(DateWorked)=' . $date["y"] . $extra_month_criterium . ' AND isdeleted=0 ';
-//				$nrofcols = 6;
-//				$totalcol = 4;
-				$nrofcols = 7;
-				$totalcol = 5;
+				$tmp_query = 'SELECT * FROM vw_hours2011_admin WHERE Employee=' . $oEmployee->getTimecardId() . ' AND DateWorked LIKE \'' . $oDate->get("Y") . '-%\' ' . $extra_month_criterium . ' AND isdeleted=0 ';
 			}
 
 			// if legacy, then no edit link
 			$add_new_url = '';
 			if ( !class_datetime::is_legacy( $oDate ) ) {
-				$add_new_url = "admin_edit.php?ID=0&d=" . $date["y"] . substr("0" . $date["m"], -2) . substr("0" . $date["d"], -2) . "&eid=" . $oEmployee->getTimecardId() . "&backurl=[BACKURL]";
+				$add_new_url = "admin_edit.php?ID=0&d=" . $oDate->get("Ymd") . "&eid=" . $oEmployee->getTimecardId() . "&backurl=[BACKURL]";
 			}
 
 			$oView->set_view( array(
@@ -84,7 +78,7 @@ function createAdminQuarterContent( $date ) {
 				, 'order_by' => 'DateWorked, Description, TimeInMinutes DESC '
 				, 'anchor_field' => 'ID'
 				, 'viewfilter' => true
-				, 'calculate_total' => array('nrofcols' => $nrofcols, 'totalcol' => $totalcol, 'field' => 'TimeInMinutes')
+				, 'calculate_total' => array('nrofcols' => 7, 'totalcol' => 5, 'field' => 'TimeInMinutes')
 				, 'add_new_url' => $add_new_url
 				, 'table_parameters' => ' cellspacing="0" cellpadding="0" border="0" '
 				, 'extra_hidden_viewfilter_fields' => '<input type="hidden" name="d" value="' . $date["Ymd"] . '"><input type="hidden" name="eid" value="' . $oEmployee->getTimecardId() . '">'
@@ -92,8 +86,8 @@ function createAdminQuarterContent( $date ) {
 
 			$oView->add_field( new class_field_date ( array(
 				'fieldname' => 'DateWorked'
-				, 'fieldlabel' => 'Date (m/d)'
-				, 'format' => 'D j M'
+				, 'fieldlabel' => 'Date'
+				, 'format' => 'D j F'
 				, 'nobr' => true
 				, 'href' => 'admin_day.php?eid=[FLD:Employee]&d=[FLD:yyyymmdd]&backurl=[BACKURL]&backurllabel=Quarter+(all empl.)'
 				, 'href_alttitle' => 'Go to day'
@@ -125,7 +119,7 @@ function createAdminQuarterContent( $date ) {
 			// if legacy, then no edit link
 			$href = '';
 			if ( !class_datetime::is_legacy( $oDate ) ) {
-				$href = 'admin_edit.php?ID=[FLD:ID]&d=' . $date["y"] . substr("0" . $date["m"], -2) . substr("0" . $date["d"], -2) . '&backurl=[BACKURL]';
+				$href = 'admin_edit.php?ID=[FLD:ID]&d=' . $oDate->get("Ymd") . '&backurl=[BACKURL]';
 			}
 
 			$oView->add_field( new class_field_string ( array(

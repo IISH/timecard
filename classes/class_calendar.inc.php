@@ -1,5 +1,5 @@
 <?php 
-// version: 2013-02-08
+// modified: 2013-02-08
 
 class class_calendar {
 
@@ -89,7 +89,7 @@ class class_calendar {
 			if ( $i == $date["y"] ) {
 				$tmpSelect = str_replace("::SELECTED::", "SELECTED", $tmpSelect);
 			} else {
-				$tmpSelect = str_replace("::SELECTED::", "", $tmpSelect);
+				$tmpSelect = str_replace("::SELECTED::", '', $tmpSelect);
 			}
 			$select .= $tmpSelect;
 		}
@@ -108,7 +108,7 @@ class class_calendar {
 			if ( $i == $date["m"] ) {
 				$tmpSelect = str_replace("::SELECTED::", "SELECTED", $tmpSelect);
 			} else {
-				$tmpSelect = str_replace("::SELECTED::", "", $tmpSelect);
+				$tmpSelect = str_replace("::SELECTED::", '', $tmpSelect);
 			}
 			$select .= $tmpSelect;
 		}
@@ -179,7 +179,7 @@ class class_calendar {
 		if ( date("Ymd") != $date["Ymd"] ) {
 			$retval = str_replace("::GOTOTODAY::", "<a class=\"nolink\" href=\"::SCRIPT_NAME::\" alt=\"Go to today\" title=\"Go to today\">*</a>", $retval);
 		} else {
-			$retval = str_replace("::GOTOTODAY::", "", $retval);
+			$retval = str_replace("::GOTOTODAY::", '', $retval);
 		}
 
 		// + + + + + + + + + + + + + + + + +

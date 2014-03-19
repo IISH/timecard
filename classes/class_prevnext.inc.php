@@ -1,8 +1,8 @@
 <?php 
-// version: 2012-12-28
+// modified: 2014-03-19
 
 class class_prevnext {
-	var $date;
+    private $date;
 
 	// TODOEXPLAIN
 	function class_prevnext( $date ) {
@@ -14,7 +14,6 @@ class class_prevnext {
 
 	// TODOEXPLAIN
 	function vorigeVolgendeMaand($date, $richting, $urlDescription = '') {
-		$retval = '';
 		$original_date = $date;
 
 		if ( $richting == '-' ) {
@@ -68,7 +67,6 @@ class class_prevnext {
 
 	// TODOEXPLAIN
 	function vorigeVolgendeDag($date, $richting, $urlDescription = '') {
-		$retval = '';
 		$original_date = $date;
 
 		if ( $richting == '-' ) {
@@ -107,8 +105,6 @@ class class_prevnext {
 
 	// TODOEXPLAIN
 	function calculatePrevNextMonth($date) {
-		$retval = '';
-
 		$separator = ' &nbsp; &nbsp;';
 		$separator2 = ' &nbsp; &nbsp;or &nbsp; &nbsp;';
 
@@ -123,8 +119,6 @@ class class_prevnext {
 
 	// TODOEXPLAIN
 	function calculatePrevNextQuarter($date) {
-		$retval = '';
-
 		$separator = ' &nbsp; &nbsp;';
 		$separator2 = ' &nbsp; &nbsp;or &nbsp; &nbsp;';
 
@@ -139,8 +133,6 @@ class class_prevnext {
 
 	// TODOEXPLAIN
 	function calculatePrevNextYear($date) {
-		$retval = '';
-
 		$separator = ' &nbsp; &nbsp;';
 		$separator2 = ' &nbsp; &nbsp;or &nbsp; &nbsp;';
 
@@ -155,16 +147,12 @@ class class_prevnext {
 
 	// TODOEXPLAIN
 	function calculatePrevNextDay($date) {
-		$retval = '';
-
 		$separator = ' &nbsp; &nbsp;';
 		$separator2 = ' &nbsp; &nbsp; or &nbsp; &nbsp;';
 
 		$prev = $this->vorigeVolgendeDag($date, "-", "prev");
 		$current = $this->vorigeVolgendeDag($date, "");
 		$next = $this->vorigeVolgendeDag($date, "+", "next");
-
-		$oCalendar = new class_calendar();
 
 		$scriptname = $_SERVER["SCRIPT_NAME"];
 		$querystring = $_SERVER["QUERY_STRING"];
@@ -173,6 +161,7 @@ class class_prevnext {
 <script language=\"javascript\">
 <!--
 
+// TODOEXPLAIN
 function toggleCalendar() {
 	var ele = document.getElementById(\"toggleTextCalendar\");
 	var text = document.getElementById(\"displayTextCalendar\");
@@ -236,22 +225,22 @@ tcRefreshCalendar(sDate, sDate);
 
 	// TODOEXPLAIN
 	function getMonthRibbon() {
-		global $template;
+		global $settings_from_database;
 
 		$fields["label"] = date("F Y", mktime(0, 0, 0, $this->date["m"], $this->date["d"], $this->date["y"]));
 		$fields["buttons"] = $this->calculatePrevNextMonth($this->date);
 
-		return fillTemplate($template["prevnextribbon"], $fields);
+		return fillTemplate($settings_from_database["div_prevnextribbon"], $fields);
 	}
 
 	// TODOEXPLAIN
 	function getDayRibbon() {
-		global $template;
+		global $settings_from_database;
 
 		$fields["label"] = date("l F j, Y", mktime(0, 0, 0, $this->date["m"], $this->date["d"], $this->date["y"]));
 		$fields["buttons"] = $this->calculatePrevNextDay($this->date);
 
-		return fillTemplate($template["prevnextribbon"], $fields);
+		return fillTemplate($settings_from_database["div_prevnextribbon"], $fields);
 	}
 
 	// TODOEXPLAIN
@@ -279,7 +268,7 @@ tcRefreshCalendar(sDate, sDate);
 
 	// TODOEXPLAIN
 	function getQuarterRibbon( $pretext = '' ) {
-		global $template;
+		global $settings_from_database;
 
 		$quarter = achterhaalQuarter($this->date);
 		$quarter_label = achterhaalQuarterLabel($quarter, 'F');
@@ -287,22 +276,21 @@ tcRefreshCalendar(sDate, sDate);
 		$fields["label"] = $pretext . $quarter_label . date("Y", mktime(0, 0, 0, $this->date["m"], $this->date["d"], $this->date["y"]));
 		$fields["buttons"] = $this->calculatePrevNextQuarter($this->date);
 
-		return fillTemplate($template["prevnextribbon"], $fields);
+		return fillTemplate($settings_from_database["div_prevnextribbon"], $fields);
 	}
 
 	// TODOEXPLAIN
 	function getYearRibbon() {
-		global $template;
+		global $settings_from_database;
 
 		$fields["label"] = date("Y", mktime(0, 0, 0, $this->date["m"], $this->date["d"], $this->date["y"]));
 		$fields["buttons"] = $this->calculatePrevNextYear($this->date);
 
-		return fillTemplate($template["prevnextribbon"], $fields);
+		return fillTemplate($settings_from_database["div_prevnextribbon"], $fields);
 	}
 
 	// TODOEXPLAIN
 	function vorigeVolgendeQuarter($date, $richting, $urlDescription = '') {
-		$retval = '';
 		$original_date = $date;
 		$original_quarter = achterhaalQuarter($date);
 

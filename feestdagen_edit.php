@@ -43,7 +43,7 @@ function createFeestdagenEditContent() {
 		, 'primarykey' => 'ID'
 		));
 
-	// verplicht !!!
+	// required !!!
 	$oForm->add_field( new class_field_hidden ( array(
 		'fieldname' => 'ID'
 		, 'fieldlabel' => '#'

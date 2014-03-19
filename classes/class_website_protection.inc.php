@@ -1,5 +1,5 @@
-<?
-// version: 2012-11-29
+<?php
+// modified: 2012-11-29
 
 class class_website_protection {
 	// construct
@@ -8,7 +8,7 @@ class class_website_protection {
 
 	// TODOEXPLAIN
 	function send_warning_mail($tekst) {
-		global $connection_settings_from_database;
+		global $settings_from_database;
 
 		$message = '';
 
@@ -74,16 +74,11 @@ class class_website_protection {
 		return $retval;
 	}
 
-	// TODOEXPLAIN
-	function send_error_to_browser($tekst) {
-		$val = $tekst;
-		$val = $val . "<br>Please contact the webmaster/IT department.";
-		$val = $val . "<br>We have logged your IP address.";
-		$val = $val . "<br>";
+	// Send error message to browser
+	function send_error_to_browser($text) {
+		global $settings_from_database;
 
-		$val = "<font color=red><b>" . $val . "</b></font>";
-
-		echo $val;
+		echo fillTemplate($settings_from_database["error_to_browser"], array('text' => $text));
 	}
 
 	// TODOEXPLAIN

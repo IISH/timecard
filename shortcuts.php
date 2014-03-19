@@ -10,7 +10,7 @@ $oPage = new class_page('design/page.php', $connection_settings);
 $oPage->removeSidebar();
 $oPage->setTab($menuList->findTabNumber('pp.myshortcuts'));
 $oPage->setTitle('Timecard | My shortcuts');
-$oPage->setContent( createShortcutsList( $oWebuser->getTimecardId() ) );
+$oPage->setContent( createShortcutsList() );
 
 // show page
 echo $oPage->getPage();
@@ -18,20 +18,14 @@ echo $oPage->getPage();
 require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
-function createShortcutsList( $userid ) {
-	global $date, $connection_settings, $oWebuser, $template;
-
-	// 
-	$ret = "<h3>My shortcuts</h3>
-&nbsp; &nbsp; &nbsp;<input type=\"button\" class=\"button\" name=\"cancelButton\" value=\"Add new\" onClick=\"open_page('shortcuts_edit.php?ID=0&backurl=" . urlencode(get_current_url()) . "');\"><br>
-";
+function createShortcutsList() {
+	global $connection_settings, $oWebuser, $settings_from_database;
 
 	$records = '';
 
 	$oDate = new class_date( date("Y"), date("m"), date("d") );
 
-	// 2011 - is the database structure version year
-	$oShortcuts = new class_shortcuts($oWebuser->getTimecardId(), 2011, $connection_settings, $oDate);
+	$oShortcuts = new class_shortcuts($oWebuser->getTimecardId(), $connection_settings, $oDate);
 
 	foreach ( $oShortcuts->getAllShortcuts() as $shortcut) {
 		if ( $shortcut["isvisible"] != '1' ) {
@@ -48,15 +42,17 @@ function createShortcutsList( $userid ) {
 		$data["description"] = htmlspecialchars($shortcut["description"]);
 
 		// fill template
-		$recordTemplate = fillTemplate($template["settings"]["shortcuts"]["records"], $data);
+		$recordTemplate = fillTemplate($settings_from_database["page_settings_shortcuts_records"], $data);
 
 		$records .= $recordTemplate;
 	}
 
-	$tableTemplate = fillTemplate($template["settings"]["shortcuts"]["table"], array("records" => $records));
-
-	$ret .= $tableTemplate;
-
-	return $ret;
+	return fillTemplate(
+			$settings_from_database["page_settings_shortcuts_table"]
+			, array(
+				"records" => $records
+				, 'onclickurl' => "shortcuts_edit.php?ID=0&backurl=" . urlencode(get_current_url())
+				)
+		);
 }
 ?>

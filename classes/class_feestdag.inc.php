@@ -1,5 +1,5 @@
 <?php 
-// version: 2012-12-02
+// modified: 2012-12-02
 
 ini_set("display_errors", 1);
 error_reporting(E_ALL ^ E_NOTICE);
@@ -8,9 +8,9 @@ require_once "settings.inc.php";
 require_once "class_db.inc.php";
 
 class class_feestdag {
-	var $id;
-	var $date;
-	var $description;
+    private $id;
+    private $date;
+    private $description;
 
 	// TODOEXPLAIN
 	function class_feestdag($id) {

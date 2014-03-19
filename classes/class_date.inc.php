@@ -1,5 +1,5 @@
 <?php 
-// version: 2013-06-02
+// modified: 2013-06-02
 
 class class_date {
 	private $date;

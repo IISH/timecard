@@ -1,12 +1,12 @@
 <?php 
-// version: 2012-11-07
+// modified: 2012-11-07
 
 require_once("./classes/class_view/fieldtypes/class_field.inc.php");
 
 class class_field_bit extends class_field {
-	var $m_show_different_values;
-	var $m_different_true_value;
-	var $m_different_false_value;
+    private $m_show_different_values;
+    private $m_different_true_value;
+    private $m_different_false_value;
 
 	// TODOEXPLAIN
 	function class_field_bit($fieldsettings) {

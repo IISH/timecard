@@ -25,8 +25,8 @@ $oPage->setTitle('Timecard | Admin Day');
 $oPage->setContent(createAdminDayContent( $date ) . getCheckedInCheckedOut($oEmployee->getProtimeId(), $date["Ymd"]));
 // add shortcuts and recently used
 if ( $date["y"] >= "2013" ) {
-	$oPage->setShortcuts(getAdminShortcuts($oEmployee->getTimecardId(), $oDate, $connection_settings, 2011));
-	$oPage->setRecentlyUsed(getAdminRecentlyUsed($oEmployee->getTimecardId(), $oDate, $connection_settings, 2011));
+	$oPage->setShortcuts(getAdminShortcuts($oEmployee->getTimecardId(), $oDate, $connection_settings));
+	$oPage->setRecentlyUsed(getAdminRecentlyUsed($oEmployee->getTimecardId(), $oDate, $connection_settings));
 }
 
 // show page
@@ -36,8 +36,6 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createAdminDayContent( $date ) {
-	global $connection_settings;
-
 	//
 	$oPrevNext = new class_prevnext($date);
 	$ret = $oPrevNext->getDayRibbon();
@@ -77,11 +75,11 @@ function getAdminDay( $date ) {
 			$add_new_url = '';
 			if ( !class_datetime::is_legacy( $oDate ) ) {
 			} else {
-				$add_new_url = "admin_edit.php?ID=0&d=" . $date["y"] . substr("0" . $date["m"], -2) . substr("0" . $date["d"], -2) . "&eid=" . $oEmployee->getTimecardId() . "&backurl=[BACKURL]";
+				$add_new_url = "admin_edit.php?ID=0&d=" . $oDate->get("Ymd") . "&eid=" . $oEmployee->getTimecardId() . "&backurl=[BACKURL]";
 			}
 
 			$oView->set_view( array(
-				'query' => 'SELECT * FROM vw_hours2011_admin WHERE DateWorked LIKE "' . $date["y"] . '-' . $date["m"] . '-' . $date["d"] . '%" AND isdeleted=0 '
+				'query' => 'SELECT * FROM vw_hours2011_admin WHERE DateWorked LIKE "' . $oDate->get("Y-m-d") . '%" AND isdeleted=0 '
 				, 'count_source_type' => 'query'
 				, 'order_by' => 'Description, TimeInMinutes DESC '
 				, 'anchor_field' => 'ID'
@@ -111,7 +109,7 @@ function getAdminDay( $date ) {
 			// if legacy, then no edit link
 			$href = '';
 			if ( !class_datetime::is_legacy( $oDate ) ) {
-				$href = 'admin_edit.php?ID=[FLD:ID]&d=' . $date["y"] . substr("0" . $date["m"], -2) . substr("0" . $date["d"], -2) . '&backurl=[BACKURL]';
+				$href = 'admin_edit.php?ID=[FLD:ID]&d=' . $oDate->get("Ymd") . '&backurl=[BACKURL]';
 			}
 
 			$oView->add_field( new class_field_string ( array(
@@ -207,7 +205,7 @@ function getAdminDay( $date ) {
 
 			$timecard_deeltotaal = 0;
 
-			$query = 'SELECT * FROM vw_hours2011_admin WHERE Employee=' . $oEmployee->getTimecardId() . ' AND DateWorked LIKE "' . $date["y"] . '-' . $date["m"] . '-' . $date["d"] . '%" AND isdeleted=0 AND protime_absence_recnr>=0 ORDER BY Description, TimeInMinutes DESC ';
+			$query = 'SELECT * FROM vw_hours2011_admin WHERE Employee=' . $oEmployee->getTimecardId() . ' AND DateWorked LIKE "' . $oDate->get("Y-m-d") . '%" AND isdeleted=0 AND protime_absence_recnr>=0 ORDER BY Description, TimeInMinutes DESC ';
 
 			$result = mysql_query($query, $dbhandleTimecard);
 			while ($row = mysql_fetch_assoc($result)) {
@@ -257,7 +255,7 @@ function getAdminDay( $date ) {
 			}
 			mysql_free_result($result);
 
-			$dagvakantie = getEerderNaarHuisDayTotal($oEmployee->getTimecardId(), $date);
+			$dagvakantie = getEerderNaarHuisDayTotal($oEmployee->getTimecardId(), $oDate);
 
 			$ret .= "
 	<tr><td colspan=\"5\"><hr></td></tr>
@@ -307,8 +305,8 @@ function getAdminDay( $date ) {
 }
 
 	// TODOEXPLAIN
-	function getAdminShortcuts($pid, $oDate, $connection_settings, $year) {
-		global $template;
+	function getAdminShortcuts($pid, $oDate, $connection_settings) {
+		global $settings_from_database;
 
 		if ( $pid == '' || $pid == '0' || $pid == '-1' ) {
 			return '';
@@ -317,7 +315,7 @@ function getAdminDay( $date ) {
 		$ret = '';
 		$records = '';
 
-		$oShortcuts = new class_shortcuts($pid, $year, $connection_settings, $oDate);
+		$oShortcuts = new class_shortcuts($pid, $connection_settings, $oDate);
 
 		// records
 		foreach ( $oShortcuts->getEnabledShortcuts() as $shortcut) {
@@ -345,20 +343,20 @@ function getAdminDay( $date ) {
 
 			$shortcut["hourminutes"] = class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes($shortcut["minutes"]);
 
-			$records .= fillTemplate($template["shortcuts"]["records"], $shortcut);
+			$records .= fillTemplate($settings_from_database["page_div_shortcuts_records"], $shortcut);
 		}
 
 		// add header
 		if ( $records != '' ) {
-			$ret = fillTemplate( $template["shortcuts"]["table"], array("records" => $records) );
+			$ret = fillTemplate( $settings_from_database["page_div_shortcuts_table"], array("records" => $records) );
 		}
 
 		return $ret;
 	}
 
 	// TODOEXPLAIN
-	function getAdminRecentlyUsed($pid, $oDate, $connection_settings, $year) {
-		global $template;
+	function getAdminRecentlyUsed($pid, $oDate, $connection_settings) {
+		global $settings_from_database;
 
 		if ( $pid == '' || $pid == '0' || $pid == '-1' ) {
 			return '';
@@ -367,18 +365,18 @@ function getAdminDay( $date ) {
 		$records = '';
 		$ret = '';
 
-		$oRecentlyUsed = new class_recentlyused($pid, $year, $connection_settings, $oDate);
+		$oRecentlyUsed = new class_recentlyused($pid, $connection_settings, $oDate);
 
 		// record
 		foreach ( $oRecentlyUsed->getRecentlyUsed() as $recentlyUsed) {
 			$recentlyUsed["url"] = "admin_edit.php?ID=0&eid=" . $pid . "&d=" . $oDate->get("Ymd") . "&p=" . $recentlyUsed["id"] . "&backurl=" . urlencode(get_current_url());
 
-			$records .= fillTemplate($template["recentlyused"]["records"], $recentlyUsed);
+			$records .= fillTemplate($settings_from_database["div_recentlyused_records"], $recentlyUsed);
 		}
 
 		// add header
 		if ( $records != '' ) {
-			$ret = fillTemplate( $template["recentlyused"]["table"], array("records" => $records) );
+			$ret = fillTemplate( $settings_from_database["div_recentlyused_table"], array("records" => $records) );
 		}
 
 		return $ret;

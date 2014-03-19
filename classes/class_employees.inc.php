@@ -1,8 +1,8 @@
 <?php 
-// version: 2012-12-27
+// modified: 2012-12-27
 
 class class_employees {
-	var $connection_settings;
+    private $connection_settings;
 
 	// TODOEXPLAIN
 	function class_employees($connection_settings) {

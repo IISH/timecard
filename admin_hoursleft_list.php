@@ -232,7 +232,7 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 	return $ret;
 }
 
-
+// TODOEXPLAIN
 function hoursLeft_formatNumber($value, $decimal) {
 	$ret = '';
 

@@ -152,11 +152,12 @@ tcRefreshSearchStart();
 	return $ret;
 }
 
+// TODOEXPLAIN
 function createHoursLeftRemarks() {
-	global $connection_settings, $settings_from_database;
+	global $settings_from_database;
 
 	// REMARKS
-	$ret .= "<br>Remarks
+	$ret = "<br>Remarks
 <ol>
 	<li>List of not disabled employees or employees with hours entered in current year</li>
 	<li>If there a no vacation hours shown, please edit user and set 'Protime link'</li>

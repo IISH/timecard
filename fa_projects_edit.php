@@ -65,7 +65,7 @@ function createProjectEditContent() {
 		, 'disallow_delete' => 1
 		));
 
-	// verplicht !!!
+	// required !!!
 	$oForm->add_field( new class_field_hidden ( array(
 		'fieldname' => 'ID'
 		, 'fieldlabel' => '#'
@@ -105,18 +105,6 @@ function createProjectEditContent() {
 		, 'class' => 'resizable'
 		, 'style' => 'width:425px;height:70px;'
 		)));
-
-//	$oForm->add_field( new class_field_bit ( array(
-//		'fieldname' => 'show_separate_in_reports'
-//		, 'fieldlabel' => 'Show separate in exports'
-//		, 'onNew' => '0'
-//		)));
-
-//	$oForm->add_field( new class_field_bit ( array(
-//		'fieldname' => 'oracle_export'
-//		, 'fieldlabel' => 'Oracle Export?'
-//		, 'onNew' => '1'
-//		)));
 
 	$oForm->add_field( new class_field_bit ( array(
 		'fieldname' => 'show_in_selectlist'

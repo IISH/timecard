@@ -51,7 +51,7 @@ function createEmployeesEditContent() {
 		, 'disallow_delete' => 1
 		));
 
-	// verplicht !!!
+	// required !!!
 	$oForm->add_field( new class_field_hidden ( array(
 		'fieldname' => 'ID'
 		, 'fieldlabel' => '#'

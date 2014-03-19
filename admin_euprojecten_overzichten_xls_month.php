@@ -1,7 +1,4 @@
 <?php 
-// TODO
-$yearversion = 2011;
-
 require_once "classes/start_no_session_start.inc.php";
 
 $oWebuser->checkLoggedIn();

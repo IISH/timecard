@@ -1,18 +1,18 @@
 <?php 
-// version: 2012-12-27
+// modified: 2012-12-27
 
 class class_employee {
-	var $timecard_id = 0;
-	var $connection_settings;
-	var $protime_id = 0;
-	var $kamerbezetting_id = 0;
-	var $hoursdoublefield = '';
-	var $is_disabled = 0;
-	var $lastname = '';
-	var $firstname = '';
-	var $hoursperweek = 0;
-	var $daysperweek = 0;
-	var $authorisation = array();
+    private $timecard_id = 0;
+    private $connection_settings;
+    private $protime_id = 0;
+    private $kamerbezetting_id = 0;
+    private $hoursdoublefield = '';
+    private $is_disabled = 0;
+    private $lastname = '';
+    private $firstname = '';
+    private $hoursperweek = 0;
+    private $daysperweek = 0;
+    private $authorisation = array();
 
 	// TODOEXPLAIN
 	function class_employee($timecard_id, $connection_settings) {
@@ -249,8 +249,6 @@ class class_employee {
 
 	// TODOEXPLAIN
 	function getProtimeMonthTotal($date, $type='max') {
-		$protime_id = $this->getProtimeId();
-
 		$retval = 0;
 
 		for ( $i=1; $i<=31; $i++ ) {
@@ -367,7 +365,7 @@ class class_employee {
 
 		$ret = array();
 
-		$query = 'SELECT *, DAY(DateWorked) AS CURRENTDAY FROM vw_hours2011_user WHERE Employee=' . $this->getTimecardId() . ' AND MONTH(DateWorked)=' . $month . ' AND YEAR(DateWorked)=' . $year . ' AND protime_absence_recnr>=0 ORDER BY DateWorked ';
+		$query = 'SELECT *, DAY(DateWorked) AS CURRENTDAY FROM vw_hours2011_user WHERE Employee=' . $this->getTimecardId() . ' AND DateWorked LIKE \'' . $year . '-' . str_pad($month, 2, '0', STR_PAD_LEFT) . '-%\' AND protime_absence_recnr>=0 ORDER BY DateWorked ';
 		$result = mysql_query($query, $dbhandleTimecard);
 		while ($row = mysql_fetch_assoc($result)) {
 			if ( !isset( $ret[ $row["CURRENTDAY"] ] ) ) {
@@ -388,7 +386,7 @@ class class_employee {
 		$ret = array();
 
 		// achterhaal 
-		$query = "SELECT TimeInMinutes, DAY(DateWorked) AS CURRENTDAY FROM Workhours WHERE Employee=" . $this->getTimecardId() . " AND year(DateWorked)=" . $year . " AND month(DateWorked)=" . $month . " AND protime_absence_recnr=-1 ORDER BY DateWorked ";
+		$query = "SELECT TimeInMinutes, DAY(DateWorked) AS CURRENTDAY FROM Workhours WHERE Employee=" . $this->getTimecardId() . " AND DateWorked LIKE '" . $year . "-" . str_pad($month, 2, '0', STR_PAD_LEFT) . "-%' AND protime_absence_recnr=-1 ORDER BY DateWorked ";
 
 		$result = mysql_query($query, $dbhandleTimecard);
 		while ( $row = mysql_fetch_array($result) ) {
@@ -405,9 +403,6 @@ class class_employee {
 	// TODOEXPLAIN
 	function getProtimeDayTotals($yyyymm) {
 		$protime_id = $this->getProtimeId();
-
-		$total = array();
-		$total_extra = array();
 
 		$protime_day_total = $this->getProtimeDayTotalsPart($protime_id, $yyyymm, 'weekpres1');
 		$protime_day_total_extra = $this->getProtimeDayTotalsPart($protime_id, $yyyymm, 'extra');

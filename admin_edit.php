@@ -1,4 +1,4 @@
-<?php 
+<?php
 require_once "classes/start.inc.php";
 
 $oWebuser->checkLoggedIn();
@@ -40,7 +40,6 @@ function createAdminDayEditContent( $date ) {
 	global $autoSave, $protect;
 
 	$ret = "<h2>Admin Day (edit)</h2>";
-	$error = '';
 
 	// 
 	$ret .= getAdminDayEdit( $date );
@@ -78,7 +77,7 @@ function getAdminDayEdit( $date ) {
 	$protime_day_total = $oEmployee->getProtimeDayTotal($date);
 
 	if ( $protime_day_total > 0 ) {
-		$vandaagGewerkt = advancedSingleRecordSelectMysql($dbhandleTimecard, "Workhours", "AANTAL", "Employee=" . $oEmployee->getTimecardId() . " AND DateWorked LIKE '" . $date["y"] . "-" . $date["m"] . "-" . $date["d"] . "%'" , "SUM(TimeInMinutes) AS AANTAL");
+		$vandaagGewerkt = advancedSingleRecordSelectMysql($dbhandleTimecard, "Workhours", "AANTAL", "Employee=" . $oEmployee->getTimecardId() . " AND DateWorked LIKE '" . $oDate->get("Y-m-d") . "%'" , "SUM(TimeInMinutes) AS AANTAL");
 		if ( $vandaagGewerkt["aantal"] == '' ) {
 			$vandaagGewerkt["aantal"] = 0;
 		}
@@ -110,7 +109,7 @@ function getAdminDayEdit( $date ) {
 	require_once("./classes/class_form/fieldtypes/class_field_time_single_field.inc.php");
 
 	// TODOTODO DIRTY
-	$connection_settings["eid"] = $oEmployee->getTimecardId();
+	//$connection_settings["eid"] = $oEmployee->getTimecardId();
 	$oDb = new class_db($connection_settings, 'timecard');
 	$oForm = new workhours_class_form($connection_settings, $oDb);
 
@@ -121,7 +120,7 @@ function getAdminDayEdit( $date ) {
 		, 'primarykey' => 'ID'
 		));
 
-	// verplicht !!!
+	// required !!!
 	$oForm->add_field( new class_field_hidden ( array(
 		'fieldname' => 'ID'
 		, 'fieldlabel' => 'Internal no.'
@@ -130,7 +129,7 @@ function getAdminDayEdit( $date ) {
 	$oForm->add_field( new class_field_list ( $connection_settings, array(
 		'fieldname' => 'Employee'
 		, 'fieldlabel' => 'Employee'
-		, 'query' => 'SELECT ID, Concat(FirstName, ' ', LastName) AS FullName FROM Employees ORDER BY FullName '
+		, 'query' => 'SELECT ID, Concat(FirstName, \' \', LastName) AS FullName FROM Employees ORDER BY FullName '
 		, 'id_field' => 'ID'
 		, 'description_field' => 'FullName'
 		, 'empty_value' => ''

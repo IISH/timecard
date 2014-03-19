@@ -1,12 +1,12 @@
 <?php 
-// version: 2012-11-30
+// modified: 2012-11-30
 
 class class_db {
-	var $m_server;
-	var $m_user;
-	var $m_password;
-	var $m_database;
-	var $conn;
+    private $m_server;
+    private $m_user;
+    private $m_password;
+    private $m_database;
+    private $conn;
 
 	// TODOEXPLAIN
 	function class_db($connection_settings, $prefix = "timecard") {

@@ -1,8 +1,9 @@
 <?php 
 require_once "classes/class_calendar.inc.php";
 
-// version: 2012-12-27
+// modified: 2012-12-27
 
+// TODOEXPLAIN
 function getStatusColor( $persnr, $date ) {
 	global $dbhandleProtime;
 	$retval = array();
@@ -67,7 +68,6 @@ function getStatusColor( $persnr, $date ) {
 function goBackTo() {
 	$ret = '';
 
-//	$backurl = getAndProtect("backurl");
 	$backurl = getBackUrl();
 	if ( $backurl != '' ) {
 		$backurllabel = getAndProtectBackurlLabel();
@@ -128,10 +128,6 @@ function getEmployeesRibbon($year, $all = 0) {
 <tr>
 	<td><b>Selected employee:</b> &nbsp; &nbsp; " . $selected_employee . "
 ";
-
-//	if ( $oEmployee->getTimecardId() != -1 && $oEmployee->getTimecardId() != '' ) {
-//		$ret .= " &nbsp; <a href=\"fa_employees_edit.php?ID=" . $oEmployee->getTimecardId() . "&backurl=" . urlencode(get_current_url()) . "\" alt=\"Show employee info\" title=\"Show employee info\"><i>(info)</i></a>";
-//	}
 
 	$ret .= "
 	</td>
@@ -199,27 +195,7 @@ function getAndProtectSearch($field = 's') {
 
 	return $s;
 }
-/*
-// TODOEXPLAIN
-function getAndProtect($field = 'backurl') {
-	global $protect;
 
-	if ( !isset($_GET[$field]) ) {
-		$_GET[$field] = '';
-	}
-
-	$retval = trim($_GET[$field]);
-
-	$retval = str_replace('<', ' ', $retval);
-	$retval = str_replace('>', ' ', $retval);
-
-	$retval = trim($retval);
-
-	$retval = $protect->get_left_part($retval);
-
-	return $retval;
-}
-*/
 // TODOEXPLAIN
 function getAndProtectBackurlLabel() {
 	global $protect;
@@ -325,14 +301,14 @@ function RemoveFromQueryString($tekst, $field) {
 
 	$qstring = str_replace('&amp;', '__amp;', $qstring);
 
-	$querystring_argument_array = split("&", $qstring);
+	$querystring_argument_array = explode('&', $qstring);
 
 	$separator = '';
 	$found_new_field = 0;
 
 	foreach ( $querystring_argument_array as $querystring_argument_field => $querystring_argument_value ) {
 
-		$querystring_argument_value2 = split("=", $querystring_argument_value, 2);
+		$querystring_argument_value2 = explode('=', $querystring_argument_value, 2);
 
 		$value0 = $querystring_argument_value2[0];
 		$value1 = $querystring_argument_value2[1];
@@ -363,14 +339,14 @@ function GetModifyReturnQueryString($pre_character, $field, $value) {
 	$qstring = $_SERVER["QUERY_STRING"];
 	$qstring = str_replace('&amp;', '__amp;', $qstring);
 
-	$querystring_argument_array = split("&", $qstring);
+	$querystring_argument_array = explode('&', $qstring);
 
 	$separator = '';
 	$found_new_field = 0;
 
 	foreach ( $querystring_argument_array as $querystring_argument_field => $querystring_argument_value ) {
 
-		$querystring_argument_value2 = split("=", $querystring_argument_value, 2);
+		$querystring_argument_value2 = explode('=', $querystring_argument_value, 2);
 
 		$value0 = $querystring_argument_value2[0];
 		$value1 = $querystring_argument_value2[1];
@@ -482,12 +458,6 @@ function achterhaalQuarter($date) {
 	}
 
 	return $retval;
-}
-
-// TODOEXPLAIN
-function addslashes_mssql($text) {
-	$text = str_replace('\'', '\'\'', $text);
-	return $text;
 }
 
 // TODOEXPLAIN
@@ -656,7 +626,7 @@ function getAddEmployeeToTimecard($longcode) {
 
 	$retval["id"] = '0';
 
-	$query = "SELECT ID, LongCode FROM Employees WHERE LongCode='" . addslashes_mssql($longcode) . "' ORDER BY ID DESC ";
+	$query = "SELECT ID, LongCode FROM Employees WHERE LongCode='" . addslashes($longcode) . "' ORDER BY ID DESC ";
 	$result = mysql_query($query, $dbhandleTimecard);
 
 	// get ID of employee
@@ -664,7 +634,7 @@ function getAddEmployeeToTimecard($longcode) {
 		$retval["id"] = $row["ID"];
 	} else {
 		// insert new record in Employees database
-		$queryInsert = "INSERT INTO Employees (LongCode) VALUES ('" . addslashes_mssql($longcode) . "') ";
+		$queryInsert = "INSERT INTO Employees (LongCode) VALUES ('" . addslashes($longcode) . "') ";
 		$resultInsert = mysql_query($queryInsert, $dbhandleTimecard);
 
 		// get the id of the last created document
@@ -778,13 +748,13 @@ function getCheckedInCheckedOut($protimeid, $date = '') {
 	return $retval;
 }
 
-// TODO GCU
+// TODO
 function addAndRemoveAbsentiesInTimecard($timecard_id, $protime_id, $oDate) {
 	global $dbhandleTimecard, $dbhandleProtime;
 
 	// achterhaal 
 	$timecard_absenties = ';';
-	$query = "SELECT * FROM Workhours WHERE Employee=" . $timecard_id . " AND year(DateWorked)=" . (int)( $oDate->get("Y") ) . " AND month(DateWorked)=" . (int)( $oDate->get("m") ) . " AND day(DateWorked)=" . (int)( $oDate->get("d") ) . " AND protime_absence_recnr>0 ";
+	$query = "SELECT * FROM Workhours WHERE Employee=" . $timecard_id . " AND DateWorked LIKE '" . $oDate->get("Y-m-d") . "%' AND protime_absence_recnr>0 ";
 	$result = mysql_query($query, $dbhandleTimecard);
 	while ( $row = mysql_fetch_array($result) ) {
 		$timecard_absenties .= $row["protime_absence_recnr"] . ";";
@@ -811,7 +781,7 @@ function addAndRemoveAbsentiesInTimecard($timecard_id, $protime_id, $oDate) {
 								, array("WorkDescription" => "''")
 								, array("TimeInMinutes" => $row2["ABSENCE_VALUE"])
 							)
-						, "Employee=" . $timecard_id . " AND year(DateWorked)=" . (int)( $oDate->get("Y") ) . " AND month(DateWorked)=" . (int)( $oDate->get("m") ) . " AND day(DateWorked)=" . (int)( $oDate->get("d") ) . " AND protime_absence_recnr=" . $row2["REC_NR"]
+						, "Employee=" . $timecard_id . " AND DateWorked LIKE '" . $oDate->get("Y-m-d") . "%' AND protime_absence_recnr=" . $row2["REC_NR"]
 						, 0
 					);
 
@@ -843,17 +813,17 @@ function addAndRemoveAbsentiesInTimecard($timecard_id, $protime_id, $oDate) {
 	$timecard_absenties = trim($timecard_absenties);
 	$timecard_absenties = str_replace(" ", ",", $timecard_absenties);
 	if ( $timecard_absenties != '' ) {
-		$queryDelete = "DELETE FROM Workhours WHERE Employee=" . $timecard_id . " AND year(DateWorked)=" . (int)( $oDate->get("Y") ) . " AND month(DateWorked)=" . (int)( $oDate->get("m") ) . " AND day(DateWorked)=" . (int)( $oDate->get("d") ) . " AND protime_absence_recnr IN (" . $timecard_absenties . ") ";
+		$queryDelete = "DELETE FROM Workhours WHERE Employee=" . $timecard_id . " AND DateWorked LIKE '" . $oDate->get("Y-m-d") . "%' AND protime_absence_recnr IN (" . $timecard_absenties . ") ";
 		mysql_query($queryDelete, $dbhandleTimecard);
 	}
 }
 
 // TODOEXPLAIN
-function getEerderNaarHuisMonthTotal($timecard_id, $date) {
+function getEerderNaarHuisMonthTotal($timecard_id, $oDate) {
 	global $dbhandleTimecard;
 
 	$eerderWeg = 0;
-	$query = "SELECT SUM(TimeInMinutes) AS TOTMINUTES FROM Workhours WHERE Employee=" . $timecard_id . " AND year(DateWorked)=" . (int)($date["y"]) . " AND month(DateWorked)=" . (int)($date["m"]) . " AND protime_absence_recnr=-1 ";
+	$query = "SELECT SUM(TimeInMinutes) AS TOTMINUTES FROM Workhours WHERE Employee=" . $timecard_id . " AND DateWorked LIKE '" . $oDate->get("Y-m") . "-%' AND protime_absence_recnr=-1 ";
 	$result = mysql_query($query, $dbhandleTimecard);
 	if ( $row = mysql_fetch_array($result) ) {
 		$eerderWeg = $row["TOTMINUTES"];
@@ -864,13 +834,13 @@ function getEerderNaarHuisMonthTotal($timecard_id, $date) {
 }
 
 // TODOEXPLAIN
-function getEerderNaarHuisDayTotal($timecard_id, $date) {
+function getEerderNaarHuisDayTotal($timecard_id, $oDate) {
 	global $dbhandleTimecard;
 
 	$eerderWeg = 0;
 
 	// achterhaal 
-	$query = "SELECT SUM(TimeInMinutes) AS TOTMINUTES FROM Workhours WHERE Employee=" . $timecard_id . " AND year(DateWorked)=" . (int)($date["y"]) . " AND month(DateWorked)=" . (int)($date["m"]) . " AND day(DateWorked)=" . (int)($date["d"]) . " AND protime_absence_recnr=-1 ";
+	$query = "SELECT SUM(TimeInMinutes) AS TOTMINUTES FROM Workhours WHERE Employee=" . $timecard_id . " AND DateWorked LIKE '" . $oDate->get("Y-m-d") . "%' AND protime_absence_recnr=-1 ";
 	$result = mysql_query($query, $dbhandleTimecard);
 	if ( $row = mysql_fetch_array($result) ) {
 		$eerderWeg = $row["TOTMINUTES"];
@@ -900,7 +870,7 @@ function addEerderNaarHuisInTimecard($timecard_id, $protime_id, $oDate) {
 				$dbhandleTimecard
 				, "Workhours"
 				, array("ID", "TimeInMinutes")
-				, "Employee=" . $timecard_id . " AND year(DateWorked)=" . (int)( $oDate->get("Y") ) . " AND month(DateWorked)=" . (int)( $oDate->get("m") ) . " AND day(DateWorked)=" . (int)( $oDate->get("d") ) . " AND protime_absence_recnr=-1 "
+				, "Employee=" . $timecard_id . " AND DateWorked LIKE '" . $oDate->get("Y-m-d") . "%' AND protime_absence_recnr=-1 "
 			);
 
 		if ( $zoek["id"] != '' && $zoek["id"] != '0' ) {
@@ -938,7 +908,7 @@ function addEerderNaarHuisInTimecard($timecard_id, $protime_id, $oDate) {
 		advancedRecordDelete(
 			$dbhandleTimecard
 			, "Workhours"
-			, "Employee=" . $timecard_id . " AND year(DateWorked)=" . (int)( $oDate->get("Y") ) . " AND month(DateWorked)=" . (int)( $oDate->get("m") ) . " AND day(DateWorked)=" . (int)( $oDate->get("d") ) . " AND protime_absence_recnr=-1 "
+			, "Employee=" . $timecard_id . " AND DateWorked LIKE '" . $oDate->get("Y-m-d") . "%' AND protime_absence_recnr=-1 "
 		);
 	}
 }
@@ -1110,6 +1080,7 @@ function Generate_Query($arrField, $arrSearch) {
 	return $retval;
 }
 
+// TODOEXPLAIN
 function createDateAsString($year, $month, $day = '') {
 	$ret = $year;
 
@@ -1122,6 +1093,7 @@ function createDateAsString($year, $month, $day = '') {
 	return $ret;
 }
 
+// TODOEXPLAIN
 function getBackUrl() {
 	global $protect;
 

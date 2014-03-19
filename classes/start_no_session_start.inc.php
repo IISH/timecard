@@ -7,7 +7,6 @@ session_start(); /////////////// MOET EIGENLIJK WEG
 $connection_settings = array();
 
 require_once "classes/settings.inc.php";
-require_once "design/templates.php";
 require_once "classes/class_authentication.inc.php";
 require_once "classes/class_calendar.inc.php";
 require_once "classes/class_date.inc.php";

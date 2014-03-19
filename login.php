@@ -109,7 +109,7 @@ function createLoginPage() {
 </table>
 
 <br>
-" . $settings_from_database["functional_maintainer_text"] . "
+" . $settings_from_database["text_functional_maintainer"] . "
 <script language=\"javascript\">
 <!--
 document.frmA.fldLogin.focus();

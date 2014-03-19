@@ -1,5 +1,5 @@
 <?php 
-// version: 2012-12-28
+// modified: 2012-12-28
 
 class class_authentication {
 

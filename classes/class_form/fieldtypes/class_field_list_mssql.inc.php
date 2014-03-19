@@ -1,23 +1,23 @@
 <?php 
-// version: 2012-11-07
+// modified: 2012-11-07
 
 require_once("./classes/class_form/fieldtypes/class_field.inc.php");
 require_once("./classes/class_db.inc.php");
 require_once("./classes/class_misc.inc.php");
 
 class class_field_list_mssql extends class_field {
-	var $oDb;
-	var $oMisc;
+    protected $oDb;
+    protected $oMisc;
 
-	var $m_query;
-	var $m_id_field;
-	var $m_description_field;
-	var $m_select_style;
-	var $m_empty_value;
-	var $m_show_empty_row;
-	var $m_onchange;
-	var $m_javascriptcode;
-	var $m_rdbms;
+    private $m_query;
+    private $m_id_field;
+    private $m_description_field;
+    private $m_select_style;
+    private $m_empty_value;
+    private $m_show_empty_row;
+    private $m_onchange;
+    private $m_javascriptcode;
+    private $m_rdbms;
 
 	// TODOEXPLAIN
 	function class_field_list_mssql($connection_settings, $fieldsettings) {
@@ -115,19 +115,19 @@ class class_field_list_mssql extends class_field {
 		if ( $this->m_select_style != '' ) {
 			$inputfield = str_replace("::STYLE::", "STYLE=\"" . $this->m_select_style . "\"", $inputfield);
 		} else {
-			$inputfield = str_replace("::STYLE::", "", $inputfield);
+			$inputfield = str_replace("::STYLE::", '', $inputfield);
 		}
 
 		if ( $this->m_onchange != '' ) {
 			$inputfield = str_replace("::ONCHANGE::", "onchange=\"" . $this->m_onchange . "\"", $inputfield);
 		} else {
-			$inputfield = str_replace("::ONCHANGE::", "", $inputfield);
+			$inputfield = str_replace("::ONCHANGE::", '', $inputfield);
 		}
 
 		if ( $this->m_javascriptcode != '' ) {
 			$inputfield = str_replace("::JAVASCRIPTCODE::", "\n<script type=\"text/javascript\">\n<!--\n" . $this->m_javascriptcode . "\n//-->\n</script>\n", $inputfield);
 		} else {
-			$inputfield = str_replace("::JAVASCRIPTCODE::", "", $inputfield);
+			$inputfield = str_replace("::JAVASCRIPTCODE::", '', $inputfield);
 		}
 
 		// execute query
@@ -142,7 +142,7 @@ class class_field_list_mssql extends class_field {
 			$this->oDb->connect();
 
 			// TODOTODO
-			$res2 = mssql_query($this->oMisc->PlaceURLParametersInQuery($this->m_query, "no"), $this->oDb->conn) or die(mssql_error());
+			$res2 = mssql_query($this->oMisc->PlaceURLParametersInQuery($this->m_query, "no"), $this->oDb->connection()) or die(mssql_error());
 		} else {
 			// TODOTODO
 			$res2 = mssql_query($this->oMisc->PlaceURLParametersInQuery($this->m_query, "no"), $this->m_dbhandle) or die(mssql_error());
@@ -151,7 +151,7 @@ class class_field_list_mssql extends class_field {
 		$selectedOption = (string)$row[$this->get_fieldname()];
 
 		// required, no? add empty option
-		if ( $this->m_required == false || $this->m_show_empty_row === true ) {
+		if ( $this->is_field_required() == false || $this->m_show_empty_row === true ) {
 			$inputfield .= "\t<option value=\"" . $this->m_empty_value . "\"></option>\n";
 		}
 
@@ -188,10 +188,10 @@ class class_field_list_mssql extends class_field {
 		$tmp_data = str_replace("::LABEL::", $this->get_fieldlabel(), $tmp_data);
 
 		// place if necessary required sign in row template
-		$tmp_data = str_replace("::REQUIRED::", $this->get_required(), $tmp_data);
+		$tmp_data = str_replace("::REQUIRED::", $this->get_required_sign(), $tmp_data);
 
-		$tmp_data = str_replace("::REFRESH::", "", $tmp_data);
-		$tmp_data = str_replace("::ADDNEW::", "", $tmp_data);
+		$tmp_data = str_replace("::REFRESH::", '', $tmp_data);
+		$tmp_data = str_replace("::ADDNEW::", '', $tmp_data);
 
 		return $tmp_data;
 	}

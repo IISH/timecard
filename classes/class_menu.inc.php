@@ -71,9 +71,11 @@ $menu->addMenuItem( new class_menuitem('pp.contact', 'Contact', 'contact.php') )
 // + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
 
 class class_menuitem {
-	var $code = '';
-	var $label = '';
-	var $url = '';
+    // TODOTODO private
+
+    public $code = '';
+    public $label = '';
+    public $url = '';
 
 	function class_menuitem($code, $label, $url ) {
 		$this->code = $code;
@@ -95,12 +97,14 @@ class class_menuitem {
 }
 
 class class_menugroup {
-	var $code = '';
-	var $label = '';
-	var $menuitems = array();
-	var $counter = 0;
+    // TODOTODO private
 
-	function class_menugroup($label) {
+    public $code = '';
+    public $label = '';
+    public $menuitems = array();
+    public $counter = 0;
+
+	function class_menugroup($label, $code = '') {
 		$this->code = $code;
 		$this->label = $label;
 	}
@@ -128,8 +132,6 @@ class class_menugroup {
 	}
 
 	function getMenuItemsSubset() {
-		global $oWebuser;
-
 		$menuitemssubset = array();
 
 		for ( $i = 0; $i < count($this->menuitems); $i++ ) {
@@ -142,10 +144,8 @@ class class_menugroup {
 }
 
 class class_menu {
-	var $menu = array();
-
-	function class_menu() {
-	}
+    // TODOTODO private
+    public $menu = array();
 
 	function addMenuGroup( $menugroup ) {
 		$this->menu[] = $menugroup;

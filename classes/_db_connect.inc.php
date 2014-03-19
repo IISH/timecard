@@ -1,5 +1,5 @@
 <?php 
-// version: 2012-11-26
+// modified: 2012-11-26
 
 // connection to the timecard database
 $dbhandleTimecard = mysql_connect($settings["timecard_server"], $settings["timecard_user"], $settings["timecard_password"]) or die("Couldn't connect to MySql Server on " . $settings["timecard_server"]);

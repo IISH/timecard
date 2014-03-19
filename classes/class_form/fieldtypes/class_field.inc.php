@@ -1,16 +1,15 @@
-<?php 
-// version: 2009-02-19
+<?php
+// modified: 2009-02-19
 
 require_once("./classes/class_misc.inc.php");
 
 class class_field {
-	var $oClassMisc;
-	var $m_fieldname;
-	var $m_fieldlabel;
-	var $m_required;
-	var $m_onNew;
-	var $m_addquotes;
-//	var $m_template = '';
+    protected $oClassMisc;
+    private $m_fieldname;
+    private $m_fieldlabel;
+    private $m_required;
+    private $m_onNew;
+    private $m_addquotes;
 
 	// TODOEXPLAIN
 	function class_field($fieldsettings) {
@@ -21,7 +20,6 @@ class class_field {
 		$this->m_size = "60";
 		$this->m_onNew = '';
 		$this->m_addquotes = 1;
-//		$this->m_template = '';
 		$this->m_class = '';
 		$this->m_style = '';
 		$this->m_readonly = 0;
@@ -115,7 +113,7 @@ class class_field {
 	}
 
 	// TODOEXPLAIN
-	function get_required() {
+	function get_required_sign() {
 		if ( $this->is_field_required() == 1 ) {
 			$required = "<font color=\"red\" size=\"-2\" alt=\"Required\" title=\"Required\"><sup>*</sup></font>";
 		} else {
@@ -138,7 +136,8 @@ class class_field {
 	// TODOEXPLAIN
 	function push_field_into_query_array($query_fields) {
 
-		$value = addslashes_mssql($this->get_form_value());
+		$value = addslashes($this->get_form_value());
+
 		if ( $this->m_addquotes == 1 ) {
 			$value = "'" . $value . "'";
 		}

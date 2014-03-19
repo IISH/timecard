@@ -1,5 +1,5 @@
 <?php 
-// version: 2012-11-07
+// modified: 2012-11-07
 
 require_once("./classes/class_form/fieldtypes/class_field.inc.php");
 

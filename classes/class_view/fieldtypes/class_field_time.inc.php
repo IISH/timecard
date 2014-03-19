@@ -1,5 +1,5 @@
 <?php 
-// version: 2009-02-19
+// modified: 2009-02-19
 
 require_once("./classes/class_view/fieldtypes/class_field.inc.php");
 

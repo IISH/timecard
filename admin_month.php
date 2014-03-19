@@ -11,8 +11,10 @@ if ( !$oWebuser->hasAdminAuthorisation() ) {
 $date = class_datetime::get_date($protect);
 $oDate = new class_date( $date["y"], $date["m"], $date["d"] );
 
-// sync Timecard Protime
+//
 $oEmployee = new class_employee($protect->request('get', 'eid'), $connection_settings);
+
+// sync Timecard Protime
 syncTimecardProtimeMonth($oEmployee->getTimecardId(), $oEmployee->getProtimeId(), $oDate);
 
 // create webpage
@@ -29,8 +31,6 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createAdminMonthContent( $date ) {
-	global $connection_settings;
-
 	//
 	$oPrevNext = new class_prevnext($date);
 	$ret = $oPrevNext->getMonthRibbon();
@@ -46,6 +46,7 @@ function createAdminMonthContent( $date ) {
 	// TODOEXPLAIN
 	function getAdminMonth( $date ) {
 		global $connection_settings, $oEmployee, $oDate;
+		$ret = '';
 
 		if ( $oEmployee->getTimecardId() != '' ) {
 			require_once("./classes/class_db.inc.php");
@@ -59,21 +60,15 @@ function createAdminMonthContent( $date ) {
 			$oView = new class_view($connection_settings, $oDb);
 
 			if ( $oEmployee->getTimecardId() == -1 ) {
-				$tmp_query = 'SELECT * FROM vw_hours2011_admin WHERE Month(DateWorked)=' . (int)($date["m"]) . ' AND Year(DateWorked)=' . $date["y"] . ' AND isdeleted=0 ';
-				$nrofcols = 7;
-				$totalcol = 5;
+				$tmp_query = 'SELECT * FROM vw_hours2011_admin WHERE DateWorked LIKE \'' . $oDate->get("Y-m") . '-%\' AND isdeleted=0 ';
 			} else {
-				$tmp_query = 'SELECT * FROM vw_hours2011_admin WHERE Employee=' . $oEmployee->getTimecardId() . ' AND Month(DateWorked)=' . (int)($date["m"]) . ' AND Year(DateWorked)=' . $date["y"] . ' AND isdeleted=0 ';
-//				$nrofcols = 6;
-//				$totalcol = 4;
-				$nrofcols = 7;
-				$totalcol = 5;
+				$tmp_query = 'SELECT * FROM vw_hours2011_admin WHERE Employee=' . $oEmployee->getTimecardId() . ' AND DateWorked LIKE \'' . $oDate->get("Y-m") . '-%\' AND isdeleted=0 ';
 			}
 
 			// if legacy, then no edit link
 			$add_new_url = '';
 			if ( !class_datetime::is_legacy( $oDate ) ) {
-				$add_new_url = "admin_edit.php?ID=0&d=" . $date["y"] . substr("0" . $date["m"], -2) . substr("0" . $date["d"], -2) . "&eid=" . $oEmployee->getTimecardId() . "&backurl=[BACKURL]";
+				$add_new_url = "admin_edit.php?ID=0&d=" . $oDate->get("Ymd") . "&eid=" . $oEmployee->getTimecardId() . "&backurl=[BACKURL]";
 			}
 
 			$oView->set_view( array(
@@ -82,7 +77,7 @@ function createAdminMonthContent( $date ) {
 				, 'order_by' => 'DateWorked, Description, TimeInMinutes DESC '
 				, 'anchor_field' => 'ID'
 				, 'viewfilter' => true
-				, 'calculate_total' => array('nrofcols' => $nrofcols, 'totalcol' => $totalcol, 'field' => 'TimeInMinutes')
+				, 'calculate_total' => array('nrofcols' => 7, 'totalcol' => 5, 'field' => 'TimeInMinutes')
 				, 'add_new_url' => $add_new_url
 				, 'table_parameters' => ' cellspacing="0" cellpadding="0" border="0" '
 				, 'extra_hidden_viewfilter_fields' => '<input type="hidden" name="d" value="' . $date["Ymd"] . '"><input type="hidden" name="eid" value="' . $oEmployee->getTimecardId() . '">'
@@ -90,8 +85,8 @@ function createAdminMonthContent( $date ) {
 
 			$oView->add_field( new class_field_date ( array(
 				'fieldname' => 'DateWorked'
-				, 'fieldlabel' => 'Date (m/d)'
-				, 'format' => 'D j'
+				, 'fieldlabel' => 'Date'
+				, 'format' => 'D j F'
 				, 'nobr' => true
 				, 'href' => 'admin_day.php?eid=[FLD:Employee]&d=[FLD:yyyymmdd]&backurl=[BACKURL]&backurllabel=Month+(all empl.)'
 				, 'href_alttitle' => 'Go to day'
@@ -134,7 +129,7 @@ function createAdminMonthContent( $date ) {
 			// if legacy, then no edit link
 			$href = '';
 			if ( !class_datetime::is_legacy( $oDate ) ) {
-				$href = 'admin_edit.php?ID=[FLD:ID]&d=' . $date["y"] . substr("0" . $date["m"], -2) . substr("0" . $date["d"], -2) . '&backurl=[BACKURL]';
+				$href = 'admin_edit.php?ID=[FLD:ID]&d=' . $oDate->get("Ymd") . '&backurl=[BACKURL]';
 			}
 
 			$oView->add_field( new class_field_string ( array(
@@ -201,7 +196,7 @@ function createAdminMonthContent( $date ) {
 				$protime_month_total = $oEmployee->getProtimeMonthTotal($date, 'max');
 
 				// show protime month total
-				$ptime = "<tr><td colspan=" . ($totalcol-1) . "><b>Total (protime):</b></td><td><b>" . class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes( $protime_month_total ) . "</b></td></tr>";
+				$ptime = "<tr><td colspan=" . (5-1) . "><b>Total (protime):</b></td><td><b>" . class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes( $protime_month_total ) . "</b></td></tr>";
 			}
 			// QUICK AND DIRTY CONCAT/REPLACE
 			$list = str_replace("</table>___", $ptime . "</table>", $list);

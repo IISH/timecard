@@ -126,6 +126,7 @@ $objPHPExcel->getActiveSheet()->getStyle('C1')->getFont()->setSize(18);
 
 // + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
 
+// TODOEXPLAIN
 function fixCol($value) {
 	return $value-1;
 }
@@ -147,35 +148,33 @@ function convertSpreadsheatColumnNumberToColumnCharacter($i, $choices = "ABCDEFG
 
 // TODOEXPLAIN
 function getTimecardUren($id, $year, $month, $day, $pid, $handle) {
-	global $yearversion;
 	$retval = 0;
 
-	$query = "SELECT SUM(TimeInMinutes) AS AANTAL FROM WorkHours WHERE Employee=" . $id
+	$query = "SELECT SUM(TimeInMinutes) AS AANTAL FROM Workhours WHERE Employee=" . $id
 	 . " AND isdeleted=0 "
-	 . " AND year(DateWorked)=" . $year
-	 . " AND month(DateWorked)=" . (int)$month
-	 . " ::DAY:: "
-	 . " AND WorkCode IN (SELECT ID FROM Workcodes" . $yearversion . " WHERE ID=" . $pid . " OR ParentID = " . $pid . ") "
+	 . " ::DATE:: "
+	 . " AND WorkCode IN (SELECT ID FROM Workcodes2011 WHERE ID=" . $pid . " OR ParentID = " . $pid . ") "
 	 ;
 
 	 if ( $day > 0 ) {
-	 	$query = str_replace("::DAY::", " AND day(DateWorked)=" . $day, $query);
+		$query = str_replace("::DATE::", " AND DateWorked LIKE '" . $year . '-' . str_pad($month, 2, '0', STR_PAD_LEFT) . '-' . str_pad($day, 2, '0', STR_PAD_LEFT) . "%' ", $query);
 	 } else {
-	 	$query = str_replace("::DAY::", " ", $query);
+		$query = str_replace("::DATE::", " AND DateWorked LIKE '" . $year . '-' . str_pad($month, 2, '0', STR_PAD_LEFT) . '-' . "%' ", $query);
 	 }
 
-	$result = mssql_query($query, $handle);
-	if ($row = mssql_fetch_row($result)) {
+	$result = mysql_query($query, $handle);
+	if ($row = mysql_fetch_row($result)) {
 		$retval = $row[0];
 	}
-	mssql_free_result($result);
+
+	mysql_free_result($result);
 
 	return $retval;
 }
 
 // TODOEXPLAIN
 function getProtimeUren($id, $year, $month, $day, $view, $handle, $timecardid) {
-	$retval = 0;
+	$retval = 0.0;
 
 	// Verlof
 	// 1	Bijzonder verlof
@@ -226,7 +225,6 @@ function getProtimeUren($id, $year, $month, $day, $view, $handle, $timecardid) {
 	$query .= "	) ";
 
 	$result2 = mssql_query($query, $handle);
-	$retval = 0.0;
 
 	while ($row2 = mssql_fetch_row($result2)) {
 		$retval += $row2[0];
@@ -235,14 +233,16 @@ function getProtimeUren($id, $year, $month, $day, $view, $handle, $timecardid) {
 
 	if ( $view == 'verlof' ) {
 		// achterhaal ook 'eerder weg'
-		$date = array();
-		$date["y"] = $year;
-		$date["m"] = substr('0' . $month, -2);
-		$date["d"] = substr('0' . $day, -2);
+//		$date = array();
+//		$date["y"] = $year;
+//		$date["m"] = substr('0' . $month, -2);
+//		$date["d"] = substr('0' . $day, -2);
+
+		$oDate = new class_date( $year, $month, $day );
 		if ( $day > 0 ) {
-			$eerderweg = getEerderNaarHuisDayTotal($timecardid, $date);
+			$eerderweg = getEerderNaarHuisDayTotal($timecardid, $oDate);
 		} else {
-			$eerderweg = getEerderNaarHuisMonthTotal($timecardid, $date);
+			$eerderweg = getEerderNaarHuisMonthTotal($timecardid, $oDate);
 		}
 		$retval += $eerderweg;
 	}
@@ -252,19 +252,19 @@ function getProtimeUren($id, $year, $month, $day, $view, $handle, $timecardid) {
 
 // TODOEXPLAIN
 function getProjectName( $id, $handle ) {
-	global $yearversion;
-
 	$retval = '';
 
-	$queryPN = "SELECT Description, ProjectnummerEu FROM Workcodes" . $yearversion . " WHERE ID=" . $id;
+	$queryPN = "SELECT Description, ProjectnummerEu FROM Workcodes2011 WHERE ID=" . $id;
 
-	$resultPN = mssql_query($queryPN, $handle);
-	if ($rowPN = mssql_fetch_array($resultPN)) {
+	$resultPN = mysql_query($queryPN, $handle);
+	if ($rowPN = mysql_fetch_array($resultPN)) {
 		$retval = $rowPN["Description"] . " (" . trim($rowPN["ProjectnummerEu"]) . ")";
 	}
-	mssql_free_result($resultPN);
 
-	$retval = str_replace("()", "", $retval);
+	mysql_free_result($resultPN);
+
+	$retval = str_replace('()', '', $retval);
+
 	$retval = trim($retval);
 
 	return $retval;
@@ -313,6 +313,7 @@ function getMonthNameInDutch( $m, $length = 3) {
 	return $retval;
 }
 
+// TODOEXPLAIN
 function getListOfShowSeparatedProjectsOnReports( $retval, $level, $parent_id = 0 ) {
 	global $dbhandleTimecard;
 
@@ -353,6 +354,7 @@ function getListOfShowSeparatedProjectsOnReports( $retval, $level, $parent_id = 
 	return $retval;
 }
 
+// TODOEXPLAIN
 function getNumberOfChildren( $projectId ) {
 	global $dbhandleTimecard;
 

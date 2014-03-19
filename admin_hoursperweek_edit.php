@@ -45,7 +45,7 @@ function createHoursperweekEditContent() {
 		, 'primarykey' => 'ID'
 		));
 
-	// verplicht !!!
+	// required !!!
 	$oForm->add_field( new class_field_hidden ( array(
 		'fieldname' => 'ID'
 		, 'fieldlabel' => '#'
@@ -54,7 +54,7 @@ function createHoursperweekEditContent() {
 	$oForm->add_field( new class_field_list ( $connection_settings, array(
 		'fieldname' => 'Employee'
 		, 'fieldlabel' => 'Employee'
-		, 'query' => 'SELECT ID, Concat(FirstName, ' ', LastName) AS FullName FROM Employees WHERE is_test_account=0 ORDER BY FullName '
+		, 'query' => 'SELECT ID, Concat(FirstName, \' \', LastName) AS FullName FROM Employees WHERE is_test_account=0 ORDER BY FullName '
 
 		, 'id_field' => 'ID'
 		, 'description_field' => 'FullName'
@@ -62,7 +62,7 @@ function createHoursperweekEditContent() {
 		, 'empty_value' => '0'
 		, 'required' => 1
 		, 'show_empty_row' => true
-		, 'onNew' => $pid
+//		, 'onNew' => $pid
 		)));
 
 	$oForm->add_field( new class_field_integer ( array(

@@ -3,15 +3,15 @@ require_once("./classes/class_file.inc.php");
 require_once("./classes/class_misc.inc.php");
 
 class class_view {
-	var $oDb;
-	var $oClassFile;
-	var $oClassMisc;
-	var $m_connection_settings;
+    protected $oDb;
+    protected $oClassFile;
+    protected $oClassMisc;
+    private $m_connection_settings;
 
-	var $m_view;
-	var $m_array_of_fields = Array();
+    private $m_view;
+    private $m_array_of_fields = Array();
 
-	var $m_order_by;
+    private $m_order_by;
 
 	// TODOEXPLAIN
 	function class_view($connection_settings, $oDb) {
@@ -67,7 +67,7 @@ class class_view {
 
 				$filter .= " ( ";
 
-				$fields = split(";", $this->m_view["filter"]["field"]);
+				$fields = explode(';', $this->m_view["filter"]["field"]);
 
 				foreach ( $fields as $filterfield ) {
 					$filter .= $separator;
@@ -158,11 +158,11 @@ class class_view {
 		if ( $value <> "" ) {
 
 			if ( $different_query_fieldname <> '' ) {
-				$fields = split(";", $different_query_fieldname);
+				$fields = explode(";", $different_query_fieldname);
 			} else {
-				$fields = split(";", $field);
+				$fields = explode(";", $field);
 			}
-			$values = split(" ", $value);
+			$values = explode(" ", $value);
 
 			foreach ( $values as $values_field => $values_value) {
 				$separatorOR = '';
@@ -222,7 +222,7 @@ class class_view {
 				if ( $tmp_table_cell_width != '' ) {
 					$tmp_header = str_replace("::TABLE_CELL_WIDTH::", "width=\"" . $tmp_table_cell_width . "\"", $tmp_header);
 				} else {
-					$tmp_header = str_replace("::TABLE_CELL_WIDTH::", "", $tmp_header);
+					$tmp_header = str_replace("::TABLE_CELL_WIDTH::", '', $tmp_header);
 				}
 
 				// plaats label en buttons in header
@@ -248,10 +248,10 @@ class class_view {
 
 						$tmp_header = str_replace("::FILTER::", $filter, $tmp_header);
 					} else {
-						$tmp_header = str_replace("::FILTER::", "", $tmp_header);
+						$tmp_header = str_replace("::FILTER::", '', $tmp_header);
 					}
 				} else {
-					$tmp_header = str_replace("::FILTER::", "", $tmp_header);
+					$tmp_header = str_replace("::FILTER::", '', $tmp_header);
 				}
 
 				$total_header .= $tmp_header;
@@ -330,11 +330,11 @@ function onchange_change_filter_doc_submit(obj) {
 
 			$querystring_argument_item = str_replace("&amp;", "__amp;", $querystring_argument_item);
 
-			$querystring_argument_array = split("&", $querystring_argument_item);
+			$querystring_argument_array = explode("&", $querystring_argument_item);
 
 			foreach ( $querystring_argument_array as $querystring_argument_field => $querystring_argument_value ) {
 
-				$querystring_argument_value2 = split("=", $querystring_argument_value, 2);
+				$querystring_argument_value2 = explode("=", $querystring_argument_value, 2);
 
 				$value1 = $querystring_argument_value2[1];
 				$value1 = str_replace("__amp;", "&amp;", $value1);
@@ -398,7 +398,7 @@ function onchange_change_filter_doc_submit(obj) {
 				if ( $choice_value == $value ) {
 					$tmpOption = str_replace("::SELECTED::", "SELECTED", $tmpOption);
 				} else {
-					$tmpOption = str_replace("::SELECTED::", "", $tmpOption);
+					$tmpOption = str_replace("::SELECTED::", '', $tmpOption);
 				}
 
 				$options .= $tmpOption;
@@ -439,7 +439,7 @@ function onchange_change_filter_doc_submit(obj) {
 			$tmp_separator = '';
 
 			if ( $_POST["form_fld_pressed_button"] == '-delete-now-') {
-				$record_list_array = split(';', $_POST["list_of_records"]);
+				$record_list_array = explode(';', $_POST["list_of_records"]);
 			} else {
 				die('error: 541289');
 			}
@@ -466,7 +466,7 @@ function onchange_change_filter_doc_submit(obj) {
 //die( $this->m_view["query"] );
 
 		// execute query
-		$res = mysql_query($this->m_view["query"], $this->oDb->conn) or die( "error 8712378" . "<br>" . mysql_error());
+		$res = mysql_query($this->m_view["query"], $this->oDb->connection()) or die( "error 8712378" . "<br>" . mysql_error());
 
 		// get submit buttons (add new / go back)
 		$view_buttons = $this->get_view_buttons();
@@ -485,11 +485,11 @@ function onchange_change_filter_doc_submit(obj) {
 			$tmp_query_delete = $this->m_view["delete_query"];
 
 			if ( trim($_POST["list_of_records"]) != '' ) {
-				$array_of_records = split(';', $_POST["list_of_records"]);
+				$array_of_records = explode(';', $_POST["list_of_records"]);
 				foreach ( $array_of_records as $record_id ) {
 					$query_delete = $tmp_query_delete . $record_id;
 
-					$res_delete = mysql_query($query_delete, $this->oDb->conn) or die( "error 52129398" . "<br>" . mysql_error());
+					$res_delete = mysql_query($query_delete, $this->oDb->connection()) or die( "error 52129398" . "<br>" . mysql_error());
 				}
 			}
 
@@ -649,8 +649,6 @@ function onchange_change_filter_doc_submit(obj) {
 				$return_value .= "</table>";
 			}
 
-		} else {
-			// echo '<br>Resource not available';
 		}
 
 		// free result set
@@ -720,9 +718,9 @@ function onchange_change_filter_doc_submit(obj) {
 
 		} else {
 
-			$add_new_url = str_replace("\n", "", $add_new_url);
-			$add_new_url = str_replace("\t", "", $add_new_url);
-			$add_new_url = str_replace("\r", "", $add_new_url);
+			$add_new_url = str_replace("\n", '', $add_new_url);
+			$add_new_url = str_replace("\t", '', $add_new_url);
+			$add_new_url = str_replace("\r", '', $add_new_url);
 
 			$add_new_url = $this->oClassMisc->ReplaceSpecialFieldsWithQuerystringValues($add_new_url);
 
@@ -757,8 +755,8 @@ function onchange_change_filter_doc_submit(obj) {
 
 				foreach ( $this->m_view["filter"]["choices"] as $field => $value ) {
 					$url = "?" . urldecode($_SERVER["QUERY_STRING"]);
-					$url = str_replace("&filter=" . urldecode($_GET["filter"]), "", $url);
-					$url = str_replace("?filter=" . urldecode($_GET["filter"]), "", $url);
+					$url = str_replace("&filter=" . urldecode($_GET["filter"]), '', $url);
+					$url = str_replace("?filter=" . urldecode($_GET["filter"]), '', $url);
 
 					if ( $url == "?" ) {
 						$url = '';

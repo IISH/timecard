@@ -1,19 +1,19 @@
 <?php 
-// version: 2012-12-02
+// modified: 2012-12-02
 
 require_once "classes/class_file.inc.php";
 require_once "classes/class_misc.inc.php";
 
 class class_page {
-	var $page_template;
-	var $connection_settings;
-	var $remove_sidebar;
-	var $content;
-	var $shortcuts;
-	var $recentlyused;
-	var $tab;
-	var $title;
-	var $color;
+    private $page_template;
+    private $connection_settings;
+    private $remove_sidebar;
+    private $content;
+    private $shortcuts;
+    private $recentlyused;
+    private $tab;
+    private $title;
+    private $color;
 
 	// TODOEXPLAIN
 	function class_page($page_template, $connection_settings) {
@@ -84,7 +84,6 @@ class class_page {
 
 	function createMenu() {
 		global $menuList;
-		$sMenu = '';
 
 		// GROUPS
 		$sMenu = "<div id=\"tabs\">
@@ -96,8 +95,7 @@ class class_page {
 			$counter = 0;
 
 			foreach ( $b as $c ) {
-//				$sMenu .= "			<li><a href=\"#tabs-" . $counter . "\">" . $c->getLabel() . "</a></li>\n";
-				$sMenu .= "			<li><a XXXonMouseOver=\"javascript:changeTab(" . $counter . ");\" href=\"#tabs-" . $counter . "\">" . $c->getLabel() . "</a></li>\n";
+				$sMenu .= "			<li><a href=\"#tabs-" . $counter . "\">" . $c->getLabel() . "</a></li>\n";
 				$counter++;
 			}
 		}
@@ -146,7 +144,7 @@ class class_page {
 
 	// TODOEXPLAIN
 	function getLastModified() {
-		global $connection_settings_from_database;
+		global $settings_from_database;
 
 		return 'Last modified: ' . $settings_from_database["last_modified"];
 	}

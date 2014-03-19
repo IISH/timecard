@@ -6,7 +6,7 @@ $oPage = new class_page('design/page.php', $connection_settings);
 $oPage->removeSidebar();
 $oPage->setTab($menuList->findTabNumber('pp.contact'));
 $oPage->setTitle('Timecard | Contact');
-$oPage->setContent( $settings_from_database["functional_maintainer_text"] );
+$oPage->setContent( $settings_from_database["page_contact"] );
 
 // show page
 echo $oPage->getPage();

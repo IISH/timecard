@@ -1,29 +1,29 @@
 <?php 
-// version: 2009-02-19
+// modified: 2009-02-19
 
 require_once("./classes/class_misc.inc.php");
 
 class class_field {
-	var $oClassMisc;
-	var $m_fieldname;
-	var $m_fieldname_pointer;
-	var $m_fieldlabel;
-	var $m_fieldlabel_alttitle;
-	var $m_href;
-	var $m_nobr;
-	var $m_onclick;
-	var $m_view_max_length;
-	var $m_view_max_length_extension;
-	var $m_if_no_value_value;
-	var $m_target;
-	var $m_viewfilter;
-	var $m_table_cell_width;
-	var $m_show_different_value = '';
-	var $m_no_href_if = '';
-	var $m_alttitle = '';
-	var $m_class = '';
-	var $m_style = '';
-	var $m_noheader;
+	protected $oClassMisc;
+    private $m_fieldname;
+    private $m_fieldname_pointer;
+    private $m_fieldlabel;
+    private $m_fieldlabel_alttitle;
+    private $m_href;
+    private $m_nobr;
+    private $m_onclick;
+    private $m_view_max_length;
+    private $m_view_max_length_extension;
+    private $m_if_no_value_value;
+    private $m_target;
+    private $m_viewfilter;
+    private $m_table_cell_width;
+    private $m_show_different_value = '';
+    private $m_no_href_if = '';
+    private $m_alttitle = '';
+    private $m_class = '';
+    private $m_style = '';
+    private $m_noheader;
 
 	// TODOEXPLAIN
 	function class_field($fieldsettings) {
@@ -126,12 +126,27 @@ class class_field {
 		return $retval;
 	}
 
-	// TODOEXPLAIN
-	function get_fieldname() {
-		return $this->m_fieldname;
-	}
+    // TODOEXPLAIN
+    function get_fieldname() {
+        return $this->m_fieldname;
+    }
 
-	// TODOEXPLAIN
+    // TODOEXPLAIN
+    function get_target() {
+        return $this->m_target;
+    }
+
+    // TODOEXPLAIN
+    function get_alttitle() {
+        return $this->m_alttitle;
+    }
+
+    // TODOEXPLAIN
+    function get_nobr() {
+        return $this->m_nobr;
+    }
+
+    // TODOEXPLAIN
 	function get_fieldname_pointer() {
 		return $this->m_fieldname_pointer;
 	}
@@ -154,11 +169,6 @@ class class_field {
 	// TODOEXPLAIN
 	function get_href() {
 		return $this->m_href;
-	}
-
-	// TODOEXPLAIN
-	function get_nobr() {
-		return $this->m_nobr;
 	}
 
 	// TODOEXPLAIN
@@ -243,7 +253,7 @@ class class_field {
 				$tmp_searchstring = strtolower(trim($_GET["vf_" . $this->m_fieldname ]));
 				if ( $tmp_searchstring != '' ) {
 					$all_search_found_in_max_length_value = 1;
-					$tmp_searchstring_array = split(" ", $tmp_searchstring);
+					$tmp_searchstring_array = explode(' ', $tmp_searchstring);
 
 					foreach ( $tmp_searchstring_array as $array_value) {
 

@@ -1,5 +1,5 @@
 <?php 
-// version: 2012-11-26
+// modified: 2012-11-26
 
 // connection to the database
 $dbhandleProtime = mssql_connect($connection_settings["protime_server"], $connection_settings["protime_user"], $connection_settings["protime_password"]) or die("Couldn't connect to SQL Server on: " . $connection_settings["protime_server"]);
