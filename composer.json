@@ -5,17 +5,11 @@
     "license": "proprietary",
     "authors": [
         {
-            "name": "author's name",
-            "email": "email@example.com"
+            "name": "Gordan Gupac",
+            "email": "gcu@iisg.nl"
         }
     ],
     "require": {
-        "PHPOffice/PHPExcel": "master"
-    },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "git@github.com:PHPOffice/PHPExcel.git"
-        }
-    ]
+        "PHPOffice/PHPExcel": "1.8.0"
+    }
 }
