@@ -9,7 +9,7 @@ if ( !$oWebuser->hasAdminAuthorisation() ) {
 }
 
 // create webpage
-$oPage = new class_page('design/page.php', $connection_settings);
+$oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
 $oPage->setTab($menuList->findTabNumber('misc.not_linked_employees'));
 $oPage->setTitle('Timecard | Not Linked Employees');
@@ -22,7 +22,7 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createEmployeesContent() {
-	global $connection_settings;
+	global $settings;
 
 	$ret = "<h2>Not Linked Employees</h2>";
 
@@ -32,8 +32,8 @@ function createEmployeesContent() {
 	require_once("./classes/class_view/fieldtypes/class_field_string.inc.php");
 	require_once("./classes/class_view/fieldtypes/class_field_integer.inc.php");
 
-	$oDb = new class_db($connection_settings, 'timecard');
-	$oView = new class_view($connection_settings, $oDb);
+	$oDb = new class_db($settings, 'timecard');
+	$oView = new class_view($settings, $oDb);
 
 	$oView->set_view( array(
 		'query' => 'SELECT * FROM Employees WHERE 1=1 AND isdisabled=0 AND ProtimePersNr=0 '

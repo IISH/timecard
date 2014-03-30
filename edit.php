@@ -21,7 +21,7 @@ $onNew["time"] = $protect->request_positive_number_or_empty('get', "t");
 syncTimecardProtimeDay($oWebuser->getTimecardId(), $oWebuser->getProtimeId(), $oDate);
 
 // create webpage
-$oPage = new class_page('design/page.php', $connection_settings);
+$oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
 $oPage->setTab($menuList->findTabNumber('timecard.day'));
 $oPage->setTitle('Timecard | Day (edit)');
@@ -69,12 +69,12 @@ doc_submit('saveclose')
 
 	// TODOEXPLAIN
 	function getUserDayEdit( $date ) {
-		global $connection_settings, $dbhandleTimecard, $desc, $onNew, $oWebuser, $oDate, $protect;
+		global $settings, $dbhandleTimecard, $desc, $onNew, $oWebuser, $oDate, $protect;
 
 		// achterhaal hoeveel op de betreffende dag is gewerkt
 		// bereken hoeveel minuten er nog 'over' zijn
 		// Bij dagen in de toekomst kan niet uitgerekend worden hoeveel men op die dagen zal werken ;-) dus bij deze dagen wordt geen rekening gehouden met hoeveel minuten er nog over.
-		$oEmployee = new class_employee( $oWebuser->getTimecardId(), $connection_settings );
+		$oEmployee = new class_employee( $oWebuser->getTimecardId(), $settings );
 		$protime_day_total = $oEmployee->getProtimeDayTotal($date);
 
 		if ( $protime_day_total > 0 ) {
@@ -110,9 +110,8 @@ doc_submit('saveclose')
 		require_once("./classes/class_form/fieldtypes/class_field_time_single_field.inc.php");
 
 		// TODOTODO DIRTY
-		//$connection_settings["eid"] = $oWebuser->getTimecardId();
-		$oDb = new class_db($connection_settings, 'timecard');
-		$oForm = new workhours_class_form($connection_settings, $oDb);
+		$oDb = new class_db($settings, 'timecard');
+		$oForm = new workhours_class_form($settings, $oDb);
 
 		$oForm->set_form( array(
 			'query' => 'SELECT ID, Employee, DateWorked, WorkCode, Beheertype, WorkDescription, isdeleted, TimeInMinutes FROM Workhours WHERE ID=[FLD:ID] AND Employee=' . $oWebuser->getTimecardId() . ' AND isdeleted=0 AND protime_absence_recnr=0 '
@@ -148,7 +147,7 @@ doc_submit('saveclose')
 		} else {
 			$currentValueOnNew = ' OR ID=[CURRENTVALUE] ';
 		}
-		$oForm->add_field( new class_field_list ( $connection_settings, array(
+		$oForm->add_field( new class_field_list ( $settings, array(
 			'fieldname' => 'WorkCode'
 			, 'fieldlabel' => 'Project'
 			, 'query' => 'SELECT ID, Concat(Projectnummer, \' \', Description) AS ProjectNumberName FROM Workcodes2011 WHERE ( isdisabled = 0 AND show_in_selectlist = 1 AND (enddate IS NULL OR enddate = \'\' OR enddate >= \'' . $oDate->get("Y-m-d") . '\') ) ' . $currentValueOnNew . ' ORDER BY Projectnummer, Description '

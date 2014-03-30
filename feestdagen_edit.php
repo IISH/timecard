@@ -9,7 +9,7 @@ if ( !$oWebuser->hasAdminAuthorisation() ) {
 }
 
 // create webpage
-$oPage = new class_page('design/page.php', $connection_settings);
+$oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
 $oPage->setTab($menuList->findTabNumber('misc.feestdagen'));
 $oPage->setTitle('Timecard | National holidays (edit)');
@@ -22,7 +22,7 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createFeestdagenEditContent() {
-	global $protect, $dbhandleTimecard, $connection_settings;
+	global $settings;
 
 	$ret = "<h2>National holidays (edit)</h2>";
 
@@ -33,8 +33,8 @@ function createFeestdagenEditContent() {
 	require_once("./classes/class_form/fieldtypes/class_field_bit.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_hidden.inc.php");
 
-	$oDb = new class_db($connection_settings, 'timecard');
-	$oForm = new class_form($connection_settings, $oDb);
+	$oDb = new class_db($settings, 'timecard');
+	$oForm = new class_form($settings, $oDb);
 
 	$oForm->set_form( array(
 		'query' => 'SELECT * FROM Feestdagen WHERE ID=[FLD:ID] '

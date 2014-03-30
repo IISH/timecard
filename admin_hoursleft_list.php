@@ -61,7 +61,7 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium, $favIds ) {
-	global $protect, $dbhandleTimecard, $connection_settings, $dbhandleProtime, $settings_from_database;
+	global $dbhandleTimecard, $settings, $settings_from_database;
 
 	$ret = '';
 
@@ -93,7 +93,7 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 
 	$arrEmployees = array();
 	while ( $rowSelect = mysql_fetch_array($resultSelect) ) {
-		$oEmployee = new class_employee($rowSelect["ID"], $connection_settings);
+		$oEmployee = new class_employee($rowSelect["ID"], $settings);
 		$arrEmployees[] = $oEmployee;
 	}
 

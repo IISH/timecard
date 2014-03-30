@@ -12,13 +12,13 @@ $date = class_datetime::get_date($protect);
 $oDate = new class_date( $date["y"], $date["m"], $date["d"] );
 
 //
-$oEmployee = new class_employee($protect->request('get', 'eid'), $connection_settings);
+$oEmployee = new class_employee($protect->request('get', 'eid'), $settings);
 
 // sync Timecard Protime
 syncTimecardProtimeMonth($oEmployee->getTimecardId(), $oEmployee->getProtimeId(), $oDate);
 
 // create webpage
-$oPage = new class_page('design/page.php', $connection_settings);
+$oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
 $oPage->setTab($menuList->findTabNumber('administrator.month'));
 $oPage->setTitle('Timecard | Admin Month');
@@ -45,7 +45,7 @@ function createAdminMonthContent( $date ) {
 
 	// TODOEXPLAIN
 	function getAdminMonth( $date ) {
-		global $connection_settings, $oEmployee, $oDate;
+		global $settings, $oEmployee, $oDate;
 		$ret = '';
 
 		if ( $oEmployee->getTimecardId() != '' ) {
@@ -56,8 +56,8 @@ function createAdminMonthContent( $date ) {
 			require_once("./classes/class_view/fieldtypes/class_field_time.inc.php");
 			require_once("./classes/class_view/fieldtypes/class_field_date.inc.php");
 
-			$oDb = new class_db($connection_settings, 'timecard');
-			$oView = new class_view($connection_settings, $oDb);
+			$oDb = new class_db($settings, 'timecard');
+			$oView = new class_view($settings, $oDb);
 
 			if ( $oEmployee->getTimecardId() == -1 ) {
 				$tmp_query = 'SELECT * FROM vw_hours2011_admin WHERE DateWorked LIKE \'' . $oDate->get("Y-m") . '-%\' AND isdeleted=0 ';

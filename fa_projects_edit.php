@@ -9,7 +9,7 @@ if ( !( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasFaAuthorisation() ) 
 }
 
 // create webpage
-$oPage = new class_page('design/page.php', $connection_settings);
+$oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
 $oPage->setTab($menuList->findTabNumber('finad.projecten'));
 $oPage->setTitle('Timecard | Project (edit)');
@@ -22,7 +22,7 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createProjectEditContent() {
-	global $protect, $connection_settings;
+	global $protect, $settings;
 
 	$ret = "<h2>Project (edit)</h2>";
 
@@ -54,8 +54,8 @@ function createProjectEditContent() {
 	require_once("./classes/class_form/fieldtypes/class_field_textarea.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_readonly.inc.php");
 
-	$oDb = new class_db($connection_settings, 'timecard');
-	$oForm = new class_form($connection_settings, $oDb);
+	$oDb = new class_db($settings, 'timecard');
+	$oForm = new class_form($settings, $oDb);
 
 	$oForm->set_form( array(
 		'query' => 'SELECT * FROM Workcodes2011 WHERE ID=[FLD:ID] '
@@ -71,7 +71,7 @@ function createProjectEditContent() {
 		, 'fieldlabel' => '#'
 		)));
 
-	$oForm->add_field( new class_field_list ( $connection_settings, array(
+	$oForm->add_field( new class_field_list ( $settings, array(
 		'fieldname' => 'ParentID'
 		, 'fieldlabel' => 'Menu Parent'
 		, 'query' => 'SELECT ID, Description FROM Workcodes2011 WHERE 1=1 ' . $extra_project_filter . ' ORDER BY Description '

@@ -1,21 +1,21 @@
 <?php 
 // modified: 2012-12-02
 
-require_once "settings.inc.php";
+require_once dirname(__DIR__) . "/sites/default/settings.inc.php";
 require_once "class_db.inc.php";
 
 class class_shortcuts {
     private $user;
-    private $connection_settings;
+    private $settings;
     private $oDate;
 
 	// TODOEXPLAIN
-	function class_shortcuts($user, $connection_settings, $oDate) {
+	function class_shortcuts($user, $settings, $oDate) {
 		if ( $user == '' ) {
 			$user = 0;
 		}
 		$this->user = $user;
-		$this->connection_settings = $connection_settings;
+		$this->settings = $settings;
 		$this->oDate = $oDate;
 	}
 
@@ -23,7 +23,7 @@ class class_shortcuts {
 	function getEnabledShortcuts() {
 		$arr = array();
 
-		$oConn = new class_db($this->connection_settings);
+		$oConn = new class_db($this->settings);
 		$oConn->connect();
 
 		// TODOTODO
@@ -55,7 +55,7 @@ ORDER BY Workcodes2011.Description, UserCreatedQuickAdds.TimeInMinutes DESC ";
 	function getAllShortcuts() {
 		$arr = array();
 
-		$oConn = new class_db($this->connection_settings);
+		$oConn = new class_db($this->settings);
 		$oConn->connect();
 
 		// TODOTODO

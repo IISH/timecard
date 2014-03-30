@@ -9,7 +9,7 @@ if ( !$oWebuser->hasAdminAuthorisation() ) {
 }
 
 // create webpage
-$oPage = new class_page('design/page.php', $connection_settings);
+$oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
 $oPage->setTab($menuList->findTabNumber('misc.urenperweek'));
 $oPage->setTitle('Timecard | Hours per week (edit)');
@@ -22,7 +22,7 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createHoursperweekEditContent() {
-	global $protect, $dbhandleTimecard, $connection_settings;
+	global $settings;
 
 	$ret = "<h2>Hours per week (edit)</h2>";
 
@@ -35,8 +35,8 @@ function createHoursperweekEditContent() {
 	require_once("./classes/class_form/fieldtypes/class_field_list.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_hidden.inc.php");
 
-	$oDb = new class_db($connection_settings, 'timecard');
-	$oForm = new class_form($connection_settings, $oDb);
+	$oDb = new class_db($settings, 'timecard');
+	$oForm = new class_form($settings, $oDb);
 
 	$oForm->set_form( array(
 		'query' => 'SELECT * FROM HoursPerWeek WHERE ID=[FLD:ID] '
@@ -51,7 +51,7 @@ function createHoursperweekEditContent() {
 		, 'fieldlabel' => '#'
 		)));
 
-	$oForm->add_field( new class_field_list ( $connection_settings, array(
+	$oForm->add_field( new class_field_list ( $settings, array(
 		'fieldname' => 'Employee'
 		, 'fieldlabel' => 'Employee'
 		, 'query' => 'SELECT ID, Concat(FirstName, \' \', LastName) AS FullName FROM Employees WHERE is_test_account=0 ORDER BY FullName '
@@ -62,7 +62,6 @@ function createHoursperweekEditContent() {
 		, 'empty_value' => '0'
 		, 'required' => 1
 		, 'show_empty_row' => true
-//		, 'onNew' => $pid
 		)));
 
 	$oForm->add_field( new class_field_integer ( array(

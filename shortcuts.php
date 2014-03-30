@@ -6,7 +6,7 @@ $oWebuser->checkLoggedIn();
 $date = class_datetime::get_date($protect);
 
 // create webpage
-$oPage = new class_page('design/page.php', $connection_settings);
+$oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
 $oPage->setTab($menuList->findTabNumber('pp.myshortcuts'));
 $oPage->setTitle('Timecard | My shortcuts');
@@ -19,13 +19,13 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createShortcutsList() {
-	global $connection_settings, $oWebuser, $settings_from_database;
+	global $settings, $oWebuser, $settings_from_database;
 
 	$records = '';
 
 	$oDate = new class_date( date("Y"), date("m"), date("d") );
 
-	$oShortcuts = new class_shortcuts($oWebuser->getTimecardId(), $connection_settings, $oDate);
+	$oShortcuts = new class_shortcuts($oWebuser->getTimecardId(), $settings, $oDate);
 
 	foreach ( $oShortcuts->getAllShortcuts() as $shortcut) {
 		if ( $shortcut["isvisible"] != '1' ) {

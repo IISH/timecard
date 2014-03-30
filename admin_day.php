@@ -12,11 +12,11 @@ $date = class_datetime::get_date($protect);
 $oDate = new class_date( $date["y"], $date["m"], $date["d"] );
 
 // sync Timecard Protime
-$oEmployee = new class_employee($protect->request('get', 'eid'), $connection_settings);
+$oEmployee = new class_employee($protect->request('get', 'eid'), $settings);
 syncTimecardProtimeDay($oEmployee->getTimecardId(), $oEmployee->getProtimeId(), $oDate);
 
 // create webpage
-$oPage = new class_page('design/page.php', $connection_settings);
+$oPage = new class_page('design/page.php', $settings);
 if ( $oEmployee->getTimecardId() == -1 || $oEmployee->getTimecardId() == '' ) {
 	$oPage->removeSidebar();
 }
@@ -25,8 +25,8 @@ $oPage->setTitle('Timecard | Admin Day');
 $oPage->setContent(createAdminDayContent( $date ) . getCheckedInCheckedOut($oEmployee->getProtimeId(), $date["Ymd"]));
 // add shortcuts and recently used
 if ( $date["y"] >= "2013" ) {
-	$oPage->setShortcuts(getAdminShortcuts($oEmployee->getTimecardId(), $oDate, $connection_settings));
-	$oPage->setRecentlyUsed(getAdminRecentlyUsed($oEmployee->getTimecardId(), $oDate, $connection_settings));
+	$oPage->setShortcuts(getAdminShortcuts($oEmployee->getTimecardId(), $oDate, $settings));
+	$oPage->setRecentlyUsed(getAdminRecentlyUsed($oEmployee->getTimecardId(), $oDate, $settings));
 }
 
 // show page
@@ -53,7 +53,7 @@ function createAdminDayContent( $date ) {
 
 // TODOEXPLAIN
 function getAdminDay( $date ) {
-	global $connection_settings, $dbhandleTimecard, $oEmployee, $oDate;
+	global $settings, $dbhandleTimecard, $oEmployee, $oDate;
 
 	$ret = '';
 
@@ -68,8 +68,8 @@ function getAdminDay( $date ) {
 			require_once("./classes/class_view/fieldtypes/class_field_string.inc.php");
 			require_once("./classes/class_view/fieldtypes/class_field_time.inc.php");
 
-			$oDb = new class_db($connection_settings, 'timecard');
-			$oView = new class_view($connection_settings, $oDb);
+			$oDb = new class_db($settings, 'timecard');
+			$oView = new class_view($settings, $oDb);
 
 			// if legacy, then no edit link
 			$add_new_url = '';
@@ -283,7 +283,7 @@ function getAdminDay( $date ) {
 
 			$timecard_day_total = $timecard_deeltotaal+$dagvakantie;
 
-			$oEmployee = new class_employee( $oEmployee->getTimecardId(), $connection_settings );
+			$oEmployee = new class_employee( $oEmployee->getTimecardId(), $settings );
 			$protime_day_total = $oEmployee->getProtimeDayTotal($date);
 
 			$ret .= "
@@ -305,7 +305,7 @@ function getAdminDay( $date ) {
 }
 
 	// TODOEXPLAIN
-	function getAdminShortcuts($pid, $oDate, $connection_settings) {
+	function getAdminShortcuts($pid, $oDate, $settings) {
 		global $settings_from_database;
 
 		if ( $pid == '' || $pid == '0' || $pid == '-1' ) {
@@ -315,7 +315,7 @@ function getAdminDay( $date ) {
 		$ret = '';
 		$records = '';
 
-		$oShortcuts = new class_shortcuts($pid, $connection_settings, $oDate);
+		$oShortcuts = new class_shortcuts($pid, $settings, $oDate);
 
 		// records
 		foreach ( $oShortcuts->getEnabledShortcuts() as $shortcut) {
@@ -355,7 +355,7 @@ function getAdminDay( $date ) {
 	}
 
 	// TODOEXPLAIN
-	function getAdminRecentlyUsed($pid, $oDate, $connection_settings) {
+	function getAdminRecentlyUsed($pid, $oDate, $settings) {
 		global $settings_from_database;
 
 		if ( $pid == '' || $pid == '0' || $pid == '-1' ) {
@@ -365,7 +365,7 @@ function getAdminDay( $date ) {
 		$records = '';
 		$ret = '';
 
-		$oRecentlyUsed = new class_recentlyused($pid, $connection_settings, $oDate);
+		$oRecentlyUsed = new class_recentlyused($pid, $settings, $oDate);
 
 		// record
 		foreach ( $oRecentlyUsed->getRecentlyUsed() as $recentlyUsed) {

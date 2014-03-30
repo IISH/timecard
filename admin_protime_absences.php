@@ -9,7 +9,7 @@ if ( !$oWebuser->hasAdminAuthorisation() ) {
 }
 
 // create webpage
-$oPage = new class_page('design/page.php', $connection_settings);
+$oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
 $oPage->setTab($menuList->findTabNumber('misc.protimeabsenties'));
 $oPage->setTitle('Timecard | Absences');
@@ -22,7 +22,7 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createAbsencesContent() {
-	global $connection_settings;
+	global $settings;
 
 	$ret = "<h2>Absences</h2>";
 
@@ -31,8 +31,8 @@ function createAbsencesContent() {
 
 	require_once("./classes/class_view/fieldtypes/class_field_string.inc.php");
 
-	$oDb = new class_db($connection_settings, 'timecard');
-	$oView = new class_view($connection_settings, $oDb);
+	$oDb = new class_db($settings, 'timecard');
+	$oView = new class_view($settings, $oDb);
 
 	$oView->set_view( array(
 		'query' => 'SELECT ProtimeAbsences.ID, ProtimeAbsences.description_nl AS protime_description, Workcodes2011.Description AS timecard_description FROM ProtimeAbsences LEFT OUTER JOIN Workcodes2011 ON ProtimeAbsences.workcode_id = Workcodes2011.ID '

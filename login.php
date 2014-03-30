@@ -2,7 +2,7 @@
 require_once "classes/start.inc.php";
 
 // create webpage
-$oPage = new class_page('design/page.php', $connection_settings);
+$oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
 $oPage->setTab($menuList->findTabNumber('pp.login'));
 $oPage->setTitle('Timecard | Login');
@@ -15,10 +15,9 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createLoginPage() {
-	global $protect, $connection_settings, $settings_from_database;
+	global $protect, $settings, $settings_from_database;
 
 	$fldLogin = '';
-	$fldPassword = '';
 	$error = '';
 
 	if ( $protect->request_positive_number_or_empty('post', 'issubmitted') == '1' ) {
@@ -53,7 +52,7 @@ function createLoginPage() {
 				// save id
 				$_SESSION["timecard"]["id"] = $persinfo["id"];
 
-				$oWebuser = new class_employee($persinfo["id"], $connection_settings);
+				$oWebuser = new class_employee($persinfo["id"], $settings);
 
 				// update wanneer gebruiker voor het laatst is ingelogd op timecard
 				updateLastUserLogin($oWebuser->getTimecardId());

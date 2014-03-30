@@ -6,10 +6,10 @@ class class_prevnext {
 
 	// TODOEXPLAIN
 	function class_prevnext( $date ) {
-		global $connection_settings;
+		global $settings;
 
 		$this->date = $date;
-		$this->connection_settings = $connection_settings;
+		$this->settings = $settings;
 	}
 
 	// TODOEXPLAIN

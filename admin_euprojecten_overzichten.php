@@ -9,7 +9,7 @@ if ( !( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasExportsAuthorisation
 }
 
 // create webpage
-$oPage = new class_page('design/page.php', $connection_settings);
+$oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
 $oPage->setTab($menuList->findTabNumber('exports.euprojecten'));
 $oPage->setTitle('Timecard | Exports - Employee Project totals');

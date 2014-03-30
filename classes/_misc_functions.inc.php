@@ -84,7 +84,7 @@ function goBackTo() {
 
 // TODOEXPLAIN
 function getEmployeesRibbon($year, $all = 0) {
-	global $date, $oEmployee, $protect, $oPage, $dbhandleTimecard, $connection_settings;
+	global $date, $oEmployee, $protect, $oPage, $dbhandleTimecard, $settings;
 
 	$ret = "
 <table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width=\"100%\">
@@ -622,7 +622,7 @@ function updateLastUserLogin($userid) {
 
 // TODOEXPLAIN
 function getAddEmployeeToTimecard($longcode) {
-	global $dbhandleTimecard, $connection_settings, $protect, $settings_from_database;
+	global $dbhandleTimecard, $settings, $protect, $settings_from_database;
 
 	$retval["id"] = '0';
 
@@ -794,7 +794,7 @@ function addAndRemoveAbsentiesInTimecard($timecard_id, $protime_id, $oDate) {
 					, "Workhours"
 					, array(
 							array("Employee" => $timecard_id)
-							, array("DateWorked" => "'" . $oDate->get("m") . "/" . $oDate->get("d") . "/" . $oDate->get("Y") . "'")
+							, array("DateWorked" => "'" . $oDate->get("Y") . "-" . $oDate->get("m") . "-" . $oDate->get("d") . "'")
 							, array("WorkCode" => $timecard_absence_id["workcode_id"])
 							, array("WorkDescription" => "''")
 							, array("TimeInMinutes" => $row2["ABSENCE_VALUE"])
@@ -893,7 +893,7 @@ function addEerderNaarHuisInTimecard($timecard_id, $protime_id, $oDate) {
 					, "Workhours"
 					, array(
 							array("Employee" => $timecard_id)
-							, array("DateWorked" => "'" . $oDate->get("m") . "/" . $oDate->get("d") . "/" . $oDate->get("Y") . "'")
+							, array("DateWorked" => "'" . $oDate->get("Y") . "-" . $oDate->get("m") . "-" . $oDate->get("d") . "'")
 							, array("WorkCode" => 7)
 							, array("WorkDescription" => "''")
 							, array("TimeInMinutes" => $eerderWeg)
@@ -1130,7 +1130,7 @@ function getBackUrl() {
 
 // TODOEXPLAIN
 function getQuarterTotals( $date, $userTimecardId, $urlprefix ) {
-	global $connection_settings, $dbhandleTimecard;
+	global $settings, $dbhandleTimecard;
 
 	$oDateOriginal = new class_date( $date["y"], $date["m"], $date["d"] );
 
@@ -1144,7 +1144,7 @@ function getQuarterTotals( $date, $userTimecardId, $urlprefix ) {
 
 		$number_of_days_in_current_month = $oDate->get('t');
 
-		$oEmployee = new class_employee( $userTimecardId, $connection_settings );
+		$oEmployee = new class_employee( $userTimecardId, $settings );
 
 		$date2["y"] = $oDate->get('Y');
 		$date2["m"] = $oDate->get('n');

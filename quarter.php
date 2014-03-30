@@ -10,7 +10,7 @@ $oDate = new class_date( $date["y"], $date["m"], $date["d"] );
 //syncTimecardProtimeQuarter($oWebuser->getTimecardId(), $oWebuser->getProtimeId(), $date);
 
 // create webpage
-$oPage = new class_page('design/page.php', $connection_settings);
+$oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
 $oPage->setTab($menuList->findTabNumber('timecard.quarter'));
 $oPage->setTitle('Timecard | Quarter');
@@ -35,7 +35,7 @@ function createQuarterContent( $date ) {
 
 	// TODOEXPLAIN
 	function getUserQuarter( $date ) {
-		global $connection_settings, $oWebuser, $oDate;
+		global $settings, $oWebuser, $oDate;
 
 		require_once("./classes/class_db.inc.php");
 		require_once("./classes/class_view/class_view.inc.php");
@@ -44,8 +44,8 @@ function createQuarterContent( $date ) {
 		require_once("./classes/class_view/fieldtypes/class_field_time.inc.php");
 		require_once("./classes/class_view/fieldtypes/class_field_date.inc.php");
 
-		$oDb = new class_db($connection_settings, 'timecard');
-		$oView = new class_view($connection_settings, $oDb);
+		$oDb = new class_db($settings, 'timecard');
+		$oView = new class_view($settings, $oDb);
 
 		// if legacy, then no edit link
 		$add_new_url = '';

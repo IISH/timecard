@@ -3,18 +3,18 @@
 
 class class_protime_user {
     private $protime_id = 0;
-    private $connection_settings;
+    private $settings;
     private $firstname = '';
     private $lastname = '';
 
 	// TODOEXPLAIN
-	function class_protime_user($protime_id, $connection_settings) {
+	function class_protime_user($protime_id, $settings) {
 		if ( $protime_id == '' || $protime_id < -1 ) {
 			$protime_id = 0;
 		}
 
 		$this->protime_id = $protime_id;
-		$this->connection_settings = $connection_settings;
+		$this->settings = $settings;
 
 		if ( $protime_id > 0 ) {
 			$this->getProtimeValues();

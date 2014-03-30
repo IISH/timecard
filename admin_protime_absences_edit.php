@@ -9,7 +9,7 @@ if ( !$oWebuser->hasAdminAuthorisation() ) {
 }
 
 // create webpage
-$oPage = new class_page('design/page.php', $connection_settings);
+$oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
 $oPage->setTab($menuList->findTabNumber('misc.protimeabsenties'));
 $oPage->setTitle('Timecard | Absences (edit)');
@@ -22,7 +22,7 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createAbsencesContent() {
-	global $connection_settings;
+	global $settings;
 
 	$ret = "<h2>Absences (edit)</h2>";
 
@@ -33,8 +33,8 @@ function createAbsencesContent() {
 	require_once("./classes/class_form/fieldtypes/class_field_readonly.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_list.inc.php");
 
-	$oDb = new class_db($connection_settings, 'timecard');
-	$oForm = new class_form($connection_settings, $oDb);
+	$oDb = new class_db($settings, 'timecard');
+	$oForm = new class_form($settings, $oDb);
 
 	$oForm->set_form( array(
 		'query' => 'SELECT ID, description_nl, description_en, workcode_id FROM ProtimeAbsences WHERE ID=[FLD:ID] '
@@ -60,7 +60,7 @@ function createAbsencesContent() {
 		, 'fieldlabel' => 'Protime description (English)'
 		)));
 
-	$oForm->add_field( new class_field_list ( $connection_settings, array(
+	$oForm->add_field( new class_field_list ( $settings, array(
 		'fieldname' => 'workcode_id'
 		, 'fieldlabel' => 'Timecard workcode'
 		, 'query' => 'SELECT ID, Description FROM Workcodes2011 ORDER BY Description '

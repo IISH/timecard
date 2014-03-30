@@ -9,7 +9,7 @@ if ( !$oWebuser->hasAdminAuthorisation() ) {
 }
 
 // create webpage
-$oPage = new class_page('design/iframe.php', $connection_settings);
+$oPage = new class_page('design/iframe.php', $settings);
 $oPage->setTitle('Timecard | Hours per week (edit)');
 $oPage->setContent(createHoursperweekEditContent());
 
@@ -20,7 +20,7 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createHoursperweekEditContent() {
-	global $protect, $dbhandleTimecard, $connection_settings;
+	global $settings;
 
 	$ret = '';
 
@@ -32,8 +32,8 @@ function createHoursperweekEditContent() {
 	require_once("./classes/class_form/fieldtypes/class_field_decimal.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_hidden.inc.php");
 
-	$oDb = new class_db($connection_settings, 'timecard');
-	$oForm = new class_form($connection_settings, $oDb);
+	$oDb = new class_db($settings, 'timecard');
+	$oForm = new class_form($settings, $oDb);
 
 	$oForm->set_form( array(
 		'query' => 'SELECT * FROM HoursPerWeek WHERE ID=[FLD:ID] '

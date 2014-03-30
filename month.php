@@ -10,7 +10,7 @@ $oDate = new class_date( $date["y"], $date["m"], $date["d"] );
 syncTimecardProtimeMonth($oWebuser->getTimecardId(), $oWebuser->getProtimeId(), $oDate);
 
 // create webpage
-$oPage = new class_page('design/page.php', $connection_settings);
+$oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
 $oPage->setTab($menuList->findTabNumber('timecard.month'));
 $oPage->setTitle('Timecard | Month');
@@ -35,7 +35,7 @@ function createMonthContent( $date ) {
 
 	// TODOEXPLAIN
 	function getUserMonth( $date ) {
-		global $connection_settings, $dbhandleTimecard, $oWebuser, $oDate;
+		global $settings, $dbhandleTimecard, $oWebuser, $oDate;
 
 		$ret = '';
 
@@ -46,8 +46,8 @@ function createMonthContent( $date ) {
 		require_once("./classes/class_view/fieldtypes/class_field_time.inc.php");
 		require_once("./classes/class_view/fieldtypes/class_field_date.inc.php");
 
-		$oDb = new class_db($connection_settings, 'timecard');
-		$oView = new class_view($connection_settings, $oDb);
+		$oDb = new class_db($settings, 'timecard');
+		$oView = new class_view($settings, $oDb);
 
 		// if legacy, then no edit link
 		if ( class_datetime::is_legacy( $oDate ) ) {
@@ -142,7 +142,7 @@ function createMonthContent( $date ) {
 		// QUICK AND DIRTY CONCAT/REPLACE
 		$list = $oView->generate_view() . "___";
 
-		$oEmployee = new class_employee( $oWebuser->getTimecardId(), $connection_settings );
+		$oEmployee = new class_employee( $oWebuser->getTimecardId(), $settings );
 		$protime_month_total = $oEmployee->getProtimeMonthTotal($date, 'max');
 
 		// show protime month total

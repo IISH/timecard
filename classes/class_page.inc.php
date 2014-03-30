@@ -6,7 +6,7 @@ require_once "classes/class_misc.inc.php";
 
 class class_page {
     private $page_template;
-    private $connection_settings;
+    private $settings;
     private $remove_sidebar;
     private $content;
     private $shortcuts;
@@ -16,9 +16,9 @@ class class_page {
     private $color;
 
 	// TODOEXPLAIN
-	function class_page($page_template, $connection_settings) {
+	function class_page($page_template, $settings) {
 		$this->page_template = $page_template;
-		$this->connection_settings = $connection_settings;
+		$this->settings = $settings;
 		$this->remove_sidebar = 0;
 		$this->content = '';
 		$this->shortcuts = '';

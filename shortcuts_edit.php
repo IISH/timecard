@@ -6,7 +6,7 @@ $oWebuser->checkLoggedIn();
 $date = class_datetime::get_date($protect);
 
 // create webpage
-$oPage = new class_page('design/page.php', $connection_settings);
+$oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
 $oPage->setTab($menuList->findTabNumber('pp.myshortcuts'));
 $oPage->setTitle('Timecard | My shortcuts');
@@ -19,7 +19,7 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createShortcutsContent() {
-	global $connection_settings, $oWebuser, $protect;
+	global $settings, $oWebuser, $protect;
 
 	$ret = "<h2>My shortcuts (edit)</h2>";
 
@@ -34,8 +34,8 @@ function createShortcutsContent() {
 	require_once("./classes/class_form/fieldtypes/class_field_time_double_field.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_time_single_field.inc.php");
 
-	$oDb = new class_db($connection_settings, 'timecard');
-	$oForm = new class_form($connection_settings, $oDb);
+	$oDb = new class_db($settings, 'timecard');
+	$oForm = new class_form($settings, $oDb);
 
 	$oForm->set_form( array(
 		'query' => 'SELECT * FROM UserCreatedQuickAdds WHERE ID=[FLD:ID] AND Employee=' . $oWebuser->getTimecardId() . ' AND isdeleted=0 '
@@ -62,7 +62,7 @@ function createShortcutsContent() {
 	} else {
 		$currentValueOnNew = ' OR ID=[CURRENTVALUE] ';
 	}
-	$oForm->add_field( new class_field_list ( $connection_settings, array(
+	$oForm->add_field( new class_field_list ( $settings, array(
 		'fieldname' => 'WorkCode'
 		, 'fieldlabel' => 'Project'
 		, 'query' => 'SELECT ID, Concat(Projectnummer, \' \', Description) AS ProjectNumberName FROM Workcodes2011 WHERE ( isdisabled = 0 AND show_in_selectlist = 1 AND (enddate IS NULL OR enddate = \'\' OR enddate >= \'' . date("Y-m-d") . '\') ) ' . $currentValueOnNew . ' ORDER BY Projectnummer, Description '

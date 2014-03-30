@@ -11,7 +11,7 @@ if ( !$oWebuser->hasAdminAuthorisation() ) {
 $date = class_datetime::get_date($protect);
 $oDate = new class_date( $date["y"], $date["m"], $date["d"] );
 
-$oEmployee = new class_employee($protect->request('get', 'eid'), $connection_settings);
+$oEmployee = new class_employee($protect->request('get', 'eid'), $settings);
 
 $autoSave = $protect->request_positive_number_or_empty('get', 'autoSave');
 
@@ -24,7 +24,7 @@ $onNew["project"] = $protect->request_positive_number_or_empty('get', "p");
 $onNew["time"] = $protect->request_positive_number_or_empty('get', "t");
 
 // create webpage
-$oPage = new class_page('design/page.php', $connection_settings);
+$oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
 $oPage->setTab($menuList->findTabNumber('administrator.day'));
 $oPage->setTitle('Timecard | Admin Day (edit)');
@@ -66,14 +66,14 @@ doc_submit('saveclose')
 
 // TODOEXPLAIN
 function getAdminDayEdit( $date ) {
-	global $connection_settings, $dbhandleTimecard, $autoSave, $desc, $onNew, $oEmployee, $oWebuser, $oDate, $protect;
+	global $settings, $dbhandleTimecard, $autoSave, $desc, $onNew, $oEmployee, $oWebuser, $oDate, $protect;
 
 	$ret = '';
 
 	// achterhaal hoeveel op de betreffende dag is gewerkt
 	// bereken hoeveel minuten er nog 'over' zijn
 	// Bij dagen in de toekomst kan niet uitgerekend worden hoeveel men op die dagen zal werken ;-) dus bij deze dagen wordt geen rekening gehouden met hoeveel minuten er nog over.
-	$oEmployee = new class_employee( $oEmployee->getTimecardId(), $connection_settings );
+	$oEmployee = new class_employee( $oEmployee->getTimecardId(), $settings );
 	$protime_day_total = $oEmployee->getProtimeDayTotal($date);
 
 	if ( $protime_day_total > 0 ) {
@@ -109,9 +109,8 @@ function getAdminDayEdit( $date ) {
 	require_once("./classes/class_form/fieldtypes/class_field_time_single_field.inc.php");
 
 	// TODOTODO DIRTY
-	//$connection_settings["eid"] = $oEmployee->getTimecardId();
-	$oDb = new class_db($connection_settings, 'timecard');
-	$oForm = new workhours_class_form($connection_settings, $oDb);
+	$oDb = new class_db($settings, 'timecard');
+	$oForm = new workhours_class_form($settings, $oDb);
 
 	$oForm->set_form( array(
 		'query' => 'SELECT ID, Employee, DateWorked, WorkCode, Beheertype, WorkDescription, isdeleted, TimeInMinutes FROM Workhours WHERE ID=[FLD:ID] AND isdeleted=0 '
@@ -126,7 +125,7 @@ function getAdminDayEdit( $date ) {
 		, 'fieldlabel' => 'Internal no.'
 		)));
 
-	$oForm->add_field( new class_field_list ( $connection_settings, array(
+	$oForm->add_field( new class_field_list ( $settings, array(
 		'fieldname' => 'Employee'
 		, 'fieldlabel' => 'Employee'
 		, 'query' => 'SELECT ID, Concat(FirstName, \' \', LastName) AS FullName FROM Employees ORDER BY FullName '
@@ -153,7 +152,7 @@ function getAdminDayEdit( $date ) {
 	} else {
 		$currentValueOnNew = ' OR ID=[CURRENTVALUE] ';
 	}
-	$oForm->add_field( new class_field_list ( $connection_settings, array(
+	$oForm->add_field( new class_field_list ( $settings, array(
 		'fieldname' => 'WorkCode'
 		, 'fieldlabel' => 'Project'
 		, 'query' => 'SELECT ID, Concat(Projectnummer, \' \', Description) AS ProjectNumberName FROM Workcodes2011 WHERE ( isdisabled = 0 AND show_in_selectlist = 1 AND (enddate IS NULL OR enddate = \'\' OR enddate >= \'' . $oDate->get("Y-m-d") . '\') ) ' . $currentValueOnNew . ' ORDER BY Projectnummer, Description '

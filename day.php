@@ -10,15 +10,15 @@ $oDate = new class_date( $date["y"], $date["m"], $date["d"] );
 syncTimecardProtimeDay($oWebuser->getTimecardId(), $oWebuser->getProtimeId(), $oDate);
 
 // create webpage
-$oPage = new class_page('design/page.php', $connection_settings);
+$oPage = new class_page('design/page.php', $settings);
 $oPage->setTab($menuList->findTabNumber('timecard.day'));
 $oPage->setTitle('Timecard | Day');
 $oPage->setContent(createDayContent( $date ) . getCheckedInCheckedOut($oWebuser->getProtimeId(), $date["Ymd"]) );
 
 // add shortcuts and recently used
 if ( $date["y"] >= "2013" ) {
-	$oPage->setShortcuts(getUserShortcuts($oWebuser->getTimecardId(), $oDate, $connection_settings));
-	$oPage->setRecentlyUsed(getUserRecentlyUsed($oWebuser->getTimecardId(), $oDate, $connection_settings));
+	$oPage->setShortcuts(getUserShortcuts($oWebuser->getTimecardId(), $oDate, $settings));
+	$oPage->setRecentlyUsed(getUserRecentlyUsed($oWebuser->getTimecardId(), $oDate, $settings));
 }
 
 // show page
@@ -42,7 +42,7 @@ function createDayContent( $date ) {
 
 // TODOEXPLAIN
 function getUserDay( $date ) {
-	global $connection_settings, $dbhandleTimecard, $oWebuser, $oDate;
+	global $settings, $dbhandleTimecard, $oWebuser, $oDate;
 
 	$ret = '';
 
@@ -145,7 +145,7 @@ function getUserDay( $date ) {
 ";
 
 	$timecard_day_total = $timecard_deeltotaal+$dagvakantie;
-	$oEmployee = new class_employee( $oWebuser->getTimecardId(), $connection_settings );
+	$oEmployee = new class_employee( $oWebuser->getTimecardId(), $settings );
 
 	$protime_day_total = $oEmployee->getProtimeDayTotal($date);
 
@@ -158,7 +158,7 @@ function getUserDay( $date ) {
 }
 
 // TODOEXPLAIN
-function getUserShortcuts($userid, $oDate, $connection_settings) {
+function getUserShortcuts($userid, $oDate, $settings) {
 	global $settings_from_database;
 
 	if ( $userid == '' || $userid == '0' || $userid == '-1' ) {
@@ -168,7 +168,7 @@ function getUserShortcuts($userid, $oDate, $connection_settings) {
 	$ret = '';
 	$records = '';
 
-	$oShortcuts = new class_shortcuts($userid, $connection_settings, $oDate);
+	$oShortcuts = new class_shortcuts($userid, $settings, $oDate);
 
 	// record
 	foreach ( $oShortcuts->getEnabledShortcuts() as $shortcut) {
@@ -208,7 +208,7 @@ function getUserShortcuts($userid, $oDate, $connection_settings) {
 }
 
 // TODOEXPLAIN
-function getUserRecentlyUsed($userid, $oDate, $connection_settings) {
+function getUserRecentlyUsed($userid, $oDate, $settings) {
 	global $settings_from_database;
 
 	if ( $userid == '' || $userid == '0' || $userid == '-1' ) {
@@ -218,7 +218,7 @@ function getUserRecentlyUsed($userid, $oDate, $connection_settings) {
 	$records = '';
 	$ret = '';
 
-	$oRecentlyUsed = new class_recentlyused($userid, $connection_settings, $oDate);
+	$oRecentlyUsed = new class_recentlyused($userid, $settings, $oDate);
 
 	// record
 	foreach ( $oRecentlyUsed->getRecentlyUsed() as $recentlyUsed) {

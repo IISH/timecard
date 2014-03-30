@@ -6,7 +6,7 @@ class class_view {
     protected $oDb;
     protected $oClassFile;
     protected $oClassMisc;
-    private $m_connection_settings;
+    private $settings;
 
     private $m_view;
     private $m_array_of_fields = Array();
@@ -14,8 +14,8 @@ class class_view {
     private $m_order_by;
 
 	// TODOEXPLAIN
-	function class_view($connection_settings, $oDb) {
-		$this->m_connection_settings = $connection_settings;
+	function class_view($settings, $oDb) {
+		$this->settings = $settings;
 
 		$this->oDb = $oDb;
 		$this->oClassFile = new class_file();

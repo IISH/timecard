@@ -11,10 +11,10 @@ if ( !$oWebuser->hasAdminAuthorisation() ) {
 $date = class_datetime::get_date($protect);
 $oDate = new class_date( $date["y"], $date["m"], $date["d"] );
 
-$oEmployee = new class_employee($protect->request('get', 'eid'), $connection_settings);
+$oEmployee = new class_employee($protect->request('get', 'eid'), $settings);
 
 // create webpage
-$oPage = new class_page('design/page.php', $connection_settings);
+$oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
 $oPage->setTab($menuList->findTabNumber('administrator.quarter'));
 $oPage->setTitle('Timecard | Admin Quarter');
@@ -27,7 +27,7 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createAdminQuarterContent( $date ) {
-	global $connection_settings;
+	global $settings;
 
 	//
 	$oPrevNext = new class_prevnext($date);
@@ -44,7 +44,7 @@ function createAdminQuarterContent( $date ) {
 
 	// TODOEXPLAIN
 	function getAdminQuarter( $date ) {
-		global $connection_settings, $oEmployee, $oDate;
+		global $settings, $oEmployee, $oDate;
 
 		if ( $oEmployee->getTimecardId() != '' ) {
 			require_once("./classes/class_db.inc.php");
@@ -54,8 +54,8 @@ function createAdminQuarterContent( $date ) {
 			require_once("./classes/class_view/fieldtypes/class_field_time.inc.php");
 			require_once("./classes/class_view/fieldtypes/class_field_date.inc.php");
 
-			$oDb = new class_db($connection_settings, 'timecard');
-			$oView = new class_view($connection_settings, $oDb);
+			$oDb = new class_db($settings, 'timecard');
+			$oView = new class_view($settings, $oDb);
 
 			$oPrevNext = new class_prevnext($date);
 			$extra_month_criterium = $oPrevNext->getExtraMonthCriterium();

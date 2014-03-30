@@ -29,8 +29,8 @@ $firstcolumn = 0;
 $fnaam = protectFilename('export-for-oracle-' . $year . '-' . substr('0' . $month, -2)) . ".xlsx";
 
 // connection to the database
-$dbhandleTimecard = mysql_connect($connection_settings["timecard_server"], $connection_settings["timecard_user"], $connection_settings["timecard_password"]) or die("Couldn't connect to SQL Server on: " . $connection_settings["timecard_server"]);
-$selectedTimecard = mysql_select_db($connection_settings["timecard_database"], $dbhandleTimecard) or die("Couldn't open database " . $connection_settings["timecard_database"]);
+$dbhandleTimecard = mysql_connect($settings["timecard_server"], $settings["timecard_user"], $settings["timecard_password"]) or die("Couldn't connect to SQL Server on: " . $settings["timecard_server"]);
+$selectedTimecard = mysql_select_db($settings["timecard_database"], $dbhandleTimecard) or die("Couldn't open database " . $settings["timecard_database"]);
 
 // + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
 
@@ -39,15 +39,16 @@ SELECT Employees.KnawPersNr, Employees.FirstName, Employees.LastName, Employees.
 FROM Workhours 
 	INNER JOIN Workcodes2011 ON Workhours.Workcode = Workcodes2011.ID 
 	INNER JOIN Employees ON Workhours.Employee = Employees.ID 
-WHERE YEAR(Workhours.DateWorked) = " . $year . " 
-AND MONTH(Workhours.DateWorked) = " . $month . " 
-AND Workhours.isdeleted = 0 
+WHERE Workhours.DateWorked LIKE '" . $year . "-" . str_pad($month, 2, '0', STR_PAD_LEFT) . "-%'
+AND Workhours.isdeleted = 0
 AND Workcodes2011.Projectnummer LIKE '320-%'
 AND Employees.is_test_account = 0 
 GROUP BY Employees.KnawPersNr, Employees.FirstName, Employees.LastName, Employees.AfdelingsNummer, Workcodes2011.Projectnummer, Workcodes2011.Description 
 HAVING SUM(Workhours.TimeInMinutes) > 0 
 ORDER BY Employees.KnawPersNr, Employees.AfdelingsNummer, Employees.LastName, Employees.FirstName, Workcodes2011.Projectnummer, Projectname
 ";
+//YEAR(Workhours.DateWorked) = " . $year . "
+//AND MONTH(Workhours.DateWorked) = " . $month . "
 
 // calculate data
 $data = array();

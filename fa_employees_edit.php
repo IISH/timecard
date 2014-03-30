@@ -9,7 +9,7 @@ if ( !( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasFaAuthorisation() ) 
 }
 
 // create webpage
-$oPage = new class_page('design/page.php', $connection_settings);
+$oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
 $oPage->setTab($menuList->findTabNumber('finad.employees'));
 $oPage->setTitle('Timecard | Employee (edit)');
@@ -22,9 +22,9 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createEmployeesEditContent() {
-	global $protect, $dbhandleTimecard, $connection_settings, $dbhandleProtime, $oWebuser;
+	global $protect, $settings, $dbhandleProtime, $oWebuser;
 
-	$oUser = new class_employee( $protect->request_positive_number_or_empty('get', 'ID') , $connection_settings );
+	$oUser = new class_employee( $protect->request_positive_number_or_empty('get', 'ID') , $settings );
 	syncProtimeAndTimecardEmployeeData( $oUser->getTimecardId(), $oUser->getProtimeId() );
 
 	$ret = "<h2>Employee (edit)</h2>";
@@ -40,8 +40,8 @@ function createEmployeesEditContent() {
 	require_once("./classes/class_form/fieldtypes/class_field_readonly.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_list_mssql.inc.php");
 
-	$oDb = new class_db($connection_settings, 'timecard');
-	$oForm = new employee_class_form($connection_settings, $oDb);
+	$oDb = new class_db($settings, 'timecard');
+	$oForm = new employee_class_form($settings, $oDb);
 
 	$oForm->set_form( array(
 		'query' => 'SELECT * FROM Employees WHERE ID=[FLD:ID] '
@@ -81,7 +81,7 @@ function createEmployeesEditContent() {
 		, 'fieldlabel' => 'First name'
 		)));
 
-	$oForm->add_field( new class_field_list_mssql ( $connection_settings, array(
+	$oForm->add_field( new class_field_list_mssql ( $settings, array(
 		'fieldname' => 'ProtimePersNr'
 		, 'fieldlabel' => 'Protime link'
 		, 'query' => "SELECT PERSNR, RTRIM(LTRIM(NAME)) + ', ' + RTRIM(LTRIM(FIRSTNAME)) AS FULLNAME FROM CURRIC WHERE 1=1 ORDER BY NAME, FIRSTNAME "

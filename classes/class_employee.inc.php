@@ -3,7 +3,7 @@
 
 class class_employee {
     private $timecard_id = 0;
-    private $connection_settings;
+    private $settings;
     private $protime_id = 0;
     private $kamerbezetting_id = 0;
     private $hoursdoublefield = '';
@@ -15,13 +15,13 @@ class class_employee {
     private $authorisation = array();
 
 	// TODOEXPLAIN
-	function class_employee($timecard_id, $connection_settings) {
+	function class_employee($timecard_id, $settings) {
 		if ( $timecard_id == '' || $timecard_id < -1 ) {
 			$timecard_id = 0;
 		}
 
 		$this->timecard_id = $timecard_id;
-		$this->connection_settings = $connection_settings;
+		$this->settings = $settings;
 
 		if ( $timecard_id > 0 ) {
 			$this->getTimecardValues();
@@ -307,7 +307,7 @@ class class_employee {
 		$query = "SELECT ID FROM HoursPerWeek WHERE year=" . $year . " AND Employee=" . $this->getTimecardId() . " AND isdeleted=0 ORDER BY startmonth ";
 		$result = mysql_query($query, $dbhandleTimecard);
 		while ($row = mysql_fetch_assoc($result)) {
-			$oHoursPerWeek = new class_hoursperweek($row["ID"], $this->connection_settings);
+			$oHoursPerWeek = new class_hoursperweek($row["ID"], $this->settings);
 			$arr[] = $oHoursPerWeek;
 		}
 		mysql_free_result($result);

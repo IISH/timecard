@@ -4,9 +4,9 @@ error_reporting(E_ALL ^ E_NOTICE);
 
 session_start(); ///////////////
 
-$connection_settings = array();
+$settings = array();
 
-require_once "classes/settings.inc.php";
+require_once dirname(__DIR__) . "/sites/default/settings.inc.php";
 require_once "classes/class_authentication.inc.php";
 require_once "classes/class_calendar.inc.php";
 require_once "classes/class_date.inc.php";
@@ -35,7 +35,7 @@ require_once "classes/_db_connect_protime.inc.php";
 $protect = new class_website_protection();
 
 //
-$oWebuser = new class_employee($_SESSION["timecard"]["id"], $connection_settings);
+$oWebuser = new class_employee($_SESSION["timecard"]["id"], $settings);
 
 //
 require_once "classes/class_menu.inc.php";

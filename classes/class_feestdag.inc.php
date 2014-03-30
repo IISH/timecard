@@ -4,7 +4,7 @@
 ini_set("display_errors", 1);
 error_reporting(E_ALL ^ E_NOTICE);
 
-require_once "settings.inc.php";
+require_once dirname(__DIR__) . "/sites/default/settings.inc.php";
 require_once "class_db.inc.php";
 
 class class_feestdag {

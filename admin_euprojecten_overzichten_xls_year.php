@@ -8,7 +8,7 @@ date_default_timezone_set('Europe/London');
 $year = substr($protect->request_positive_number_or_empty('get', "y"), 0, 4);
 $id = substr($protect->request_positive_number_or_empty('get', "id"), 0, 4);
 
-$oEmployee = new class_employee($id, $connection_settings);
+$oEmployee = new class_employee($id, $settings);
 $oDate = new class_date($year, 1, 1);
 syncTimecardProtimeYear($id, $oEmployee->getProtimeId(), $oDate);
 

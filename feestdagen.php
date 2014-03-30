@@ -4,7 +4,7 @@ require_once "classes/start.inc.php";
 $oWebuser->checkLoggedIn();
 
 // create webpage
-$oPage = new class_page('design/page.php', $connection_settings);
+$oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
 $oPage->setTab($menuList->findTabNumber('pp.feestdagen'));
 $oPage->setTitle('Timecard | National holidays');
@@ -17,7 +17,7 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createFeestdagenContent() {
-	global $connection_settings, $oWebuser;
+	global $settings, $oWebuser;
 
 	$ret = "<h2>National holidays</h2>";
 
@@ -28,8 +28,8 @@ function createFeestdagenContent() {
 	require_once("./classes/class_view/fieldtypes/class_field_string.inc.php");
 	require_once("./classes/class_view/fieldtypes/class_field_bit.inc.php");
 
-	$oDb = new class_db($connection_settings, 'timecard');
-	$oView = new class_view($connection_settings, $oDb);
+	$oDb = new class_db($settings, 'timecard');
+	$oView = new class_view($settings, $oDb);
 
 	$add_new_url = '';
 	if ( $oWebuser->hasAdminAuthorisation() ) {

@@ -9,7 +9,7 @@ $year = substr($protect->request_positive_number_or_empty('get', "y"), 0, 4);
 $month = substr($protect->request_positive_number_or_empty('get', "m"), 0, 2);
 $id = substr($protect->request_positive_number_or_empty('get', "id"), 0, 4);
 
-$oEmployee = new class_employee($id, $connection_settings);
+$oEmployee = new class_employee($id, $settings);
 $oDate = new class_date($year, $month, 1);
 syncTimecardProtimeMonth($id, $oEmployee->getProtimeId(), $oDate);
 

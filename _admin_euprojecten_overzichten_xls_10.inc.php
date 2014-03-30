@@ -3,15 +3,15 @@
 $arrAfwezigheden = array("Verlof" => "verlof", "Feestdagen" => "feestdagen", "Ziekte/Dokter" => "ziekte");
 
 // connection to the database
-$dbhandleTimecard = mysql_connect($connection_settings["timecard_server"], $connection_settings["timecard_user"], $connection_settings["timecard_password"]) or die("Couldn't connect to MySql Server on: " . $connection_settings["timecard_server"]);
-$dbhandleProtime = mssql_connect($connection_settings["protime_server"], $connection_settings["protime_user"], $connection_settings["protime_password"]) or die("Couldn't connect to SQL Server on: " . $connection_settings["protime_server"]);
+$dbhandleTimecard = mysql_connect($settings["timecard_server"], $settings["timecard_user"], $settings["timecard_password"]) or die("Couldn't connect to MySql Server on: " . $settings["timecard_server"]);
+$dbhandleProtime = mssql_connect($settings["protime_server"], $settings["protime_user"], $settings["protime_password"]) or die("Couldn't connect to SQL Server on: " . $settings["protime_server"]);
 
 // select a database to work with
-$selectedTimecard = mysql_select_db($connection_settings["timecard_database"], $dbhandleTimecard) or die("Couldn't open database " . $connection_settings["timecard_database"]);
-$selectedProtime = mssql_select_db($connection_settings["protime_database"], $dbhandleProtime) or die("Couldn't open database " . $connection_settings["protime_database"]);
+$selectedTimecard = mysql_select_db($settings["timecard_database"], $dbhandleTimecard) or die("Couldn't open database " . $settings["timecard_database"]);
+$selectedProtime = mssql_select_db($settings["protime_database"], $dbhandleProtime) or die("Couldn't open database " . $settings["protime_database"]);
 
 // achterhaal naam van persoon
-$oEmployee = new class_employee($id, $connection_settings);
+$oEmployee = new class_employee($id, $settings);
 $employee_name = $oEmployee->getLastname() . ', ' . $oEmployee->getFirstname();
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 

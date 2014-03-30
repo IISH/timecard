@@ -10,10 +10,10 @@ if ( !$oWebuser->hasAdminAuthorisation() ) {
 
 $date = class_datetime::get_date($protect);
 
-$oEmployee = new class_employee($protect->request('get', 'eid'), $connection_settings);
+$oEmployee = new class_employee($protect->request('get', 'eid'), $settings);
 
 // create webpage
-$oPage = new class_page('design/page.php', $connection_settings);
+$oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
 $oPage->setTab($menuList->findTabNumber('administrator.quartertotals'));
 $oPage->setTitle('Timecard | Admin Quarter Totals');
@@ -26,7 +26,7 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createAdminQuarterContent( $date ) {
-	global $connection_settings, $oEmployee;
+	global $settings, $oEmployee;
 
 	//
 	$oPrevNext = new class_prevnext($date);

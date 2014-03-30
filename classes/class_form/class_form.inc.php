@@ -4,7 +4,7 @@ require_once("./classes/class_misc.inc.php");
 
 class class_form {
     private $m_form;
-    private $m_connection_settings;
+    protected $settings;
     private $m_array_of_fields = array();
 
     protected $oDb;
@@ -12,12 +12,12 @@ class class_form {
     protected $oClassMisc;
 
     private $m_errors = array();
-    private $m_doc_id;
+    protected $m_doc_id;
     private $m_old_doc_id;
 
 	// TODOEXPLAIN
-	function class_form($connection_settings, $oDb) {
-		$this->m_connection_settings = $connection_settings;
+	function class_form($settings, $oDb) {
+		$this->settings = $settings;
 		$this->oDb = $oDb;
 		$this->oClassFile = new class_file();
 		$this->oClassMisc = new class_misc();

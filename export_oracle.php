@@ -9,7 +9,7 @@ if ( !( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasFaAuthorisation() ) 
 }
 
 // create webpage
-$oPage = new class_page('design/page.php', $connection_settings);
+$oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
 $oPage->setTab($menuList->findTabNumber('exports.oracle'));
 $oPage->setTitle('Timecard | Exports - Oracle');
@@ -22,8 +22,6 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createExportOracleContent() {
-	global $protect;
-
 	$ret = "<h2>Exports - Oracle</h2>";
 
 	require_once("./classes/class_db.inc.php");

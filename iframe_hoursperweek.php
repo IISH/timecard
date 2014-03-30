@@ -9,7 +9,7 @@ if ( !$oWebuser->hasAdminAuthorisation() ) {
 }
 
 // create webpage
-$oPage = new class_page('design/iframe.php', $connection_settings);
+$oPage = new class_page('design/iframe.php', $settings);
 $oPage->setTitle('Timecard | Hours per week');
 $oPage->setContent(createHoursperweekContent());
 
@@ -20,7 +20,7 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createHoursperweekContent() {
-	global $connection_settings;
+	global $settings;
 
 	$id = $_GET["ID"];
 	$id = trim($id);
@@ -36,8 +36,8 @@ function createHoursperweekContent() {
 	require_once("./classes/class_view/fieldtypes/class_field_integer.inc.php");
 	require_once("./classes/class_view/fieldtypes/class_field_decimal.inc.php");
 
-	$oDb = new class_db($connection_settings, 'timecard');
-	$oView = new class_view($connection_settings, $oDb);
+	$oDb = new class_db($settings, 'timecard');
+	$oView = new class_view($settings, $oDb);
 
 	$oView->set_view( array(
 		'query' => 'SELECT Employee, HoursPerWeek.ID, HoursPerWeek.year, HoursPerWeek.startmonth, HoursPerWeek.endmonth, HoursPerWeek.hoursperweek FROM HoursPerWeek WHERE 1=1 AND Employee=' . $id . ' AND HoursPerWeek.isdeleted=0 AND HoursPerWeek.year>=' . (date('Y')-1) . ' '

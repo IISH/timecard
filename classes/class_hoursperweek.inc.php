@@ -2,16 +2,16 @@
 // modified: 2012-12-27
 
 class class_hoursperweek {
-    private $connection_settings;
+    private $settings;
     private $hours;
     private $startmonth;
     private $endmonth;
 
 	// TODOEXPLAIN
-	function class_hoursperweek($id, $connection_settings) {
+	function class_hoursperweek($id, $settings) {
 		global $dbhandleTimecard;
 
-		$this->connection_settings = $connection_settings;
+		$this->settings = $settings;
 
 		// reset values
 		$query = "SELECT * FROM HoursPerWeek WHERE ID=" . $id . " ";

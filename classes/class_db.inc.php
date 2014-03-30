@@ -9,11 +9,11 @@ class class_db {
     private $conn;
 
 	// TODOEXPLAIN
-	function class_db($connection_settings, $prefix = "timecard") {
-		$this->m_server = $connection_settings[$prefix . "_server"];
-		$this->m_user = $connection_settings[$prefix . "_user"];
-		$this->m_password = $connection_settings[$prefix . "_password"];
-		$this->m_database = $connection_settings[$prefix . "_database"];
+	function class_db($settings, $prefix = "timecard") {
+		$this->m_server = $settings[$prefix . "_server"];
+		$this->m_user = $settings[$prefix . "_user"];
+		$this->m_password = $settings[$prefix . "_password"];
+		$this->m_database = $settings[$prefix . "_database"];
 	}
 
 	// TODOEXPLAIN

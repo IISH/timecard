@@ -20,7 +20,7 @@ class class_field_list_mssql extends class_field {
     private $m_rdbms;
 
 	// TODOEXPLAIN
-	function class_field_list_mssql($connection_settings, $fieldsettings) {
+	function class_field_list_mssql($settings, $fieldsettings) {
 		parent::class_field($fieldsettings);
 
 		$this->m_query = '';
@@ -34,7 +34,7 @@ class class_field_list_mssql extends class_field {
 		$this->m_dbhandle = null;
 		$this->m_rdbms = 'mysql';
 
-		$this->oDb = new class_db($connection_settings);
+		$this->oDb = new class_db($settings);
 		$this->oMisc = new class_misc();
 
 		if ( is_array( $fieldsettings ) ) {
