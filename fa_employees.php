@@ -41,7 +41,7 @@ function createEmployeesContent() {
 		, 'order_by' => 'Lastname, Firstname, LongCode, ID DESC '
 		, 'anchor_field' => 'ID'
 		, 'viewfilter' => true
-		, 'add_new_url' => "fa_employees_edit.php?ID=0&backurl=[BACKURL]"
+		, 'XXXadd_new_url' => "fa_employees_edit.php?ID=0&backurl=[BACKURL]"
 		, 'table_parameters' => ' cellspacing="0" cellpadding="0" border="0" '
 		));
 
