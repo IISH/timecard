@@ -138,7 +138,7 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 
 		$ret .= $tmp;
 
-		$ret .= "<a href=\"fa_employees_edit.php?ID=" . $oEmployee->getTimecardId() . "&backurl=" . urlencode(get_current_url()) . "\">" . $oEmployee->getLastFirstname() . "</a>";
+		$ret .= "<a href=\"employees_edit.php?ID=" . $oEmployee->getTimecardId() . "&backurl=" . urlencode(get_current_url()) . "\">" . $oEmployee->getLastFirstname() . "</a>";
 		$ret .= "\t\t</td>\n";
 
 		$arrHoursPerWeek = $oEmployee->getHoursPerWeek2($year);

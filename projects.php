@@ -96,7 +96,7 @@ td.project4 {
 	}
 
 	$current_url_encoded = urlencode(get_current_url());
-	$ret .= " &nbsp; &nbsp; &nbsp; <a href=\"fa_projects_edit.php?ID=0&PID=0&backurl=" . $current_url_encoded . "\">[ Add new project ]</a><br><br>";
+	$ret .= " &nbsp; &nbsp; &nbsp; <a href=\"projects_edit.php?ID=0&PID=0&backurl=" . $current_url_encoded . "\">[ Add new project ]</a><br><br>";
 
 	$ret .= "<table class=\"projects\">
 <tr>
@@ -140,7 +140,7 @@ function showProjectTree($id = 0, $level = 1, $show_all) {
 		if ( $isStrike ) {
 			$ret .= "<strike>";
 		}
-		$ret .= "<a name=\"" . $row["ID"] . "\" href=\"fa_projects_edit.php?ID=" . $row["ID"] . "&PID=" . $row["ParentID"] . "&backurl=" . $current_url_encoded . "\">" . trim($row["Description"]) . "</a>";
+		$ret .= "<a name=\"" . $row["ID"] . "\" href=\"projects_edit.php?ID=" . $row["ID"] . "&PID=" . $row["ParentID"] . "&backurl=" . $current_url_encoded . "\">" . trim($row["Description"]) . "</a>";
 		if ( $isStrike ) {
 			$ret .= "</strike>";
 		}

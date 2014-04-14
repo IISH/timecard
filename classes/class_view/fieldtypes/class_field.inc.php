@@ -16,7 +16,7 @@ class class_field {
     private $m_view_max_length_extension;
     private $m_if_no_value_value;
     private $m_target;
-    private $m_viewfilter;
+    public $m_viewfilter;
     private $m_table_cell_width;
     private $m_show_different_value = '';
     private $m_no_href_if = '';
@@ -180,6 +180,11 @@ class class_field {
 	function get_noheader() {
 		return $this->m_noheader;
 	}
+
+    // TODOEXPLAIN
+    function get_viewfilter() {
+        return $this->m_viewfilter;
+    }
 
 	// TODOEXPLAIN
 	function get_value($row, $criteriumResult = 0) {

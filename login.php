@@ -58,7 +58,7 @@ function createLoginPage() {
 				updateLastUserLogin($oWebuser->getTimecardId());
 
 				//
-				syncProtimeAndTimecardEmployeeData($oWebuser->getTimecardId(), $oWebuser->getProtimeId());
+				syncProtimeAndTimecardEmployeeData( $oWebuser );
 
 				// redirect to prev page
 				if ( $burl == '' ) {

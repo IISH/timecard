@@ -211,12 +211,14 @@ class class_view {
 ";
 
 		foreach ($this->m_array_of_fields as $one_field_in_array_of_fields) {
+
 			if ( $_POST["form_fld_pressed_button"] != '-delete-' && $_POST["form_fld_pressed_button"] != '-delete-now-' ) {
 
 				$asc_url = '';
 				$desc_url = '';
 
 				$tmp_header = $header_template;
+
 				// plaats de tabel cell breedtes (width) in de tabel
 				$tmp_table_cell_width = $one_field_in_array_of_fields->get_table_cell_width();
 				if ( $tmp_table_cell_width != '' ) {
@@ -234,25 +236,20 @@ class class_view {
 				}
 				$tmp_header = str_replace("::ALTTITLE::", $one_field_in_array_of_fields->get_fieldlabel_alttitle(), $tmp_header);
 
-				if ( $_POST["form_fld_pressed_button"] != '-delete-' && $_POST["form_fld_pressed_button"] != '-delete-now-' ) {
+                if ( is_array($one_field_in_array_of_fields->m_viewfilter ) ) {
+                    $filter = $one_field_in_array_of_fields->m_viewfilter["labelfilterseparator"];
 
-					if ( is_array($one_field_in_array_of_fields->m_viewfilter ) ) {
-						$filter = $one_field_in_array_of_fields->m_viewfilter["labelfilterseparator"];
+                    $separator = '';
 
-						$separator = '';
+                    foreach ( $one_field_in_array_of_fields->m_viewfilter["filter"] as $filterfield => $filtervalue ) {
+                        $filter .= $separator . $this->CreateViewFilterInputField($filtervalue);
+                        $separator = $one_field_in_array_of_fields->m_viewfilter["multiplefilterseparator"];
+                    }
 
-						foreach ( $one_field_in_array_of_fields->m_viewfilter["filter"] as $filterfield => $filtervalue ) {
-							$filter .= $separator . $this->CreateViewFilterInputField($filtervalue);
-							$separator = $one_field_in_array_of_fields->m_viewfilter["multiplefilterseparator"];
-						}
-
-						$tmp_header = str_replace("::FILTER::", $filter, $tmp_header);
-					} else {
-						$tmp_header = str_replace("::FILTER::", '', $tmp_header);
-					}
-				} else {
-					$tmp_header = str_replace("::FILTER::", '', $tmp_header);
-				}
+                    $tmp_header = str_replace("::FILTER::", $filter, $tmp_header);
+                } else {
+                    $tmp_header = str_replace("::FILTER::", '', $tmp_header);
+                }
 
 				$total_header .= $tmp_header;
 			}

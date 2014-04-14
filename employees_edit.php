@@ -25,7 +25,7 @@ function createEmployeesEditContent() {
 	global $protect, $settings, $dbhandleProtime, $oWebuser;
 
 	$oUser = new class_employee( $protect->request_positive_number_or_empty('get', 'ID') , $settings );
-	syncProtimeAndTimecardEmployeeData( $oUser->getTimecardId(), $oUser->getProtimeId() );
+	syncProtimeAndTimecardEmployeeData( $oUser );
 
 	$ret = "<h2>Employee (edit)</h2>";
 

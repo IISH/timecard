@@ -36,7 +36,7 @@ function createShortcutsList() {
 			$data["strike_end"] = '';
 		}
 
-		$data["url"] = "shortcuts_edit.php?ID=" . $shortcut["id"] . "&backurl=" . urlencode(get_current_url());
+		$data["url"] = "myshortcuts_edit.php?ID=" . $shortcut["id"] . "&backurl=" . urlencode(get_current_url());
 		$data["projectname"] = trim($shortcut["projectnummer"] . ' ' . $shortcut["projectname"]);
 		$data["minutes"] = class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes($shortcut["minutes"]);
 		$data["description"] = htmlspecialchars($shortcut["description"]);
@@ -51,7 +51,7 @@ function createShortcutsList() {
 			$settings_from_database["page_settings_shortcuts_table"]
 			, array(
 				"records" => $records
-				, 'onclickurl' => "shortcuts_edit.php?ID=0&backurl=" . urlencode(get_current_url())
+				, 'onclickurl' => "myshortcuts_edit.php?ID=0&backurl=" . urlencode(get_current_url())
 				)
 		);
 }

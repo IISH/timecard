@@ -33,7 +33,7 @@ function createFeestdagenContent() {
 
 	$add_new_url = '';
 	if ( $oWebuser->hasAdminAuthorisation() ) {
-		$add_new_url = "feestdagen_edit.php?ID=0&backurl=[BACKURL]";
+		$add_new_url = "nationalholidays_edit.php?ID=0&backurl=[BACKURL]";
 	}
 
 	$oView->set_view( array(
@@ -57,7 +57,7 @@ function createFeestdagenContent() {
 		$oView->add_field( new class_field_string ( array(
 			'fieldname' => 'omschrijving'
 			, 'fieldlabel' => 'Description'
-			, 'href' => 'feestdagen_edit.php?ID=[FLD:ID]&backurl=[BACKURL]'
+			, 'href' => 'nationalholidays_edit.php?ID=[FLD:ID]&backurl=[BACKURL]'
 			)));
 	} else {
 		$oView->add_field( new class_field_string ( array(
@@ -71,7 +71,7 @@ function createFeestdagenContent() {
 		, 'fieldlabel' => 'For own account'
 		, 'show_different_values' => 1
 		, 'different_true_value' => 'yes'
-		, 'different_false_value' => ''
+		, 'different_false_value' => 'no'
 		)));
 
 	// calculate and show view

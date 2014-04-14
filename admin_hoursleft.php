@@ -162,7 +162,7 @@ function createHoursLeftRemarks() {
 	<li>List of not disabled employees or employees with hours entered in current year</li>
 	<li>If there a no vacation hours shown, please edit user and set 'Protime link'</li>
 	<li>If there is no hour calculation, please go to <a href=\"admin_hoursperweek.php?backurl=" . urlencode(get_current_url()) . "\">Hours per week</a> and enter how many hours the user works per week.</li>
-	<li>Every year the <a href=\"feestdagen.php?backurl=" . urlencode(get_current_url()) . "\">holidays</a> must be entered.</li>
+	<li>Every year the <a href=\"nationalholidays.php?backurl=" . urlencode(get_current_url()) . "\">holidays</a> must be entered.</li>
 	<li>76% rule = " . $settings_from_database["rule76"] . "</li>
 </ol>
 ";

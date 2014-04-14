@@ -41,7 +41,7 @@ function createEmployeesContent() {
 		, 'order_by' => 'Lastname, Firstname, LongCode, ID DESC '
 		, 'anchor_field' => 'ID'
 		, 'viewfilter' => true
-		, 'add_new_url' => "fa_employees_edit.php?ID=0&backurl=[BACKURL]"
+		, 'add_new_url' => "employees_edit.php?ID=0&backurl=[BACKURL]"
 		, 'table_parameters' => ' cellspacing="0" cellpadding="0" border="0" '
 		));
 
@@ -49,7 +49,7 @@ function createEmployeesContent() {
 		'fieldname' => 'LastName'
 		, 'fieldlabel' => 'Last name'
 		, 'if_no_value_value' => '-no value-'
-		, 'href' => 'fa_employees_edit.php?ID=[FLD:ID]&backurl=[BACKURL]'
+		, 'href' => 'employees_edit.php?ID=[FLD:ID]&backurl=[BACKURL]'
 		, 'href_alttitle' => 'Edit employee info'
 		, 'viewfilter' => array(
 							'labelfilterseparator' => '<br>'

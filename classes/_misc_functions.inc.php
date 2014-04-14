@@ -84,7 +84,7 @@ function goBackTo() {
 
 // TODOEXPLAIN
 function getEmployeesRibbon($year, $all = 0) {
-	global $date, $oEmployee, $protect, $oPage, $dbhandleTimecard, $settings;
+	global $date, $oEmployee;
 
 	$ret = "
 <table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width=\"100%\">
@@ -304,7 +304,6 @@ function RemoveFromQueryString($tekst, $field) {
 	$querystring_argument_array = explode('&', $qstring);
 
 	$separator = '';
-	$found_new_field = 0;
 
 	foreach ( $querystring_argument_array as $querystring_argument_field => $querystring_argument_value ) {
 
@@ -318,9 +317,7 @@ function RemoveFromQueryString($tekst, $field) {
 
 				$value1 = str_replace("__amp;", "&amp;", $value1);
 
-				if ( $field == $value0 ) {
-					$found_new_field = 1;
-				} else {
+				if ( $field != $value0 ) {
 					$retval .= $separator . $value0 . "=" . urldecode($value1);
 					$separator = '&';
 				}
@@ -388,7 +385,6 @@ function GetModifyReturnQueryString($pre_character, $field, $value) {
 
 // TODOEXPLAIN
 function vorigeVolgendeJaar($date, $richting, $urlDescription = '') {
-	$retval = '';
 	$original_date = $date;
 
 	if ( $richting == '-' ) {
@@ -622,7 +618,7 @@ function updateLastUserLogin($userid) {
 
 // TODOEXPLAIN
 function getAddEmployeeToTimecard($longcode) {
-	global $dbhandleTimecard, $settings, $protect, $settings_from_database;
+	global $dbhandleTimecard, $protect, $settings_from_database;
 
 	$retval["id"] = '0';
 
@@ -647,7 +643,7 @@ function getAddEmployeeToTimecard($longcode) {
 		$newUserBody = "This message is for the IISG IT Department.
 A new timecard user has registered.
 Go to website and check the users data.
-https://timecard.socialhistoryservices.org/fa_employees_edit.php?ID=" . $retval["id"];
+https://timecard.socialhistoryservices.org/employees_edit.php?ID=" . $retval["id"];
 		$protect->send_email( $settings_from_database["email_new_employees_to"], "IISG Timecard - new user added", $newUserBody );
 	}
 
@@ -655,14 +651,17 @@ https://timecard.socialhistoryservices.org/fa_employees_edit.php?ID=" . $retval[
 }
 
 // TODOEXPLAIN
-function syncProtimeAndTimecardEmployeeData($timecard_id, $protime_id) {
+function syncProtimeAndTimecardEmployeeData( $oUser ) {
 	global $dbhandleTimecard, $dbhandleProtime;
+
+    $timecard_id = $oUser->getTimecardId();
+    $protime_id = $oUser->getProtimeId();
 
 	// 
 	$recordProtime = advancedSingleRecordSelectMssql(
 			$dbhandleProtime
 			, "CURRIC"
-			, array("PERSNR", "NAME", "FIRSTNAME", "REGISTERNR", "RREGISTER")
+			, array("PERSNR", "NAME", "FIRSTNAME", "REGISTERNR", "RREGISTER", "WORKLOCATION")
 			, "PERSNR=" . $protime_id . " ORDER BY PERSNR DESC "
 		);
 
@@ -680,7 +679,7 @@ function syncProtimeAndTimecardEmployeeData($timecard_id, $protime_id) {
 					array("LastName" => "'" . addslashes(trim($recordProtime["name"])) . "'")
 					, array("FirstName" => "'" . addslashes(trim($recordProtime["firstname"])) . "'")
 					, array("KnawPersNr" => "'" . addslashes(trim($recordProtime["registernr"])) . "'")
-					, array("AfdelingsNummer" => "'" . addslashes(trim($recordProtime["rregister"])) . "'")
+					, array("AfdelingsNummer" => "'" . addslashes(trim($recordProtime["worklocation"])) . "'")
 				)
 				, "ID=" . $timecard_id
 				, 0
@@ -1130,7 +1129,7 @@ function getBackUrl() {
 
 // TODOEXPLAIN
 function getQuarterTotals( $date, $userTimecardId, $urlprefix ) {
-	global $settings, $dbhandleTimecard;
+	global $settings;
 
 	$oDateOriginal = new class_date( $date["y"], $date["m"], $date["d"] );
 

@@ -46,8 +46,8 @@ if ( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasExportsAuthorisation() 
 // TAB: FINANCIELE ADMINISTRATIE
 $menu->addMenuGroup( new class_menugroup('Financial Administration') );
 if ( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasFaAuthorisation() ) {
-	$menu->addMenuItem( new class_menuitem('finad.employees', 'Employees', 'fa_employees.php') );
-	$menu->addMenuItem( new class_menuitem('finad.projecten', 'Projects', 'fa_projects.php') );
+	$menu->addMenuItem( new class_menuitem('finad.employees', 'Employees', 'employees.php') );
+	$menu->addMenuItem( new class_menuitem('finad.projecten', 'Projects', 'projects.php') );
 }
 
 // + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
@@ -58,10 +58,10 @@ if ( $oWebuser->isLoggedIn() ) {
 	$menu->addMenuItem( new class_menuitem('pp.personalinfo', 'About me', 'aboutme.php') );
 }
 if ( $oWebuser->isLoggedIn() ) {
-	$menu->addMenuItem( new class_menuitem('pp.myshortcuts', 'My shortcuts', 'shortcuts.php') );
+	$menu->addMenuItem( new class_menuitem('pp.myshortcuts', 'My shortcuts', 'myshortcuts.php') );
 }
 if ( $oWebuser->isLoggedIn() ) {
-	$menu->addMenuItem( new class_menuitem('pp.feestdagen', 'National holidays', 'feestdagen.php') );
+	$menu->addMenuItem( new class_menuitem('pp.feestdagen', 'National holidays', 'nationalholidays.php') );
 }
 if ( !$oWebuser->isLoggedIn() ) {
 	$menu->addMenuItem( new class_menuitem('pp.login', 'Login', 'login.php') );
