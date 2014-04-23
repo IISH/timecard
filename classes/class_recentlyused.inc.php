@@ -1,7 +1,7 @@
 <?php 
 // modified: 2012-12-02
 
-require_once dirname(__DIR__) . "/sites/default/settings.inc.php";
+require_once dirname(__DIR__) . "/sites/default/settings.php";
 require_once "class_db.inc.php";
 
 class class_recentlyused {

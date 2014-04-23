@@ -6,7 +6,7 @@ session_start(); ///////////////
 
 $settings = array();
 
-require_once dirname(__DIR__) . "/sites/default/settings.inc.php";
+require_once dirname(__DIR__) . "/sites/default/settings.php";
 require_once "classes/class_authentication.inc.php";
 require_once "classes/class_calendar.inc.php";
 require_once "classes/class_date.inc.php";
