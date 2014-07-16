@@ -2,10 +2,11 @@
 // modified: 2013-09-24
 
 class class_protime_user {
-    private $protime_id = 0;
-    private $settings;
-    private $firstname = '';
-    private $lastname = '';
+	private $protime_id = 0;
+	private $settings;
+	private $firstname = '';
+	private $lastname = '';
+	private $email = '';
 
 	// TODOEXPLAIN
 	function class_protime_user($protime_id, $settings) {
@@ -23,18 +24,17 @@ class class_protime_user {
 
 	// TODOEXPLAIN
 	function getProtimeValues() {
-		global $dbhandleProtime;
-
 		// reset values
-		$query = "SELECT * FROM CURRIC WHERE PERSNR=" . $this->protime_id;
-		$resultReset = mssql_query($query, $dbhandleProtime);
-		if ($row = mssql_fetch_assoc($resultReset)) {
+		$query = "SELECT * FROM PROTIME_CURRIC WHERE PERSNR=" . $this->protime_id;
+		$resultReset = mysql_query($query);
+		if ($row = mysql_fetch_assoc($resultReset)) {
 
 			$this->lastname = $row["NAME"];
 			$this->firstname = $row["FIRSTNAME"];
+			$this->email = $row["EMAIL"];
 
 		}
-		mssql_free_result($resultReset);
+		mysql_free_result($resultReset);
 	}
 
 	function getId() {
@@ -48,5 +48,9 @@ class class_protime_user {
 	function getLastname() {
 		return $this->lastname;
 	}
+
+	// TODOEXPLAIN
+	public function __toString() {
+		return "Class: " . get_class($this) . "\n#: " . $this->protime_id . "\n";
+	}
 }
-?>

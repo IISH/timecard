@@ -13,7 +13,7 @@ $oDate = new class_date( $date["y"], $date["m"], $date["d"] );
 
 // sync Timecard Protime
 $oEmployee = new class_employee($protect->request('get', 'eid'), $settings);
-syncTimecardProtimeDay($oEmployee->getTimecardId(), $oEmployee->getProtimeId(), $oDate);
+$oEmployee->syncTimecardProtimeDayInformation($oDate);
 
 // create webpage
 $oPage = new class_page('design/page.php', $settings);
@@ -44,16 +44,24 @@ function createAdminDayContent( $date ) {
 	$ret .= goBackTo();
 
 	//
-	$ret .= getEmployeesRibbon($date["y"], 1);
+	$ribbon = getEmployeesRibbon($date["y"], 1);
+	$content= getAdminDay( $date );
 
-	$ret .= getAdminDay( $date );
+	$template = "<table border=\"0\" width=\"100%\"><tr><td valign=\"top\">::LEFT::</td><td valign=\"top\">::RIGHT::</td></tr></table>";
+	$template =  str_replace("::LEFT::", $ribbon, $template);
+	$template =  str_replace("::RIGHT::", $content, $template);
+
+	$ret .= $template;
 
 	return $ret;
 }
 
 // TODOEXPLAIN
 function getAdminDay( $date ) {
-	global $settings, $dbhandleTimecard, $oEmployee, $oDate;
+	global $settings, $oEmployee, $oDate;
+
+	$oConn = new class_mysql($settings, 'timecard');
+	$oConn->connect();
 
 	$ret = '';
 
@@ -62,13 +70,11 @@ function getAdminDay( $date ) {
 		if ( $oEmployee->getTimecardId() == -1 ) {
 			// MULTIPLE USER
 
-			require_once("./classes/class_db.inc.php");
 			require_once("./classes/class_view/class_view.inc.php");
-
 			require_once("./classes/class_view/fieldtypes/class_field_string.inc.php");
 			require_once("./classes/class_view/fieldtypes/class_field_time.inc.php");
 
-			$oDb = new class_db($settings, 'timecard');
+			$oDb = new class_mysql($settings, 'timecard');
 			$oView = new class_view($settings, $oDb);
 
 			// if legacy, then no edit link
@@ -79,7 +85,7 @@ function getAdminDay( $date ) {
 			}
 
 			$oView->set_view( array(
-				'query' => 'SELECT * FROM vw_hours2011_admin WHERE DateWorked LIKE "' . $oDate->get("Y-m-d") . '%" AND isdeleted=0 '
+				'query' => 'SELECT * FROM vw_hours_admin WHERE DateWorked LIKE "' . $oDate->get("Y-m-d") . '%" '
 				, 'count_source_type' => 'query'
 				, 'order_by' => 'Description, TimeInMinutes DESC '
 				, 'anchor_field' => 'ID'
@@ -116,7 +122,6 @@ function getAdminDay( $date ) {
 				'fieldname' => 'Description'
 				, 'fieldlabel' => 'Project'
 				, 'href' => $href
-				, 'href_alttitle' => 'Edit hours'
 				, 'no_href_if' => array(
 						"field" => "protime_absence_recnr"
 						, "operator" => "<>"
@@ -167,14 +172,13 @@ function getAdminDay( $date ) {
 					)
 				)));
 
-			// calculate and show view
+			// generate view
 			$ret .= $oView->generate_view();
 
 			return $ret;
 		} else {
 
 			// SINGLE USER
-			// TODOTODO hide add new button
 			if ( !class_datetime::is_legacy( $oDate ) ) {
 				$ret .= "
 <table>
@@ -187,7 +191,7 @@ function getAdminDay( $date ) {
 </tr>
 </table>
 ";
-}
+			}
 
 			$ret .= "
 <table cellspacing=\"0\" cellpadding=\"2\" border=\"0\">
@@ -205,9 +209,9 @@ function getAdminDay( $date ) {
 
 			$timecard_deeltotaal = 0;
 
-			$query = 'SELECT * FROM vw_hours2011_admin WHERE Employee=' . $oEmployee->getTimecardId() . ' AND DateWorked LIKE "' . $oDate->get("Y-m-d") . '%" AND isdeleted=0 AND protime_absence_recnr>=0 ORDER BY Description, TimeInMinutes DESC ';
+			$query = 'SELECT * FROM vw_hours_admin WHERE Employee=' . $oEmployee->getTimecardId() . ' AND DateWorked LIKE "' . $oDate->get("Y-m-d") . '%" AND protime_absence_recnr>=0 ORDER BY Description, TimeInMinutes DESC ';
 
-			$result = mysql_query($query, $dbhandleTimecard);
+			$result = mysql_query($query, $oConn->getConnection());
 			while ($row = mysql_fetch_assoc($result)) {
 				$timecard_deeltotaal += $row["TimeInMinutes"];
 				$description = $row["WorkDescription"];
@@ -216,6 +220,7 @@ function getAdminDay( $date ) {
 				}
 				$description = htmlspecialchars($description);
 				$protime_absence_recnr = $row["protime_absence_recnr"];
+				$daily_automatic_addition_id = $row["daily_automatic_addition_id"];
 				$protime_label = '';
 
 				$ret .= "
@@ -228,6 +233,12 @@ function getAdminDay( $date ) {
 		<TD class=\"recorditem\"><nobr>" . $row["Description"] . "</nobr></td>
 ";
 				} else {
+					if ( $daily_automatic_addition_id != '' && $daily_automatic_addition_id != '0') {
+						$protime_label = '<a alt="Daily automatic addition" title="Daily automatic addition" class="PT">(DAA)</a>';
+					} elseif ( true ) {
+
+					}
+
 					// if legacy, then no edit link
 					if ( class_datetime::is_legacy( $oDate ) ) {
 						$ret .= "
@@ -306,18 +317,20 @@ function getAdminDay( $date ) {
 
 	// TODOEXPLAIN
 	function getAdminShortcuts($pid, $oDate, $settings) {
-		global $settings_from_database;
-
 		if ( $pid == '' || $pid == '0' || $pid == '-1' ) {
 			return '';
 		}
 
-		$ret = '';
-		$records = '';
+		// get design
+		$design = new class_contentdesign("page_div_shortcuts");
+
+		// add header
+		$ret = $design->getHeader();
 
 		$oShortcuts = new class_shortcuts($pid, $settings, $oDate);
 
 		// records
+		$records = '';
 		foreach ( $oShortcuts->getEnabledShortcuts() as $shortcut) {
 			$url = "admin_edit.php?ID=0&eid=" . $pid . "&d=" . $oDate->get("Ymd") . "&p=" . $shortcut["projectnr"] . "&t=" . $shortcut["minutes"];
 			if ( trim($shortcut["autosave"]) == '1' ) {
@@ -343,41 +356,48 @@ function getAdminDay( $date ) {
 
 			$shortcut["hourminutes"] = class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes($shortcut["minutes"]);
 
-			$records .= fillTemplate($settings_from_database["page_div_shortcuts_records"], $shortcut);
+			$records .= fillTemplate($design->getRecords(), $shortcut);
 		}
 
 		// add header
 		if ( $records != '' ) {
-			$ret = fillTemplate( $settings_from_database["page_div_shortcuts_table"], array("records" => $records) );
+			$ret .= fillTemplate( $design->getContent(), array("records" => $records) );
 		}
+
+		// add footer
+		$ret .= $design->getFooter();
 
 		return $ret;
 	}
 
 	// TODOEXPLAIN
 	function getAdminRecentlyUsed($pid, $oDate, $settings) {
-		global $settings_from_database;
-
 		if ( $pid == '' || $pid == '0' || $pid == '-1' ) {
 			return '';
 		}
 
-		$records = '';
-		$ret = '';
+		// get design
+		$design = new class_contentdesign("div_recentlyused");
+
+		// add header
+		$ret = $design->getHeader();
 
 		$oRecentlyUsed = new class_recentlyused($pid, $settings, $oDate);
 
 		// record
+		$records = '';
 		foreach ( $oRecentlyUsed->getRecentlyUsed() as $recentlyUsed) {
 			$recentlyUsed["url"] = "admin_edit.php?ID=0&eid=" . $pid . "&d=" . $oDate->get("Ymd") . "&p=" . $recentlyUsed["id"] . "&backurl=" . urlencode(get_current_url());
 
-			$records .= fillTemplate($settings_from_database["div_recentlyused_records"], $recentlyUsed);
+			$records .= fillTemplate($design->getRecords(), $recentlyUsed);
 		}
 
-		// add header
 		if ( $records != '' ) {
-			$ret = fillTemplate( $settings_from_database["div_recentlyused_table"], array("records" => $records) );
+			$ret .= fillTemplate( $design->getContent(), array("records" => $records) );
 		}
+
+		// add footer
+		$ret .= $design->getFooter();
 
 		return $ret;
 	}

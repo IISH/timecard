@@ -4,3 +4,4 @@ settings.inc.php
 .idea
 *.ipr
 *.iml
+PHPExcel

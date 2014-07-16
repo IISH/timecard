@@ -24,22 +24,23 @@ require_once "classes/_db_disconnect.inc.php";
 function createFeestdagenEditContent() {
 	global $settings;
 
-	$ret = "<h2>National holidays (edit)</h2>";
+	// get design
+	$design = new class_contentdesign("page_nationalholidays_edit");
 
-	require_once("./classes/class_db.inc.php");
+	// add header
+	$ret = $design->getHeader();
+
 	require_once("./classes/class_form/class_form.inc.php");
-
 	require_once("./classes/class_form/fieldtypes/class_field_string.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_bit.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_hidden.inc.php");
 
-	$oDb = new class_db($settings, 'timecard');
+	$oDb = new class_mysql($settings, 'timecard');
 	$oForm = new class_form($settings, $oDb);
 
 	$oForm->set_form( array(
 		'query' => 'SELECT * FROM Feestdagen WHERE ID=[FLD:ID] '
 		, 'table' => 'Feestdagen'
-		, 'inserttable' => 'Feestdagen'
 		, 'primarykey' => 'ID'
 		));
 
@@ -71,8 +72,11 @@ function createFeestdagenEditContent() {
 		, 'fieldlabel' => 'isdeleted'
 		)));
 
-	// calculate form
+	// generate form
 	$ret .= $oForm->generate_form();
+
+	// add footer
+	$ret .= $design->getFooter();
 
 	return $ret;
 }

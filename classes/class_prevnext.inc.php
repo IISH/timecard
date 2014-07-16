@@ -2,7 +2,7 @@
 // modified: 2014-03-19
 
 class class_prevnext {
-    private $date;
+	private $date;
 
 	// TODOEXPLAIN
 	function class_prevnext( $date ) {
@@ -209,7 +209,6 @@ function tcRefreshCalendar( sDate, sOriginalDate ) {
 
 <script type=\"text/javascript\">
 <!--
-//var sDate = '" . $date["y"] . substr('0' . $date["m"], -2) . substr('0'.$date["d"],-2) . "';
 var sDate = '" . $date["Ymd"] . "';
 tcRefreshCalendar(sDate, sDate);
 // -->
@@ -225,22 +224,20 @@ tcRefreshCalendar(sDate, sDate);
 
 	// TODOEXPLAIN
 	function getMonthRibbon() {
-		global $settings_from_database;
-
 		$fields["label"] = date("F Y", mktime(0, 0, 0, $this->date["m"], $this->date["d"], $this->date["y"]));
 		$fields["buttons"] = $this->calculatePrevNextMonth($this->date);
 
-		return fillTemplate($settings_from_database["div_prevnextribbon"], $fields);
+		$design = new class_contentdesign("div_prevnextribbon");
+		return fillTemplate($design->getContent(), $fields);
 	}
 
 	// TODOEXPLAIN
 	function getDayRibbon() {
-		global $settings_from_database;
-
 		$fields["label"] = date("l F j, Y", mktime(0, 0, 0, $this->date["m"], $this->date["d"], $this->date["y"]));
 		$fields["buttons"] = $this->calculatePrevNextDay($this->date);
 
-		return fillTemplate($settings_from_database["div_prevnextribbon"], $fields);
+		$design = new class_contentdesign("div_prevnextribbon");
+		return fillTemplate($design->getContent(), $fields);
 	}
 
 	// TODOEXPLAIN
@@ -268,25 +265,23 @@ tcRefreshCalendar(sDate, sDate);
 
 	// TODOEXPLAIN
 	function getQuarterRibbon( $pretext = '' ) {
-		global $settings_from_database;
-
 		$quarter = achterhaalQuarter($this->date);
 		$quarter_label = achterhaalQuarterLabel($quarter, 'F');
 
 		$fields["label"] = $pretext . $quarter_label . date("Y", mktime(0, 0, 0, $this->date["m"], $this->date["d"], $this->date["y"]));
 		$fields["buttons"] = $this->calculatePrevNextQuarter($this->date);
 
-		return fillTemplate($settings_from_database["div_prevnextribbon"], $fields);
+		$design = new class_contentdesign("div_prevnextribbon");
+		return fillTemplate($design->getContent(), $fields);
 	}
 
 	// TODOEXPLAIN
 	function getYearRibbon() {
-		global $settings_from_database;
-
 		$fields["label"] = date("Y", mktime(0, 0, 0, $this->date["m"], $this->date["d"], $this->date["y"]));
 		$fields["buttons"] = $this->calculatePrevNextYear($this->date);
 
-		return fillTemplate($settings_from_database["div_prevnextribbon"], $fields);
+		$design = new class_contentdesign("div_prevnextribbon");
+		return fillTemplate($design->getContent(), $fields);
 	}
 
 	// TODOEXPLAIN
@@ -347,5 +342,9 @@ tcRefreshCalendar(sDate, sDate);
 
 		return $retval;
 	}
+
+	// TODOEXPLAIN
+	public function __toString() {
+		return "Class: " . get_class($this) . "\ndate: " . $this->date . "\n";
+	}
 }
-?>

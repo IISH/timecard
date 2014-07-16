@@ -34,7 +34,7 @@ class class_field_string extends class_field {
 		if ( $_POST["form_fld_pressed_button"] != '-delete-' && $_POST["form_fld_pressed_button"] != '-delete-now-' ) {
 
 			if ( $href2otherpage <> "" ) {
-				$retval = $this->get_if_no_value_value($retval);
+				$retval = $this->get_if_no_value($retval);
 
 				$no_href = 0;
 				if ( is_array($this->m_no_href_if) ) {
@@ -122,7 +122,7 @@ class class_field_string extends class_field {
 			}
 		} else {
 			if ( $href2otherpage <> "" ) {
-				$retval = $this->get_if_no_value_value($retval);
+				$retval = $this->get_if_no_value($retval);
 			}
 
 			// no break - keep together

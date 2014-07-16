@@ -4,7 +4,7 @@
 require_once("./classes/class_form/fieldtypes/class_field.inc.php");
 
 class class_field_static_string_list extends class_field {
-    private $m_choices;
+	private $m_choices;
 
 	// TODOEXPLAIN
 	function class_field_static_string_list($fieldsettings) {

@@ -30,6 +30,7 @@ if ( $oWebuser->hasAdminAuthorisation() ) {
 	$menu->addMenuItem( new class_menuitem('misc.urenperweek', 'Hours per week', 'admin_hoursperweek.php') );
 	$menu->addMenuItem( new class_menuitem('reports.hoursleft', 'Hours left', 'admin_hoursleft.php') );
 	$menu->addMenuItem( new class_menuitem('misc.not_linked_employees', 'Not Linked Employees', 'admin_not_linked_employees.php') );
+	$menu->addMenuItem( new class_menuitem('administrator.change_user', 'Switch user', 'switch_user.php') );
 }
 
 // + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
@@ -48,6 +49,7 @@ $menu->addMenuGroup( new class_menugroup('Financial Administration') );
 if ( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasFaAuthorisation() ) {
 	$menu->addMenuItem( new class_menuitem('finad.employees', 'Employees', 'employees.php') );
 	$menu->addMenuItem( new class_menuitem('finad.projecten', 'Projects', 'projects.php') );
+	$menu->addMenuItem( new class_menuitem('finad.worklocations', 'Work locations', 'worklocations.php') );
 }
 
 // + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
@@ -58,7 +60,8 @@ if ( $oWebuser->isLoggedIn() ) {
 	$menu->addMenuItem( new class_menuitem('pp.personalinfo', 'About me', 'aboutme.php') );
 }
 if ( $oWebuser->isLoggedIn() ) {
-	$menu->addMenuItem( new class_menuitem('pp.myshortcuts', 'My shortcuts', 'myshortcuts.php') );
+	$menu->addMenuItem( new class_menuitem('pp.myshortcuts', 'Shortcuts', 'myshortcuts.php') );
+	$menu->addMenuItem( new class_menuitem('pp.dailyautomaticadditions', 'Daily automatic additions', 'dailyautomaticadditions.php') );
 }
 if ( $oWebuser->isLoggedIn() ) {
 	$menu->addMenuItem( new class_menuitem('pp.feestdagen', 'National holidays', 'nationalholidays.php') );
@@ -71,11 +74,11 @@ $menu->addMenuItem( new class_menuitem('pp.contact', 'Contact', 'contact.php') )
 // + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
 
 class class_menuitem {
-    // TODOTODO private
+	// TODOTODO private
 
-    public $code = '';
-    public $label = '';
-    public $url = '';
+	public $code = '';
+	public $label = '';
+	public $url = '';
 
 	function class_menuitem($code, $label, $url ) {
 		$this->code = $code;
@@ -94,15 +97,20 @@ class class_menuitem {
 	function getUrl() {
 		return $this->url;
 	}
+
+	// TODOEXPLAIN
+	public function __toString() {
+		return "Class: " . get_class($this) . "\ncode: " . $this->code . "\n";
+	}
 }
 
 class class_menugroup {
-    // TODOTODO private
+	// TODOTODO private
 
-    public $code = '';
-    public $label = '';
-    public $menuitems = array();
-    public $counter = 0;
+	public $code = '';
+	public $label = '';
+	public $menuitems = array();
+	public $counter = 0;
 
 	function class_menugroup($label, $code = '') {
 		$this->code = $code;
@@ -141,11 +149,16 @@ class class_menugroup {
 		}
 		return $menuitemssubset;
 	}
+
+	// TODOEXPLAIN
+	public function __toString() {
+		return "Class: " . get_class($this) . "\ncode: " . $this->code . "\n";
+	}
 }
 
 class class_menu {
-    // TODOTODO private
-    public $menu = array();
+	// TODOTODO private
+	public $menu = array();
 
 	function addMenuGroup( $menugroup ) {
 		$this->menu[] = $menugroup;
@@ -187,7 +200,6 @@ class class_menu {
 
 		$counter = 0;
 
-		// TODOTODO MODIFY???
 		foreach ( $this as $a=>$b ) {
 			foreach ( $b as $c ) {
 
@@ -203,5 +215,9 @@ class class_menu {
 
 		return $nr;
 	}
+
+	// TODOEXPLAIN
+	public function __toString() {
+		return "Class: " . get_class($this) . "\n";
+	}
 }
-?>

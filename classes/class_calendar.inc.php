@@ -84,7 +84,7 @@ class class_calendar {
 		}
 
 		for ( $i=$begin_jaar; $i<=$eind_jaar; $i++) {
-			$go2month = substr("0" . $i, -2);
+			$go2month = str_pad( $i, 2, '0', STR_PAD_LEFT);
 			$tmpSelect = "<option value=\"$i\" ::SELECTED::>" . $i . "</option>\n";
 			if ( $i == $date["y"] ) {
 				$tmpSelect = str_replace("::SELECTED::", "SELECTED", $tmpSelect);
@@ -103,7 +103,7 @@ class class_calendar {
 		// q&d fix
 		$select = str_replace('?&d=', '?d=', $select);
 		for ( $i=1; $i<=12; $i++) {
-			$go2month = substr("0" . $i, -2);
+			$go2month = str_pad( $i, 2, '0', STR_PAD_LEFT);
 			$tmpSelect = "<option value=\"$go2month\" ::SELECTED::>" . $t_month["$i"] . "</option>\n";
 			if ( $i == $date["m"] ) {
 				$tmpSelect = str_replace("::SELECTED::", "SELECTED", $tmpSelect);
@@ -124,6 +124,7 @@ class class_calendar {
 		$currentDayInMonth = date("w", mktime(0, 0, 0, $date["m"], 1, $date["y"]));
 
 		$tmpDays = $templateDays;
+		$days = '';
 
 		for ( $i=1; $i<=$maxdays; $i++) {
 
@@ -219,5 +220,9 @@ class class_calendar {
 
 		return $retval;
 	}
+
+	// TODOEXPLAIN
+	public function __toString() {
+		return "Class: " . get_class($this) . "\n";
+	}
 }
-?>

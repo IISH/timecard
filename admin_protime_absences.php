@@ -24,21 +24,26 @@ require_once "classes/_db_disconnect.inc.php";
 function createAbsencesContent() {
 	global $settings;
 
-	$ret = "<h2>Absences</h2>";
+	// get design
+	$design = new class_contentdesign("page_admin_protime_absences");
 
-	require_once("./classes/class_db.inc.php");
+	// add header
+	$ret = $design->getHeader();
+
 	require_once("./classes/class_view/class_view.inc.php");
-
 	require_once("./classes/class_view/fieldtypes/class_field_string.inc.php");
 
-	$oDb = new class_db($settings, 'timecard');
+	$oDb = new class_mysql($settings, 'timecard');
 	$oView = new class_view($settings, $oDb);
 
 	$oView->set_view( array(
-		'query' => 'SELECT ProtimeAbsences.ID, ProtimeAbsences.description_nl AS protime_description, Workcodes2011.Description AS timecard_description FROM ProtimeAbsences LEFT OUTER JOIN Workcodes2011 ON ProtimeAbsences.workcode_id = Workcodes2011.ID '
+		'query' => "
+SELECT vw_ProtimeAbsences.protime_absence_id, vw_ProtimeAbsences.SHORT_1 AS protime_description, Workcodes.Description AS timecard_description
+FROM vw_ProtimeAbsences
+	LEFT OUTER JOIN Workcodes ON vw_ProtimeAbsences.workcode_id = Workcodes.ID "
 		, 'count_source_type' => 'query'
 		, 'order_by' => 'protime_description '
-		, 'anchor_field' => 'ID'
+		, 'anchor_field' => 'protime_absence_id'
 		, 'viewfilter' => true
 		, 'table_parameters' => ' cellspacing="0" cellpadding="0" border="0" '
 		));
@@ -46,7 +51,7 @@ function createAbsencesContent() {
 	$oView->add_field( new class_field_string ( array(
 		'fieldname' => 'protime_description'
 		, 'fieldlabel' => 'Protime absence'
-		, 'href' => 'admin_protime_absences_edit.php?ID=[FLD:ID]&backurl=[BACKURL]'
+		, 'href' => 'admin_protime_absences_edit.php?protime_absence_id=[FLD:protime_absence_id]&backurl=[BACKURL]'
 		, 'viewfilter' => array(
 							'labelfilterseparator' => '<br>'
 							, 'filter' => array (
@@ -74,10 +79,11 @@ function createAbsencesContent() {
 							)
 		)));
 
-	// calculate and show view
+	// generate view
 	$ret .= $oView->generate_view();
 
-	$ret .= "<span class=\"comment\"><br />Protime absenties die niet gekoppeld zijn aan een Timecard absentie worden niet automatisch geimporteerd en dus ook niet meegeteld.<br />De gebruiker moet voor deze absenties zelf de uren invoeren.<br />Voor 'Dienstreis', 'Werk buiten IISG' en 'Werk thuis' mag niet gekoppeld worden aan een timecard absentie, deze absenties moeten door de gebruiker zelf ingevoerd worden.</span>";
+	// add footer
+	$ret .= $design->getFooter();
 
 	return $ret;
 }

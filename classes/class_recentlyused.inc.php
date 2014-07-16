@@ -1,13 +1,14 @@
 <?php 
 // modified: 2012-12-02
 
-require_once dirname(__DIR__) . "/sites/default/settings.php";
-require_once "class_db.inc.php";
+require_once dirname(__FILE__) . "/../sites/default/settings.php";
+require_once "class_mysql.inc.php";
+require_once "class_date.inc.php";
 
 class class_recentlyused {
-    private $user;
-    private $settings;
-    private $oDate;
+	private $user;
+	private $settings;
+	private $oDate;
 
 	// TODOEXPLAIN
 	function class_recentlyused($user, $settings, $oDate) {
@@ -23,22 +24,22 @@ class class_recentlyused {
 	function getRecentlyUsed() {
 		$arr = array();
 
-		$oConn = new class_db($this->settings, 'timecard');
+		$oConn = new class_mysql($this->settings, 'timecard');
 		$oConn->connect();
 
-		$query = "SELECT Workcodes2011.ID, Workcodes2011.Description 
-FROM Workhours INNER JOIN Workcodes2011 on Workhours.WorkCode=Workcodes2011.ID
+		$query = "SELECT Workcodes.ID, Workcodes.Description
+FROM Workhours INNER JOIN Workcodes on Workhours.WorkCode=Workcodes.ID
 WHERE YEAR(Workhours.DateWorked)>=::CURRENTYEAR:: AND Workhours.Employee=::USERID:: 
-AND Workcodes2011.isdisabled = 0
-AND Workcodes2011.show_in_selectlist = 1 
-AND ( Workcodes2011.enddate IS NULL OR Workcodes2011.enddate = '' OR Workcodes2011.enddate >= '" . $this->oDate->get("Y-m-d") . "' )
-GROUP BY Workcodes2011.ID, Workcodes2011.Description 
-ORDER BY Workcodes2011.Description ";
+AND Workcodes.isdisabled = 0
+AND Workcodes.show_in_selectlist = 1
+AND ( Workcodes.lastdate IS NULL OR Workcodes.lastdate = '' OR Workcodes.lastdate >= '" . $this->oDate->get("Y-m-d") . "' )
+GROUP BY Workcodes.ID, Workcodes.Description
+ORDER BY Workcodes.Description ";
 
-		$query = str_replace('::CURRENTYEAR::', 2014, $query);
+		$query = str_replace('::CURRENTYEAR::', date("Y"), $query);
 		$query = str_replace('::USERID::', $this->user, $query);
 
-		$result = mysql_query($query, $oConn->connection());
+		$result = mysql_query($query, $oConn->getConnection());
 		if ( mysql_num_rows($result) > 0 ) {
 
 			while ($row = mysql_fetch_assoc($result)) {
@@ -48,7 +49,6 @@ ORDER BY Workcodes2011.Description ";
 
 		}
 
-		$oConn->disconnect();
 		return $arr;
 	}
 
@@ -59,5 +59,10 @@ ORDER BY Workcodes2011.Description ";
 		$item["description"] = $row["Description"];
 
 		return $item;
+	}
+
+	// TODOEXPLAIN
+	public function __toString() {
+		return "Class: " . get_class($this) . "\nuser: " . $this->user . "\ndate: " . $this->oDate->get("Y-m-d") . "\n";
 	}
 }

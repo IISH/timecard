@@ -4,7 +4,7 @@
 require_once("./classes/class_view/fieldtypes/class_field.inc.php");
 
 class class_field_date extends class_field {
-    private $m_format;
+	private $m_format;
 
 	// TODOEXPLAIN
 	function class_field_date($fieldsettings) {
@@ -53,7 +53,7 @@ class class_field_date extends class_field {
 		if ( $_POST["form_fld_pressed_button"] != '-delete-' && $_POST["form_fld_pressed_button"] != '-delete-now-' ) {
 
 			if ( $href2otherpage <> "" ) {
-				$retval = $this->get_if_no_value_value($retval);
+				$retval = $this->get_if_no_value($retval);
 
 				$href2otherpage = $this->oClassMisc->ReplaceSpecialFieldsWithDatabaseValues($href2otherpage, $row);
 				$href2otherpage = $this->oClassMisc->ReplaceSpecialFieldsWithQuerystringValues($href2otherpage);
@@ -98,7 +98,7 @@ class class_field_date extends class_field {
 
 		} else {
 			if ( $href2otherpage <> "" ) {
-				$retval = $this->get_if_no_value_value($retval);
+				$retval = $this->get_if_no_value($retval);
 			}
 
 			// no break - keep together

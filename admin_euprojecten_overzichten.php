@@ -22,11 +22,9 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createEuProjectenContent() {
-	global $protect, $settings_from_database;
+	global $protect;
 
 	$fields = array();
-
-	require_once("./classes/class_db.inc.php");
 
 	// get selected year from url
 	$selyear = substr($protect->request_positive_number_or_empty('get', "selyear"),0,4);
@@ -78,12 +76,23 @@ function createEuProjectenContent() {
 	$list_of_employees = '';
 	$separator = '';
 	foreach ( getListOfUsersActiveInSpecificYear($selyear) as $user ) {
-		$list_of_employees .= $separator . '<a href="#" onclick="createOverzicht(' . $user['id'] . ');return false;">' . trim($user["lastname"] .  ', ' . $user["firstname"]) . '</a>';
+		$list_of_employees .= $separator . '<a href="#" onclick="createOverzicht(' . $user['id'] . ');return false;">' . trim($user["firstname"] .  ' ' . $user["lastname"]) . '</a>';
 		$separator = '<br>';
 	}
 	$fields['list_of_employees'] = $list_of_employees;
 
-	// return template with variables replaced by values
-	return fillTemplate($settings_from_database["page_admin_euprojecten_overzichten"], $fields);
+	// get design
+	$design = new class_contentdesign("page_admin_euprojecten_overzichten");
+
+	// add header
+	$ret = $design->getHeader();
+
+	// add content (template with variables replaced by values)
+	$ret .= fillTemplate($design->getContent(), $fields);
+
+	// add footer
+	$ret .= $design->getFooter();
+
+	return $ret;
 }
 ?>

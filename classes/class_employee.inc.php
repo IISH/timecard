@@ -1,18 +1,21 @@
 <?php 
-// modified: 2012-12-27
+// modified: 2014-06-03
+
+require_once dirname(__FILE__) . "/../sites/default/settings.php";
+require_once "class_mysql.inc.php";
 
 class class_employee {
-    private $timecard_id = 0;
-    private $settings;
-    private $protime_id = 0;
-    private $kamerbezetting_id = 0;
-    private $hoursdoublefield = '';
-    private $is_disabled = 0;
-    private $lastname = '';
-    private $firstname = '';
-    private $hoursperweek = 0;
-    private $daysperweek = 0;
-    private $authorisation = array();
+	private $timecard_id = 0;
+	private $settings;
+	private $protime_id = 0;
+	private $hoursdoublefield = '';
+	private $is_disabled = 0;
+	private $lastname = '';
+	private $firstname = '';
+	private $hoursperweek = 0;
+	private $daysperweek = 0;
+	private $authorisation = array();
+	private $show_jira_field = false;
 
 	// TODOEXPLAIN
 	function class_employee($timecard_id, $settings) {
@@ -30,20 +33,25 @@ class class_employee {
 
 	// TODOEXPLAIN
 	function getTimecardValues() {
-		global $dbhandleTimecard;
+		$oConn = new class_mysql($this->settings, 'timecard');
+		$oConn->connect();
 
-		// 
-		$query_project = "SELECT * FROM Employees WHERE ID=" . $this->timecard_id;
+		//
+		$query_project = "SELECT * FROM vw_Employees WHERE ID=" . $this->timecard_id;
 
-		$resultReset = mysql_query($query_project, $dbhandleTimecard);
+		$resultReset = mysql_query($query_project, $oConn->getConnection());
 		if ($row_project = mysql_fetch_assoc($resultReset)) {
 
 			$this->is_disabled = $row_project["is_disabled"];
 			$this->protime_id = $row_project["ProtimePersNr"];
-			$this->lastname = $row_project["LastName"];
-			$this->firstname = $row_project["FirstName"];
+			$this->lastname = $row_project["NAME"];
+			$this->firstname = $row_project["FIRSTNAME"];
 			$this->hoursperweek = $row_project["hoursperweek"];
 			$this->daysperweek = $row_project["daysperweek"];
+
+			if ( $row_project["show_jira_field"] == 1 ) {
+				$this->show_jira_field = true;
+			}
 
 			$this->hoursdoublefield = $row_project["HoursDoubleField"];
 			if ( $this->hoursdoublefield != 1 && $this->hoursdoublefield != -1 ) {
@@ -52,12 +60,11 @@ class class_employee {
 
 			// 
 			$queryAuthorisation = "SELECT * FROM Employee_Authorisation WHERE EmployeeID=" . $this->timecard_id;
-			$resultAuthorisation = mysql_query($queryAuthorisation, $dbhandleTimecard);
+			$resultAuthorisation = mysql_query($queryAuthorisation, $oConn->getConnection());
 			while ($rowAuthorisation = mysql_fetch_assoc($resultAuthorisation)) {
 				$this->authorisation[] = $rowAuthorisation["authorisation"];
 			}
 			mysql_free_result($resultAuthorisation);
-
 
 		}
 		mysql_free_result($resultReset);
@@ -109,6 +116,11 @@ class class_employee {
 	}
 
 	// TODOEXPLAIN
+	function getId() {
+		return $this->getTimecardId();
+	}
+
+	// TODOEXPLAIN
 	function getTimecardId() {
 		return $this->timecard_id;
 	}
@@ -130,12 +142,17 @@ class class_employee {
 	}
 
 	// TODOEXPLAIN
-	function checkLoggedIn() {
+	function getShowJiraField() {
+		return $this->show_jira_field;
+	}
+
+	// TODOEXPLAIN
+	function checkLoggedIn( $subdir = '' ) {
 		global $protect;
 
 		if ( $this->timecard_id == 0 ) {
-			Header("Location: login.php?burl=" . URLencode($protect->getShortUrl()));
-			die("go to <a href=\"login.php?burl=" . URLencode($protect->getShortUrl()) . "\">next</a>");
+			Header("Location: " . $subdir . "login.php?burl=" . URLencode($protect->getShortUrl()));
+			die("go to <a href=\"" . $subdir . "login.php?burl=" . URLencode($protect->getShortUrl()) . "\">next</a>");
 		} else {
 			$this->ifDisabledGoToLogout();
 		}
@@ -186,14 +203,13 @@ class class_employee {
 
 	// TODOEXPLAIN
 	function calculateVacationHours() {
-		global $dbhandleProtime;
 		$retval = '';
 
 		if ( $this->getProtimeId() != '0' ) {
 
-			$vakantie = advancedSingleRecordSelectMssql(
-						$dbhandleProtime
-						, "P_LIMIT"
+			$vakantie = advancedSingleRecordSelectMysql(
+						'timecard'
+						, "PROTIME_P_LIMIT"
 						, array("BEGIN_VAL", "END_VAL", "BOOKDATE")
 						, "PERSNR=" . $this->getProtimeId() . " AND EXEC_ORDER=2 "
 						, '*'
@@ -216,7 +232,8 @@ class class_employee {
 
 	// TODOEXPLAIN
 	function findTimecardIdUsingProtimeId($protime_id) {
-		global $dbhandleTimecard;
+		$oConn = new class_mysql($this->settings, 'timecard');
+		$oConn->connect();
 
 		$val = 0;
 
@@ -224,7 +241,7 @@ class class_employee {
 
 			// search in protime database
 			$record = advancedSingleRecordSelectMysql(
-					$dbhandleTimecard
+					'timecard'
 					, "Employees"
 					, array("ID")
 					, "ProtimePersNr=" . $protime_id . " "
@@ -248,24 +265,69 @@ class class_employee {
 	}
 
 	// TODOEXPLAIN
-	function getProtimeMonthTotal($date, $type='max') {
+	function getProtimeMonthTotal($date) {
 		$retval = 0;
 
-		for ( $i=1; $i<=31; $i++ ) {
-			$date["d"] = substr('0' . $i, -2);
-			$tmp = $this->getProtimeDayTotal($date, $type);
-			$retval += $tmp;
+		$arr = $this->getProtimeDayTotalGroupedByDay($date);
+		foreach ( $arr as $date => $minutes  ) {
+			$retval += $minutes;
 		}
 
 		return $retval;
 	}
 
 	// TODOEXPLAIN
+	function getProtimeDayTotalGroupedByDay($date) {
+		$ret = array();
+
+		$protime_id = $this->getProtimeId();
+
+		$oConn = new class_mysql($this->settings, 'timecard');
+		$oConn->connect();
+
+		// reset values
+		$query = "SELECT SUBSTR(BOOKDATE, 1, 10) AS BOOKDATUM, WEEKPRES1, EXTRA
+FROM PROTIME_PR_MONTH
+WHERE PERSNR=" . $protime_id . " AND BOOKDATE LIKE '" . $date["y"] . str_pad( $date["m"], 2, '0', STR_PAD_LEFT) . "%'
+GROUP BY SUBSTR(BOOKDATE, 1, 10)
+";
+//debug($query);
+
+		$result = mysql_query($query, $oConn->getConnection());
+		while ($row = mysql_fetch_assoc($result)) {
+
+			$protime_day_total = $row['WEEKPRES1'];
+			$protime_day_total_extra = $row['EXTRA'];
+			if ( $protime_day_total == '' ) {
+				$protime_day_total = 0;
+			}
+			if ( $protime_day_total_extra == '' ) {
+				$protime_day_total_extra = 0;
+			}
+			if ( $protime_day_total_extra < 0 ) {
+				$protime_day_total += -($protime_day_total_extra);
+			}
+
+			$ret[$row["BOOKDATUM"]] = $protime_day_total;
+		}
+		mysql_free_result($result);
+
+		return $ret;
+	}
+
+	// TODOEXPLAIN
 	function getProtimeDayTotal($date) {
 		$protime_id = $this->getProtimeId();
 
-		$protime_day_total = $this->getProtimeDayTotalPart($protime_id, $date, 'weekpres1');
-		$protime_day_total_extra = $this->getProtimeDayTotalPart($protime_id, $date, 'extra');
+		$arr = $this->getProtimeDayTotalPart($protime_id, $date, array('weekpres1', 'extra'));
+		$protime_day_total = $arr['weekpres1']; //$this->getProtimeDayTotalPart($protime_id, $date, 'weekpres1');
+		$protime_day_total_extra = $arr['extra']; //$this->getProtimeDayTotalPart($protime_id, $date, 'extra');
+		if ( $protime_day_total == '' ) {
+			$protime_day_total = 0;
+		}
+		if ( $protime_day_total_extra == '' ) {
+			$protime_day_total_extra = 0;
+		}
 		if ( $protime_day_total_extra < 0 ) {
 			$protime_day_total += -($protime_day_total_extra);
 		}
@@ -274,38 +336,39 @@ class class_employee {
 	}
 
 	// TODOEXPLAIN
-	function getProtimeDayTotalPart($protime_id, $date, $type) {
-		global $dbhandleProtime;
-
-		$retval = 0;
+	function getProtimeDayTotalPart($protime_id, $date, $fields) {
+		$retval = array();
 
 		if ( $protime_id != '' && $protime_id != '0' ) {
 
 			$oDate = new class_date( $date["y"], $date["m"], $date["d"] );
 
 			// 
-			$hours = advancedSingleRecordSelectMssql(
-					$dbhandleProtime
-					, "PR_MONTH"
+			$hours = advancedSingleRecordSelectMysql(
+					'timecard'
+					, "PROTIME_PR_MONTH"
 					, array("PERSNR", "BOOKDATE", "PREST", "RPREST", "WEEKPRES1", "EXTRA")
 					, "PERSNR=" . $protime_id . " AND BOOKDATE='" . $oDate->get("Ymd") . "' "
 				);
 
-			// returneer opgegeven veld
-			$retval = $hours[$type];
+			// returneer opgegeven velden
+			foreach ( $fields as $field ) {
+				$retval[$field] = $hours[$field];
+			}
 		}
 
 		return $retval;
 	}
 
 	function getHoursPerWeek2($year) {
-		global $dbhandleTimecard;
+		$oConn = new class_mysql($this->settings, 'timecard');
+		$oConn->connect();
 
 		$arr = array();
 
 		// reset values
 		$query = "SELECT ID FROM HoursPerWeek WHERE year=" . $year . " AND Employee=" . $this->getTimecardId() . " AND isdeleted=0 ORDER BY startmonth ";
-		$result = mysql_query($query, $dbhandleTimecard);
+		$result = mysql_query($query, $oConn->getConnection());
 		while ($row = mysql_fetch_assoc($result)) {
 			$oHoursPerWeek = new class_hoursperweek($row["ID"], $this->settings);
 			$arr[] = $oHoursPerWeek;
@@ -316,15 +379,13 @@ class class_employee {
 	}
 
 	function getVacationHours() {
-		global $dbhandleProtime;
-
 		$ret = 0;
 
 		if ( $this->getProtimeId() != '0' ) {
 
-			$vakantie = advancedSingleRecordSelectMssql(
-						$dbhandleProtime
-						, "P_LIMIT"
+			$vakantie = advancedSingleRecordSelectMysql(
+						'timecard'
+						, "PROTIME_P_LIMIT"
 						, array("BEGIN_VAL", "END_VAL", "BOOKDATE")
 						, "PERSNR=" . $this->getProtimeId() . " AND EXEC_ORDER=2 "
 						, '*'
@@ -344,14 +405,15 @@ class class_employee {
 	}
 
 	function getFavourites( $type ) {
-		global $dbhandleTimecard;
+		$oConn = new class_mysql($this->settings, 'timecard');
+		$oConn->connect();
 
 		$ids = array();
 		$ids[] = '0';
 
 		$query = "SELECT * FROM EmployeeFavourites WHERE TimecardID=" . $this->getTimecardId() . ' AND type=\'' . $type . '\' ';
 
-		$result = mysql_query($query, $dbhandleTimecard);
+		$result = mysql_query($query, $oConn->getConnection());
 		while ( $row = mysql_fetch_array($result) ) {
 			$ids[] = $row["ProtimeID"];
 		}
@@ -361,12 +423,13 @@ class class_employee {
 	}
 
 	function getTimecardDayTotals( $year, $month ) {
-		global $dbhandleTimecard;
+		$oConn = new class_mysql($this->settings, 'timecard');
+		$oConn->connect();
 
 		$ret = array();
 
-		$query = 'SELECT *, DAY(DateWorked) AS CURRENTDAY FROM vw_hours2011_user WHERE Employee=' . $this->getTimecardId() . ' AND DateWorked LIKE \'' . $year . '-' . str_pad($month, 2, '0', STR_PAD_LEFT) . '-%\' AND protime_absence_recnr>=0 ORDER BY DateWorked ';
-		$result = mysql_query($query, $dbhandleTimecard);
+		$query = 'SELECT *, DAY(DateWorked) AS CURRENTDAY FROM vw_hours_user WHERE Employee=' . $this->getTimecardId() . ' AND DateWorked LIKE \'' . $year . '-' . str_pad($month, 2, '0', STR_PAD_LEFT) . '-%\' AND protime_absence_recnr>=0 ORDER BY DateWorked ';
+		$result = mysql_query($query, $oConn->getConnection());
 		while ($row = mysql_fetch_assoc($result)) {
 			if ( !isset( $ret[ $row["CURRENTDAY"] ] ) ) {
 				$ret[ $row["CURRENTDAY"]+0 ] = 0;
@@ -381,14 +444,15 @@ class class_employee {
 
 	// TODOEXPLAIN
 	function getEerderNaarHuisDayTotals( $year, $month ) {
-		global $dbhandleTimecard;
+		$oConn = new class_mysql($this->settings, 'timecard');
+		$oConn->connect();
 
 		$ret = array();
 
 		// achterhaal 
 		$query = "SELECT TimeInMinutes, DAY(DateWorked) AS CURRENTDAY FROM Workhours WHERE Employee=" . $this->getTimecardId() . " AND DateWorked LIKE '" . $year . "-" . str_pad($month, 2, '0', STR_PAD_LEFT) . "-%' AND protime_absence_recnr=-1 ORDER BY DateWorked ";
 
-		$result = mysql_query($query, $dbhandleTimecard);
+		$result = mysql_query($query, $oConn->getConnection());
 		while ( $row = mysql_fetch_array($result) ) {
 			if ( !isset( $ret[ $row["CURRENTDAY"] ] ) ) {
 				$ret[ $row["CURRENTDAY"]+0 ] = 0;
@@ -418,27 +482,357 @@ class class_employee {
 
 	// TODOEXPLAIN
 	function getProtimeDayTotalsPart($protime_id, $yyyymm, $type) {
-		global $dbhandleProtime;
+		global $settings;
 
 		$ret = array();
 
 		if ( $protime_id != '' && $protime_id != '0' ) {
 
-			$query = "SELECT PERSNR, BOOKDATE, PREST, RPREST, WEEKPRES1, EXTRA FROM PR_MONTH WHERE PERSNR=" . $protime_id . " AND LEFT(BOOKDATE, 6)=" . $yyyymm;
+			$query = "SELECT PERSNR, BOOKDATE, PREST, RPREST, WEEKPRES1, EXTRA FROM PROTIME_PR_MONTH WHERE PERSNR=" . $protime_id . " AND LEFT(BOOKDATE, 6)=" . $yyyymm;
 
-			$result = mssql_query($query, $dbhandleProtime);
-			while ( $row = mssql_fetch_array($result) ) {
-				$currentday = substr($row["BOOKDATE"], -2)+0;
+			$oTc = new class_mysql($settings, 'timecard');
+			$oTc->connect();
+
+			$result = mysql_query($query, $oTc->getConnection());
+			while ( $row = mysql_fetch_array($result) ) {
+				$currentday = (int)(substr($row["BOOKDATE"], -2));
 				if ( !isset( $ret[ $currentday ] ) ) {
 					$ret[ $currentday ] = 0;
 				}
 				$ret[ $currentday ] = $row[ strtoupper($type) ];
 			}
-			mssql_free_result($result);
+			mysql_free_result($result);
 
 		}
 
 		return $ret;
 	}
+
+	// TODOEXPLAIN
+	function getAllDailyAdditions() {
+		$arr = array();
+
+		$oConn = new class_mysql($this->settings, 'timecard');
+		$oConn->connect();
+
+		// TODOTODO
+		$query = "
+SELECT DailyAutomaticAdditions.ID FROM DailyAutomaticAdditions
+	INNER JOIN Workcodes ON DailyAutomaticAdditions.workcode = Workcodes.ID
+WHERE employee=::USER::
+  AND DailyAutomaticAdditions.isdeleted=0
+  AND Workcodes.isdisabled=0
+ORDER BY Workcodes.Description
+";
+
+		$query = str_replace('::USER::', $this->timecard_id, $query);
+
+		$result = mysql_query($query, $oConn->getConnection());
+		if ( mysql_num_rows($result) > 0 ) {
+
+			while ($row = mysql_fetch_assoc($result)) {
+				$arr[] = new class_dailyaddition($row["ID"]);
+			}
+			mysql_free_result($result);
+
+		}
+
+		return $arr;
+	}
+
+	// TODOEXPLAIN
+	function getEnabledDailyAdditions($oDate) {
+		$arr = array();
+
+		$oConn = new class_mysql($this->settings, 'timecard');
+		$oConn->connect();
+
+		// TODOTODO: add first_date and last_date controle
+		$query = "
+		SELECT DailyAutomaticAdditions.ID FROM DailyAutomaticAdditions
+			INNER JOIN Workcodes ON DailyAutomaticAdditions.workcode = Workcodes.ID
+		WHERE employee=::USER::
+			AND DailyAutomaticAdditions.isdeleted=0
+			AND DailyAutomaticAdditions.isenabled=1
+			AND DailyAutomaticAdditions.ratio>0
+			AND Workcodes.isdisabled=0
+			AND DailyAutomaticAdditions.first_date<=\"" . $oDate->get("Y-m-d") . "\"
+			AND ( DailyAutomaticAdditions.last_date>=\"" . $oDate->get("Y-m-d") . "\" OR DailyAutomaticAdditions.last_date=\"\"  OR DailyAutomaticAdditions.last_date IS NULL )
+		ORDER BY DailyAutomaticAdditions.ratio, Workcodes.Description
+		";
+
+		$query = str_replace('::USER::', $this->timecard_id, $query);
+
+		$result = mysql_query($query, $oConn->getConnection());
+		if ( mysql_num_rows($result) > 0 ) {
+
+			while ($row = mysql_fetch_assoc($result)) {
+				$arr[] = new class_dailyaddition($row["ID"]);
+			}
+			mysql_free_result($result);
+
+		}
+
+		return $arr;
+	}
+
+	// TODOEXPLAIN
+	function getTotalWeightOfEnabledDailyAdditions() {
+		$total = 0;
+
+		$oConn = new class_mysql($this->settings, 'timecard');
+		$oConn->connect();
+
+			// TODOTODO
+		$query = "
+		SELECT DailyAutomaticAdditions.ID FROM DailyAutomaticAdditions
+			INNER JOIN Workcodes ON DailyAutomaticAdditions.workcode = Workcodes.ID
+		WHERE employee=::USER::
+		  AND DailyAutomaticAdditions.isdeleted=0
+		  AND DailyAutomaticAdditions.isenabled=1
+		  AND DailyAutomaticAdditions.ratio>0
+		  AND Workcodes.isdisabled=0
+		ORDER BY Workcodes.Description
+		";
+
+		$query = str_replace('::USER::', $this->timecard_id, $query);
+
+		$result = mysql_query($query, $oConn->getConnection());
+		if ( mysql_num_rows($result) > 0 ) {
+
+			while ($row = mysql_fetch_assoc($result)) {
+				$daa = new class_dailyaddition($row["ID"]);
+				$total += $daa->getRatio();
+			}
+			mysql_free_result($result);
+
+		}
+
+		return $total;
+	}
+
+	// TODOEXPLAIN
+	function syncTimecardProtimeDayInformation($oDate) {
+		$timecard_id = $this->timecard_id;
+		$protime_id = $this->protime_id;
+
+		if ( $timecard_id == '' || $timecard_id == '0' || $timecard_id == '-1' ) {
+			return;
+		}
+
+		if ( $protime_id == '' || $protime_id == '0' || $protime_id == '-1' ) {
+			return;
+		}
+
+		// add 'absences'
+		addAndRemoveAbsentiesInTimecard($timecard_id, $protime_id, $oDate);
+
+		// 'eerder naar huis'
+		addEerderNaarHuisInTimecard($timecard_id, $protime_id, $oDate);
+
+		// add 'daily automatic additions'
+		$this->addDailyAutomaticAdditions($oDate);
+	}
+
+	// TODOEXPLAIN
+	function syncTimecardProtimeMonthInformation($oDate) {
+		$timecard_id = $this->timecard_id;
+		$protime_id = $this->protime_id;
+
+		if ( $timecard_id == '' || $timecard_id == '0' || $timecard_id == '-1' ) {
+			return;
+		}
+
+		if ( $protime_id == '' || $protime_id == '0' || $protime_id == '-1' ) {
+			return;
+		}
+
+		// add 'absences'
+		for ( $i = 1; $i <= date("t", mktime(0, 0, 0, (int)( $oDate->get("m") ), (int)( $oDate->get("d") ), (int)( $oDate->get("Y") ) )); $i++ ) {
+			$oDate2 = new class_date( $oDate->get("y"), $oDate->get("m"), $i );
+			addAndRemoveAbsentiesInTimecard($timecard_id, $protime_id, $oDate2);
+		}
+
+		// eerder naar huis
+		addEerderNaarHuisInTimecardMonth($timecard_id, $protime_id, $oDate);
+
+		// add 'daily automatic additions'
+		for ( $i = 1; $i <= date("t", mktime(0, 0, 0, (int)( $oDate->get("m") ), (int)( $oDate->get("d") ), (int)( $oDate->get("Y") ) )); $i++ ) {
+			$oDate2 = new class_date( $oDate->get("y"), $oDate->get("m"), $i );
+			$this->addDailyAutomaticAdditions($oDate2);
+		}
+	}
+
+	// TODOEXPLAIN
+	// add 'daily automatic additions'
+	function addDailyAutomaticAdditions($oDate) {
+		if ( $oDate->get("Y-m") < class_settings::getSetting("oldest_modifiable_daa_month") || $oDate->get("Y-m-d") >= date("Y-m-d") ) {
+			return;
+		}
+
+		// get list of enabled DAA
+		$arrEnabledDAA = $this->getEnabledDailyAdditions($oDate);
+
+		// if no DAA then do nothing
+		if ( count($arrEnabledDAA) == 0 ) {
+			return;
+		}
+
+		// get Timecard totals
+		$hoursTimecard = $this->getTimecardDayTotal( $oDate );
+
+		// get Protime totals
+		$date["y"] = $oDate->get("Y");
+		$date["m"] = $oDate->get("m");
+		$date["d"] = $oDate->get("d");
+		$hoursProtime = $this->getProtimeDayTotal($date);
+
+		// calculate difference
+		$difference = $hoursProtime - $hoursTimecard;
+
+		// if difference smaller than 3 minutes, exit,
+		if ( $difference > -3 && $difference < 3 ) {
+			return;
+		}
+
+		// reset non fixed daa minuten
+		$this->setZeroNoneFixedDaa( $oDate );
+
+		// recalculate difference
+		$hoursTimecard = $this->getTimecardDayTotal( $oDate );
+		$difference = $hoursProtime - $hoursTimecard;
+
+		if ( $difference < 0 ) {
+			return;
+		}
+
+		$totalFlexibleRatio = 0;
+		$arrFlexible = array();
+
+		foreach ( $arrEnabledDAA as $daa ) {
+
+			$oWorkhours = class_workhours::findDaaRecord($this, $daa->getId(), $oDate);
+
+			if ( $oWorkhours->getId() == 0 ) {
+				$totalFlexibleRatio += $daa->getRatio();
+
+				// NEW
+				$oWorkhours->setEmployeeId( $this->getTimecardId() );
+				$oWorkhours->setDateWorked( $oDate->get("Y-m-d") . " 00:00:00" );
+				$oWorkhours->setWorkCode( $daa->getWorkcode() );
+				$oWorkhours->setWorkDescription( $daa->getDescription() );
+				$oWorkhours->setTimeInMinutes( 0 );
+				$oWorkhours->setDailyAutomaticAdditionId( $daa->getId() );
+				$oWorkhours->setIsDeleted(0);
+				$oWorkhours->save();
+
+				$arrFlexible[] = array('workhours' => $oWorkhours, 'daa' => $daa );
+			} else {
+				// UPDATE
+				if ( $oWorkhours->getIsTimeFixed() == 0 ) {
+					$totalFlexibleRatio += $daa->getRatio();
+
+					$oWorkhours->setTimeInMinutes( 0 );
+					$oWorkhours->setIsDeleted(0);
+					$oWorkhours->save();
+
+					$arrFlexible[] = array('workhours' => $oWorkhours, 'daa' => $daa );
+				}
+			}
+		}
+
+		//
+		foreach ( $arrFlexible as $flexible) {
+			$newMinutes = round(1.0*$flexible["daa"]->getRatio()/$totalFlexibleRatio*$difference);
+			$flexible["workhours"]->setTimeInMinutes( $newMinutes );
+			$flexible["workhours"]->save();
+		}
+	}
+
+	function getTimecardDayTotal( $oDate ) {
+		$hoursTotal = 0;
+
+		$oConn = new class_mysql($this->settings, 'timecard');
+		$oConn->connect();
+
+		$query = 'SELECT * FROM vw_hours_user WHERE Employee=' . $this->getTimecardId() . ' AND DateWorked="' . $oDate->get("Y-m-d") . '" AND protime_absence_recnr>=0 ';
+		$result = mysql_query($query, $oConn->getConnection());
+		while ($row = mysql_fetch_assoc($result)) {
+			$hoursTotal += $row["TimeInMinutes"];
+		}
+
+		$eerderNaarHuisTotal = getEerderNaarHuisDayTotal($this->getTimecardId(), $oDate);
+
+		return $hoursTotal+$eerderNaarHuisTotal;
+	}
+
+	function setZeroNoneFixedDaa( $oDate ) {
+		$oConn = new class_mysql($this->settings, 'timecard');
+		$oConn->connect();
+
+		$query = "UPDATE Workhours SET TimeInMinutes=0 WHERE Employee=" . $this->getTimecardId() . " AND DateWorked=\"" . $oDate->get("Y-m-d") . "\" AND isdeleted=0 AND daily_automatic_addition_id>0 AND fixed_time=0 AND protime_absence_recnr>=0 AND TimeInMinutes<>0 ";
+		$result = mysql_query($query, $oConn->getConnection());
+
+		return;
+	}
+
+	public static function getListOfDaaEmployees() {
+		global $settings;
+
+		$ret = array();
+
+		$query = "
+SELECT ID
+FROM `Employees`
+WHERE `isdisabled`=0
+AND `ProtimePersNr`>0
+		AND `ID` IN (
+				SELECT DISTINCT `employee`
+				FROM `DailyAutomaticAdditions`
+				WHERE `isenabled`=1 AND `isdeleted`=0 AND `ratio`>0
+			)
+";
+
+		$oConn = new class_mysql($settings, 'timecard');
+		$oConn->connect();
+
+		$result = mysql_query($query, $oConn->getConnection());
+
+		while ($row = mysql_fetch_assoc($result)) {
+			$ret[] = new class_employee($row["ID"], $settings);
+		}
+		mysql_free_result($result);
+
+		return $ret;
+	}
+
+	public static function getListOfEnabledAndLinkedEmployees() {
+		global $settings;
+
+		$ret = array();
+
+		$query = "
+SELECT ID
+FROM `Employees`
+WHERE `isdisabled`=0
+AND `ProtimePersNr`>0
+";
+
+		$oConn = new class_mysql($settings, 'timecard');
+		$oConn->connect();
+
+		$result = mysql_query($query, $oConn->getConnection());
+
+		while ($row = mysql_fetch_assoc($result)) {
+			$ret[] = new class_employee($row["ID"], $settings);
+		}
+		mysql_free_result($result);
+
+		return $ret;
+	}
+
+	// TODOEXPLAIN
+	public function __toString() {
+		return "Class: " . get_class($this) . "\n#: " . $this->timecard_id . "\n";
+	}
 }
-?>

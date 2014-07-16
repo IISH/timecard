@@ -4,7 +4,7 @@ require_once "classes/start.inc.php";
 $oWebuser->checkLoggedIn();
 
 $query_update = "UPDATE Employees SET HoursDoubleField=HoursDoubleField*(-1) WHERE ID=" . $oWebuser->getTimecardId();
-$result_update = mysql_query($query_update, $dbhandleTimecard);
+$result_update = mysql_query($query_update, $oConn->getConnection());
 
 require_once "classes/_db_disconnect.inc.php";
 

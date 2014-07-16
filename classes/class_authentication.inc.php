@@ -39,14 +39,14 @@ class class_authentication {
 
 				// never forget to unbind!
 				ldap_unbind($ad);
-
-				if ( trim($contents) == "1" ) {
-					$login_correct = 1;
-				}
 			}
 		}
 
 		return $login_correct;
 	}
+
+	// TODOEXPLAIN
+	public function __toString() {
+		return "Class: " . get_class($this) . "\n";
+	}
 }
-?>

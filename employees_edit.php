@@ -22,31 +22,29 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createEmployeesEditContent() {
-	global $protect, $settings, $dbhandleProtime, $oWebuser;
+	global $protect, $settings, $oWebuser;
 
-	$oUser = new class_employee( $protect->request_positive_number_or_empty('get', 'ID') , $settings );
-	syncProtimeAndTimecardEmployeeData( $oUser );
+	// get design
+	$design = new class_contentdesign("page_employees_edit");
 
-	$ret = "<h2>Employee (edit)</h2>";
+	// add header
+	$ret = $design->getHeader();
 
-	require_once("./classes/class_db.inc.php");
-	require_once("./classes/class_form/employee_class_form.inc.php");
-
+	require_once("./classes/class_form/class_form.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_string.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_bit.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_integer.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_hidden.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_textarea.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_readonly.inc.php");
-	require_once("./classes/class_form/fieldtypes/class_field_list_mssql.inc.php");
+	require_once("./classes/class_form/fieldtypes/class_field_list.inc.php");
 
-	$oDb = new class_db($settings, 'timecard');
-	$oForm = new employee_class_form($settings, $oDb);
+	$oDb = new class_mysql($settings, 'timecard');
+	$oForm = new class_form($settings, $oDb);
 
 	$oForm->set_form( array(
-		'query' => 'SELECT * FROM Employees WHERE ID=[FLD:ID] '
+		'query' => "SELECT * FROM vw_Employees WHERE ID=[FLD:ID] "
 		, 'table' => 'Employees'
-		, 'inserttable' => 'Employees'
 		, 'primarykey' => 'ID'
 		, 'disallow_delete' => 1
 		));
@@ -72,21 +70,19 @@ function createEmployeesEditContent() {
 	}
 
 	$oForm->add_field( new class_field_readonly ( array(
-		'fieldname' => 'LastName'
-		, 'fieldlabel' => 'Last name'
-		)));
-
-	$oForm->add_field( new class_field_readonly ( array(
-		'fieldname' => 'FirstName'
+		'fieldname' => 'FIRSTNAME'
 		, 'fieldlabel' => 'First name'
 		)));
 
-	$oForm->add_field( new class_field_list_mssql ( $settings, array(
+	$oForm->add_field( new class_field_readonly ( array(
+		'fieldname' => 'NAME'
+		, 'fieldlabel' => 'Last name'
+		)));
+
+	$oForm->add_field( new class_field_list ( $settings, array(
 		'fieldname' => 'ProtimePersNr'
 		, 'fieldlabel' => 'Protime link'
-		, 'query' => "SELECT PERSNR, RTRIM(LTRIM(NAME)) + ', ' + RTRIM(LTRIM(FIRSTNAME)) AS FULLNAME FROM CURRIC WHERE 1=1 ORDER BY NAME, FIRSTNAME "
-		, 'dbhandle' => $dbhandleProtime
-		, 'rdbms' => 'mssql'
+		, 'query' => "SELECT PERSNR, CONCAT(RTRIM(LTRIM(FIRSTNAME)), ' ', RTRIM(LTRIM(NAME))) AS FULLNAME FROM PROTIME_CURRIC WHERE 1=1 ORDER BY FIRSTNAME, NAME "
 
 		, 'id_field' => 'PERSNR'
 		, 'description_field' => 'FULLNAME'
@@ -98,13 +94,19 @@ function createEmployeesEditContent() {
 		)));
 
 	$oForm->add_field( new class_field_readonly ( array(
-		'fieldname' => 'KnawPersNr'
-		, 'fieldlabel' => 'KNAW Pers. #'
+		'fieldname' => 'REGISTERNR'
+		, 'fieldlabel' => 'KNAW #'
 		)));
 
 	$oForm->add_field( new class_field_readonly ( array(
-		'fieldname' => 'AfdelingsNummer'
-		, 'fieldlabel' => 'Department'
+		'fieldname' => 'SHORT_1'
+		, 'fieldlabel' => 'Work location'
+		)));
+
+	$oForm->add_field( new class_field_bit ( array(
+		'fieldname' => 'isdisabled'
+		, 'fieldlabel' => 'Is disabled?'
+		, 'required' => 0
 		)));
 
 	$oForm->add_field( new class_field_bit ( array(
@@ -118,8 +120,11 @@ function createEmployeesEditContent() {
 		, 'fieldlabel' => 'Last login'
 		)));
 
-	// calculate form
+	// generate form
 	$ret .= $oForm->generate_form();
+
+	// add footer
+	$ret .= $design->getFooter();
 
 	return $ret;
 }

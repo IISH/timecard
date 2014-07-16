@@ -43,7 +43,7 @@ class class_field_time extends class_field {
 			}
 
 			if ( $href2otherpage <> "" ) {
-				$retval = $this->get_if_no_value_value($retval);
+				$retval = $this->get_if_no_value($retval);
 
 				$href2otherpage = $this->oClassMisc->ReplaceSpecialFieldsWithDatabaseValues($href2otherpage, $row);
 				$href2otherpage = $this->oClassMisc->ReplaceSpecialFieldsWithQuerystringValues($href2otherpage);

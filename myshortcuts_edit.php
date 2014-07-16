@@ -9,7 +9,7 @@ $date = class_datetime::get_date($protect);
 $oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
 $oPage->setTab($menuList->findTabNumber('pp.myshortcuts'));
-$oPage->setTitle('Timecard | My shortcuts');
+$oPage->setTitle('Timecard | Shortcuts');
 $oPage->setContent(createShortcutsContent());
 
 // show page
@@ -21,11 +21,13 @@ require_once "classes/_db_disconnect.inc.php";
 function createShortcutsContent() {
 	global $settings, $oWebuser, $protect;
 
-	$ret = "<h2>My shortcuts (edit)</h2>";
+	// get design
+	$design = new class_contentdesign("page_myshortcuts_edit");
 
-	require_once("./classes/class_db.inc.php");
+	// add header
+	$ret = $design->getHeader();
+
 	require_once("./classes/class_form/class_form.inc.php");
-
 	require_once("./classes/class_form/fieldtypes/class_field_bit.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_integer.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_hidden.inc.php");
@@ -34,13 +36,12 @@ function createShortcutsContent() {
 	require_once("./classes/class_form/fieldtypes/class_field_time_double_field.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_time_single_field.inc.php");
 
-	$oDb = new class_db($settings, 'timecard');
+	$oDb = new class_mysql($settings, 'timecard');
 	$oForm = new class_form($settings, $oDb);
 
 	$oForm->set_form( array(
 		'query' => 'SELECT * FROM UserCreatedQuickAdds WHERE ID=[FLD:ID] AND Employee=' . $oWebuser->getTimecardId() . ' AND isdeleted=0 '
 		, 'table' => 'UserCreatedQuickAdds'
-		, 'inserttable' => 'UserCreatedQuickAdds'
 		, 'primarykey' => 'ID'
 		));
 
@@ -65,7 +66,7 @@ function createShortcutsContent() {
 	$oForm->add_field( new class_field_list ( $settings, array(
 		'fieldname' => 'WorkCode'
 		, 'fieldlabel' => 'Project'
-		, 'query' => 'SELECT ID, Concat(Projectnummer, \' \', Description) AS ProjectNumberName FROM Workcodes2011 WHERE ( isdisabled = 0 AND show_in_selectlist = 1 AND (enddate IS NULL OR enddate = \'\' OR enddate >= \'' . date("Y-m-d") . '\') ) ' . $currentValueOnNew . ' ORDER BY Projectnummer, Description '
+		, 'query' => 'SELECT ID, Concat(Projectnummer, \' \', Description) AS ProjectNumberName FROM Workcodes WHERE ( isdisabled = 0 AND show_in_selectlist = 1 AND (lastdate IS NULL OR lastdate = \'\' OR lastdate >= \'' . date("Y-m-d") . '\') ) ' . $currentValueOnNew . ' ORDER BY Projectnummer, Description '
 		, 'id_field' => 'ID'
 		, 'description_field' => 'ProjectNumberName'
 		, 'empty_value' => '0'
@@ -121,8 +122,11 @@ function createShortcutsContent() {
 		, 'onNew' => '0'
 		)));
 
-		// calculate form
-		$ret .= $oForm->generate_form();
+	// generate form
+	$ret .= $oForm->generate_form();
+
+	// add footer
+	$ret .= $design->getFooter();
 
 	return $ret;
 }

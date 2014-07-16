@@ -24,7 +24,11 @@ require_once "classes/_db_disconnect.inc.php";
 function createProjectEditContent() {
 	global $protect, $settings;
 
-	$ret = "<h2>Project (edit)</h2>";
+	// get design
+	$design = new class_contentdesign("page_projects_edit");
+
+	// add header
+	$ret = $design->getHeader();
 
 	$id = $protect->request_positive_number_or_empty('get', "ID");
 	if ( $id == '' ) {
@@ -42,9 +46,7 @@ function createProjectEditContent() {
 		$extra_project_filter = ' AND ( ParentID=0 OR ID=' . $pid . ' ) ';
 	}
 
-	require_once("./classes/class_db.inc.php");
 	require_once("./classes/class_form/class_form.inc.php");
-
 	require_once("./classes/class_form/fieldtypes/class_field_string.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_bit.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_integer.inc.php");
@@ -54,13 +56,12 @@ function createProjectEditContent() {
 	require_once("./classes/class_form/fieldtypes/class_field_textarea.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_readonly.inc.php");
 
-	$oDb = new class_db($settings, 'timecard');
+	$oDb = new class_mysql($settings, 'timecard');
 	$oForm = new class_form($settings, $oDb);
 
 	$oForm->set_form( array(
-		'query' => 'SELECT * FROM Workcodes2011 WHERE ID=[FLD:ID] '
-		, 'table' => 'Workcodes2011'
-		, 'inserttable' => 'Workcodes2011'
+		'query' => 'SELECT * FROM Workcodes WHERE ID=[FLD:ID] '
+		, 'table' => 'Workcodes'
 		, 'primarykey' => 'ID'
 		, 'disallow_delete' => 1
 		));
@@ -74,7 +75,7 @@ function createProjectEditContent() {
 	$oForm->add_field( new class_field_list ( $settings, array(
 		'fieldname' => 'ParentID'
 		, 'fieldlabel' => 'Menu Parent'
-		, 'query' => 'SELECT ID, Description FROM Workcodes2011 WHERE 1=1 ' . $extra_project_filter . ' ORDER BY Description '
+		, 'query' => 'SELECT ID, Description FROM Workcodes WHERE 1=1 ' . $extra_project_filter . ' ORDER BY Description '
 
 		, 'id_field' => 'ID'
 		, 'description_field' => 'Description'
@@ -113,7 +114,7 @@ function createProjectEditContent() {
 		)));
 
 	$oForm->add_field( new class_field_string ( array(
-		'fieldname' => 'enddate'
+		'fieldname' => 'lastdate'
 		, 'fieldlabel' => 'End date (yyyy-mm-dd)'
 		, 'size' => 10
 		)));
@@ -124,8 +125,11 @@ function createProjectEditContent() {
 		, 'choices' => array( array('0', 'no'), array('1', 'yes') )
 		)));
 
-	// calculate form
+	// generate form
 	$ret .= $oForm->generate_form();
+
+	// add footer
+	$ret .= $design->getFooter();
 
 	return $ret;
 }

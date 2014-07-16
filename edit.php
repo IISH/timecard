@@ -17,9 +17,6 @@ $desc = $protect->get_left_part($desc, '>');
 $onNew["project"] = $protect->request_positive_number_or_empty('get', "p");
 $onNew["time"] = $protect->request_positive_number_or_empty('get', "t");
 
-// sync Timecard Protime
-syncTimecardProtimeDay($oWebuser->getTimecardId(), $oWebuser->getProtimeId(), $oDate);
-
 // create webpage
 $oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
@@ -41,11 +38,15 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createDayEditContent( $date ) {
-	global $autoSave, $protect, $oDate;
+	global $autoSave, $protect;
 
-	$ret = "<h2>Day (edit)</h2>";
+	// get design
+	$design = new class_contentdesign("page_edit");
 
-	// 
+	// add header
+	$ret = $design->getHeader();
+
+	//
 	$ret .= getUserDayEdit( $date );
 
 	// TODOTODO niet als old data, dan dit stuk overslaan
@@ -64,12 +65,15 @@ doc_submit('saveclose')
 		}
 	}
 
+	// add footer
+	$ret .= $design->getFooter();
+
 	return $ret;
 }
 
 	// TODOEXPLAIN
 	function getUserDayEdit( $date ) {
-		global $settings, $dbhandleTimecard, $desc, $onNew, $oWebuser, $oDate, $protect;
+		global $settings, $desc, $onNew, $oWebuser, $oDate, $protect;
 
 		// achterhaal hoeveel op de betreffende dag is gewerkt
 		// bereken hoeveel minuten er nog 'over' zijn
@@ -78,7 +82,7 @@ doc_submit('saveclose')
 		$protime_day_total = $oEmployee->getProtimeDayTotal($date);
 
 		if ( $protime_day_total > 0 ) {
-			$vandaagGewerkt = advancedSingleRecordSelectMysql($dbhandleTimecard, "Workhours", "AANTAL", "Employee=" . $oWebuser->getTimecardId() . " AND DateWorked LIKE '" . $oDate->get("Y-m-d") . "%'" , "SUM(TimeInMinutes) AS AANTAL");
+			$vandaagGewerkt = advancedSingleRecordSelectMysql('timecard', "Workhours", "AANTAL", "Employee=" . $oWebuser->getTimecardId() . " AND DateWorked LIKE '" . $oDate->get("Y-m-d") . "%'" , "SUM(TimeInMinutes) AS AANTAL");
 			if ( $vandaagGewerkt["aantal"] == '' ) {
 				$vandaagGewerkt["aantal"] = 0;
 			}
@@ -96,9 +100,14 @@ doc_submit('saveclose')
 			}
 		}
 
-		require_once("./classes/class_db.inc.php");
-		require_once("./classes/class_form/workhours_class_form.inc.php");
+		$id = $protect->request_positive_number_or_empty('get', "ID");
+		if ( $id == '' ) {
+			$id = 0;
+		}
+		$oWh = new class_workhours( $id );
 
+		require_once("./classes/class_form/workhours_class_form.inc.php");
+		require_once("./classes/class_form/fieldtypes/class_field_bit.inc.php");
 		require_once("./classes/class_form/fieldtypes/class_field_date.inc.php");
 		require_once("./classes/class_form/fieldtypes/class_field_integer.inc.php");
 		require_once("./classes/class_form/fieldtypes/class_field_hidden.inc.php");
@@ -110,13 +119,12 @@ doc_submit('saveclose')
 		require_once("./classes/class_form/fieldtypes/class_field_time_single_field.inc.php");
 
 		// TODOTODO DIRTY
-		$oDb = new class_db($settings, 'timecard');
+		$oDb = new class_mysql($settings, 'timecard');
 		$oForm = new workhours_class_form($settings, $oDb);
 
 		$oForm->set_form( array(
-			'query' => 'SELECT ID, Employee, DateWorked, WorkCode, Beheertype, WorkDescription, isdeleted, TimeInMinutes FROM Workhours WHERE ID=[FLD:ID] AND Employee=' . $oWebuser->getTimecardId() . ' AND isdeleted=0 AND protime_absence_recnr=0 '
+			'query' => 'SELECT * FROM Workhours WHERE ID=[FLD:ID] AND Employee=' . $oWebuser->getTimecardId() . ' AND protime_absence_recnr=0 '
 			, 'table' => 'Workhours'
-			, 'inserttable' => 'Workhours'
 			, 'primarykey' => 'ID'
 			));
 
@@ -150,7 +158,7 @@ doc_submit('saveclose')
 		$oForm->add_field( new class_field_list ( $settings, array(
 			'fieldname' => 'WorkCode'
 			, 'fieldlabel' => 'Project'
-			, 'query' => 'SELECT ID, Concat(Projectnummer, \' \', Description) AS ProjectNumberName FROM Workcodes2011 WHERE ( isdisabled = 0 AND show_in_selectlist = 1 AND (enddate IS NULL OR enddate = \'\' OR enddate >= \'' . $oDate->get("Y-m-d") . '\') ) ' . $currentValueOnNew . ' ORDER BY Projectnummer, Description '
+			, 'query' => 'SELECT ID, Concat(Projectnummer, \' \', Description) AS ProjectNumberName FROM Workcodes WHERE ( isdisabled = 0 AND show_in_selectlist = 1 AND (lastdate IS NULL OR lastdate = \'\' OR lastdate >= \'' . $oDate->get("Y-m-d") . '\') ) ' . $currentValueOnNew . ' ORDER BY Projectnummer, Description '
 			, 'id_field' => 'ID'
 			, 'description_field' => 'ProjectNumberName'
 			, 'empty_value' => '0'
@@ -190,6 +198,22 @@ doc_submit('saveclose')
 
 		}
 
+		if ( $oWh->getDailyAutomaticAdditionId() > 0 ) {
+			$oForm->add_field( new class_field_bit ( array(
+				'fieldname' => 'fixed_time'
+				, 'fieldlabel' => 'Fixed time?'
+				, 'onNew' => '0'
+				)));
+		}
+
+		if ( $oWebuser->getShowJiraField() ) {
+			$oForm->add_field( new class_field_string ( array(
+				'fieldname' => 'jira_issue_nr'
+				, 'fieldlabel' => 'JIRA issue #'
+				, 'style' => 'width:425px;'
+				)));
+		}
+
 		$oForm->add_field( new class_field_textarea ( array(
 			'fieldname' => 'WorkDescription'
 			, 'fieldlabel' => 'Description'
@@ -204,7 +228,7 @@ doc_submit('saveclose')
 			, 'onNew' => '0'
 			)));
 
-		// calculate form
+		// generate form
 		$retval = $oForm->generate_form();
 
 		return $retval;

@@ -46,17 +46,11 @@ class class_misc {
 			}
 			$backurl = urlencode($_SERVER["SCRIPT_NAME"] . $backurl);
 		} else {
-			$backurl = getBackUrl();
-//			$backurl = $_GET["parentbackurl"];
-//			if ( $backurl == '' ) {
-//				$backurl = $_GET["backurl"];
-//			}
-
-			$backurl = urlencode($backurl);
+			$backurl = urlencode(getBackUrl());
 		}
 		$return_value = str_replace("[BACKURL]", $backurl, $return_value);
 
-		return $return_value;;
+		return $return_value;
 	}
 
 	// TODOEXPLAIN
@@ -106,5 +100,9 @@ class class_misc {
 
 		return $return_value;
 	}
+
+	// TODOEXPLAIN
+	public function __toString() {
+		return "Class: " . get_class($this) . "\n";
+	}
 }
-?>

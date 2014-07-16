@@ -8,7 +8,7 @@ class class_datetime {
 	}
 
 	// TODOEXPLAIN
-	// todo protectie
+	// todoprotectie
 	function getQueryDate() {
 		$d = $_GET["d"];
 		if ( $d == '' ) {
@@ -58,7 +58,7 @@ class class_datetime {
 	}
 
 	// TODOEXPLAIN
-	function get_date($protect, $field = 'd') {
+	public static function get_date($protect, $field = 'd') {
 		if ( $field == '' ) {
 			$field = 'd';
 		}
@@ -174,8 +174,8 @@ class class_datetime {
 	// TODOEXPLAIN
 	function formatDateAsString($datum) {
 		$retval = $datum["y"];
-		$retval .= substr('0' . $datum["m"], -2);
-		$retval .= substr('0' . $datum["d"], -2);
+		$retval .= str_pad( $datum["m"], 2, '0', STR_PAD_LEFT);
+		$retval .= str_pad( $datum["d"], 2, '0', STR_PAD_LEFT);
 
 		return $retval;
 	}
@@ -199,5 +199,9 @@ class class_datetime {
 
 		return $retval;
 	}
+
+	// TODOEXPLAIN
+	public function __toString() {
+		return "Class: " . get_class($this) . "\n";
+	}
 }
-?>

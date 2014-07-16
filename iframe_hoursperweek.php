@@ -29,14 +29,12 @@ function createHoursperweekContent() {
 		$id = 0;
 	}
 
-	require_once("./classes/class_db.inc.php");
 	require_once("./classes/class_view/class_view.inc.php");
-
 	require_once("./classes/class_view/fieldtypes/class_field_string.inc.php");
 	require_once("./classes/class_view/fieldtypes/class_field_integer.inc.php");
 	require_once("./classes/class_view/fieldtypes/class_field_decimal.inc.php");
 
-	$oDb = new class_db($settings, 'timecard');
+	$oDb = new class_mysql($settings, 'timecard');
 	$oView = new class_view($settings, $oDb);
 
 	$oView->set_view( array(
@@ -51,7 +49,7 @@ function createHoursperweekContent() {
 	$oView->add_field( new class_field_string ( array(
 		'fieldname' => 'year'
 		, 'fieldlabel' => 'Year'
-		, 'if_no_value_value' => '-no value-'
+		, 'if_no_value' => '-no value-'
 		, 'href' => 'iframe_hoursperweek_edit.php?ID=[FLD:ID]&backurl=[BACKURL]'
 		)));
 
@@ -70,7 +68,7 @@ function createHoursperweekContent() {
 		, 'fieldlabel' => 'Hours per week'
 		)));
 
-	// calculate and show view
+	// generate view
 	$ret = $oView->generate_view();
 
 	return $ret;

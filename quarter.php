@@ -37,14 +37,12 @@ function createQuarterContent( $date ) {
 	function getUserQuarter( $date ) {
 		global $settings, $oWebuser, $oDate;
 
-		require_once("./classes/class_db.inc.php");
 		require_once("./classes/class_view/class_view.inc.php");
-
 		require_once("./classes/class_view/fieldtypes/class_field_string.inc.php");
 		require_once("./classes/class_view/fieldtypes/class_field_time.inc.php");
 		require_once("./classes/class_view/fieldtypes/class_field_date.inc.php");
 
-		$oDb = new class_db($settings, 'timecard');
+		$oDb = new class_mysql($settings, 'timecard');
 		$oView = new class_view($settings, $oDb);
 
 		// if legacy, then no edit link
@@ -57,7 +55,7 @@ function createQuarterContent( $date ) {
 		$extra_month_criterium = $oPrevNext->getExtraMonthCriterium();
 
 		$oView->set_view( array(
-			'query' => 'SELECT * FROM vw_hours2011_user WHERE Employee=' . $oWebuser->getTimecardId() . ' AND DateWorked LIKE \'' . $oDate->get("Y") . '-%\' ' . $extra_month_criterium
+			'query' => 'SELECT * FROM vw_hours_user WHERE Employee=' . $oWebuser->getTimecardId() . ' AND DateWorked LIKE \'' . $oDate->get("Y") . '-%\' ' . $extra_month_criterium
 			, 'count_source_type' => 'query'
 			, 'order_by' => 'DateWorked, Description, TimeInMinutes DESC '
 			, 'anchor_field' => 'ID'
@@ -74,7 +72,6 @@ function createQuarterContent( $date ) {
 			, 'format' => 'D j F'
 			, 'nobr' => true
 			, 'href' => 'day.php?d=[FLD:yyyymmdd]&backurl=[BACKURL]&backurllabel=Quarter'
-			, 'href_alttitle' => 'Go to day'
 			)));
 
 		// if legacy, then no edit link
@@ -87,7 +84,6 @@ function createQuarterContent( $date ) {
 			'fieldname' => 'Description'
 			, 'fieldlabel' => 'Project'
 			, 'href' => $href
-			, 'href_alttitle' => 'Edit hours'
 			, 'no_href_if' => array(
 					"field" => "protime_absence_recnr"
 					, "operator" => "<>"
@@ -138,7 +134,17 @@ function createQuarterContent( $date ) {
 				)
 			)));
 
-		// calculate and show view
+		$oView->add_field( new class_field_string ( array(
+			'fieldname' => 'daily_automatic_addition_id'
+			, 'fieldlabel' => ''
+			, 'show_different_value' => array(
+				"value" => ""
+				, "showvalue" => ""
+				, "showelsevalue" => "<a alt=\"Daily automatic addition\" title=\"Daily automatic addition\" class=\"PT\">(DAA)</a>"
+				)
+			)));
+
+		// generate view
 		return $oView->generate_view();
 	}
 

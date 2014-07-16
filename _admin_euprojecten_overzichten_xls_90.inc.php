@@ -9,6 +9,7 @@ foreach ( $arrHandtekeningen as $handtekening ) {
 	$r += 4;
 }
 
+//die('zzzz');
 // + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
 
 // Set active sheet index to the first sheet, so Excel opens this as the first sheet

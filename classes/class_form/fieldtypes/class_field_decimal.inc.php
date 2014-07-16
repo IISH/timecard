@@ -4,7 +4,7 @@
 require_once("./classes/class_form/fieldtypes/class_field.inc.php");
 
 class class_field_decimal extends class_field {
-    private $m_addquotes;
+	private $m_addquotes;
 
 	// TODOEXPLAIN
 	function class_field_decimal($fieldsettings) {

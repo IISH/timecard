@@ -34,10 +34,16 @@ function createAdminQuarterContent( $date ) {
 	$ret = $oPrevNext->getQuarterRibbon();
 
 	//
-	$ret .= getEmployeesRibbon($date["y"], 1);
+	$ribbon = getEmployeesRibbon($date["y"], 1);
 
 	//
-	$ret .= getAdminQuarter( $date );
+	$content = getAdminQuarter( $date );
+
+	$template = "<table border=\"0\" width=\"100%\"><tr><td valign=\"top\">::LEFT::</td><td valign=\"top\">::RIGHT::</td></tr></table>";
+	$template =  str_replace("::LEFT::", $ribbon, $template);
+	$template =  str_replace("::RIGHT::", $content, $template);
+
+	$ret .= $template;
 
 	return $ret;
 }
@@ -47,23 +53,21 @@ function createAdminQuarterContent( $date ) {
 		global $settings, $oEmployee, $oDate;
 
 		if ( $oEmployee->getTimecardId() != '' ) {
-			require_once("./classes/class_db.inc.php");
 			require_once("./classes/class_view/class_view.inc.php");
-
 			require_once("./classes/class_view/fieldtypes/class_field_string.inc.php");
 			require_once("./classes/class_view/fieldtypes/class_field_time.inc.php");
 			require_once("./classes/class_view/fieldtypes/class_field_date.inc.php");
 
-			$oDb = new class_db($settings, 'timecard');
+			$oDb = new class_mysql($settings, 'timecard');
 			$oView = new class_view($settings, $oDb);
 
 			$oPrevNext = new class_prevnext($date);
 			$extra_month_criterium = $oPrevNext->getExtraMonthCriterium();
 
 			if ( $oEmployee->getTimecardId() == -1 ) {
-				$tmp_query = 'SELECT * FROM vw_hours2011_admin WHERE DateWorked LIKE \'' . $oDate->get("Y") . '-%\' ' . $extra_month_criterium . ' AND isdeleted=0 ';
+				$tmp_query = 'SELECT * FROM vw_hours_admin WHERE DateWorked LIKE \'' . $oDate->get("Y") . '-%\' ' . $extra_month_criterium . ' ';
 			} else {
-				$tmp_query = 'SELECT * FROM vw_hours2011_admin WHERE Employee=' . $oEmployee->getTimecardId() . ' AND DateWorked LIKE \'' . $oDate->get("Y") . '-%\' ' . $extra_month_criterium . ' AND isdeleted=0 ';
+				$tmp_query = 'SELECT * FROM vw_hours_admin WHERE Employee=' . $oEmployee->getTimecardId() . ' AND DateWorked LIKE \'' . $oDate->get("Y") . '-%\' ' . $extra_month_criterium . ' ';
 			}
 
 			// if legacy, then no edit link
@@ -90,7 +94,6 @@ function createAdminQuarterContent( $date ) {
 				, 'format' => 'D j F'
 				, 'nobr' => true
 				, 'href' => 'admin_day.php?eid=[FLD:Employee]&d=[FLD:yyyymmdd]&backurl=[BACKURL]&backurllabel=Quarter+(all empl.)'
-				, 'href_alttitle' => 'Go to day'
 				)));
 
 			if ( $oEmployee->getTimecardId() == -1 ) {
@@ -126,7 +129,6 @@ function createAdminQuarterContent( $date ) {
 				'fieldname' => 'Description'
 				, 'fieldlabel' => 'Project'
 				, 'href' => $href
-				, 'href_alttitle' => 'Edit hours'
 				, 'no_href_if' => array(
 						"field" => "protime_absence_recnr"
 						, "operator" => "<>"
@@ -177,8 +179,18 @@ function createAdminQuarterContent( $date ) {
 					)
 				)));
 
-			// calculate and show view
-			$ret .= $oView->generate_view();
+			$oView->add_field( new class_field_string ( array(
+				'fieldname' => 'daily_automatic_addition_id'
+				, 'fieldlabel' => ''
+				, 'show_different_value' => array(
+					"value" => ""
+					, "showvalue" => ""
+					, "showelsevalue" => "<a alt=\"Daily automatic addition\" title=\"Daily automatic addition\" class=\"PT\">(DAA)</a>"
+					)
+				)));
+
+			// generate view
+			$ret = $oView->generate_view();
 		}
 
 		return $ret;

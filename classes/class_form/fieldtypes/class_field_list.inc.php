@@ -2,22 +2,21 @@
 // modified: 2012-11-07
 
 require_once("./classes/class_form/fieldtypes/class_field.inc.php");
-require_once("./classes/class_db.inc.php");
+require_once "./classes/class_mysql.inc.php";
 require_once("./classes/class_misc.inc.php");
 
 class class_field_list extends class_field {
-    protected $oDb;
-    protected $oMisc;
+	protected $oDb;
+	protected $oMisc;
 
-    private $m_query;
-    private $m_id_field;
-    private $m_description_field;
-    private $m_select_style;
-    private $m_empty_value;
-    private $m_show_empty_row;
-    private $m_onchange;
-    private $m_javascriptcode;
-    private $m_rdbms;
+	private $m_query;
+	private $m_id_field;
+	private $m_description_field;
+	private $m_select_style;
+	private $m_empty_value;
+	private $m_show_empty_row;
+	private $m_onchange;
+	private $m_javascriptcode;
 
 	// TODOEXPLAIN
 	function class_field_list($settings, $fieldsettings) {
@@ -32,9 +31,8 @@ class class_field_list extends class_field {
 		$this->m_onchange = '';
 		$this->m_javascriptcode = '';
 		$this->m_dbhandle = null;
-		$this->m_rdbms = 'mysql';
 
-		$this->oDb = new class_db($settings);
+		$this->oDb = new class_mysql($settings, 'timecard');
 		$this->oMisc = new class_misc();
 
 		if ( is_array( $fieldsettings ) ) {
@@ -77,16 +75,8 @@ class class_field_list extends class_field {
 					case "dbhandle":
 						$this->m_dbhandle = $fieldsettings["dbhandle"];
 						break;
-
-					case "rdbms":
-						$this->m_rdbms = strtolower($fieldsettings["rdbms"]);
-						break;
 				}
 			}
-		}
-
-		if ( !in_array( $this->m_rdbms, array('mysql', 'mssql') ) ) {
-			$this->m_rdbms = 'mysql';
 		}
 	}
 
@@ -96,14 +86,21 @@ class class_field_list extends class_field {
 		// indien niet goed bewaard gebruik dan de form waarde
 		if ( $required_typecheck_result == 0 ) {
 			$veldwaarde = $this->get_form_value();
+//echo "ZZZZ<BR>";
 		} else {
+//echo "XXXX<BR>";
+//print_r( $row );
 			$veldwaarde = $row[$this->get_fieldname()];
+
+//echo $veldwaarde . "  ////<br>";
 
 			$onNewValue = $this->get_onNew($m_form["primarykey"]);
 			if ( $onNewValue != "" ) {
+//	echo "yyyy<BR>";
 				$veldwaarde = $onNewValue;
 			}
 		}
+//echo $veldwaarde . "  ////<br>";
 
 		// strip slashes
 		$veldwaarde = stripslashes($veldwaarde);
@@ -132,6 +129,7 @@ class class_field_list extends class_field {
 		// connect to server
 		$this->oDb->connect();
 
+//echo $veldwaarde . "  ----<br>";
 		// execute query
 		$veldwaarde_currentvalue = $veldwaarde;
 		if ( $veldwaarde_currentvalue == '' ) {
@@ -141,7 +139,7 @@ class class_field_list extends class_field {
 
 		if ( $this->m_dbhandle == null ) {
 			// TODOTODO
-			$res2 = mysql_query($this->oMisc->PlaceURLParametersInQuery($this->m_query, "no"), $this->oDb->connection()) or die(mysql_error());
+			$res2 = mysql_query($this->oMisc->PlaceURLParametersInQuery($this->m_query, "no"), $this->oDb->getConnection()) or die(mysql_error());
 		} else {
 			// TODOTODO
 			$res2 = mysql_query($this->oMisc->PlaceURLParametersInQuery($this->m_query, "no"), $this->m_dbhandle) or die(mysql_error());
@@ -159,6 +157,8 @@ class class_field_list extends class_field {
 
 			$optionvalue = $row2[$this->m_id_field];
 			$inputfield .= "\t<option value=\"" . $optionvalue . "\"";
+
+//echo $optionvalue . ' - ' . $veldwaarde . ' ++++<br>' . "\n";
 
 			if ( $optionvalue == $veldwaarde ) {
 				$inputfield .= " SELECTED";

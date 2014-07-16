@@ -4,8 +4,8 @@
 require_once("./classes/class_form/fieldtypes/class_field.inc.php");
 
 class class_field_time_single_field extends class_field {
-    private $m_possible_hour_values;
-    private $m_possible_minute_values;
+	private $m_possible_hour_values;
+	private $m_possible_minute_values;
 
 	// TODOEXPLAIN
 	function class_field_time_single_field($fieldsettings) {

@@ -6,32 +6,6 @@ class class_date {
 
 	// TODOEXPLAIN
 	function __construct( $year, $month = 1, $day = 1, $hours = 1, $minutes = 1, $seconds = 1 ) {
-/*
-		if ( strlen($year . "") > 4 ) {
-			$tmp = $year;
-			$year = substr($tmp, 0, 4);
-		}
-
-		if ( $month == '' ) {
-			$month = 1;
-		}
-
-		if ( $day == '' ) {
-			$day = 1;
-		}
-
-		if ( $hours == '' ) {
-			$hours = 0;
-		}
-
-		if ( $minutes == '' ) {
-			$minutes = 0;
-		}
-
-		if ( $seconds == '' ) {
-			$seconds = 0;
-		}
-*/
 		$this->date = mktime((int)$hours, (int)$minutes, (int)$seconds, (int)$month, (int)$day, (int)$year);
 	}
 
@@ -117,5 +91,9 @@ class class_date {
 
 		return $lastMonthInQuarter;
 	}
+
+	// TODOEXPLAIN
+	public function __toString() {
+		return "Class: " . get_class($this) . "\ndate: " . $this->date . "\n";
+	}
 }
-?>

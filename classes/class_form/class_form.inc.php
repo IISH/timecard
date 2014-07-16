@@ -3,17 +3,17 @@ require_once("./classes/class_file.inc.php");
 require_once("./classes/class_misc.inc.php");
 
 class class_form {
-    private $m_form;
-    protected $settings;
-    private $m_array_of_fields = array();
+	private $m_form;
+	protected $settings;
+	private $m_array_of_fields = array();
 
-    protected $oDb;
-    protected $oClassFile;
-    protected $oClassMisc;
+	protected $oDb;
+	protected $oClassFile;
+	protected $oClassMisc;
 
-    private $m_errors = array();
-    protected $m_doc_id;
-    private $m_old_doc_id;
+	private $m_errors = array();
+	protected $m_doc_id;
+	private $m_old_doc_id;
 
 	// TODOEXPLAIN
 	function class_form($settings, $oDb) {
@@ -88,13 +88,13 @@ class class_form {
 		}
 
 		// execute query
-		$res = mysql_query($query, $this->oDb->connection()) or die(mysql_error());
+		$res = mysql_query($query, $this->oDb->getConnection()) or die(mysql_error());
 
 		// if current id = 0
 		// get the last id
 		if ( $this->m_doc_id == "0" || $this->m_doc_id == '' ) {
 			// tabelnaam moet als variable
-			$this->m_doc_id = $this->timecard_mssql_insert_id($this->m_form["inserttable"]);
+			$this->m_doc_id = $this->timecard_mysql_insert_id($this->m_form["table"]);
 		}
 
 		// 
@@ -109,22 +109,22 @@ class class_form {
 		// get the last id
 		if ( $this->m_doc_id == "0" || $this->m_doc_id == '' ) {
 			// todo: tabelnaam moet als variable
-			$this->m_doc_id = $this->timecard_mssql_insert_id($table);
+			$this->m_doc_id = $this->timecard_mysql_insert_id($table);
 		}
 
 		return $this->m_doc_id;
 	}
 
 	// TODOEXPLAIN
-	function timecard_mssql_insert_id($table) {
+	function timecard_mysql_insert_id($table) {
 		$retval = '0';
 
 		$query = "SELECT TOP 1 ID FROM $table ORDER BY ID DESC ";
-		$result = mssql_query($query, $this->oDb->connection());
-		if ( $row = mssql_fetch_assoc($result) ) {
+		$result = mysql_query($query, $this->oDb->getConnection());
+		if ( $row = mysql_fetch_assoc($result) ) {
 			$retval = $row["ID"];
 		}
-		mssql_free_result($result);
+		mysql_free_result($result);
 
 		return $retval;
 	}
@@ -304,7 +304,7 @@ class class_form {
 		$this->m_form["query"] = $this->oClassMisc->PlaceURLParametersInQuery($this->m_form["query"], "no");
 
 		// execute query
-		$res = mysql_query($this->m_form["query"], $this->oDb->connection()) or die(mysql_error());
+		$res = mysql_query($this->m_form["query"], $this->oDb->getConnection()) or die(mysql_error());
 
 		if ($res){
 
@@ -349,9 +349,6 @@ class class_form {
 
 		// free result set
 		mysql_free_result($res);
-
-		// disconnect from database
-		$this->oDb->disconnect();
 
 		// get form_start
 		$form_start = $this->Get_PreloadedTemplateDesign($preloaded_templates, "form_start");

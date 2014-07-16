@@ -6,9 +6,6 @@ $oWebuser->checkLoggedIn();
 $date = class_datetime::get_date($protect);
 $oDate = new class_date( $date["y"], $date["m"], $date["d"] );
 
-// sync Timecard Protime
-syncTimecardProtimeMonth($oWebuser->getTimecardId(), $oWebuser->getProtimeId(), $oDate);
-
 // create webpage
 $oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
@@ -35,18 +32,16 @@ function createMonthContent( $date ) {
 
 	// TODOEXPLAIN
 	function getUserMonth( $date ) {
-		global $settings, $dbhandleTimecard, $oWebuser, $oDate;
+		global $settings, $oWebuser, $oDate;
 
 		$ret = '';
 
-		require_once("./classes/class_db.inc.php");
 		require_once("./classes/class_view/class_view.inc.php");
-
 		require_once("./classes/class_view/fieldtypes/class_field_string.inc.php");
 		require_once("./classes/class_view/fieldtypes/class_field_time.inc.php");
 		require_once("./classes/class_view/fieldtypes/class_field_date.inc.php");
 
-		$oDb = new class_db($settings, 'timecard');
+		$oDb = new class_mysql($settings, 'timecard');
 		$oView = new class_view($settings, $oDb);
 
 		// if legacy, then no edit link
@@ -57,7 +52,7 @@ function createMonthContent( $date ) {
 		}
 
 		$oView->set_view( array(
-			'query' => 'SELECT * FROM vw_hours2011_user WHERE Employee=' . $oWebuser->getTimecardId() . ' AND DateWorked LIKE \'' . $oDate->get("Y-m") . '-%\' '
+			'query' => 'SELECT * FROM vw_hours_user WHERE Employee=' . $oWebuser->getTimecardId() . ' AND DateWorked LIKE \'' . $oDate->get("Y-m") . '-%\' '
 			, 'count_source_type' => 'query'
 			, 'order_by' => 'DateWorked, Description, TimeInMinutes DESC '
 			, 'anchor_field' => 'ID'
@@ -74,7 +69,6 @@ function createMonthContent( $date ) {
 			, 'format' => 'D j F'
 			, 'nobr' => true
 			, 'href' => 'day.php?d=[FLD:yyyymmdd]&backurl=[BACKURL]&backurllabel=Month'
-			, 'href_alttitle' => 'Go to day'
 			)));
 
 		// if legacy, then no edit link
@@ -87,7 +81,6 @@ function createMonthContent( $date ) {
 			'fieldname' => 'Description'
 			, 'fieldlabel' => 'Project'
 			, 'href' => $href
-			, 'href_alttitle' => 'Edit hours'
 			, 'no_href_if' => array(
 					"field" => "protime_absence_recnr"
 					, "operator" => "<>"
@@ -132,26 +125,24 @@ function createMonthContent( $date ) {
 			'fieldname' => 'protime_absence_recnr'
 			, 'fieldlabel' => ''
 			, 'show_different_value' => array(
-					"value" => "0"
-					, "showvalue" => ""
-					, "showelsevalue" => "<a alt=\"Imported from Protime\" title=\"Imported from Protime\" class=\"PT\">(PT)</a>"
+				"value" => "0"
+				, "showvalue" => ""
+				, "showelsevalue" => "<a alt=\"Imported from Protime\" title=\"Imported from Protime\" class=\"PT\">(PT)</a>"
 				)
 			)));
 
-		// calculate and show view
-		// QUICK AND DIRTY CONCAT/REPLACE
-		$list = $oView->generate_view() . "___";
+		$oView->add_field( new class_field_string ( array(
+			'fieldname' => 'daily_automatic_addition_id'
+			, 'fieldlabel' => ''
+			, 'show_different_value' => array(
+				"value" => ""
+				, "showvalue" => ""
+				, "showelsevalue" => "<a alt=\"Daily automatic addition\" title=\"Daily automatic addition\" class=\"PT\">(DAA)</a>"
+				)
+			)));
 
-		$oEmployee = new class_employee( $oWebuser->getTimecardId(), $settings );
-		$protime_month_total = $oEmployee->getProtimeMonthTotal($date, 'max');
-
-		// show protime month total
-		$ptime = "<tr><td><b>Total (protime):&nbsp;</td><td></td><td></td><td><b>" . class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes( $protime_month_total ) . "</b></td></tr>";
-
-		// QUICK AND DIRTY CONCAT/REPLACE
-		$list = str_ireplace("</table>___", $ptime . "</table>", $list);
-
-		$ret .= $list;
+		// generate view
+		$ret .= $oView->generate_view();
 
 		return $ret;
 	}

@@ -19,16 +19,18 @@ require_once "classes/_db_disconnect.inc.php";
 function createFeestdagenContent() {
 	global $settings, $oWebuser;
 
-	$ret = "<h2>National holidays</h2>";
+	// get design
+	$design = new class_contentdesign("page_nationalholidays");
 
-	require_once("./classes/class_db.inc.php");
+	// add header
+	$ret = $design->getHeader();
+
 	require_once("./classes/class_view/class_view.inc.php");
-
 	require_once("./classes/class_view/fieldtypes/class_field_date.inc.php");
 	require_once("./classes/class_view/fieldtypes/class_field_string.inc.php");
 	require_once("./classes/class_view/fieldtypes/class_field_bit.inc.php");
 
-	$oDb = new class_db($settings, 'timecard');
+	$oDb = new class_mysql($settings, 'timecard');
 	$oView = new class_view($settings, $oDb);
 
 	$add_new_url = '';
@@ -49,7 +51,7 @@ function createFeestdagenContent() {
 	$oView->add_field( new class_field_date ( array(
 		'fieldname' => 'datum'
 		, 'fieldlabel' => 'Date'
-		, 'if_no_value_value' => '-no value-'
+		, 'if_no_value' => '-no value-'
 		, 'format' => 'D j F Y'
 		)));
 
@@ -74,8 +76,11 @@ function createFeestdagenContent() {
 		, 'different_false_value' => 'no'
 		)));
 
-	// calculate and show view
+	// generate view
 	$ret .= $oView->generate_view();
+
+	// add footer
+	$ret .= $design->getFooter();
 
 	return $ret;
 }

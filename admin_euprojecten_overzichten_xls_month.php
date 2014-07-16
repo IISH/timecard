@@ -1,5 +1,5 @@
 <?php 
-require_once "classes/start_no_session_start.inc.php";
+require_once "classes/start.inc.php";
 
 $oWebuser->checkLoggedIn();
 
@@ -11,7 +11,6 @@ $id = substr($protect->request_positive_number_or_empty('get', "id"), 0, 4);
 
 $oEmployee = new class_employee($id, $settings);
 $oDate = new class_date($year, $month, 1);
-syncTimecardProtimeMonth($id, $oEmployee->getProtimeId(), $oDate);
 
 if ( $year == '' || $month == '' || $id == '' ) {
 	die('go to <a href="admin_euprojecten_overzichten.php">view</a>');
@@ -20,7 +19,7 @@ if ( $year == '' || $month == '' || $id == '' ) {
 // + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
 
 $r = 0;
-$periode = $year . '-' . substr('0' . $month, -2);
+$periode = $year . '-' . str_pad( $month, 2, '0', STR_PAD_LEFT);
 $nrOfCols = 31;
 $widthDataColumns = 5.5;
 $widthTotalColumn = 7.0;
@@ -65,11 +64,13 @@ foreach ( $projects as $one_project ) {
 	}
 
 	$c = 1;
-	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(fixCol($c), $r, $one_project[0] . getProjectName($one_project[1], $dbhandleTimecard));
+	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(fixCol($c), $r, $one_project[0] . getProjectName($one_project[1], $oConn->getConnection()));
 	if ( $one_project[3] >= 0 ) {
 		$objPHPExcel->getActiveSheet()->getStyle(convertSpreadsheatColumnNumberToColumnCharacter($c) . $r)->applyFromArray($boldLeftStyle);
 	}
 	$objPHPExcel->getActiveSheet()->getStyle(convertSpreadsheatColumnNumberToColumnCharacter($c) . $r)->applyFromArray($borderStyle);
+
+	$arrUren = getTimecardUrenGroupedByDay($id, $year, $month, $one_project[1]);
 	for ( $i = 1; $i <= 31; $i++ ) {
 		if ( $lastDayOfMonth < $i ) {
 			$objPHPExcel->getActiveSheet()->getStyle(convertSpreadsheatColumnNumberToColumnCharacter($c+$i) . $r)->applyFromArray($greyBackgroundStyle);
@@ -78,9 +79,7 @@ foreach ( $projects as $one_project ) {
 			if ( $one_project[3] > 0 ) {
 				$uren = "=sum(" . convertSpreadsheatColumnNumberToColumnCharacter($c+$i) . ($r+1) . ":" . convertSpreadsheatColumnNumberToColumnCharacter($c+$i) . ($r+$one_project[3]) . ")";
 			} else {
-				$uren = 0;
-
-				$uren = getTimecardUren($id, $year, $month, $i, $one_project[1], $dbhandleTimecard);
+				$uren = $arrUren[$year . '-' . str_pad($month, 2, '0', STR_PAD_LEFT) . '-' . str_pad($i, 2, '0', STR_PAD_LEFT)];
 
 				//
 				$uren = convertMinutesToHours($uren);
@@ -177,11 +176,12 @@ foreach ($arrAfwezigheden as $a => $b ) {
 	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(fixCol($c), $r, $a);
 	$objPHPExcel->getActiveSheet()->getStyle(convertSpreadsheatColumnNumberToColumnCharacter($c) . $r)->applyFromArray($boldLeftStyle);
 	$objPHPExcel->getActiveSheet()->getStyle(convertSpreadsheatColumnNumberToColumnCharacter($c) . $r)->applyFromArray($borderStyle);
+	$arrUren = getProtimeUrenGroupedByDay($oEmployee->getProtimeId(), $year, $month, $b, $id);
 	for ( $i = 1; $i <= 31; $i++ ) {
 		if ( $lastDayOfMonth < $i ) {
 			$objPHPExcel->getActiveSheet()->getStyle(convertSpreadsheatColumnNumberToColumnCharacter($c+$i) . $r)->applyFromArray($greyBackgroundStyle);
 		} else {
-			$uren = getProtimeUren($oEmployee->getProtimeId(), $year, $month, $i, $b, $dbhandleProtime, $id);
+			$uren = $arrUren[$year . '-' . str_pad($month, 2, '0', STR_PAD_LEFT) . '-' . str_pad($i, 2, '0', STR_PAD_LEFT)];
 			$uren = convertMinutesToHours($uren);
 			$objPHPExcel->getActiveSheet()->getStyle(convertSpreadsheatColumnNumberToColumnCharacter($c+$i) . $r)->getNumberFormat()->setFormatCode('###0.00');
 			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(fixCol($c+$i), $r, $uren);
@@ -207,6 +207,7 @@ $c = 1;
 $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(fixCol($c), $r, "Dagtotaal");
 $objPHPExcel->getActiveSheet()->getStyle(convertSpreadsheatColumnNumberToColumnCharacter($c) . $r)->applyFromArray($boldLeftStyle);
 $objPHPExcel->getActiveSheet()->getStyle(convertSpreadsheatColumnNumberToColumnCharacter($c) . $r)->applyFromArray($borderStyle);
+$arrUren = $oEmployee->getProtimeDayTotalGroupedByDay($t_date);
 for ( $i = 1; $i <= 31; $i++ ) {
 	if ( $lastDayOfMonth < $i ) {
 		$objPHPExcel->getActiveSheet()->getStyle(convertSpreadsheatColumnNumberToColumnCharacter($c+$i) . $r)->applyFromArray($greyBackgroundStyle);
@@ -216,7 +217,7 @@ for ( $i = 1; $i <= 31; $i++ ) {
 		$t_date["m"] = substr('0'.$month,-2);
 		$t_date["d"] = substr('0'.$i,-2);
 
-		$uren = $oEmployee->getProtimeDayTotal($t_date);
+		$uren = $arrUren[$t_date["y"] . $t_date["m"] . $t_date["d"]];
 
 		$uren = convertMinutesToHours($uren);
 		if ( $uren == '' ) {

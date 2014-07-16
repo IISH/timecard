@@ -2,14 +2,6 @@
 // 
 $arrAfwezigheden = array("Verlof" => "verlof", "Feestdagen" => "feestdagen", "Ziekte/Dokter" => "ziekte");
 
-// connection to the database
-$dbhandleTimecard = mysql_connect($settings["timecard_server"], $settings["timecard_user"], $settings["timecard_password"]) or die("Couldn't connect to MySql Server on: " . $settings["timecard_server"]);
-$dbhandleProtime = mssql_connect($settings["protime_server"], $settings["protime_user"], $settings["protime_password"]) or die("Couldn't connect to SQL Server on: " . $settings["protime_server"]);
-
-// select a database to work with
-$selectedTimecard = mysql_select_db($settings["timecard_database"], $dbhandleTimecard) or die("Couldn't open database " . $settings["timecard_database"]);
-$selectedProtime = mssql_select_db($settings["protime_database"], $dbhandleProtime) or die("Couldn't open database " . $settings["protime_database"]);
-
 // achterhaal naam van persoon
 $oEmployee = new class_employee($id, $settings);
 $employee_name = $oEmployee->getLastname() . ', ' . $oEmployee->getFirstname();
@@ -17,9 +9,9 @@ $employee_name = $oEmployee->getLastname() . ', ' . $oEmployee->getFirstname();
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
 
 $projects = array();
-$projects = getListOfShowSeparatedProjectsOnReports($projects, 0, 0);
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+$projects = getListOfShowSeparatedProjectsOnReports($projects, $year, 0, 0);
+//debug($projects);
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 /** PHPExcel */
 require_once 'PHPExcel/PHPExcel.php';
@@ -147,22 +139,84 @@ function convertSpreadsheatColumnNumberToColumnCharacter($i, $choices = "ABCDEFG
 }
 
 // TODOEXPLAIN
-function getTimecardUren($id, $year, $month, $day, $pid, $handle) {
+function getTimecardUrenGroupedByMonth($id, $year, $pid) {
+	global $settings;
+
+	$oConn = new class_mysql($settings, 'timecard');
+	$oConn->connect();
+
+	$retval = array();
+
+	$query = "SELECT SUBSTR(DateWorked,1,7) AS WORKDATE, SUM(TimeInMinutes) AS AANTAL FROM Workhours WHERE Employee=" . $id . " ::DATE:: "
+		. " AND WorkCode IN (SELECT ID FROM Workcodes WHERE ID=" . $pid . " OR ParentID = " . $pid . ") ";
+
+	$query = str_replace("::DATE::", " AND DateWorked LIKE '" . $year . "-%' ", $query);
+
+	$query .= " GROUP BY SUBSTR(DateWorked,1,7) ";
+
+	//debug($query);
+
+	$result = mysql_query($query, $oConn->getConnection());
+	while ($row = mysql_fetch_assoc($result)) {
+		$retval[$row["WORKDATE"]] = $row["AANTAL"];
+	}
+
+	mysql_free_result($result);
+
+	return $retval;
+}
+
+// TODOEXPLAIN
+function getTimecardUrenGroupedByDay($id, $year, $month, $pid) {
+	global $settings;
+
+	$oConn = new class_mysql($settings, 'timecard');
+	$oConn->connect();
+
+	$retval = array();
+
+	$query = "
+SELECT SUBSTR(DateWorked,1,10) AS WORKDATE, SUM(TimeInMinutes) AS AANTAL
+FROM Workhours
+WHERE Employee=" . $id . "
+	AND DateWorked LIKE '" . $year . '-' . str_pad($month, 2, '0', STR_PAD_LEFT) . "-%'
+	AND WorkCode IN (
+			SELECT ID FROM Workcodes WHERE ID=" . $pid . " OR ParentID = " . $pid . "
+		)
+GROUP BY SUBSTR(DateWorked,1,10)
+";
+
+	$result = mysql_query($query, $oConn->getConnection());
+	while ($row = mysql_fetch_assoc($result)) {
+		$retval[$row["WORKDATE"]] = $row["AANTAL"];
+	}
+
+	mysql_free_result($result);
+
+	return $retval;
+}
+
+// TODOEXPLAIN
+function getTimecardUren($id, $year, $month, $day, $pid) {
+	global $settings;
+
+	$oConn = new class_mysql($settings, 'timecard');
+	$oConn->connect();
+
 	$retval = 0;
 
-	$query = "SELECT SUM(TimeInMinutes) AS AANTAL FROM Workhours WHERE Employee=" . $id
-	 . " AND isdeleted=0 "
-	 . " ::DATE:: "
-	 . " AND WorkCode IN (SELECT ID FROM Workcodes2011 WHERE ID=" . $pid . " OR ParentID = " . $pid . ") "
-	 ;
+	$query = "SELECT SUM(TimeInMinutes) AS AANTAL FROM Workhours WHERE Employee=" . $id . " ::DATE:: "
+		. " AND WorkCode IN (SELECT ID FROM Workcodes WHERE ID=" . $pid . " OR ParentID = " . $pid . ") ";
 
-	 if ( $day > 0 ) {
+	if ( $day > 0 ) {
 		$query = str_replace("::DATE::", " AND DateWorked LIKE '" . $year . '-' . str_pad($month, 2, '0', STR_PAD_LEFT) . '-' . str_pad($day, 2, '0', STR_PAD_LEFT) . "%' ", $query);
-	 } else {
-		$query = str_replace("::DATE::", " AND DateWorked LIKE '" . $year . '-' . str_pad($month, 2, '0', STR_PAD_LEFT) . '-' . "%' ", $query);
-	 }
+	} else {
+		$query = str_replace("::DATE::", " AND DateWorked LIKE '" . $year . '-' . str_pad($month, 2, '0', STR_PAD_LEFT) . "-%' ", $query);
+	}
 
-	$result = mysql_query($query, $handle);
+//die( $query );
+
+	$result = mysql_query($query, $oConn->getConnection());
 	if ($row = mysql_fetch_row($result)) {
 		$retval = $row[0];
 	}
@@ -173,7 +227,89 @@ function getTimecardUren($id, $year, $month, $day, $pid, $handle) {
 }
 
 // TODOEXPLAIN
-function getProtimeUren($id, $year, $month, $day, $view, $handle, $timecardid) {
+function getProtimeUrenGroupedByDay($protimeId, $year, $month, $view, $timecardid) {
+	global $settings;
+
+	$retval = array();
+
+	// Verlof
+	// 1	Bijzonder verlof
+	// 2	Calamiteitenverlof
+	// 8	Onbetaald verlof
+	// 9	Ouderschapsverlof
+	// 10	Sabbatical
+	// 11	Studieverlof
+	// 16	Zorgverlof
+	// 17	Zwangerschapsverlof
+	// 7	Levensloop
+	// 3	Cursus
+	// 19	Compensatie Overuren
+	// 12	Vakantie
+
+	// Feestdagen
+	// 6	Feestdag
+
+	// Ziekte
+	// 15	Ziekte
+	// 5	Dokter/Tandarts
+
+	// werk buiten iisg, werk thuis, dienstreis
+	// 4	Dienstreis
+	// 13	Werk buiten IISG
+	// 18	Werk thuis
+
+	$query = "SELECT SUBSTR(BOOKDATE, 1, 10) AS WORKDATE, SUM(ABSENCE_VALUE) AS AANTAL FROM PROTIME_P_ABSENCE WHERE PERSNR=" . $protimeId . " AND BOOKDATE LIKE '" . $year . substr('0'.$month,-2) . "%' ";
+
+	$query .= "	AND ABSENCE IN ( ";
+	switch ( $view ) {
+		case "verlof":
+			$query .= "1,2,8,9,10,11,16,17,7,3,19,12";
+			break;
+		case "feestdagen":
+			$query .= "6";
+			break;
+		case "ziekte":
+			$query .= "15,5";
+			break;
+		case "werkbuiten":
+			$query .= "4,13,18";
+			break;
+	}
+	$query .= "	) GROUP BY SUBSTR(BOOKDATE, 1, 10) ";
+
+//echo $query . ' +<br>';
+
+	$oTc = new class_mysql($settings, 'timecard');
+	$oTc->connect();
+
+	$result2 = mysql_query($query, $oTc->getConnection());
+
+	while ($row2 = mysql_fetch_assoc($result2)) {
+		$retval[$row2["WORKDATE"]] = $row2["AANTAL"];
+	}
+	mysql_free_result($result2);
+
+	if ( $view == 'verlof' ) {
+		// achterhaal 'eerder weg'
+
+		$oDate = new class_date( $year, $month, 1 );
+		$arrEerderWeg = getEerderNaarHuisGroupedByDay($timecardid, $oDate);
+		foreach ( $arrEerderWeg as $ndx => $value ) {
+			if ( isset($retval[$ndx]) ) {
+				$retval[$ndx] += $value;
+			} else {
+				$retval[$ndx] = $value;
+			}
+		}
+	}
+
+	return $retval;
+}
+
+// TODOEXPLAIN
+function getProtimeUren($id, $year, $month, $day, $view, $timecardid) {
+	global $settings;
+
 	$retval = 0.0;
 
 	// Verlof
@@ -203,9 +339,9 @@ function getProtimeUren($id, $year, $month, $day, $view, $handle, $timecardid) {
 	// 18	Werk thuis
 
 	if ( $day > 0 ) {
-		$query = "SELECT SUM(ABSENCE_VALUE) AS AANTAL FROM P_ABSENCE WHERE PERSNR=" . $id . " AND BOOKDATE='" . $year . substr('0'.$month,-2) . substr('0'.$day,-2) . "' ";
+		$query = "SELECT SUM(ABSENCE_VALUE) AS AANTAL FROM PROTIME_P_ABSENCE WHERE PERSNR=" . $id . " AND BOOKDATE='" . $year . substr('0'.$month,-2) . substr('0'.$day,-2) . "' ";
 	} else {
-		$query = "SELECT SUM(ABSENCE_VALUE) AS AANTAL FROM P_ABSENCE WHERE PERSNR=" . $id . " AND BOOKDATE LIKE '" . $year . substr('0'.$month,-2) . "%' ";
+		$query = "SELECT SUM(ABSENCE_VALUE) AS AANTAL FROM PROTIME_P_ABSENCE WHERE PERSNR=" . $id . " AND BOOKDATE LIKE '" . $year . substr('0'.$month,-2) . "%' ";
 	}
 	$query .= "	AND ABSENCE IN ( ";
 	switch ( $view ) {
@@ -224,19 +360,20 @@ function getProtimeUren($id, $year, $month, $day, $view, $handle, $timecardid) {
 	}
 	$query .= "	) ";
 
-	$result2 = mssql_query($query, $handle);
+//echo $query . ' +<br>';
 
-	while ($row2 = mssql_fetch_row($result2)) {
+	$oTc = new class_mysql($settings, 'timecard');
+	$oTc->connect();
+
+	$result2 = mysql_query($query, $oTc->getConnection());
+
+	while ($row2 = mysql_fetch_row($result2)) {
 		$retval += $row2[0];
 	}
-	mssql_free_result($result2);
+	mysql_free_result($result2);
 
 	if ( $view == 'verlof' ) {
 		// achterhaal ook 'eerder weg'
-//		$date = array();
-//		$date["y"] = $year;
-//		$date["m"] = substr('0' . $month, -2);
-//		$date["d"] = substr('0' . $day, -2);
 
 		$oDate = new class_date( $year, $month, $day );
 		if ( $day > 0 ) {
@@ -252,11 +389,16 @@ function getProtimeUren($id, $year, $month, $day, $view, $handle, $timecardid) {
 
 // TODOEXPLAIN
 function getProjectName( $id, $handle ) {
+	global $settings;
+
+	$oConn = new class_mysql($settings, 'timecard');
+	$oConn->connect();
+
 	$retval = '';
 
-	$queryPN = "SELECT Description, ProjectnummerEu FROM Workcodes2011 WHERE ID=" . $id;
+	$queryPN = "SELECT Description, ProjectnummerEu FROM Workcodes WHERE ID=" . $id;
 
-	$resultPN = mysql_query($queryPN, $handle);
+	$resultPN = mysql_query($queryPN, $oConn->getConnection());
 	if ($rowPN = mysql_fetch_array($resultPN)) {
 		$retval = $rowPN["Description"] . " (" . trim($rowPN["ProjectnummerEu"]) . ")";
 	}
@@ -272,7 +414,7 @@ function getProjectName( $id, $handle ) {
 
 // TODOEXPLAIN
 function convertMinutesToHours($value) {
-	if ( $value == 0 ) {
+	if ( $value == 0 || $value == '' ) {
 		$retval = '';
 	} else {
 		$retval = $value*1.0;
@@ -314,19 +456,27 @@ function getMonthNameInDutch( $m, $length = 3) {
 }
 
 // TODOEXPLAIN
-function getListOfShowSeparatedProjectsOnReports( $retval, $level, $parent_id = 0 ) {
-	global $dbhandleTimecard;
+function getListOfShowSeparatedProjectsOnReports( $retval, $year, $level, $parent_id = 0 ) {
+	global $settings;
 
-	$query = "SELECT * FROM Workcodes2011 ::WHERE:: ORDER BY Description ";
+	$oConn = new class_mysql($settings, 'timecard');
+	$oConn->connect();
+	$query = "SELECT * FROM Workcodes ::WHERE:: ORDER BY Description ";
 
 	if ( $level > 0 ) {
 		$query = str_replace("::WHERE::", " WHERE ParentID=" . $parent_id, $query);
-
 	} else {
-		$query = str_replace("::WHERE::", " WHERE show_separate_in_reports=1 ", $query);
+		// TODOXXXSLOW
+		$query = str_replace("::WHERE::", " WHERE show_separate_in_reports=1
+			AND ID IN (
+					SELECT WorkCode FROM `Workhours` WHERE DateWorked LIKE '$year%' GROUP BY WorkCode
+				)
+			 ", $query);
 	}
 
-	$result = mysql_query($query, $dbhandleTimecard);
+//debug($query);
+	$result = mysql_query($query, $oConn->getConnection());
+
 	while ($row = mysql_fetch_array($result)) {
 		$spaces = str_repeat(' ', $level);
 		$id = $row["ID"];
@@ -346,7 +496,7 @@ function getListOfShowSeparatedProjectsOnReports( $retval, $level, $parent_id = 
 		// ONLY ONE LEVEL DEEP
 		if ( $number_of_children > 0 && $level == 0) {
 			$newlevel = $level+1;
-			$retval = getListOfShowSeparatedProjectsOnReports( $retval, $newlevel, $id);
+			$retval = getListOfShowSeparatedProjectsOnReports( $retval, $year, $newlevel, $id);
 		}
 	}
 	mysql_free_result($result);
@@ -356,13 +506,16 @@ function getListOfShowSeparatedProjectsOnReports( $retval, $level, $parent_id = 
 
 // TODOEXPLAIN
 function getNumberOfChildren( $projectId ) {
-	global $dbhandleTimecard;
+	global $settings;
+
+	$oConn = new class_mysql($settings, 'timecard');
+	$oConn->connect();
 
 	$retval = 0;
 
-	$query = "SELECT COUNT(*) AS AANTAL FROM Workcodes2011 WHERE ParentID=" . $projectId;
+	$query = "SELECT COUNT(*) AS AANTAL FROM Workcodes WHERE ParentID=" . $projectId;
 
-	$result = mysql_query($query, $dbhandleTimecard);
+	$result = mysql_query($query, $oConn->getConnection());
 	if ($row = mysql_fetch_array($result)) {
 		$retval = $row["AANTAL"];
 	}
@@ -370,4 +523,3 @@ function getNumberOfChildren( $projectId ) {
 
 	return $retval;
 }
-?>

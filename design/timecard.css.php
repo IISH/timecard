@@ -106,7 +106,21 @@ input, select, textarea {
 	border: 1px solid <?php echo $c; ?>;
 }
 
-h2, h3 {
+h2 {
+	color: <?php echo $c; ?>;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	font-size: 15px;
+}
+
+h3 {
+	color: <?php echo $c; ?>;
+	margin-top: 0px;
+	margin-bottom: 10px;
+	font-size: 15px;
+}
+
+h4 {
 	color: <?php echo $c; ?>;
 	margin-top: 0px;
 	margin-bottom: 0px;

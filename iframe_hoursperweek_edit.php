@@ -24,21 +24,18 @@ function createHoursperweekEditContent() {
 
 	$ret = '';
 
-	require_once("./classes/class_db.inc.php");
 	require_once("./classes/class_form/class_form.inc.php");
-
 	require_once("./classes/class_form/fieldtypes/class_field_string.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_integer.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_decimal.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_hidden.inc.php");
 
-	$oDb = new class_db($settings, 'timecard');
+	$oDb = new class_mysql($settings, 'timecard');
 	$oForm = new class_form($settings, $oDb);
 
 	$oForm->set_form( array(
 		'query' => 'SELECT * FROM HoursPerWeek WHERE ID=[FLD:ID] '
 		, 'table' => 'HoursPerWeek'
-		, 'inserttable' => 'HoursPerWeek'
 		, 'primarykey' => 'ID'
 		));
 
@@ -97,7 +94,7 @@ function createHoursperweekEditContent() {
 		, 'fieldlabel' => 'isdeleted'
 		)));
 
-	// calculate form
+	// generate form
 	$ret .= $oForm->generate_form();
 
 	return $ret;

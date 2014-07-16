@@ -16,9 +16,7 @@ if ( !in_array($fav, array('', 'vakantie', 'present', 'hoursleft', 'birthdays') 
 	die('Error 541774522');
 }
 
-require_once("./classes/class_db.inc.php");
-
-// 
+//
 $query = '';
 if ( $dowhat == 'a' ) {
 	// add to database
@@ -35,7 +33,7 @@ if ( $dowhat == 'a' ) {
 }
 
 if ( $query != '' ) {
-	$resultSelect = mysql_query($query, $dbhandleTimecard);
+	$resultSelect = mysql_query($query, $oConn->getConnection());
 
 	echo $div;
 } else {

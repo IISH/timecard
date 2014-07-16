@@ -9,16 +9,16 @@ if ( !$oWebuser->hasAdminAuthorisation() ) {
 	die('Go to <a href="index.php">time card home</a>');
 }
 
-require_once("./classes/class_db.inc.php");
-
 //
 $s = getAndProtectSearch();
 
 $retval = '';
 
+$oConn2 = new class_mysql($settings, 'timecard');
+$oConn2->connect();
 $favIds = '0';
 $queryFav = "SELECT * FROM EmployeeFavourites WHERE TimecardID=" . $oWebuser->getTimecardId() . ' AND type=\'hoursleft\' ';
-$resultFav = mysql_query($queryFav, $dbhandleTimecard);
+$resultFav = mysql_query($queryFav, $oConn2->getConnection());
 while ( $rowFav = mysql_fetch_array($resultFav) ) {
 	$favIds .= ',' . $rowFav["ProtimeID"];
 }
@@ -61,7 +61,10 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium, $favIds ) {
-	global $dbhandleTimecard, $settings, $settings_from_database;
+	global $settings;
+
+	$oConn = new class_mysql($settings, 'timecard');
+	$oConn->connect();
 
 	$ret = '';
 
@@ -80,7 +83,7 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 	// calculate number of holidays until end of year
 	$nrOfHolidays = 0;
 	$queryHolidays = "SELECT COUNT(*) AS aantal FROM Feestdagen WHERE datum LIKE '" . $year . "%' AND datum>='" . date("Y-m-d") . "' AND isdeleted=0 ";
-	$resultHolidays = mysql_query($queryHolidays, $dbhandleTimecard);
+	$resultHolidays = mysql_query($queryHolidays, $oConn->getConnection());
 	if ( $rowHolidays = mysql_fetch_array($resultHolidays) ) {
 		$nrOfHolidays = $rowHolidays["aantal"];
 	}
@@ -88,8 +91,8 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 	//
 
 	// loop employees
-	$querySelect = "SELECT ID FROM Employees WHERE 1=1 " . $queryCriterium . " ORDER BY LastName, FirstName ";
-	$resultSelect = mysql_query($querySelect, $dbhandleTimecard);
+	$querySelect = "SELECT ID FROM vw_Employees WHERE 1=1 " . $queryCriterium . " ORDER BY NAME, FIRSTNAME ";
+	$resultSelect = mysql_query($querySelect, $oConn->getConnection());
 
 	$arrEmployees = array();
 	while ( $rowSelect = mysql_fetch_array($resultSelect) ) {
@@ -181,7 +184,7 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 
 		// YEAR TOTAL 76
 		$ret .= "\t\t<td valign=top>\n";
-		$ret .= hoursLeft_formatNumber($yearTotal * $settings_from_database["rule76"], 1);
+		$ret .= hoursLeft_formatNumber($yearTotal * class_settings::getSetting("rule76"), 1);
 		$ret .= "\t\t</td>\n";
 
 		// END YEAR TOTAL
@@ -221,7 +224,7 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 
 		// LEFT 76
 		$ret .= "\t\t<td valign=top>\n";
-		$ret .= hoursLeft_formatNumber($left * $settings_from_database["rule76"], 1);
+		$ret .= hoursLeft_formatNumber($left * class_settings::getSetting("rule76"), 1);
 		$ret .= "\t\t</td>\n";
 
 		$ret .= "\t</tr>\n";
@@ -229,6 +232,7 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 	$ret .= "</table>\n";
 
 	}
+
 	return $ret;
 }
 

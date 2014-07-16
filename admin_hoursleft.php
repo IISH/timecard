@@ -131,7 +131,7 @@ Quick search: <input type=\"\" name=\"fldZoek\" id=\"fldZoek\" maxlength=\"20\" 
 
 	$separator = ' &nbsp; &nbsp;';
 	for ( $i = $curmonth; $i <= 12; $i++ ) {
-		$ret .= $separator . "<a href=\"#\" onclick=\"javascript:setDate(" . $curyear . ", " . $i . ");\">" . $curyear . '-' . substr('0' . $i, -2) . "</a>";
+		$ret .= $separator . "<a href=\"#\" onclick=\"javascript:setDate(" . $curyear . ", " . $i . ");\">" . $curyear . '-' . str_pad( $i, 2, '0', STR_PAD_LEFT) . "</a>";
 	}
 	$ret .= $separator . "<a href=\"#\" onclick=\"javascript:setDate(" . ($curyear+1) . ", 1);\">" . ($curyear+1) . "-01</a>";
 
@@ -154,8 +154,6 @@ tcRefreshSearchStart();
 
 // TODOEXPLAIN
 function createHoursLeftRemarks() {
-	global $settings_from_database;
-
 	// REMARKS
 	$ret = "<br>Remarks
 <ol>
@@ -163,10 +161,9 @@ function createHoursLeftRemarks() {
 	<li>If there a no vacation hours shown, please edit user and set 'Protime link'</li>
 	<li>If there is no hour calculation, please go to <a href=\"admin_hoursperweek.php?backurl=" . urlencode(get_current_url()) . "\">Hours per week</a> and enter how many hours the user works per week.</li>
 	<li>Every year the <a href=\"nationalholidays.php?backurl=" . urlencode(get_current_url()) . "\">holidays</a> must be entered.</li>
-	<li>76% rule = " . $settings_from_database["rule76"] . "</li>
+	<li>76% rule = " . class_settings::getSetting("rule76") . "</li>
 </ol>
 ";
 
 	return $ret;
 }
-?>

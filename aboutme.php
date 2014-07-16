@@ -19,56 +19,43 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createSettingsPage() {
-	global $dbhandleTimecard, $oWebuser;
+	global $settings, $oWebuser;
 
-	$ret = '<h2>About me</h2>';
+	// get design
+	$design = new class_contentdesign("page_aboutme");
 
-	$query = "SELECT * FROM Employees WHERE ID=" . $oWebuser->getTimecardId();
-	$result = mysql_query($query, $dbhandleTimecard);
+	// add header
+	$ret = $design->getHeader();
+
+	$oConn = new class_mysql($settings, 'timecard');
+	$oConn->connect();
+
+	$query = "SELECT * FROM vw_Employees WHERE ID=" . $oWebuser->getTimecardId();
+	$result = mysql_query($query, $oConn->getConnection());
+
 	if ($row = mysql_fetch_assoc($result)) {
+		$template = $design->getContent();
 
-		$ret .= "
-<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
-<tr>
-	<td><b>Firstname:</b>&nbsp;</td>
-	<td>" . $row["FirstName"] . "</td>
-</tr>
-<tr>
-	<td><b>Lastname:</b>&nbsp;</td>
-	<td>" . $row["LastName"] . "</td>
-</tr>
-<tr>
-	<td><b>SA/2X login:</b>&nbsp;</td>
-	<td>" . $row["LongCode"] . "</td>
-</tr>
-<tr><td>&nbsp;</td></tr>
-<tr>
-	<td valign=top><b>Vacation hours left:&nbsp;</b></td>
-	<td>" . $oWebuser->calculateVacationHours() . "</td>
-</tr>
-<tr><td>&nbsp;</td></tr>
-<tr>
-	<td><b>hh:mm format:</b>&nbsp;</td>
-	<td valign=top>
-";
+		$data["firstname"] = $row["FIRSTNAME"];
+		$data["lastname"] = $row["NAME"];
+		$data["longcode"] = $row["LongCode"];
+		$data["hours"] = $oWebuser->calculateVacationHours();
 
-		$hoursdoublefield = $row["HoursDoubleField"];
-		if ( $hoursdoublefield == '1' ) {
-			$ret .= 'Double field';
-			$switch_to = 'single field';
+		if ( $row["HoursDoubleField"] == '1' ) {
+			$data["source"] = 'Double field';
+			$data["target"] = 'single field';
 		} else {
-			$ret .= 'Single field';
-			$switch_to = 'double field';
+			$data["source"] = 'Single field';
+			$data["target"] = 'double field';
 		}
 
-		$ret .= " <a href=\"switch_hours.php\">Switch to " . $switch_to . "</a></td>
-</tr>
-</table>
-";
-
+		// add content
+		$ret .= fillTemplate($template, $data);
 	}
 	mysql_free_result($result);
 
+	// add footer
+	$ret .= $design->getFooter();
+
 	return $ret;
 }
-?>

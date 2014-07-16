@@ -22,9 +22,11 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createExportOracleContent() {
-	$ret = "<h2>Exports - Oracle</h2>";
+	// get design
+	$design = new class_contentdesign("page_export_oracle");
 
-	require_once("./classes/class_db.inc.php");
+	// add header
+	$ret = $design->getHeader();
 
 	$ret .= "
 <form name=\"frmOverzicht\" action=\"export_oracle_xls.php\" method=\"get\">
@@ -76,6 +78,9 @@ function createExportOracleContent() {
 </table>
 </form>
 ";
+
+	// add footer
+	$ret .= $design->getFooter();
 
 	return $ret;
 }

@@ -49,6 +49,12 @@ class class_field_string extends class_field {
 
 		$inputfield = str_replace("::VALUE::", $veldwaarde, $inputfield);
 
+		if ( $this->get_style() != '' ) {
+			$inputfield = str_replace("::STYLE::", "STYLE=\"" . $this->get_style() . "\"", $inputfield);
+		} else {
+			$inputfield = str_replace("::STYLE::", '', $inputfield);
+		}
+
 		return $inputfield;
 	}
 

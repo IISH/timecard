@@ -3,15 +3,15 @@ require_once("./classes/class_file.inc.php");
 require_once("./classes/class_misc.inc.php");
 
 class class_view {
-    protected $oDb;
-    protected $oClassFile;
-    protected $oClassMisc;
-    private $settings;
+	protected $oDb;
+	protected $oClassFile;
+	protected $oClassMisc;
+	private $settings;
 
-    private $m_view;
-    private $m_array_of_fields = Array();
+	private $m_view;
+	private $m_array_of_fields = Array();
 
-    private $m_order_by;
+	private $m_order_by;
 
 	// TODOEXPLAIN
 	function class_view($settings, $oDb) {
@@ -207,7 +207,7 @@ class class_view {
 
 		$row_template = "<tr>::TR::</tr>";
 		$header_template = "
-<TH ::TABLE_CELL_WIDTH:: align=\"left\"><a alt=\"::ALTTITLE::\" title=\"::ALTTITLE::\" class=\"nolink\">::TH::</a>::FILTER::&nbsp;</TH>
+<TH ::TABLE_CELL_WIDTH:: align=\"left\" valign=\"top\"><a alt=\"::ALTTITLE::\" title=\"::ALTTITLE::\" class=\"nolink\">::TH::</a>::FILTER::&nbsp;</TH>
 ";
 
 		foreach ($this->m_array_of_fields as $one_field_in_array_of_fields) {
@@ -236,20 +236,20 @@ class class_view {
 				}
 				$tmp_header = str_replace("::ALTTITLE::", $one_field_in_array_of_fields->get_fieldlabel_alttitle(), $tmp_header);
 
-                if ( is_array($one_field_in_array_of_fields->m_viewfilter ) ) {
-                    $filter = $one_field_in_array_of_fields->m_viewfilter["labelfilterseparator"];
+				if ( is_array($one_field_in_array_of_fields->m_viewfilter ) ) {
+					$filter = $one_field_in_array_of_fields->m_viewfilter["labelfilterseparator"];
 
-                    $separator = '';
+					$separator = '';
 
-                    foreach ( $one_field_in_array_of_fields->m_viewfilter["filter"] as $filterfield => $filtervalue ) {
-                        $filter .= $separator . $this->CreateViewFilterInputField($filtervalue);
-                        $separator = $one_field_in_array_of_fields->m_viewfilter["multiplefilterseparator"];
-                    }
+					foreach ( $one_field_in_array_of_fields->m_viewfilter["filter"] as $filterfield => $filtervalue ) {
+						$filter .= $separator . $this->CreateViewFilterInputField($filtervalue);
+						$separator = $one_field_in_array_of_fields->m_viewfilter["multiplefilterseparator"];
+					}
 
-                    $tmp_header = str_replace("::FILTER::", $filter, $tmp_header);
-                } else {
-                    $tmp_header = str_replace("::FILTER::", '', $tmp_header);
-                }
+					$tmp_header = str_replace("::FILTER::", $filter, $tmp_header);
+				} else {
+					$tmp_header = str_replace("::FILTER::", '', $tmp_header);
+				}
 
 				$total_header .= $tmp_header;
 			}
@@ -460,10 +460,8 @@ function onchange_change_filter_doc_submit(obj) {
 			$this->m_view["query"] .= " ORDER BY " . $this->m_order_by;
 		}
 
-//die( $this->m_view["query"] );
-
 		// execute query
-		$res = mysql_query($this->m_view["query"], $this->oDb->connection()) or die( "error 8712378" . "<br>" . mysql_error());
+		$res = mysql_query($this->m_view["query"], $this->oDb->getConnection()) or die( "error 8712378" . "<br>" . mysql_error());
 
 		// get submit buttons (add new / go back)
 		$view_buttons = $this->get_view_buttons();
@@ -486,7 +484,7 @@ function onchange_change_filter_doc_submit(obj) {
 				foreach ( $array_of_records as $record_id ) {
 					$query_delete = $tmp_query_delete . $record_id;
 
-					$res_delete = mysql_query($query_delete, $this->oDb->connection()) or die( "error 52129398" . "<br>" . mysql_error());
+					$res_delete = mysql_query($query_delete, $this->oDb->getConnection()) or die( "error 52129398" . "<br>" . mysql_error());
 				}
 			}
 
@@ -547,7 +545,6 @@ function onchange_change_filter_doc_submit(obj) {
 			// show calculate_total
 			if ( is_array($this->m_view["calculate_total"]) ) {
 				$calculate_total[$this->m_view["calculate_total"]["field"]] = 0;
-				$calculate_total[$this->m_view["calculate_total"]["field2"]] = 0;
 			}
 
 			if ( $show_view_table === true ) {
@@ -582,25 +579,15 @@ function onchange_change_filter_doc_submit(obj) {
 
 						if ( $_POST["form_fld_pressed_button"] != '-delete-' && $_POST["form_fld_pressed_button"] != '-delete-now-' ) {
 
-//							if ( $one_field_in_array_of_fields->m_template != '' ) {
-//								$tmp_data = $this->Get_PreloadedTemplateDesign($preloaded_templates, $one_field_in_array_of_fields->m_template);
-//							} else {
-								$tmp_data = $this->Get_PreloadedTemplateDesign($preloaded_templates, "default");
-//							}
+							$tmp_data = $this->Get_PreloadedTemplateDesign($preloaded_templates, "default");
 
 							// get veld waarde
 							$veldwaarde = $one_field_in_array_of_fields->view_field($row, $criteriumResult);
 							$dbwaarde = $one_field_in_array_of_fields->get_value($row, $criteriumResult);
-
 							// add calculate_total
 							if ( is_array($this->m_view["calculate_total"]) ) {
-								if ( strtolower($one_field_in_array_of_fields->m_fieldname) == strtolower($this->m_view["calculate_total"]["field"]) ) {
+								if ( strtolower($one_field_in_array_of_fields->get_fieldname()) == strtolower($this->m_view["calculate_total"]["field"]) ) {
 									$calculate_total[$this->m_view["calculate_total"]["field"]] += $dbwaarde;
-								}
-								if ( $this->m_view["calculate_total"]["field2"] != '' ) {
-									if ( strtolower($one_field_in_array_of_fields->m_fieldname) == strtolower($this->m_view["calculate_total"]["field2"]) ) {
-										$calculate_total[$this->m_view["calculate_total"]["field2"]] += $dbwaarde;
-									}
 								}
 							}
 
@@ -630,15 +617,6 @@ function onchange_change_filter_doc_submit(obj) {
 					}
 					$return_value .= "<td><b>" . $t . "</b>&nbsp;&nbsp;</td>";
 
-					if ( $this->m_view["calculate_total"]["field2"] != '' ) {
-						$t = $calculate_total[$this->m_view["calculate_total"]["field2"]];
-						if ( $this->m_view["calculate_total"]["type2"] == 'integer' ) {
-							$t = $t;
-						} else {
-							$t = class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes($t);
-						}
-						$return_value .= "<td><b>" . $t . "</b></td>";
-					}
 					$return_value .= "</tr>";
 				}
 
@@ -650,9 +628,6 @@ function onchange_change_filter_doc_submit(obj) {
 
 		// free result set
 		mysql_free_result($res);
-
-		// disconnect from database
-		$this->oDb->disconnect();
 
 		// return result
 		return $return_value;

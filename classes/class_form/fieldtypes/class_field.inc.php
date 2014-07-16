@@ -4,12 +4,12 @@
 require_once("./classes/class_misc.inc.php");
 
 class class_field {
-    protected $oClassMisc;
-    private $m_fieldname;
-    private $m_fieldlabel;
-    private $m_required;
-    private $m_onNew;
-    private $m_addquotes;
+	protected $oClassMisc;
+	private $m_fieldname;
+	private $m_fieldlabel;
+	private $m_required;
+	private $m_onNew;
+	private $m_addquotes;
 
 	// TODOEXPLAIN
 	function class_field($fieldsettings) {
@@ -83,6 +83,7 @@ class class_field {
 	function get_onNew($primary_key = "") {
 		$veldwaarde = '';
 
+//echo 'primary key: ' . $primary_key . '*****<br>';
 		if ( $primary_key <> "" ) {
 			if ( $_GET[$primary_key] == '' || $_GET[$primary_key] == "0" ) {
 

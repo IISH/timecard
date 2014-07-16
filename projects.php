@@ -114,7 +114,10 @@ td.project4 {
 
 // TODOEXPLAIN
 function showProjectTree($id = 0, $level = 1, $show_all) {
-	global $dbhandleTimecard;
+	global $settings;
+
+	$oConn = new class_mysql($settings, 'timecard');
+	$oConn->connect();
 
 	$ret = '';
 
@@ -124,19 +127,19 @@ function showProjectTree($id = 0, $level = 1, $show_all) {
 	$next_level = $cur_level+1;
 
 	if ( $show_all == 1 ) {
-		$query = "SELECT * FROM Workcodes2011 WHERE ParentID=" . $id . " ORDER BY Description ";
+		$query = "SELECT * FROM Workcodes WHERE ParentID=" . $id . " ORDER BY Description ";
 	} else {
-		$query = "SELECT * FROM Workcodes2011 WHERE ParentID=" . $id . " AND isdisabled=0 ORDER BY Description ";
+		$query = "SELECT * FROM Workcodes WHERE ParentID=" . $id . " AND isdisabled=0 ORDER BY Description ";
 	}
 
-	$result = mysql_query($query, $dbhandleTimecard);
+	$result = mysql_query($query, $oConn->getConnection());
 	while ($row = mysql_fetch_assoc($result)) {
 
 		$ret .= "<tr>\n";
 
 		// name
 		$ret .= "<td class=\"project" . $level . "\">";
-		$isStrike = $row["isdisabled"] == 1 || ( isset( $row["enddate"] ) && trim($row["enddate"]) != '' && trim($row["enddate"]) < date("Ymd") ) || $row["show_in_selectlist"] == 0;
+		$isStrike = $row["isdisabled"] == 1 || ( isset( $row["lastdate"] ) && trim($row["lastdate"]) != '' && trim($row["lastdate"]) < date("Ymd") ) || $row["show_in_selectlist"] == 0;
 		if ( $isStrike ) {
 			$ret .= "<strike>";
 		}
@@ -153,9 +156,9 @@ function showProjectTree($id = 0, $level = 1, $show_all) {
 
 		// End date
 		$ret .= "<td class=\"project0\">";
-		$enddate = trim($row["enddate"]);
-		if ( $enddate != '' ) {
-			$oDate = new class_dateasstring( $enddate );
+		$lastdate = trim($row["lastdate"]);
+		if ( $lastdate != '' ) {
+			$oDate = new class_dateasstring( $lastdate );
 			$ret .= $oDate->get('j M Y');
 		}
 		$ret .= "</td>";
@@ -176,7 +179,7 @@ function showProjectTree($id = 0, $level = 1, $show_all) {
 			$separator = $separator2;
 		}
 
-		if ( isset( $row["enddate"] ) && trim($row["enddate"]) != '' && $row["enddate"] < date("Ymd") ) {
+		if ( isset( $row["lastdate"] ) && trim($row["lastdate"]) != '' && $row["lastdate"] < date("Ymd") ) {
 			$no .= $separator . '\'end date\' passed';
 			$separator = $separator2;
 		}
@@ -196,6 +199,8 @@ function showProjectTree($id = 0, $level = 1, $show_all) {
 		$ret .= showProjectTree($row["ID"], $next_level, $show_all);
 	}
 	mysql_free_result($result);
+
+	$oConn->connect();
 
 	return $ret;
 }

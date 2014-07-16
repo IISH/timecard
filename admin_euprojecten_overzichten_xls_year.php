@@ -1,5 +1,5 @@
 <?php 
-require_once "classes/start_no_session_start.inc.php";
+require_once "classes/start.inc.php";
 
 $oWebuser->checkLoggedIn();
 
@@ -10,7 +10,6 @@ $id = substr($protect->request_positive_number_or_empty('get', "id"), 0, 4);
 
 $oEmployee = new class_employee($id, $settings);
 $oDate = new class_date($year, 1, 1);
-syncTimecardProtimeYear($id, $oEmployee->getProtimeId(), $oDate);
 
 if ( $year == '' || $id == '' ) {
 	die('go to <a href="admin_euprojecten_overzichten.php">view</a>');
@@ -60,6 +59,7 @@ $objPHPExcel->getActiveSheet()->getStyle(convertSpreadsheatColumnNumberToColumnC
 
 // + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
 
+// TODOXXXSLOW - duurt 3 seconden
 $projectsStartRow = $r+1;
 $rememberRows = " ";
 foreach ( $projects as $one_project ) {
@@ -69,17 +69,16 @@ foreach ( $projects as $one_project ) {
 		$rememberRows .= "::CHAR::" . $r . " ";
 	}
 
-	// achterhaal of persoon wel in project zit
-	$isInProject = advancedSingleRecordSelectMysql($dbhandleTimecard, "Workcodes2011_Employees", array("ID"), " ( EmployeeID=" . $id . " OR EmployeeID=-1) AND WorkcodesID IN (" . $one_project[1] . ", " . $one_project[2] . ") AND year=" . $year);
-
 	$c = 1;
-	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(fixCol($c), $r, $one_project[0] . getProjectName($one_project[1], $dbhandleTimecard));
+	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(fixCol($c), $r, $one_project[0] . getProjectName($one_project[1], $oConn->getConnection()));
 	if ( $one_project[3] >= 0 ) {
 		$objPHPExcel->getActiveSheet()->getStyle(convertSpreadsheatColumnNumberToColumnCharacter($c) . $r)->applyFromArray($boldLeftStyle);
 	}
 	$objPHPExcel->getActiveSheet()->getStyle(convertSpreadsheatColumnNumberToColumnCharacter($c) . $r)->applyFromArray($borderStyle);
 
 	$month = 0;
+	$arrUren = getTimecardUrenGroupedByMonth($id, $year, $one_project[1]);
+//debug($arrUren);
 	for ( $i = 1; $i <= 16; $i++ ) {
 		$month++;
 
@@ -97,12 +96,9 @@ foreach ( $projects as $one_project ) {
 			if ( $one_project[3] > 0 ) {
 				$uren = "=sum(" . convertSpreadsheatColumnNumberToColumnCharacter($c+$i) . ($r+1) . ":" . convertSpreadsheatColumnNumberToColumnCharacter($c+$i) . ($r+$one_project[3]) . ")";
 			} else {
-				$uren = 0;
-
-				// zit persoon wel in project?
-				if ( $isInProject["__is_record_found"] == 1 ) {
-					$uren = getTimecardUren($id, $year, $month, 0, $one_project[1], $dbhandleTimecard);
-				}
+				// TODOXXXYEARSLOW
+				//$uren = getTimecardUren($id, $year, $month, 0, $one_project[1]);
+				$uren = $arrUren[$year . '-' . str_pad($month, 2, '0', STR_PAD_LEFT)];
 
 				//
 				$uren = convertMinutesToHours($uren);
@@ -240,7 +236,8 @@ foreach ($arrAfwezigheden as $a => $b ) {
 			$objPHPExcel->getActiveSheet()->getStyle(convertSpreadsheatColumnNumberToColumnCharacter($c+$i) . $r)->applyFromArray($boldStyle);
 		} else {
 			// DATA COLUMN
-			$uren = getProtimeUren($oEmployee->getProtimeId(), $year, $month, 0, $b, $dbhandleProtime, $id);
+			// TODOXXXYEARSLOW
+			$uren = getProtimeUren($oEmployee->getProtimeId(), $year, $month, 0, $b, $id);
 			$uren = convertMinutesToHours($uren);
 			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(fixCol($c+$i), $r, $uren);
 		}
@@ -283,6 +280,7 @@ for ( $i = 1; $i <= 16; $i++ ) {
 		$t_date["y"] = $year;
 		$t_date["m"] = substr('0'.$month,-2);
 		$t_date["d"] = 0;
+		// TODOXXXSLOW SUPERTRAAG
 		$uren = $oEmployee->getProtimeMonthTotal($t_date);
 		$uren = convertMinutesToHours($uren);
 		if ( $uren == '' ) {

@@ -15,7 +15,7 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createLoginPage() {
-	global $protect, $settings, $settings_from_database;
+	global $protect, $settings;
 
 	$fldLogin = '';
 	$error = '';
@@ -57,9 +57,6 @@ function createLoginPage() {
 				// update wanneer gebruiker voor het laatst is ingelogd op timecard
 				updateLastUserLogin($oWebuser->getTimecardId());
 
-				//
-				syncProtimeAndTimecardEmployeeData( $oWebuser );
-
 				// redirect to prev page
 				if ( $burl == '' ) {
 					$burl = 'index.php';
@@ -77,9 +74,11 @@ function createLoginPage() {
 		}
 	}
 
-	$ret = "
-<h2>Please log in...</h2>
-";
+	// get design
+	$design = new class_contentdesign("page_login");
+
+	// add header
+	$ret = $design->getHeader();
 
 	if ( $error != '' ) {
 		$ret .= "<span class=\"error\">" . $error . "</span><br>";
@@ -108,13 +107,16 @@ function createLoginPage() {
 </table>
 
 <br>
-" . $settings_from_database["text_functional_maintainer"] . "
+" . class_settings::getSetting("text_functional_maintainer") . "
 <script language=\"javascript\">
 <!--
 document.frmA.fldLogin.focus();
 // -->
 </script>
 ";
+
+	// add footer
+	$ret .= $design->getFooter();
 
 	return $ret;
 }

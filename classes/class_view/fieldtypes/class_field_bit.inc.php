@@ -4,9 +4,9 @@
 require_once("./classes/class_view/fieldtypes/class_field.inc.php");
 
 class class_field_bit extends class_field {
-    private $m_show_different_values;
-    private $m_different_true_value;
-    private $m_different_false_value;
+	private $m_show_different_values;
+	private $m_different_true_value;
+	private $m_different_false_value;
 
 	// TODOEXPLAIN
 	function class_field_bit($fieldsettings) {

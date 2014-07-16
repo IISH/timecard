@@ -33,12 +33,19 @@ function createAdminQuarterContent( $date ) {
 	$ret = $oPrevNext->getQuarterRibbon( 'Quarter Totals: ' );
 
 	//
-	$ret .= getEmployeesRibbon($date["y"], 0);
+	$ribbon = getEmployeesRibbon($date["y"], 0);
 
 	//
+	$content = '';
 	if ( $oEmployee->getTimecardId() != '' ) {
-		$ret .= getQuarterTotals( $date, $oEmployee->getTimecardId(), 'admin_' );
+		$content = getQuarterTotals( $date, $oEmployee->getTimecardId(), 'admin_' );
 	}
+
+	$template = "<table border=\"0\"><tr><td valign=\"top\">::LEFT::</td><td valign=\"top\">::RIGHT::</td></tr></table>";
+	$template =  str_replace("::LEFT::", $ribbon, $template);
+	$template =  str_replace("::RIGHT::", $content, $template);
+
+	$ret .= $template;
 
 	return $ret;
 }

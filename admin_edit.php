@@ -39,7 +39,11 @@ require_once "classes/_db_disconnect.inc.php";
 function createAdminDayEditContent( $date ) {
 	global $autoSave, $protect;
 
-	$ret = "<h2>Admin Day (edit)</h2>";
+	// get design
+	$design = new class_contentdesign("page_admin_day_edit");
+
+	// add header
+	$ret = $design->getHeader();
 
 	// 
 	$ret .= getAdminDayEdit( $date );
@@ -61,12 +65,15 @@ doc_submit('saveclose')
 		}
 	}
 
+	// add footer
+	$ret .= $design->getFooter();
+
 	return $ret;
 }
 
 // TODOEXPLAIN
 function getAdminDayEdit( $date ) {
-	global $settings, $dbhandleTimecard, $autoSave, $desc, $onNew, $oEmployee, $oWebuser, $oDate, $protect;
+	global $settings, $desc, $onNew, $oEmployee, $oWebuser, $oDate, $protect;
 
 	$ret = '';
 
@@ -77,7 +84,7 @@ function getAdminDayEdit( $date ) {
 	$protime_day_total = $oEmployee->getProtimeDayTotal($date);
 
 	if ( $protime_day_total > 0 ) {
-		$vandaagGewerkt = advancedSingleRecordSelectMysql($dbhandleTimecard, "Workhours", "AANTAL", "Employee=" . $oEmployee->getTimecardId() . " AND DateWorked LIKE '" . $oDate->get("Y-m-d") . "%'" , "SUM(TimeInMinutes) AS AANTAL");
+		$vandaagGewerkt = advancedSingleRecordSelectMysql('timecard', "Workhours", "AANTAL", "Employee=" . $oEmployee->getTimecardId() . " AND DateWorked LIKE '" . $oDate->get("Y-m-d") . "%'" , "SUM(TimeInMinutes) AS AANTAL");
 		if ( $vandaagGewerkt["aantal"] == '' ) {
 			$vandaagGewerkt["aantal"] = 0;
 		}
@@ -96,9 +103,14 @@ function getAdminDayEdit( $date ) {
 		}
 	}
 
-	require_once("./classes/class_db.inc.php");
-	require_once("./classes/class_form/workhours_class_form.inc.php");
+	$id = $protect->request_positive_number_or_empty('get', "ID");
+	if ( $id == '' ) {
+		$id = 0;
+	}
+	$oWh = new class_workhours( $id );
 
+	require_once("./classes/class_form/workhours_class_form.inc.php");
+	require_once("./classes/class_form/fieldtypes/class_field_bit.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_date.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_integer.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_hidden.inc.php");
@@ -109,13 +121,12 @@ function getAdminDayEdit( $date ) {
 	require_once("./classes/class_form/fieldtypes/class_field_time_single_field.inc.php");
 
 	// TODOTODO DIRTY
-	$oDb = new class_db($settings, 'timecard');
+	$oDb = new class_mysql($settings, 'timecard');
 	$oForm = new workhours_class_form($settings, $oDb);
 
 	$oForm->set_form( array(
-		'query' => 'SELECT ID, Employee, DateWorked, WorkCode, Beheertype, WorkDescription, isdeleted, TimeInMinutes FROM Workhours WHERE ID=[FLD:ID] AND isdeleted=0 '
+		'query' => 'SELECT * FROM Workhours WHERE ID=[FLD:ID] '
 		, 'table' => 'Workhours'
-		, 'inserttable' => 'Workhours'
 		, 'primarykey' => 'ID'
 		));
 
@@ -128,9 +139,9 @@ function getAdminDayEdit( $date ) {
 	$oForm->add_field( new class_field_list ( $settings, array(
 		'fieldname' => 'Employee'
 		, 'fieldlabel' => 'Employee'
-		, 'query' => 'SELECT ID, Concat(FirstName, \' \', LastName) AS FullName FROM Employees ORDER BY FullName '
+		, 'query' => 'SELECT ID, FULLNAME FROM vw_Employees ORDER BY FULLNAME '
 		, 'id_field' => 'ID'
-		, 'description_field' => 'FullName'
+		, 'description_field' => 'FULLNAME'
 		, 'empty_value' => ''
 		, 'required' => 1
 		, 'show_empty_row' => true
@@ -155,7 +166,7 @@ function getAdminDayEdit( $date ) {
 	$oForm->add_field( new class_field_list ( $settings, array(
 		'fieldname' => 'WorkCode'
 		, 'fieldlabel' => 'Project'
-		, 'query' => 'SELECT ID, Concat(Projectnummer, \' \', Description) AS ProjectNumberName FROM Workcodes2011 WHERE ( isdisabled = 0 AND show_in_selectlist = 1 AND (enddate IS NULL OR enddate = \'\' OR enddate >= \'' . $oDate->get("Y-m-d") . '\') ) ' . $currentValueOnNew . ' ORDER BY Projectnummer, Description '
+		, 'query' => 'SELECT ID, Concat(Projectnummer, \' \', Description) AS ProjectNumberName FROM Workcodes WHERE ( isdisabled = 0 AND show_in_selectlist = 1 AND (lastdate IS NULL OR lastdate = \'\' OR lastdate >= \'' . $oDate->get("Y-m-d") . '\') ) ' . $currentValueOnNew . ' ORDER BY Projectnummer, Description '
 		, 'id_field' => 'ID'
 		, 'description_field' => 'ProjectNumberName'
 		, 'empty_value' => '0'
@@ -195,6 +206,20 @@ function getAdminDayEdit( $date ) {
 
 	}
 
+	if ( $oWh->getDailyAutomaticAdditionId() > 0 ) {
+		$oForm->add_field( new class_field_bit ( array(
+			'fieldname' => 'fixed_time'
+			, 'fieldlabel' => 'Fixed time?'
+			, 'onNew' => '0'
+			)));
+	}
+
+	$oForm->add_field( new class_field_string ( array(
+		'fieldname' => 'jira_issue_nr'
+		, 'fieldlabel' => 'JIRA issue #'
+		, 'style' => 'width:425px;'
+		)));
+
 	$oForm->add_field( new class_field_textarea ( array(
 		'fieldname' => 'WorkDescription'
 		, 'fieldlabel' => 'Description'
@@ -209,7 +234,7 @@ function getAdminDayEdit( $date ) {
 		, 'onNew' => '0'
 		)));
 
-	// calculate form
+	// generate form
 	$ret .= $oForm->generate_form();
 
 	return $ret;

@@ -1,19 +1,19 @@
 <?php 
 // modified: 2012-12-02
 
-require_once "classes/class_file.inc.php";
-require_once "classes/class_misc.inc.php";
+require_once dirname(__FILE__) . "/class_file.inc.php";
+require_once dirname(__FILE__) . "/class_misc.inc.php";
 
 class class_page {
-    private $page_template;
-    private $settings;
-    private $remove_sidebar;
-    private $content;
-    private $shortcuts;
-    private $recentlyused;
-    private $tab;
-    private $title;
-    private $color;
+	private $page_template;
+	private $settings;
+	private $remove_sidebar;
+	private $content;
+	private $shortcuts;
+	private $recentlyused;
+	private $tab;
+	private $title;
+	private $color;
 
 	// TODOEXPLAIN
 	function class_page($page_template, $settings) {
@@ -143,10 +143,8 @@ class class_page {
 	}
 
 	// TODOEXPLAIN
-	function getLastModified() {
-		global $settings_from_database;
-
-		return 'Last modified: ' . $settings_from_database["last_modified"];
+	function getLastModified( $dateformat = "j F Y") {
+		return date($dateformat, strtotime(class_settings::getSetting("last_modified")));
 	}
 
 	// TODOEXPLAIN
@@ -214,5 +212,9 @@ class class_page {
 	function getColor() {
 		return $this->color;
 	}
+
+	// TODOEXPLAIN
+	public function __toString() {
+		return "Class: " . get_class($this) . "\ntemplate: " . $this->page_template . "\n";
+	}
 }
-?>

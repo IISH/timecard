@@ -24,24 +24,25 @@ require_once "classes/_db_disconnect.inc.php";
 function createHoursperweekEditContent() {
 	global $settings;
 
-	$ret = "<h2>Hours per week (edit)</h2>";
+	// get design
+	$design = new class_contentdesign("page_admin_hoursperweek_edit");
 
-	require_once("./classes/class_db.inc.php");
+	// add header
+	$ret = $design->getHeader();
+
 	require_once("./classes/class_form/class_form.inc.php");
-
 	require_once("./classes/class_form/fieldtypes/class_field_string.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_integer.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_decimal.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_list.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_hidden.inc.php");
 
-	$oDb = new class_db($settings, 'timecard');
+	$oDb = new class_mysql($settings, 'timecard');
 	$oForm = new class_form($settings, $oDb);
 
 	$oForm->set_form( array(
 		'query' => 'SELECT * FROM HoursPerWeek WHERE ID=[FLD:ID] '
 		, 'table' => 'HoursPerWeek'
-		, 'inserttable' => 'HoursPerWeek'
 		, 'primarykey' => 'ID'
 		));
 
@@ -54,11 +55,9 @@ function createHoursperweekEditContent() {
 	$oForm->add_field( new class_field_list ( $settings, array(
 		'fieldname' => 'Employee'
 		, 'fieldlabel' => 'Employee'
-		, 'query' => 'SELECT ID, Concat(FirstName, \' \', LastName) AS FullName FROM Employees WHERE is_test_account=0 ORDER BY FullName '
-
+		, 'query' => 'SELECT ID, FULLNAME FROM vw_Employees WHERE is_test_account=0 ORDER BY FULLNAME '
 		, 'id_field' => 'ID'
-		, 'description_field' => 'FullName'
-
+		, 'description_field' => 'FULLNAME'
 		, 'empty_value' => '0'
 		, 'required' => 1
 		, 'show_empty_row' => true
@@ -101,8 +100,11 @@ function createHoursperweekEditContent() {
 		, 'fieldlabel' => 'isdeleted'
 		)));
 
-	// calculate form
+	// generate form
 	$ret .= $oForm->generate_form();
+
+	// add footer
+	$ret .= $design->getFooter();
 
 	return $ret;
 }
