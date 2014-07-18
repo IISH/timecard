@@ -23,7 +23,7 @@ $sync = new class_syncProtimeMysql();
 $sync->setSourceTable("CURRIC");
 $sync->setTargetTable("PROTIME_CURRIC");
 $sync->setPrimaryKey("PERSNR");
-$sync->addFields( array("PERSNR", "NAME", "FIRSTNAME", "EMAIL", "REGISTERNR", "WORKLOCATION", "ADDRESS", "ZIPCODE", "CITY", "COUNTRY", "DATEBIRTH", "DATE_IN", "DATE_OUT", "BADGENR", "SEX", "EMAIL") );
+$sync->addFields( array("PERSNR", "NAME", "FIRSTNAME", "EMAIL", "REGISTERNR", "WORKLOCATION", "ADDRESS", "ZIPCODE", "CITY", "COUNTRY", "DATEBIRTH", "DATE_IN", "DATE_OUT", "BADGENR", "SEX", "USER02") );
 class_settings::saveSetting('cron_' . $sync->getTargetTable() . '_start', date("Y-m-d H:i:s"), $sync->getTargetTable() . "_syncinfo");
 $sync->doSync();
 
