@@ -38,7 +38,7 @@ if ( $s == '' ) {
 		$queryCriterium = ' AND 1=0 ';
 	} else {
 		// search
-		$queryCriterium = Generate_Query(array("Lastname", "Firstname"), explode(' ', $s));
+		$queryCriterium = Generate_Query(array("NAME", "FIRSTNAME"), explode(' ', $s));
 	}
 }
 
@@ -90,12 +90,14 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 	mysql_free_result($resultHolidays);
 	//
 
+	$oConn->connect();
 	// loop employees
-	$querySelect = "SELECT ID FROM vw_Employees WHERE 1=1 " . $queryCriterium . " ORDER BY NAME, FIRSTNAME ";
+	$querySelect = "SELECT ID FROM vw_Employees WHERE 1=1 and is_test_account=0 " . $queryCriterium . " ORDER BY NAME, FIRSTNAME ";
+//debug( $querySelect );
 	$resultSelect = mysql_query($querySelect, $oConn->getConnection());
 
 	$arrEmployees = array();
-	while ( $rowSelect = mysql_fetch_array($resultSelect) ) {
+	while ( $rowSelect = mysql_fetch_assoc($resultSelect) ) {
 		$oEmployee = new class_employee($rowSelect["ID"], $settings);
 		$arrEmployees[] = $oEmployee;
 	}

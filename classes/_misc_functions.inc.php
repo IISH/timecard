@@ -693,7 +693,6 @@ function addAndRemoveAbsentiesInTimecard($timecard_id, $protime_id, $oDate) {
 	mysql_free_result($result);
 
 	// doorloop Protime absenties en voeg/update toe aan Timecard
-//	$query2 = "SELECT * FROM PROTIME_P_ABSENCE WHERE PERSNR = " . $protime_id . " AND BOOKDATE = '" . $oDate->get("Ymd") . "' ";
 	$query2 = "
 SELECT PROTIME_P_ABSENCE.REC_NR, PROTIME_P_ABSENCE.ABSENCE_VALUE, vw_ProtimeAbsences.workcode_id
 FROM PROTIME_P_ABSENCE
@@ -701,17 +700,9 @@ FROM PROTIME_P_ABSENCE
 WHERE PROTIME_P_ABSENCE.PERSNR = " . $protime_id . "
 	AND PROTIME_P_ABSENCE.BOOKDATE = '" . $oDate->get("Ymd") . "'
 ";
-//debug($query2, "aaa: ");
+
 	$result2 = mysql_query($query2, $oConn->getConnection());
 	while ( $row2 = mysql_fetch_array($result2) ) {
-//		$protime_absence_id = $row2["ABSENCE"];
-		// 
-//debug($row2["workcode_id"], "xxxx");
-		//$timecard_absence_id = advancedSingleRecordSelectMysql('timecard', "vw_ProtimeAbsences", "workcode_id", "protime_absence_id=" . $protime_absence_id );
-//		$timecard_absence_id = advancedSingleRecordSelectMysql('timecard', "vw_ProtimeAbsences", "workcode_id", "protime_absence_id=" . $row2["ABSENCE"] );
-//debug($timecard_absence_id["workcode_id"], "yyyy");
-
-//		if ( $timecard_absence_id["workcode_id"] != '' && $timecard_absence_id["workcode_id"] != '0' && $timecard_absence_id["workcode_id"] != '-1' ) {
 		if ( $row2["workcode_id"] != '' && $row2["workcode_id"] != '0' && $row2["workcode_id"] != '-1' ) {
 			if ( strpos($timecard_absenties, ";" . $row2["REC_NR"] . ";") !== false ) {
 				// update

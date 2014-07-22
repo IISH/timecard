@@ -22,7 +22,7 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createHoursperweekEditContent() {
-	global $settings;
+	global $settings, $protect;
 
 	// get design
 	$design = new class_contentdesign("page_admin_hoursperweek_edit");
@@ -52,10 +52,19 @@ function createHoursperweekEditContent() {
 		, 'fieldlabel' => '#'
 		)));
 
+	$q = "SELECT Employees.ID, CONCAT( RTRIM( LTRIM( IFNULL(PROTIME_CURRIC.FIRSTNAME,'') ) ) , ' ', RTRIM( LTRIM( IFNULL(PROTIME_CURRIC.NAME,'') ) ), ' (#', Employees.ID , ')' ) AS FULLNAME
+FROM Employees
+	LEFT JOIN PROTIME_CURRIC ON Employees.ProtimePersNr = PROTIME_CURRIC.PERSNR
+	LEFT JOIN PROTIME_WORKLOCATION ON PROTIME_CURRIC.WORKLOCATION = PROTIME_WORKLOCATION.LOCATIONID
+WHERE is_test_account=0
+	AND ( isdisabled=0 OR Employees.ID=" . $protect->request('get', 'ID') . " )
+ORDER BY FULLNAME ";
+
 	$oForm->add_field( new class_field_list ( $settings, array(
 		'fieldname' => 'Employee'
 		, 'fieldlabel' => 'Employee'
-		, 'query' => 'SELECT ID, FULLNAME FROM vw_Employees WHERE is_test_account=0 ORDER BY FULLNAME '
+		, 'XXXquery' => 'SELECT ID, FULLNAME FROM vw_Employees WHERE is_test_account=0 ORDER BY FULLNAME '
+		, 'query' => $q
 		, 'id_field' => 'ID'
 		, 'description_field' => 'FULLNAME'
 		, 'empty_value' => '0'
