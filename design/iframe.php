@@ -20,7 +20,7 @@
 
 <div class="mainiframe">
 
-	<div class="contentplussidebar">
+	<div>
 		<div class="contentiframe">{content}</div>
 	</div>
 

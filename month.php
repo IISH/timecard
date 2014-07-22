@@ -40,6 +40,7 @@ function createMonthContent( $date ) {
 		require_once("./classes/class_view/fieldtypes/class_field_string.inc.php");
 		require_once("./classes/class_view/fieldtypes/class_field_time.inc.php");
 		require_once("./classes/class_view/fieldtypes/class_field_date.inc.php");
+		require_once("./classes/class_view/fieldtypes/class_field_jira_url_browse.inc.php");
 
 		$oDb = new class_mysql($settings, 'timecard');
 		$oView = new class_view($settings, $oDb);
@@ -57,7 +58,7 @@ function createMonthContent( $date ) {
 			, 'order_by' => 'DateWorked, Description, TimeInMinutes DESC '
 			, 'anchor_field' => 'ID'
 			, 'viewfilter' => true
-			, 'calculate_total' => array('nrofcols' => 5, 'totalcol' => 4, 'field' => 'TimeInMinutes')
+			, 'calculate_total' => array('nrofcols' => 7, 'totalcol' => 4, 'field' => 'TimeInMinutes')
 			, 'add_new_url' => $add_new_url
 			, 'table_parameters' => ' cellspacing="0" cellpadding="0" border="0" '
 			, 'extra_hidden_viewfilter_fields' => '<input type="hidden" name="d" value="' . $date["Ymd"] . '">'
@@ -140,6 +141,13 @@ function createMonthContent( $date ) {
 				, "showelsevalue" => "<a alt=\"Daily automatic addition\" title=\"Daily automatic addition\" class=\"PT\">(DAA)</a>"
 				)
 			)));
+
+		if ( $oWebuser->getShowJiraField() ) {
+			$oView->add_field( new class_field_jira_url_browse ( array(
+				'fieldname' => 'jira_issue_nr'
+				, 'fieldlabel' => 'Jira'
+				)));
+		}
 
 		// generate view
 		$ret .= $oView->generate_view();

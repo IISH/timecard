@@ -20,6 +20,11 @@ html, body, input, textarea, select {
 	font-size: 95%;
 }
 
+table {
+	border-spacing: 0px;
+	border-collapse: separate;
+}
+
 .bold {
 	font-weight: bold;
 }
@@ -199,17 +204,36 @@ span.logout {
 	text-align: right;
 }
 
-div.contentplussidebar {
-	position: relative;
+td.content_admin {
+	padding-right: 5px;
 }
 
 div.content {
+	top:0;
 	width: 690px;
 	border: 1px solid #AAAAAA;
 	margin-top: 5px;
 	margin-bottom: 5px;
 	padding-top: 5px;
 	padding-bottom: 15px;
+	padding-left: 5px;
+	padding-right: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+}
+
+div.content_admin {
+	width: 520px;
+}
+
+div.leftmenu {
+	width: 170px;
+	border: 1px solid #AAAAAA;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	padding-top: 5px;
+	padding-bottom: 10px;
 	padding-left: 5px;
 	padding-right: 5px;
 	-moz-border-radius: 5px;
@@ -231,14 +255,21 @@ div.contentiframe {
 }
 
 div.contentfullwidth {
-	width: 950px;
+	width: 945px;
+}
+
+div.contentfullwidth_admin {
+	width: 760px;
 }
 
 div.sidebar {
 	width:250px;
-	position:absolute;
-	right:0;
-	top:0;
+	padding-top: 5px;
+}
+
+div.sidebar_admin {
+	width:230px;
+	padding-top: 5px;
 }
 
 div.shortcuts {
@@ -256,6 +287,10 @@ div.shortcuts {
 	border-radius: 5px;
 }
 
+div.shortcuts_admin {
+	width:220px;
+}
+
 div.recentlyused {
 	background-color: white;
 	float: right;
@@ -270,11 +305,24 @@ div.recentlyused {
 	border-radius: 5px;
 }
 
+div.recentlyused_admin {
+	width: 220px;
+}
+
 div.footer {
 	color: white;
 	background-color: <?php echo $c; ?>;
 	text-align: right;
 	border: 1px solid #AAAAAA;
+	xxxbottom: 0px;
+	width: 960px;
+}
+
+#footer {
+	xxxposition: fixed;
+	position: relative;
+	bottom: 0;
+	margin-top: 10px;
 }
 
 div.hidden {

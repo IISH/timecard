@@ -74,10 +74,17 @@ function getUserDay( $date ) {
 <input type=\"hidden\" name=\"filter\" value=\"\">
 <input type=\"hidden\" name=\"\" value=\"\">
 	<tr>
-		<TH align=\"left\"><b>Project</b>&nbsp;</TH>
-		<TH align=\"left\"><b>Description</b>&nbsp;</TH>
-		<TH align=\"left\"><b>Time</b>&nbsp;</TH>
+		<TH align=\"left\"><a alt=\"\" title=\"\" class=\"nolink\">Project</a>&nbsp;</TH>
+		<TH align=\"left\"><a alt=\"\" title=\"\" class=\"nolink\">Description</a>&nbsp;</TH>
+		<TH align=\"left\"><a alt=\"\" title=\"\" class=\"nolink\">Time</a>&nbsp;</TH>
 		<TH align=\"left\">&nbsp;</TH>
+";
+
+	if ( $oWebuser->getShowJiraField() ) {
+		$ret .= "		<TH align=\"left\"><a alt=\"\" title=\"\" class=\"nolink\">Jira</a>&nbsp;</TH>
+";
+	}
+	$ret .= "
 	</tr>
 </form>
 ";
@@ -95,6 +102,7 @@ function getUserDay( $date ) {
 		$description = htmlspecialchars($description);
 		$protime_absence_recnr = $row["protime_absence_recnr"];
 		$daily_automatic_addition_id = $row["daily_automatic_addition_id"];
+		$jira_issue_nr = $row["jira_issue_nr"];
 
 		$protime_label = '';
 
@@ -133,7 +141,14 @@ function getUserDay( $date ) {
 
 	$ret .= "
 		<TD class=\"recorditem\">" . $protime_label . "</td>
-	</tr>
+";
+
+	if ( $oWebuser->getShowJiraField() ) {
+		$ret .= "		<TD class=\"recorditem\">" . convertToJiraUrl($jira_issue_nr) . "</td>
+";
+	}
+
+	$ret .= "	</tr>
 ";
 	}
 	mysql_free_result($result);

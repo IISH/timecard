@@ -29,30 +29,35 @@
 	{menu}
 
 	<div>
+			<table border="0" width="100%" cellspacing="0 cellpadding=0">
+				<tr>
+					<td valign="top" width="170px" class="content_admin">
 
-		<table border="0" width="100%" cellspacing="0 cellpadding=0">
-			<tr>
-				<td valign="top">
+						<div class="leftmenu">
+						{leftmenu}
+						</div>
 
-					<div class="content content {extracontentclass}">
+					</td>
+					<td valign="top" class="content_admin">
+
+						<div class="content content_admin {extracontentclass}">
 						{content}
-					</div>
+						</div>
 
-				</td>
-				<td valign="top">
+					</td>
+					<td valign="top">
 
-					<div class="sidebar {extrasidebarclass}">
-						<div class="shortcuts {extrashortcutsclass}">{shortcuts}</div>
-						<div class="recentlyused {extrarecentlyusedclass}">{recentlyused}</div>
-					</div>
+						<div class="sidebar_admin {extrasidebarclass}">
+							<div class="shortcuts shortcuts_admin {extrashortcutsclass}">{shortcuts}</div>
+							<div class="recentlyused recentlyused_admin {extrarecentlyusedclass}">{recentlyused}</div>
+						</div>
 
-				</td>
-			</tr>
-		</table>
+					</td>
+				</tr>
+			</table>
 
 	</div>
-
-	<div class="footer">{url} - {lastmodified}</div>
+	<div id="footer" class="footer">{url} - {lastmodified}</div>
 </div>
 
 <script language="Javascript">

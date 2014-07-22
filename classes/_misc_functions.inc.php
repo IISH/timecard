@@ -2,6 +2,24 @@
 require_once dirname(__FILE__) . "/class_calendar.inc.php";
 
 // TODOEXPLAIN
+function convertToJiraUrl( $jira_issue_nr ) {
+	$ret = '';
+	$separator = '';
+
+	$jira_url_browse = class_settings::getSetting('jira_url_browse');
+
+	$jira_issue_nr = trim($jira_issue_nr);
+
+	$arr = explode(' ', $jira_issue_nr);
+	foreach ( $arr as $url ) {
+		$ret .= $separator . "<a href=\"$jira_url_browse$url\" target=\"_blank\">$url</a>";
+		$separator = ' ';
+	}
+
+	return $ret;
+}
+
+// TODOEXPLAIN
 function goBackTo() {
 	$ret = '';
 
@@ -23,7 +41,7 @@ function goBackTo() {
 function getEmployeesRibbon($year, $all = 0) {
 	global $date, $oEmployee;
 
-	$selected_employee = "Please select an employee";
+	$selected_employee = "Select an employee";
 
 	$prev = '';
 	$next = '';
@@ -32,9 +50,11 @@ function getEmployeesRibbon($year, $all = 0) {
 <b>Selected employee:</b><br>
 <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
 <tr>
-	<td style=\"padding-left:6px;padding-right:5px;\">::PREV::</td>
-	<td align=\"center\">::SELECTEDEMPLOYEE::</td>
-	<td style=\"padding-left:5px;padding-right:6px;\" align=\"right\">::NEXT::</td>
+	<td colspan=2 align=\"center\">::SELECTEDEMPLOYEE::</td>
+</tr>
+<tr>
+	<td style=\"text-align:left;padding-left:20px;\">::PREV::</td>
+	<td style=\"text-align:right;padding-right:20px;\" align=\"right\">::NEXT::</td>
 </tr>
 </table>
 <br>
@@ -68,24 +88,20 @@ function getEmployeesRibbon($year, $all = 0) {
 		$selected_employee = 'all employees';
 	}
 
-	$ret .= "
-<br>
-";
-
 	$ret = str_replace("::SELECTEDEMPLOYEE::", $selected_employee, $ret);
 
 	// prev
 	if ( $prev != '' ) {
-		$ret = str_replace('::PREV::', '<a href="' . GetModifyReturnQueryString("?", "eid", $prev) . '">&laquo;</a>', $ret);
+		$ret = str_replace('::PREV::', '<a href="' . GetModifyReturnQueryString("?", "eid", $prev) . '">&laquo; prev</a>', $ret);
 	} else {
-		$ret = str_replace('::PREV::', '&laquo;', $ret);
+		$ret = str_replace('::PREV::', '&laquo; prev', $ret);
 	}
 
 	// next
 	if ( $next != '' ) {
-		$ret = str_replace('::NEXT::', '<a href="' . GetModifyReturnQueryString("?", "eid", $next) . '">&raquo;</a>', $ret);
+		$ret = str_replace('::NEXT::', '<a href="' . GetModifyReturnQueryString("?", "eid", $next) . '">next &raquo;</a>', $ret);
 	} else {
-		$ret = str_replace('::NEXT::', '&raquo;', $ret);
+		$ret = str_replace('::NEXT::', 'next &raquo;', $ret);
 	}
 
 	return $ret;
@@ -317,7 +333,8 @@ function vorigeVolgendeJaar($date, $richting, $urlDescription = '') {
 		$date["y"] = date("Y");
 		$date["m"] = date("m");
 		$date["d"] = date("d");
-		$label = $date["y"];
+//		$label = $date["y"];
+		$label = 'current year';
 	}
 
 	// 

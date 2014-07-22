@@ -15,11 +15,12 @@ $oDate = new class_date( $date["y"], $date["m"], $date["d"] );
 $oEmployee = new class_employee($protect->request('get', 'eid'), $settings);
 
 // create webpage
-$oPage = new class_page('design/page.php', $settings);
+$oPage = new class_page('design/page_admin.php', $settings);
 $oPage->removeSidebar();
 $oPage->setTab($menuList->findTabNumber('administrator.month'));
 $oPage->setTitle('Timecard | Admin Month');
 $oPage->setContent(createAdminMonthContent( $date ));
+$oPage->setLeftMenu( getEmployeesRibbon($date["y"], 1) );
 
 // show page
 echo $oPage->getPage();
@@ -32,16 +33,7 @@ function createAdminMonthContent( $date ) {
 	$oPrevNext = new class_prevnext($date);
 	$ret = $oPrevNext->getMonthRibbon();
 
-	//
-	$ribbon = getEmployeesRibbon($date["y"], 1);
-
-	$content = getAdminMonth( $date );
-
-	$template = "<table border=\"0\" width=\"100%\"><tr><td valign=\"top\">::LEFT::</td><td valign=\"top\">::RIGHT::</td></tr></table>";
-	$template =  str_replace("::LEFT::", $ribbon, $template);
-	$template =  str_replace("::RIGHT::", $content, $template);
-
-	$ret .= $template;
+	$ret .= getAdminMonth( $date );
 
 	return $ret;
 }

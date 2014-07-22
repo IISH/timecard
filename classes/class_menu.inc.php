@@ -15,10 +15,10 @@ $menu->addMenuItem( new class_menuitem('timecard.quartertotals', 'Quarter Totals
 // TAB: TIMECARD (ADMIN)
 $menu->addMenuGroup( new class_menugroup('Timecard (admin)') );
 if ( $oWebuser->hasAdminAuthorisation() ) {
-	$menu->addMenuItem( new class_menuitem('administrator.day', 'Day', 'admin_day.php?d={date}') );
-	$menu->addMenuItem( new class_menuitem('administrator.month', 'Month', 'admin_month.php?d={date}') );
-	$menu->addMenuItem( new class_menuitem('administrator.quarter', 'Quarter', 'admin_quarter.php?d={date}') );
-	$menu->addMenuItem( new class_menuitem('administrator.quartertotals', 'Quarter Totals', 'admin_quartertotals.php?d={date}') );
+	$menu->addMenuItem( new class_menuitem('administrator.day', 'Day', 'admin_day.php?d={date}&eid={eid}') );
+	$menu->addMenuItem( new class_menuitem('administrator.month', 'Month', 'admin_month.php?d={date}&eid={eid}') );
+	$menu->addMenuItem( new class_menuitem('administrator.quarter', 'Quarter', 'admin_quarter.php?d={date}&eid={eid}') );
+	$menu->addMenuItem( new class_menuitem('administrator.quartertotals', 'Quarter Totals', 'admin_quartertotals.php?d={date}&eid={eid}') );
 }
 
 // + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +

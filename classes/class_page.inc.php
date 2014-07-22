@@ -14,6 +14,7 @@ class class_page {
 	private $tab;
 	private $title;
 	private $color;
+	private $left_menu;
 
 	// TODOEXPLAIN
 	function class_page($page_template, $settings) {
@@ -26,11 +27,12 @@ class class_page {
 		$this->tab = 0;
 		$this->title = '';
 		$this->color = '73A0C9';
+		$this->left_menu = '';
 	}
 
 	// TODOEXPLAIN
 	function getPage() {
-		global $oWebuser;
+		global $oWebuser, $protect;
 
 		$oFile = new class_file();
 		$page = $oFile->getFileSource($this->page_template);
@@ -46,9 +48,19 @@ class class_page {
 		$page = str_replace('{title}', $this->getTitle(), $page);
 		$page = str_replace('{color}', $this->getColor(), $page);
 
+		if ( $this->left_menu == '' ) {
+			$page = str_replace('{extraleftmenuclass}', ' hidden', $page);
+		} else {
+			$page = str_replace('{leftmenu}', $this->left_menu, $page);
+		}
+
 		if ( $this->remove_sidebar == 1 || ( $this->getShortcuts() == '' && $this->getRecentlyUsed() == '' ) ) {
 			$page = str_replace('{extrasidebarclass}', ' hidden', $page);
-			$page = str_replace('{extracontentclass}', 'contentfullwidth', $page);
+			if ( $this->left_menu != '' ) {
+				$page = str_replace('{extracontentclass}', 'contentfullwidth_admin', $page);
+			} else {
+				$page = str_replace('{extracontentclass}', 'contentfullwidth', $page);
+			}
 		}
 
 		if ( $this->getShortcuts() == '' ) {
@@ -76,6 +88,7 @@ class class_page {
 
 		// als laatste
 		$page = str_replace('{date}', class_datetime::getQueryDate(), $page);
+		$page = str_replace('{eid}', $protect->request('get', 'eid'), $page);
 
 		$page = $this->removeUnusedTags($page);
 
@@ -160,6 +173,16 @@ class class_page {
 	// TODOEXPLAIN
 	function getContent() {
 		return $this->content;
+	}
+
+	// TODOEXPLAIN
+	function setLeftMenu( $left_menu ) {
+		$this->left_menu = $left_menu;
+	}
+
+	// TODOEXPLAIN
+	function getLeftMenu() {
+		return $this->left_menu;
 	}
 
 	// TODOEXPLAIN

@@ -1,4 +1,4 @@
-<?php 
+<?php
 require_once "classes/start.inc.php";
 
 $oWebuser->checkLoggedIn();
@@ -16,13 +16,15 @@ $oEmployee = new class_employee($protect->request('get', 'eid'), $settings);
 $oEmployee->syncTimecardProtimeDayInformation($oDate);
 
 // create webpage
-$oPage = new class_page('design/page.php', $settings);
+$oPage = new class_page('design/page_admin.php', $settings);
 if ( $oEmployee->getTimecardId() == -1 || $oEmployee->getTimecardId() == '' ) {
 	$oPage->removeSidebar();
 }
 $oPage->setTab($menuList->findTabNumber('administrator.day'));
 $oPage->setTitle('Timecard | Admin Day');
 $oPage->setContent(createAdminDayContent( $date ) . getCheckedInCheckedOut($oEmployee->getProtimeId(), $date["Ymd"]));
+$oPage->setLeftMenu( getEmployeesRibbon($date["y"], 1) );
+
 // add shortcuts and recently used
 if ( $date["y"] >= "2013" ) {
 	$oPage->setShortcuts(getAdminShortcuts($oEmployee->getTimecardId(), $oDate, $settings));
@@ -44,14 +46,7 @@ function createAdminDayContent( $date ) {
 	$ret .= goBackTo();
 
 	//
-	$ribbon = getEmployeesRibbon($date["y"], 1);
-	$content= getAdminDay( $date );
-
-	$template = "<table border=\"0\" width=\"100%\"><tr><td valign=\"top\">::LEFT::</td><td valign=\"top\">::RIGHT::</td></tr></table>";
-	$template =  str_replace("::LEFT::", $ribbon, $template);
-	$template =  str_replace("::RIGHT::", $content, $template);
-
-	$ret .= $template;
+	$ret .= getAdminDay( $date );
 
 	return $ret;
 }
@@ -200,9 +195,9 @@ function getAdminDay( $date ) {
 <input type=\"hidden\" name=\"filter\" value=\"\">
 <input type=\"hidden\" name=\"\" value=\"\">
 	<tr>
-		<TH align=\"left\"><b>Project</b></TH>
-		<TH align=\"left\"><b>Description</b></TH>
-		<TH align=\"left\"><b>Time</b></TH>
+		<TH align=\"left\"><a alt=\"\" title=\"\" class=\"nolink\">Project</a></TH>
+		<TH align=\"left\"><a alt=\"\" title=\"\" class=\"nolink\">Description</a></TH>
+		<TH align=\"left\"><a alt=\"\" title=\"\" class=\"nolink\">Time</a></TH>
 	</tr>
 </form>
 ";
@@ -306,6 +301,7 @@ function getAdminDay( $date ) {
 ";
 
 			$ret .= "
+
 </table>
 ";
 

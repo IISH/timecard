@@ -34,7 +34,8 @@ class class_prevnext {
 			$date["y"] = date("Y");
 			$date["m"] = date("m");
 			$date["d"] = date("d");
-			$label = date("F") . ' ' . $date["y"];
+//			$label = date("F") . ' ' . $date["y"];
+			$label = 'current month';
 		}
 
 		// 
@@ -96,7 +97,7 @@ class class_prevnext {
 		if ( $only_lable == 1 ) {
 			$retval = $label;
 		} else {
-			$alt = 'go to ' . date("l F j, Y", mktime(0, 0, 0, $date["m"], $date["d"], $date["y"]));
+			$alt = 'go to ' . date("D F j, Y", mktime(0, 0, 0, $date["m"], $date["d"], $date["y"]));
 			$retval = '<a href="' . GetModifyReturnQueryString('?', 'd', $date["Ymd"]) . '" alt="' . $alt . '" title="' . $alt . '">' . $label . '</a>';
 		}
 
@@ -105,50 +106,46 @@ class class_prevnext {
 
 	// TODOEXPLAIN
 	function calculatePrevNextMonth($date) {
-		$separator = ' &nbsp; &nbsp;';
-		$separator2 = ' &nbsp; &nbsp;or &nbsp; &nbsp;';
+		$separator = '&nbsp; ';
 
 		$prev = $this->vorigeVolgendeMaand($date, "-", "prev");
 		$current = $this->vorigeVolgendeMaand($date, "");
 		$next = $this->vorigeVolgendeMaand($date, "+", "next");
 
-		$retval = 'go to' . $separator . $current . $separator2 . $prev . $separator . $next;
+		$retval = 'go to' . $separator . $current . ' or' . $separator . $prev . $separator . $next;
 
 		return $retval;
 	}
 
 	// TODOEXPLAIN
 	function calculatePrevNextQuarter($date) {
-		$separator = ' &nbsp; &nbsp;';
-		$separator2 = ' &nbsp; &nbsp;or &nbsp; &nbsp;';
+		$separator = '&nbsp; ';
 
 		$prev = $this->vorigeVolgendeQuarter($date, "-", "prev");
 		$current = $this->vorigeVolgendeQuarter($date, "");
 		$next = $this->vorigeVolgendeQuarter($date, "+", "next");
 
-		$retval = 'go to' . $separator . $current . $separator2 . $prev . $separator . $next;
+		$retval = 'go to' . $separator . $current . ' or' . $separator . $prev . $separator . $next;
 
 		return $retval;
 	}
 
 	// TODOEXPLAIN
 	function calculatePrevNextYear($date) {
-		$separator = ' &nbsp; &nbsp;';
-		$separator2 = ' &nbsp; &nbsp;or &nbsp; &nbsp;';
+		$separator = '&nbsp; ';
 
 		$prev = vorigeVolgendeJaar($date, "-", "prev");
 		$current = vorigeVolgendeJaar($date, "");
 		$next = vorigeVolgendeJaar($date, "+", "next");
 
-		$retval = 'go to' . $separator . $current . $separator2 . $prev . $separator . $next;
+		$retval = 'go to' . $separator . $current . ' or' . $separator . $prev . $separator . $next;
 
 		return $retval;
 	}
 
 	// TODOEXPLAIN
 	function calculatePrevNextDay($date) {
-		$separator = ' &nbsp; &nbsp;';
-		$separator2 = ' &nbsp; &nbsp; or &nbsp; &nbsp;';
+		$separator = '&nbsp; ';
 
 		$prev = $this->vorigeVolgendeDag($date, "-", "prev");
 		$current = $this->vorigeVolgendeDag($date, "");
@@ -217,14 +214,14 @@ tcRefreshCalendar(sDate, sDate);
 </div>
 ";
 
-		$retval = 'go to' . $separator . $current . $calendarDiv . $separator2 . $prev . $separator . $next;
+		$retval = 'go to' . $separator . $current . $calendarDiv . ' or' . $separator . $prev . $separator . $next;
 
 		return $retval;
 	}
 
 	// TODOEXPLAIN
-	function getMonthRibbon() {
-		$fields["label"] = date("F Y", mktime(0, 0, 0, $this->date["m"], $this->date["d"], $this->date["y"]));
+	function getMonthRibbon( $format = "F Y" ) {
+		$fields["label"] = date($format, mktime(0, 0, 0, $this->date["m"], $this->date["d"], $this->date["y"]));
 		$fields["buttons"] = $this->calculatePrevNextMonth($this->date);
 
 		$design = new class_contentdesign("div_prevnextribbon");
@@ -232,8 +229,8 @@ tcRefreshCalendar(sDate, sDate);
 	}
 
 	// TODOEXPLAIN
-	function getDayRibbon() {
-		$fields["label"] = date("l F j, Y", mktime(0, 0, 0, $this->date["m"], $this->date["d"], $this->date["y"]));
+	function getDayRibbon( $format = "l F j, Y" ) {
+		$fields["label"] = date($format, mktime(0, 0, 0, $this->date["m"], $this->date["d"], $this->date["y"]));
 		$fields["buttons"] = $this->calculatePrevNextDay($this->date);
 
 		$design = new class_contentdesign("div_prevnextribbon");
@@ -308,8 +305,9 @@ tcRefreshCalendar(sDate, sDate);
 			$date["m"] = date("m");
 			$date["d"] = date("d");
 
-			$quarter_label = achterhaalQuarterLabel( achterhaalQuarter($date) , 'F');
-			$label = $quarter_label . ' ' . date("Y"); // . " Q" . achterhaalQuarter($date);
+//			$quarter_label = achterhaalQuarterLabel( achterhaalQuarter($date) , 'F');
+//			$label = $quarter_label . ' ' . date("Y");
+			$label = 'current quarter';
 		}
 
 		// 
