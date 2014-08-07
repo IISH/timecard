@@ -126,4 +126,3 @@ function createShortcutsContent() {
 
 	return $ret;
 }
-?>

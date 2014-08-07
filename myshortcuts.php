@@ -65,4 +65,3 @@ function createShortcutsList() {
 
 	return $ret;
 }
-?>

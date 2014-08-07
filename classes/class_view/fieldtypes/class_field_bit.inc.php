@@ -71,4 +71,3 @@ class class_field_bit extends class_field {
 	}
 
 }
-?>

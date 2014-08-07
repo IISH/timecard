@@ -248,4 +248,3 @@ function hoursLeft_formatNumber($value, $decimal) {
 
 	return $ret;
 }
-?>

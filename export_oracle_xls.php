@@ -172,4 +172,3 @@ if ( $output == 'debug'  ) {
 } else {
 	die('Unknown output type: ' . $output);
 }
-?>

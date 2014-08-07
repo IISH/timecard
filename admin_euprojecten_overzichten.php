@@ -95,4 +95,3 @@ function createEuProjectenContent() {
 
 	return $ret;
 }
-?>

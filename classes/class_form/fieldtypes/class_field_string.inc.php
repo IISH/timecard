@@ -76,4 +76,3 @@ class class_field_string extends class_field {
 		return $tmp_data;
 	}
 }
-?>

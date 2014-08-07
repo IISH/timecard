@@ -103,4 +103,3 @@ class class_field_static_string_list extends class_field {
 	}
 
 }
-?>

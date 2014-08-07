@@ -120,4 +120,3 @@ document.frmA.fldLogin.focus();
 
 	return $ret;
 }
-?>

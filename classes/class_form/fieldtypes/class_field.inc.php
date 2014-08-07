@@ -116,7 +116,7 @@ class class_field {
 	// TODOEXPLAIN
 	function get_required_sign() {
 		if ( $this->is_field_required() == 1 ) {
-			$required = "<font color=\"red\" size=\"-2\" alt=\"Required\" title=\"Required\"><sup>*</sup></font>";
+			$required = "<font color=\"red\" size=\"-2\" title=\"Required\"><sup>*</sup></font>";
 		} else {
 			$required = '';
 		}
@@ -169,4 +169,3 @@ class class_field {
 		return $text;
 	}
 }
-?>

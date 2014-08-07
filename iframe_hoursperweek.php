@@ -73,4 +73,3 @@ function createHoursperweekContent() {
 
 	return $ret;
 }
-?>

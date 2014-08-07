@@ -117,4 +117,3 @@ ORDER BY FULLNAME ";
 
 	return $ret;
 }
-?>

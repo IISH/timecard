@@ -87,4 +87,3 @@ FROM vw_ProtimeAbsences
 
 	return $ret;
 }
-?>

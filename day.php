@@ -74,14 +74,14 @@ function getUserDay( $date ) {
 <input type=\"hidden\" name=\"filter\" value=\"\">
 <input type=\"hidden\" name=\"\" value=\"\">
 	<tr>
-		<TH align=\"left\"><a alt=\"\" title=\"\" class=\"nolink\">Project</a>&nbsp;</TH>
-		<TH align=\"left\"><a alt=\"\" title=\"\" class=\"nolink\">Description</a>&nbsp;</TH>
-		<TH align=\"left\"><a alt=\"\" title=\"\" class=\"nolink\">Time</a>&nbsp;</TH>
+		<TH align=\"left\"><a class=\"nolink\">Project</a>&nbsp;</TH>
+		<TH align=\"left\"><a class=\"nolink\">Description</a>&nbsp;</TH>
+		<TH align=\"left\"><a class=\"nolink\">Time</a>&nbsp;</TH>
 		<TH align=\"left\">&nbsp;</TH>
 ";
 
 	if ( $oWebuser->getShowJiraField() ) {
-		$ret .= "		<TH align=\"left\"><a alt=\"\" title=\"\" class=\"nolink\">Jira</a>&nbsp;</TH>
+		$ret .= "		<TH align=\"left\"><a class=\"nolink\">Jira</a>&nbsp;</TH>
 ";
 	}
 	$ret .= "
@@ -128,7 +128,7 @@ function getUserDay( $date ) {
 ";
 			} else {
 				$ret .= "
-		<TD class=\"recorditem\"><nobr><A HREF=\"edit.php?ID=" . $row["ID"] . "&d=" . $date["Ymd"] . "&backurl=" . urlencode(get_current_url()) . "\" alt=\"Edit hours\" title=\"Edit hours\">" . $row["Description"] . "</a></nobr></td>
+		<TD class=\"recorditem\"><nobr><A HREF=\"edit.php?ID=" . $row["ID"] . "&d=" . $date["Ymd"] . "&backurl=" . urlencode(get_current_url()) . "\" title=\"Edit hours\">" . $row["Description"] . "</a></nobr></td>
 ";
 			}
 
@@ -161,7 +161,7 @@ function getUserDay( $date ) {
 		<td colspan=\"2\"><i>Subtotal:</i></td>
 		<td><i>" . class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes( $timecard_deeltotaal ) . "</i></td>
 	</tr>
-	<tr><td colspan=\"2\"><i>Department - Leave (eerder weg):</i></td><td><i>" . class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes( $dagvakantie ) . "</i></td><td><a alt=\"Imported from Protime\" title=\"Imported from Protime\" class=\"PT\">(PT)</a></td></tr>
+	<tr><td colspan=\"2\"><i>Department - Leave (eerder weg):</i></td><td><i>" . class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes( $dagvakantie ) . "</i></td><td><a title=\"Imported from Protime\" class=\"PT\">(PT)</a></td></tr>
 ";
 	}
 
@@ -211,7 +211,7 @@ function getUserShortcuts($userid, $oDate, $settings) {
 		$shortcut["url"] = $url;
 
 		if ( trim($shortcut["autosave"]) == '1' ) {
-			$shortcut["autosave"] = "<a alt=\"auto save on new\" title=\"auto save on new\"><img src=\"images/save.gif\" border=\"0\"></a>";
+			$shortcut["autosave"] = "<a title=\"auto save on new\"><img src=\"images/save.gif\" border=\"0\"></a>";
 		} else {
 			$shortcut["autosave"] = '';
 		}
@@ -267,4 +267,3 @@ function getUserRecentlyUsed($userid, $oDate, $settings) {
 
 	return $ret;
 }
-?>

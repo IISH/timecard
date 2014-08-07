@@ -54,4 +54,3 @@ class class_field_hidden extends class_field {
 	}
 
 }
-?>

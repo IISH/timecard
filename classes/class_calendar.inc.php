@@ -36,13 +36,13 @@ class class_calendar {
 	<td align=\"center\" colspan=\"7\"><nobr><a class=\"nolink\" href=\"#\" onClick=\"::PREVIOUS::\">&laquo;</a>&nbsp;::MAAND::&nbsp;<a class=\"nolink\" href=\"#\" onClick=\"::NEXT::\">&raquo;</a></nobr></td>
 </tr>
 <tr>
-	<td class=\"calendar_header\"><a class=\"nolink calendar_weekday\" alt=\"Monday\" title=\"Monday\">M</a></td>
-	<td class=\"calendar_header\"><a class=\"nolink calendar_weekday\" alt=\"Tuesday\" title=\"Tuesday\">T</a></td>
-	<td class=\"calendar_header\"><a class=\"nolink calendar_weekday\" alt=\"Wednesday\" title=\"Wednesday\">W</a></td>
-	<td class=\"calendar_header\"><a class=\"nolink calendar_weekday\" alt=\"Thursday\" title=\"Thursday\">T</a></td>
-	<td class=\"calendar_header\"><a class=\"nolink calendar_weekday\" alt=\"Friday\" title=\"Friday\">F</a></td>
-	<td class=\"calendar_header\"><a class=\"nolink calendar_weekend\" alt=\"Saturday\" title=\"Saturday\">S</a></td>
-	<td class=\"calendar_header\"><a class=\"nolink calendar_weekend\" alt=\"Sunday\" title=\"Sunday\">S</a></td>
+	<td class=\"calendar_header\"><a class=\"nolink calendar_weekday\" title=\"Monday\">M</a></td>
+	<td class=\"calendar_header\"><a class=\"nolink calendar_weekday\" title=\"Tuesday\">T</a></td>
+	<td class=\"calendar_header\"><a class=\"nolink calendar_weekday\" title=\"Wednesday\">W</a></td>
+	<td class=\"calendar_header\"><a class=\"nolink calendar_weekday\" title=\"Thursday\">T</a></td>
+	<td class=\"calendar_header\"><a class=\"nolink calendar_weekday\" title=\"Friday\">F</a></td>
+	<td class=\"calendar_header\"><a class=\"nolink calendar_weekend\" title=\"Saturday\">S</a></td>
+	<td class=\"calendar_header\"><a class=\"nolink calendar_weekend\" title=\"Sunday\">S</a></td>
 </tr>
 ::DAYS::
 </table>
@@ -178,7 +178,7 @@ class class_calendar {
 		// go home
 		// alleen als niet huidige dag een sterretje tonen
 		if ( date("Ymd") != $date["Ymd"] ) {
-			$retval = str_replace("::GOTOTODAY::", "<a class=\"nolink\" href=\"::SCRIPT_NAME::\" alt=\"Go to today\" title=\"Go to today\">*</a>", $retval);
+			$retval = str_replace("::GOTOTODAY::", "<a class=\"nolink\" href=\"::SCRIPT_NAME::\" title=\"Go to today\">*</a>", $retval);
 		} else {
 			$retval = str_replace("::GOTOTODAY::", '', $retval);
 		}

@@ -209,4 +209,3 @@ class class_field_list extends class_field {
 		return $retval;
 	}
 }
-?>

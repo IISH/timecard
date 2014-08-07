@@ -207,7 +207,7 @@ class class_view {
 
 		$row_template = "<tr>::TR::</tr>";
 		$header_template = "
-<TH ::TABLE_CELL_WIDTH:: align=\"left\" valign=\"top\"><a alt=\"::ALTTITLE::\" title=\"::ALTTITLE::\" class=\"nolink\">::TH::</a>::FILTER::&nbsp;</TH>
+<TH ::TABLE_CELL_WIDTH:: align=\"left\" valign=\"top\"><a title=\"::ALTTITLE::\" class=\"nolink\">::TH::</a>::FILTER::&nbsp;</TH>
 ";
 
 		foreach ($this->m_array_of_fields as $one_field_in_array_of_fields) {
@@ -773,4 +773,3 @@ function onchange_change_filter_doc_submit(obj) {
 	}
 
 }
-?>

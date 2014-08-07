@@ -19,7 +19,7 @@ class class_datetime {
 	}
 
 	// TODOEXPLAIN
-	function ConvertTimeInMinutesToTimeInHoursAndMinutes($time) {
+	public static function ConvertTimeInMinutesToTimeInHoursAndMinutes($time) {
 		if ( $time == '' ) {
 			$time = 0;
 		}
@@ -122,7 +122,7 @@ class class_datetime {
 	}
 
 	// TODOEXPLAIN
-	function formatDatePresentOrNot($date) {
+	public static function formatDatePresentOrNot($date) {
 		$retval = trim($date);
 
 		if ( $retval != '' ) {
@@ -146,7 +146,7 @@ class class_datetime {
 	}
 
 	// TODOEXPLAIN
-	function is_legacy($oDate, $max = 1) {
+	public static function is_legacy($oDate, $max = 1) {
 		$isLegacy = false;
 
 		if ( $max < 0 ) {

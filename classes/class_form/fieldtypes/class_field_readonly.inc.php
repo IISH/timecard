@@ -61,4 +61,3 @@ class class_field_readonly extends class_field {
 		return $query_fields;
 	}
 }
-?>

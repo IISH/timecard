@@ -22,7 +22,7 @@ function convertToJiraUrl( $jira_issue_nr ) {
 // TODOEXPLAIN
 function goBackTo() {
 	$ret = '';
-
+/*
 	$backurl = getBackUrl();
 	if ( $backurl != '' ) {
 		$backurllabel = getAndProtectBackurlLabel();
@@ -33,13 +33,13 @@ function goBackTo() {
 		}
 		$ret = "<div class=\"goBackTo\"><a href=\"$backurl\">$backurllabel</a></div>";
 	}
-
+*/
 	return $ret;
 }
 
 // TODOEXPLAIN
-function getEmployeesRibbon($year, $all = 0) {
-	global $date, $oEmployee;
+function getEmployeesRibbon($currentlySelectedEmployee, $year, $hide_all_employees_choice = 0) {
+	//global $oEmployee;
 
 	$selected_employee = "Select an employee";
 
@@ -61,12 +61,12 @@ function getEmployeesRibbon($year, $all = 0) {
 <b>Employees: </b><br>";
 
 	// if all (employees) show also link for 'all'
-	if ( $all == 1 ) {
+	if ( !$hide_all_employees_choice ) {
 		$ret .= "<a href=\"" . GetModifyReturnQueryString("?", "eid", "-1") . "\">all employees</a><br>";
 	}
 
-	foreach ( getListOfUsersActiveInSpecificYear($date["y"]) as $user ) {
-		if ( $oEmployee->getTimecardId() == $user["id"] ) {
+	foreach ( getListOfUsersActiveInSpecificYear($year) as $user ) {
+		if ( $currentlySelectedEmployee->getTimecardId() == $user["id"] ) {
 			$ret .= "<b>";
 			$selected_employee = trim($user["firstname"] . ' ' . $user["lastname"]);
 			$prev = $user['prev'];
@@ -75,16 +75,16 @@ function getEmployeesRibbon($year, $all = 0) {
 
 		$current_employee = trim($user["firstname"] . ' ' . $user["lastname"]);
 
-		$ret .= "<a href=\"" . GetModifyReturnQueryString("?", "eid", $user["id"]) . "\" alt=\"" . $current_employee . "\" title=\"" . $current_employee . "\">" . $current_employee . "</a>";
+		$ret .= "<a href=\"" . GetModifyReturnQueryString("?", "eid", $user["id"]) . "\" title=\"" . $current_employee . "\">" . $current_employee . "</a>";
 
-		if ( $oEmployee->getTimecardId() == $user["id"] ) {
+		if ( $currentlySelectedEmployee->getTimecardId() == $user["id"] ) {
 			$ret .= "</b>";
 		}
 
 		$ret .= "<br>";
 	}
 
-	if ( $oEmployee->getTimecardId() == -1 ) {
+	if ( $currentlySelectedEmployee->getTimecardId() == -1 ) {
 		$selected_employee = 'all employees';
 	}
 

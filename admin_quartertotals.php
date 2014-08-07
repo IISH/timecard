@@ -18,7 +18,7 @@ $oPage->removeSidebar();
 $oPage->setTab($menuList->findTabNumber('administrator.quartertotals'));
 $oPage->setTitle('Timecard | Admin Quarter Totals');
 $oPage->setContent(createAdminQuarterContent( $date ));
-$oPage->setLeftMenu( getEmployeesRibbon($date["y"], 1) );
+$oPage->setLeftMenu( getEmployeesRibbon($oEmployee, $date["y"], 1) );
 
 // show page
 echo $oPage->getPage();
@@ -33,12 +33,11 @@ function createAdminQuarterContent( $date ) {
 	$oPrevNext = new class_prevnext($date);
 	$ret = $oPrevNext->getQuarterRibbon( 'Quarter Totals: ' );
 
-	if ( $oEmployee->getTimecardId() < 1 && $oEmployee->getTimecardId() != '' ) {
-		$ret .= '<br>Please select an employee...<br>Quarter Totals does not work on all empoloyees';
+	if ( $oEmployee->getTimecardId() < 1 || $oEmployee->getTimecardId() == '' ) {
+		$ret .= '<br>Please select an employee...';
 	} else {
 		$ret .= getQuarterTotals( $date, $oEmployee->getTimecardId(), 'admin_' );
 	}
 
 	return $ret;
 }
-?>

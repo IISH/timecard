@@ -181,4 +181,3 @@ class class_field_time_double_field extends class_field {
 		return $query_fields;
 	}
 }
-?>

@@ -81,4 +81,3 @@ function createAbsencesContent() {
 
 	return $ret;
 }
-?>

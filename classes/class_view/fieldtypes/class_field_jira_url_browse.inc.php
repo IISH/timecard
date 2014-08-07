@@ -22,4 +22,3 @@ class class_field_jira_url_browse extends class_field {
 		return $ret;
 	}
 }
-?>

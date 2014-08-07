@@ -37,41 +37,43 @@ class class_field_string extends class_field {
 				$retval = $this->get_if_no_value($retval);
 
 				$no_href = 0;
-				if ( is_array($this->m_no_href_if) ) {
+
+				$noHrefIf = $this->get_no_href_if();
+				if ( is_array($noHrefIf) ) {
 					//
-					switch ( $this->m_no_href_if["operator"] ) {
+					switch ( $noHrefIf["operator"] ) {
 						case "<>":
-							if ( $row[$this->m_no_href_if["field"]] <> $row[$this->m_no_href_if["value"]] ) {
+							if ( $row[$noHrefIf["field"]] <> $row[$noHrefIf["value"]] ) {
 								$no_href = 1;
 							}
 							break;
 						case "==":
-							if ( $row[$this->m_no_href_if["field"]] == $row[$this->m_no_href_if["value"]] ) {
+							if ( $row[$noHrefIf["field"]] == $row[$noHrefIf["value"]] ) {
 								$no_href = 1;
 							}
 							break;
 						case "=":
-							if ( $row[$this->m_no_href_if["field"]] == $row[$this->m_no_href_if["value"]] ) {
+							if ( $row[$noHrefIf["field"]] == $row[$noHrefIf["value"]] ) {
 								$no_href = 1;
 							}
 							break;
 						case ">":
-							if ( $row[$this->m_no_href_if["field"]] > $row[$this->m_no_href_if["value"]] ) {
+							if ( $row[$noHrefIf["field"]] > $row[$noHrefIf["value"]] ) {
 								$no_href = 1;
 							}
 							break;
 						case ">=":
-							if ( $row[$this->m_no_href_if["field"]] >= $row[$this->m_no_href_if["value"]] ) {
+							if ( $row[$noHrefIf["field"]] >= $row[$noHrefIf["value"]] ) {
 								$no_href = 1;
 							}
 							break;
 						case "<":
-							if ( $row[$this->m_no_href_if["field"]] < $row[$this->m_no_href_if["value"]] ) {
+							if ( $row[$noHrefIf["field"]] < $row[$noHrefIf["value"]] ) {
 								$no_href = 1;
 							}
 							break;
 						case "<=":
-							if ( $row[$this->m_no_href_if["field"]] <= $row[$this->m_no_href_if["value"]] ) {
+							if ( $row[$noHrefIf["field"]] <= $row[$noHrefIf["value"]] ) {
 								$no_href = 1;
 							}
 							break;
@@ -87,14 +89,14 @@ class class_field_string extends class_field {
 					$url_onclick = " onClick=\"" . $url_onclick . "\"";
 				}
 
-				$target = $this->m_target;
+				$target = $this->get_target();
 				if ( $target <> "" ) {
 					$target = "target=\"" . $target . "\"";
 				}
 
-				$alttitle = $this->m_alttitle;
+				$alttitle = $this->get_alttitle();
 				if ( $alttitle != '' ) {
-					$alttitle = " alt=\"" . $alttitle . "\" title=\"" . $alttitle . "\" ";
+					$alttitle = " title=\"" . $alttitle . "\" ";
 				}
 
 				if ( $no_href == 0 ) {
@@ -104,7 +106,7 @@ class class_field_string extends class_field {
 			}
 
 			// no break - keep together
-			if ( $this->m_nobr === true ) {
+			if ( $this->get_nobr() === true ) {
 				$retval = "<nobr>" . $retval . "</nobr>";
 			}
 
@@ -126,13 +128,11 @@ class class_field_string extends class_field {
 			}
 
 			// no break - keep together
-			if ( $this->m_nobr === true ) {
+			if ( $this->get_nobr() === true ) {
 				$retval = "<nobr>" . $retval . "</nobr>";
 			}
 		}
 
 		return $retval;
 	}
-
 }
-?>

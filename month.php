@@ -128,7 +128,7 @@ function createMonthContent( $date ) {
 			, 'show_different_value' => array(
 				"value" => "0"
 				, "showvalue" => ""
-				, "showelsevalue" => "<a alt=\"Imported from Protime\" title=\"Imported from Protime\" class=\"PT\">(PT)</a>"
+				, "showelsevalue" => "<a title=\"Imported from Protime\" class=\"PT\">(PT)</a>"
 				)
 			)));
 
@@ -138,7 +138,7 @@ function createMonthContent( $date ) {
 			, 'show_different_value' => array(
 				"value" => ""
 				, "showvalue" => ""
-				, "showelsevalue" => "<a alt=\"Daily automatic addition\" title=\"Daily automatic addition\" class=\"PT\">(DAA)</a>"
+				, "showelsevalue" => "<a title=\"Daily automatic addition\" class=\"PT\">(DAA)</a>"
 				)
 			)));
 

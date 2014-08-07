@@ -20,7 +20,7 @@ $oPage->removeSidebar();
 $oPage->setTab($menuList->findTabNumber('administrator.month'));
 $oPage->setTitle('Timecard | Admin Month');
 $oPage->setContent(createAdminMonthContent( $date ));
-$oPage->setLeftMenu( getEmployeesRibbon($date["y"], 1) );
+$oPage->setLeftMenu( getEmployeesRibbon($oEmployee, $date["y"]) );
 
 // show page
 echo $oPage->getPage();
@@ -163,7 +163,7 @@ function createAdminMonthContent( $date ) {
 				, 'show_different_value' => array(
 						"value" => "0"
 						, "showvalue" => ""
-						, "showelsevalue" => "<a alt=\"Imported from Protime\" title=\"Imported from Protime\" class=\"PT\">(PT)</a>"
+						, "showelsevalue" => "<a title=\"Imported from Protime\" class=\"PT\">(PT)</a>"
 					)
 				)));
 
@@ -173,7 +173,7 @@ function createAdminMonthContent( $date ) {
 				, 'show_different_value' => array(
 					"value" => ""
 					, "showvalue" => ""
-					, "showelsevalue" => "<a alt=\"Daily automatic addition\" title=\"Daily automatic addition\" class=\"PT\">(DAA)</a>"
+					, "showelsevalue" => "<a title=\"Daily automatic addition\" class=\"PT\">(DAA)</a>"
 					)
 				)));
 

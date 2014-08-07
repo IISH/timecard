@@ -67,4 +67,3 @@ class class_field_textarea extends class_field {
 	}
 
 }
-?>

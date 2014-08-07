@@ -95,4 +95,3 @@ class class_field_decimal extends class_field {
 		return $query_fields;
 	}
 }
-?>

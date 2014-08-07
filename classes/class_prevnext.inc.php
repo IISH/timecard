@@ -201,7 +201,7 @@ function tcRefreshCalendar( sDate, sOriginalDate ) {
 // -->
 </script>
 
-<a href=\"javascript:toggleCalendar();\" id=\"displayTextCalendar\" class=\"nolink\" alt=\"Show/hide calendar\" title=\"Show/hide calendar\"><img src=\"images/expand2-down.gif\" border=0></a>
+<a href=\"javascript:toggleCalendar();\" id=\"displayTextCalendar\" class=\"nolink\" title=\"Show/hide calendar\"><img src=\"images/expand2-down.gif\" border=0></a>
 <div id=\"toggleTextCalendar\" class=\"calendarPositioning\"></div>
 
 <script type=\"text/javascript\">

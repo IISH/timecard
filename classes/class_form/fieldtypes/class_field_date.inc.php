@@ -79,4 +79,3 @@ class class_field_date extends class_field {
 		return $tmp_data;
 	}
 }
-?>

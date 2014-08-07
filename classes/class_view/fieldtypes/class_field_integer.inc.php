@@ -50,4 +50,3 @@ class class_field_integer extends class_field {
 	}
 
 }
-?>

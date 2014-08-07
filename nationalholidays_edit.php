@@ -80,4 +80,3 @@ function createFeestdagenEditContent() {
 
 	return $ret;
 }
-?>

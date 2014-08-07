@@ -23,7 +23,7 @@ if ( $oEmployee->getTimecardId() == -1 || $oEmployee->getTimecardId() == '' ) {
 $oPage->setTab($menuList->findTabNumber('administrator.day'));
 $oPage->setTitle('Timecard | Admin Day');
 $oPage->setContent(createAdminDayContent( $date ) . getCheckedInCheckedOut($oEmployee->getProtimeId(), $date["Ymd"]));
-$oPage->setLeftMenu( getEmployeesRibbon($date["y"], 1) );
+$oPage->setLeftMenu( getEmployeesRibbon($oEmployee, $date["y"]) );
 
 // add shortcuts and recently used
 if ( $date["y"] >= "2013" ) {
@@ -163,7 +163,7 @@ function getAdminDay( $date ) {
 				, 'show_different_value' => array(
 						"value" => "0"
 						, "showvalue" => ""
-						, "showelsevalue" => "<a alt=\"Imported from Protime\" title=\"Imported from Protime\" class=\"PT\">(PT)</a>"
+						, "showelsevalue" => "<a title=\"Imported from Protime\" class=\"PT\">(PT)</a>"
 					)
 				)));
 
@@ -195,9 +195,9 @@ function getAdminDay( $date ) {
 <input type=\"hidden\" name=\"filter\" value=\"\">
 <input type=\"hidden\" name=\"\" value=\"\">
 	<tr>
-		<TH align=\"left\"><a alt=\"\" title=\"\" class=\"nolink\">Project</a></TH>
-		<TH align=\"left\"><a alt=\"\" title=\"\" class=\"nolink\">Description</a></TH>
-		<TH align=\"left\"><a alt=\"\" title=\"\" class=\"nolink\">Time</a></TH>
+		<TH align=\"left\"><a class=\"nolink\">Project</a></TH>
+		<TH align=\"left\"><a class=\"nolink\">Description</a></TH>
+		<TH align=\"left\"><a class=\"nolink\">Time</a></TH>
 	</tr>
 </form>
 ";
@@ -223,13 +223,13 @@ function getAdminDay( $date ) {
 ";
 
 				if ( $protime_absence_recnr != 0 ) {
-					$protime_label = '<a alt="Imported from Protime" title="Imported from Protime" class=\"PT\">(PT)</a>';
+					$protime_label = '<a title="Imported from Protime" class=\"PT\">(PT)</a>';
 					$ret .= "
 		<TD class=\"recorditem\"><nobr>" . $row["Description"] . "</nobr></td>
 ";
 				} else {
 					if ( $daily_automatic_addition_id != '' && $daily_automatic_addition_id != '0') {
-						$protime_label = '<a alt="Daily automatic addition" title="Daily automatic addition" class="PT">(DAA)</a>';
+						$protime_label = '<a title="Daily automatic addition" class="PT">(DAA)</a>';
 					} elseif ( true ) {
 
 					}
@@ -241,7 +241,7 @@ function getAdminDay( $date ) {
 ";
 					} else {
 						$ret .= "
-		<TD class=\"recorditem\"><nobr><A HREF=\"admin_edit.php?ID=" . $row["ID"] . "&d=" . $date["Ymd"] . "&eid=" . $oEmployee->getTimecardId() . "&backurl=" . urlencode(get_current_url()) . "\" alt=\"Edit hours\" title=\"Edit hours\">" . $row["Description"] . "</a></nobr></td>
+		<TD class=\"recorditem\"><nobr><A HREF=\"admin_edit.php?ID=" . $row["ID"] . "&d=" . $date["Ymd"] . "&eid=" . $oEmployee->getTimecardId() . "&backurl=" . urlencode(get_current_url()) . "\" title=\"Edit hours\">" . $row["Description"] . "</a></nobr></td>
 ";
 					}
 				}
@@ -279,7 +279,7 @@ function getAdminDay( $date ) {
 		<td colspan=\"2\"><i>Department - Leave (eerder weg):</i></td>
 		<td><i>" . class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes( $dagvakantie ) . "</i></td>
 		<td></td>
-		<td><a alt=\"Imported from Protime\" title=\"Imported from Protime\" class=\"PT\">(PT)</a></td>
+		<td><a title=\"Imported from Protime\" class=\"PT\">(PT)</a></td>
 	</tr>
 ";
 
@@ -339,7 +339,7 @@ function getAdminDay( $date ) {
 			$shortcut["url"] = $url;
 
 			if ( trim($shortcut["autosave"]) == '1' ) {
-				$shortcut["autosave"] = "<a alt=\"auto save on new\" title=\"auto save on new\"><img src=\"images/save.gif\" border=\"0\"></a>";
+				$shortcut["autosave"] = "<a title=\"auto save on new\"><img src=\"images/save.gif\" border=\"0\"></a>";
 			} else {
 				$shortcut["autosave"] = '';
 			}

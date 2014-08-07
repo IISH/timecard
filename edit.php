@@ -233,4 +233,3 @@ doc_submit('saveclose')
 
 		return $retval;
 	}
-?>

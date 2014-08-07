@@ -179,6 +179,11 @@ class class_field {
 	}
 
 	// TODOEXPLAIN
+	function get_no_href_if() {
+		return $this->m_no_href_if;
+	}
+
+	// TODOEXPLAIN
 	function get_viewfilter() {
 		return $this->m_viewfilter;
 	}
@@ -303,4 +308,3 @@ class class_field {
 		return $retval;
 	}
 }
-?>

@@ -61,4 +61,3 @@ class class_field_time extends class_field {
 		return $retval;
 	}
 }
-?>

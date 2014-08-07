@@ -99,4 +99,3 @@ function createHoursperweekEditContent() {
 
 	return $ret;
 }
-?>

@@ -204,4 +204,3 @@ function showProjectTree($id = 0, $level = 1, $show_all) {
 
 	return $ret;
 }
-?>

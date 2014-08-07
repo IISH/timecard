@@ -50,4 +50,3 @@ class class_field_decimal extends class_field {
 	}
 
 }
-?>

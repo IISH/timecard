@@ -133,4 +133,3 @@ function createProjectEditContent() {
 
 	return $ret;
 }
-?>

@@ -36,4 +36,3 @@ WHERE Workhours.Employee=" . $_POST["FORM_Employee"] . "
 		return true;
 	}
 }
-?>

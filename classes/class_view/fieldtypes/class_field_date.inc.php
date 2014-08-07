@@ -30,7 +30,6 @@ class class_field_date extends class_field {
 	// TODOEXPLAIN
 	function view_field($row, $criteriumResult = 0) {
 		$retval = parent::view_field($row, $criteriumResult);
-		$retval_org = $retval;
 
 		if ( $retval != '' ) {
 			// verwijder tijd uit datum
@@ -71,7 +70,7 @@ class class_field_date extends class_field {
 
 				$alttitle = $this->get_alttitle();
 				if ( $alttitle != '' ) {
-					$alttitle = " alt=\"" . $alttitle . "\" title=\"" . $alttitle . "\" ";
+					$alttitle = " title=\"" . $alttitle . "\" ";
 				}
 
 				$retval = "<A HREF=\"" . $href2otherpage . "\" " . $url_onclick . " " . $target . " " . $alttitle . ">" . $retval . "</a>";
@@ -111,4 +110,3 @@ class class_field_date extends class_field {
 	}
 
 }
-?>
