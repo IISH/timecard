@@ -23,13 +23,13 @@ if ( $dowhat == 'a' ) {
 	$query = 'INSERT INTO EmployeeFavourites(TimecardID, ProtimeID, type) VALUES(' . $oWebuser->getTimecardId() . ', ' . $id . ', \'' . $fav . '\') ';
 	// show remove button in window
 	$alttitle = "Click to remove the person from your favourites";
-	$div = '<a href="#" onClick="addRemove(' . $id . ', \'r\');" alt="' . $alttitle . '" title="' . $alttitle . '"><img src="images/minus-sign.png" border=0></a>';
+	$div = '<a href="#" onClick="addRemove(' . $id . ', \'r\');" alt="' . $alttitle . '" title="' . $alttitle . '"><img src="images/favourites-on.png" border=0></a>';
 } elseif ( $dowhat == 'r' ) {
 	// remove from database
 	$query = 'DELETE FROM EmployeeFavourites WHERE TimecardID=' . $oWebuser->getTimecardId() . " AND ProtimeID=" . $id . ' AND type=\'' . $fav . '\' ';
 	// show add button in window
 	$alttitle = "Click to add the person from your favourites";
-	$div = '<a href="#" onClick="addRemove(' . $id . ', \'a\');" alt="' . $alttitle . '" title="' . $alttitle . '"><img src="images/plus-sign.png" border=0></a>';
+	$div = '<a href="#" onClick="addRemove(' . $id . ', \'a\');" alt="' . $alttitle . '" title="' . $alttitle . '"><img src="images/favourites-off.png" border=0></a>';
 }
 
 if ( $query != '' ) {
