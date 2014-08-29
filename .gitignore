@@ -1,6 +1,7 @@
 composer.lock
 vendor
 settings.inc.php
+settings.php
 .idea
 *.ipr
 *.iml
