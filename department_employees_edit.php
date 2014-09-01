@@ -69,7 +69,7 @@ function createEmployeesEditContent() {
 		, 'description_field' => 'FULLNAME'
 
 		, 'empty_value' => '0'
-		, 'required' => 0
+		, 'required' => 1
 		, 'show_empty_row' => true
 		, 'onNew' => '0'
 		)));

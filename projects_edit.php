@@ -91,6 +91,7 @@ function createProjectEditContent() {
 		, 'fieldlabel' => 'Projectnumber'
 		, 'required' => 0
 		, 'onNew' => ''
+		, 'style' => 'width:425px;'
 		)));
 
 	$oForm->add_field( new class_field_string ( array(
@@ -98,6 +99,7 @@ function createProjectEditContent() {
 		, 'fieldlabel' => 'Project'
 		, 'required' => 1
 		, 'onNew' => ''
+		, 'style' => 'width:425px;'
 		)));
 
 	$oForm->add_field( new class_field_textarea ( array(
@@ -105,6 +107,28 @@ function createProjectEditContent() {
 		, 'fieldlabel' => 'Description'
 		, 'class' => 'resizable'
 		, 'style' => 'width:425px;height:70px;'
+		)));
+
+	$oForm->add_field( new class_field_list ( $settings, array(
+		'fieldname' => 'projectleader'
+		, 'fieldlabel' => 'Project leader'
+		, 'query' => "SELECT ID, CONCAT(RTRIM(LTRIM(FIRSTNAME)), ' ', RTRIM(LTRIM(NAME)), ' (#', ID, ')') AS FULLNAME FROM vw_Employees WHERE isdisabled=0 ORDER BY FIRSTNAME, NAME "
+
+		, 'id_field' => 'ID'
+		, 'description_field' => 'FULLNAME'
+
+		, 'empty_value' => '0'
+		, 'required' => 0
+		, 'show_empty_row' => true
+		, 'onNew' => '0'
+		)));
+
+	$oForm->add_field( new class_field_string ( array(
+		'fieldname' => 'projectleader_email'
+		, 'fieldlabel' => 'Project leader email'
+		, 'required' => 0
+		, 'onNew' => ''
+		, 'style' => 'width:425px;'
 		)));
 
 	$oForm->add_field( new class_field_bit ( array(

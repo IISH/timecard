@@ -62,13 +62,6 @@ function createDepartmentsEditContent() {
 		, 'size' => 35
 		)));
 
-	$oForm->add_field( new class_field_string ( array(
-		'fieldname' => 'mail_monthly_project_reports_to'
-		, 'fieldlabel' => 'Mail monthly project reports to'
-		, 'required' => 1
-		, 'size' => 35
-		)));
-
 	$oForm->add_field( new class_field_bit ( array(
 		'fieldname' => 'isdisabled'
 		, 'fieldlabel' => 'Is disabled?'
