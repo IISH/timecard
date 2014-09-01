@@ -11,7 +11,7 @@ if ( !$oWebuser->hasAdminAuthorisation() ) {
 // create webpage
 $oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
-$oPage->setTab($menuList->findTabNumber('administrator.change_user'));
+$oPage->setTab($menuList->findTabNumber('misc.change_user'));
 $oPage->setTitle('Timecard | Switch user');
 $oPage->setContent(createChangeUserContent());
 
@@ -85,8 +85,8 @@ function createChangeUserContent() {
 	<td></td>
 </tr>
 <tr>
-	<td align=\"right\"><input class=\"button_login\" type=\"reset\" name=\"btnReset\" value=\"Clear\">&nbsp;</td>
-	<td>&nbsp;<input class=\"button_login\" type=\"submit\" name=\"btnSubmit\" value=\"Submit\"></td>
+	<td align=\"right\"><input class=\"button\" type=\"reset\" name=\"btnReset\" value=\"Clear\">&nbsp;</td>
+	<td>&nbsp;<input class=\"button\" type=\"submit\" name=\"btnSubmit\" value=\"Submit\"></td>
 </tr>
 </form>
 </table>

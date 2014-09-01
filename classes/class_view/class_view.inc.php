@@ -423,7 +423,7 @@ function onchange_change_filter_doc_submit(obj) {
 		array_push($preloaded_templates, array('default' => "<TD class=\"recorditem\">::TD::&nbsp;</td>\n"));
 
 		// place querystring parameters in query
-		$this->m_view["query"] = $this->oClassMisc->PlaceURLParametersInQuery($this->m_view["query"], $this->m_view["change_back_url"]);
+		$this->m_view["query"] = $this->oClassMisc->PlaceURLParametersInQuery($this->m_view["query"]);
 
 		// add filters to query
 		$this->m_view["query"] = $this->add_filters_to_query($this->m_view["query"]);
@@ -563,7 +563,9 @@ function onchange_change_filter_doc_submit(obj) {
 				$total_row = '';
 
 				// add header row
-				$return_value .= $this->generate_view_header();
+				if ( !isset($this->m_view["show_view_header"]) || $this->m_view["show_view_header"] == true ) {
+					$return_value .= $this->generate_view_header();
+				}
 
 				// doorloop gevonden recordset
 				while($row = mysql_fetch_assoc($res)){
@@ -663,46 +665,24 @@ function onchange_change_filter_doc_submit(obj) {
 
 	// TODOEXPLAIN
 	function get_view_buttons() {
-		// place submit buttons
-		$submitbuttons = "
-<table>
-<tr>
-	<td colspan=\"2\">
-
-		<!-- addnewbutton -->
-		&nbsp; &nbsp; &nbsp;
-		<input type=\"button\" class=\"button\" name=\"addNewButton\" value=\"::language_submit_button_add_new_url::\" onClick=\"javascript:open_page('::ADDNEWURL::');\">
-		&nbsp;&nbsp;&nbsp;
-		<!-- /addnewbutton -->
-
-	</td>
-</tr>
-</table>
-";
-
 		// show add new button?
 		$add_new_url = $this->m_view["add_new_url"];
 
 		if ( $add_new_url == '' ) {
-
-			$submitbuttons = '';
-			$add_new_url = '';
-
-		} else {
-
-			$add_new_url = str_replace("\n", '', $add_new_url);
-			$add_new_url = str_replace("\t", '', $add_new_url);
-			$add_new_url = str_replace("\r", '', $add_new_url);
-
-			$add_new_url = $this->oClassMisc->ReplaceSpecialFieldsWithQuerystringValues($add_new_url);
-
+			return '';
 		}
+
+		// place submit buttons
+		$submitbuttons = "<p style=\"line-height:20px\"><a href=\"::ADDNEWURL::\" class=\"button\">Add new</a></p>";
+
+		$add_new_url = str_replace("\n", '', $add_new_url);
+		$add_new_url = str_replace("\t", '', $add_new_url);
+		$add_new_url = str_replace("\r", '', $add_new_url);
+
+		$add_new_url = $this->oClassMisc->ReplaceSpecialFieldsWithQuerystringValues($add_new_url);
 
 		// create add new button
 		$submitbuttons = str_replace("::ADDNEWURL::", $add_new_url, $submitbuttons);
-
-		// tmp hack
-		$submitbuttons = str_replace("::language_submit_button_add_new_url::", 'Add new', $submitbuttons);
 
 		return $submitbuttons;
 	}

@@ -11,7 +11,7 @@ if ( !( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasFaAuthorisation() ) 
 // create webpage
 $oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
-$oPage->setTab($menuList->findTabNumber('finad.projecten'));
+$oPage->setTab($menuList->findTabNumber('finad.projects'));
 $oPage->setTitle('Timecard | Projects');
 $oPage->setContent(createProjectContent());
 
@@ -96,7 +96,7 @@ td.project4 {
 	}
 
 	$current_url_encoded = urlencode(get_current_url());
-	$ret .= " &nbsp; &nbsp; &nbsp; <a href=\"projects_edit.php?ID=0&PID=0&backurl=" . $current_url_encoded . "\">[ Add new project ]</a><br><br>";
+	$ret .= " &nbsp; &nbsp; &nbsp; <a href=\"projects_edit.php?ID=0&PID=0&backurl=" . $current_url_encoded . "\" class=\"button\">Add new project</a><br><br>";
 
 	$ret .= "<table class=\"projects\">
 <tr>

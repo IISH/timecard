@@ -2,6 +2,14 @@
 require_once dirname(__FILE__) . "/class_calendar.inc.php";
 
 // TODOEXPLAIN
+function fixCharErrors( $text ) {
+	$text = str_replace("Ã«", "&euml;", $text);
+	$text = str_replace("ë", "&euml;", $text);
+
+	return $text;
+}
+
+// TODOEXPLAIN
 function convertToJiraUrl( $jira_issue_nr ) {
 	$ret = '';
 	$separator = '';

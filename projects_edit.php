@@ -11,7 +11,7 @@ if ( !( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasFaAuthorisation() ) 
 // create webpage
 $oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
-$oPage->setTab($menuList->findTabNumber('finad.projecten'));
+$oPage->setTab($menuList->findTabNumber('finad.projects'));
 $oPage->setTitle('Timecard | Project (edit)');
 $oPage->setContent(createProjectEditContent());
 

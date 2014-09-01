@@ -11,9 +11,9 @@ if ( !( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasExportsAuthorisation
 // create webpage
 $oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
-$oPage->setTab($menuList->findTabNumber('exports.euprojecten'));
+$oPage->setTab($menuList->findTabNumber('exports.euprojects'));
 $oPage->setTitle('Timecard | Exports - Employee Project totals');
-$oPage->setContent(createEuProjectenContent());
+$oPage->setContent(createEuProjectsContent());
 
 // show page
 echo $oPage->getPage();
@@ -21,7 +21,7 @@ echo $oPage->getPage();
 require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
-function createEuProjectenContent() {
+function createEuProjectsContent() {
 	global $protect;
 
 	$fields = array();

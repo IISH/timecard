@@ -20,7 +20,7 @@ class class_misc {
 	}
 
 	// TODOEXPLAIN
-	function PlaceURLParametersInQuery($query, $change_back_url) {
+	function PlaceURLParametersInQuery($query) {
 		$return_value = $query;
 
 		// vervang in de url, de FLD: door waardes
@@ -38,17 +38,17 @@ class class_misc {
 			ereg($pattern, $return_value, $matches);
 		}
 
-		if ( $change_back_url <> "no" ) {
-			// 
-			$backurl = $_SERVER["QUERY_STRING"];
-			if ( $backurl <> "" ) {
-				$backurl = "?" . $backurl;
-			}
-			$backurl = urlencode($_SERVER["SCRIPT_NAME"] . $backurl);
-		} else {
-			$backurl = urlencode(getBackUrl());
-		}
-		$return_value = str_replace("[BACKURL]", $backurl, $return_value);
+//		if ( $change_back_url <> "no" ) {
+//			//
+//			$backurl = $_SERVER["QUERY_STRING"];
+//			if ( $backurl <> "" ) {
+//				$backurl = "?" . $backurl;
+//			}
+//			$backurl = urlencode($_SERVER["SCRIPT_NAME"] . $backurl);
+//		} else {
+//			$backurl = urlencode(getBackUrl());
+//		}
+		$return_value = str_replace("[BACKURL]", urlencode(getBackUrl()), $return_value);
 
 		return $return_value;
 	}
@@ -95,6 +95,7 @@ class class_misc {
 			$backurl = "?" . $backurl;
 		}
 		$backurl = urlencode($_SERVER["SCRIPT_NAME"] . $backurl);
+
 		// if there is a backurl then place the new blackurl into the string
 		$return_value = str_replace("[BACKURL]", $backurl, $return_value);
 

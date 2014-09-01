@@ -161,8 +161,6 @@ class class_field {
 
 	function cleanUpLabels($text) {
 		$text = str_replace('::REQUIRED::', '', $text);
-		$text = str_replace('::REFRESH::', '', $text);
-		$text = str_replace('::ADDNEW::', '', $text);
 		$text = str_replace('::STYLE::', '', $text);
 		$text = str_replace('::CLASS::', '', $text);
 

@@ -26,11 +26,12 @@ if ( $oWebuser->hasAdminAuthorisation() ) {
 // TAB: MISC
 $menu->addMenuGroup( new class_menugroup('Miscellaneous') );
 if ( $oWebuser->hasAdminAuthorisation() ) {
+	$menu->addMenuItem( new class_menuitem('misc.departments', 'Departments', 'departments.php') );
 	$menu->addMenuItem( new class_menuitem('misc.protimeabsenties', 'Protime Absences', 'admin_protime_absences.php') );
 	$menu->addMenuItem( new class_menuitem('misc.urenperweek', 'Hours per week', 'admin_hoursperweek.php') );
-	$menu->addMenuItem( new class_menuitem('reports.hoursleft', 'Hours left', 'admin_hoursleft.php') );
+	$menu->addMenuItem( new class_menuitem('misc.hoursleft', 'Hours left', 'admin_hoursleft.php') );
 	$menu->addMenuItem( new class_menuitem('misc.not_linked_employees', 'Not Linked Employees', 'admin_not_linked_employees.php') );
-	$menu->addMenuItem( new class_menuitem('administrator.change_user', 'Switch user', 'switch_user.php') );
+	$menu->addMenuItem( new class_menuitem('misc.change_user', 'Switch user', 'switch_user.php') );
 }
 
 // + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
@@ -38,7 +39,7 @@ if ( $oWebuser->hasAdminAuthorisation() ) {
 // TAB: REPORTS
 $menu->addMenuGroup( new class_menugroup('Exports') );
 if ( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasExportsAuthorisation() ) {
-	$menu->addMenuItem( new class_menuitem('exports.euprojecten', 'Employee Project totals', 'admin_euprojecten_overzichten.php') );
+	$menu->addMenuItem( new class_menuitem('exports.euprojects', 'Employee Project totals', 'admin_euprojecten_overzichten.php') );
 	$menu->addMenuItem( new class_menuitem('exports.oracle', 'Oracle', 'export_oracle.php') );
 }
 
@@ -48,7 +49,7 @@ if ( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasExportsAuthorisation() 
 $menu->addMenuGroup( new class_menugroup('Financial Administration') );
 if ( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasFaAuthorisation() ) {
 	$menu->addMenuItem( new class_menuitem('finad.employees', 'Employees', 'employees.php') );
-	$menu->addMenuItem( new class_menuitem('finad.projecten', 'Projects', 'projects.php') );
+	$menu->addMenuItem( new class_menuitem('finad.projects', 'Projects', 'projects.php') );
 	$menu->addMenuItem( new class_menuitem('finad.worklocations', 'Work locations', 'worklocations.php') );
 }
 

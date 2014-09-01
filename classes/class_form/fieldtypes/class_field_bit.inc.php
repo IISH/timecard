@@ -63,9 +63,6 @@ class class_field_bit extends class_field {
 		// place if necessary required sign in row template
 		$tmp_data = str_replace("::REQUIRED::", $this->get_required_sign(), $tmp_data);
 
-		$tmp_data = str_replace("::REFRESH::", '', $tmp_data);
-		$tmp_data = str_replace("::ADDNEW::", '', $tmp_data);
-
 		return $tmp_data;
 	}
 

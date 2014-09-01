@@ -86,21 +86,14 @@ class class_field_list extends class_field {
 		// indien niet goed bewaard gebruik dan de form waarde
 		if ( $required_typecheck_result == 0 ) {
 			$veldwaarde = $this->get_form_value();
-//echo "ZZZZ<BR>";
 		} else {
-//echo "XXXX<BR>";
-//print_r( $row );
 			$veldwaarde = $row[$this->get_fieldname()];
-
-//echo $veldwaarde . "  ////<br>";
 
 			$onNewValue = $this->get_onNew($m_form["primarykey"]);
 			if ( $onNewValue != "" ) {
-//	echo "yyyy<BR>";
 				$veldwaarde = $onNewValue;
 			}
 		}
-//echo $veldwaarde . "  ////<br>";
 
 		// strip slashes
 		$veldwaarde = stripslashes($veldwaarde);
@@ -139,10 +132,10 @@ class class_field_list extends class_field {
 
 		if ( $this->m_dbhandle == null ) {
 			// TODOTODO
-			$res2 = mysql_query($this->oMisc->PlaceURLParametersInQuery($this->m_query, "no"), $this->oDb->getConnection()) or die(mysql_error());
+			$res2 = mysql_query($this->oMisc->PlaceURLParametersInQuery($this->m_query), $this->oDb->getConnection()) or die(mysql_error());
 		} else {
 			// TODOTODO
-			$res2 = mysql_query($this->oMisc->PlaceURLParametersInQuery($this->m_query, "no"), $this->m_dbhandle) or die(mysql_error());
+			$res2 = mysql_query($this->oMisc->PlaceURLParametersInQuery($this->m_query), $this->m_dbhandle) or die(mysql_error());
 		}
 
 		$selectedOption = (string)$row[$this->get_fieldname()];
@@ -163,8 +156,7 @@ class class_field_list extends class_field {
 			if ( $optionvalue == $veldwaarde ) {
 				$inputfield .= " SELECTED";
 			}
-			$inputfield .= ">" . stripslashes(trim($row2[$this->m_description_field])) . "</option>\n";
-
+			$inputfield .= ">" . fixCharErrors(stripslashes(trim($row2[$this->m_description_field]))) . "</option>\n";
 		}
 
 		$inputfield .= "</select>\n";
@@ -188,9 +180,6 @@ class class_field_list extends class_field {
 
 		// place if necessary required sign in row template
 		$tmp_data = str_replace("::REQUIRED::", $this->get_required_sign(), $tmp_data);
-
-		$tmp_data = str_replace("::REFRESH::", '', $tmp_data);
-		$tmp_data = str_replace("::ADDNEW::", '', $tmp_data);
 
 		return $tmp_data;
 	}

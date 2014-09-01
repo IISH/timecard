@@ -273,7 +273,7 @@ class class_form {
 		// default template for form
 		array_push($preloaded_templates, array('default' => "
 <tr>
-	<TD valign=\"top\"><span class=\"form_field_label\">::LABEL::: </span><span class=\"errormessage\">::REQUIRED::</span> ::REFRESH:: ::ADDNEW::&nbsp;</td>
+	<TD valign=\"top\"><span class=\"form_field_label\">::LABEL::: </span><span class=\"errormessage\">::REQUIRED::</span>&nbsp;</td>
 	<td>::FIELD::</td>
 </tr>
 "));
@@ -301,7 +301,7 @@ class class_form {
 		}
 
 		// plaats url parameters in query
-		$this->m_form["query"] = $this->oClassMisc->PlaceURLParametersInQuery($this->m_form["query"], "no");
+		$this->m_form["query"] = $this->oClassMisc->PlaceURLParametersInQuery($this->m_form["query"]);
 
 		// execute query
 		$res = mysql_query($this->m_form["query"], $this->oDb->getConnection()) or die(mysql_error());
@@ -378,20 +378,26 @@ class class_form {
 
 	// TODOEXPLAIN
 	function get_form_edit_buttons() {
+//		<input type=\"button\" class=\"button\" name=\"cancelButton\" value=\"Cancel\" onClick=\"open_page('::CANCELURL::');\">
+
 		// place submit buttons
 		$submitbuttons = "
 <tr>
 	<td colspan=\"2\" align=\"center\">
 
-		<input type=\"button\" class=\"button\" name=\"cancelButton\" value=\"Cancel\" onClick=\"open_page('::CANCELURL::');\">
-		&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+		<!-- cancelbutton -->
+		<a href=\"::CANCELURL::\" class=\"button\">Cancel</a>
+		&nbsp; &nbsp; &nbsp; &nbsp;
+		<!-- /cancelbutton -->
 
 		<!-- deletebutton -->
 		<input type=\"button\" class=\"button\" name=\"deleteButton\" value=\"Delete\" onClick=\"doc_delete('delete');\">
-		&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+		&nbsp; &nbsp; &nbsp; &nbsp;
 		<!-- /deletebutton -->
 
+		<!-- savebutton -->
 		<input type=\"button\" class=\"button\" name=\"saveButtonGoBack\" value=\"Save\" onClick=\"doc_submit('saveclose');\">
+		<!-- /savebutton -->
 
 	</td>
 </tr>

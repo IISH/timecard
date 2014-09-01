@@ -90,25 +90,24 @@ a.add, a.add:visited, a.add:active, a.add:hover {
 	font-style:italic;
 }
 
-a.viewbutton, a.viewbutton:visited, a.viewbutton:active, a.viewbutton:hover {
-	font-size: 90%;
-}
-
 input, select, textarea {
 	border-width: 1px;
 	border-style: solid;
 	border-color: <?php echo $c; ?>;
 }
 
-.button, .button_login {
+.button {
 	color: <?php echo $c; ?>;
 	background-color: white;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
-	padding: 3px;
 	width: 75px;
 	border: 1px solid <?php echo $c; ?>;
+	padding-left: 15px;
+	padding-right: 15px;
+	padding-top: 3px;
+	padding-bottom: 3px;
 }
 
 h2 {
@@ -242,13 +241,13 @@ div.leftmenu {
 }
 
 div.contentiframe {
-	border: 1px solid #AAAAAA;
-	margin-top: 5px;
-	margin-bottom: 5px;
-	padding-top: 5px;
-	padding-bottom: 15px;
-	padding-left: 5px;
-	padding-right: 5px;
+	border: 0px solid #AAAAAA;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	padding-top: 0px;
+	padding-bottom: 2px;
+	padding-left: 2px;
+	padding-right: 2px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	border-radius: 5px;
@@ -314,12 +313,10 @@ div.footer {
 	background-color: <?php echo $c; ?>;
 	text-align: right;
 	border: 1px solid #AAAAAA;
-	xxxbottom: 0px;
 	width: 960px;
 }
 
 #footer {
-	xxxposition: fixed;
 	position: relative;
 	bottom: 0;
 	margin-top: 10px;
