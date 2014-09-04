@@ -173,22 +173,22 @@ class class_employee {
 
 	// TODOEXPLAIN
 	function getLastname() {
-		return $this->lastname;
+		return trim($this->lastname);
 	}
 
 	// TODOEXPLAIN
 	function getLastFirstname() {
-		return $this->lastname . ', ' . $this->firstname;
+		return trim($this->lastname) . ', ' . trim($this->firstname);
 	}
 
 	// TODOEXPLAIN
 	function getFirstLastname() {
-		return $this->firstname . ' ' . $this->lastname;
+		return trim($this->firstname . ' ' . $this->lastname);
 	}
 
 	// TODOEXPLAIN
 	function getFirstname() {
-		return $this->firstname;
+		return trim($this->firstname);
 	}
 
 	// TODOEXPLAIN
@@ -379,7 +379,7 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 	}
 
 	function getVacationHours() {
-		$ret = 0;
+		$ret = array();
 
 		if ( $this->getProtimeId() != '0' ) {
 
@@ -394,9 +394,11 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 
 			$end_val = $vakantie["end_val"];
 			if ( $end_val != '' ) {
-				$ret = $end_val/60;
+				$ret["value"] = $end_val/60;
+				$ret["bookdate"] = $vakantie["bookdate"];
 			} else {
-				$ret = 0;
+				$ret["value"] = 0;
+				$ret["bookdate"] = '';
 			}
 
 		}

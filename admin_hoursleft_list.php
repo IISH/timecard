@@ -110,13 +110,13 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 		<th>Name</th>
 		<th>Hours&nbsp;per&nbsp;week</th>
 		<th>Year total</th>
-		<th>Year total (76%)</th>
+		<th>Year total (" . (int)(class_settings::getSetting("percentage_rule")*100.0) . "%)</th>
 		<th>Until end of year total</th>
 		<th>Vacation left</th>
 		<th>Nat. hol. left</th>
 		<th>(Max. transfer)</th>
 		<th>Left</th>
-		<th>Left (76%)</th>
+		<th>Left (" . (int)(class_settings::getSetting("percentage_rule")*100.0) . "%)</th>
 	</tr>
 ";
 
@@ -186,7 +186,7 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 
 		// YEAR TOTAL 76
 		$ret .= "\t\t<td valign=top>\n";
-		$ret .= hoursLeft_formatNumber($yearTotal * class_settings::getSetting("rule76"), 1);
+		$ret .= hoursLeft_formatNumber(1.0 * $yearTotal * class_settings::getSetting("percentage_rule"), 1);
 		$ret .= "\t\t</td>\n";
 
 		// END YEAR TOTAL
@@ -194,10 +194,16 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 		$ret .= hoursLeft_formatNumber($endyearTotal, 1);
 		$ret .= "\t\t</td>\n";
 
-		// VACATION
-		$vacationLeft = $oEmployee->getVacationHours();
+		// VACATION LEFT
+		$arrVacationLeft = $oEmployee->getVacationHours();
+		$vacationLeft = $arrVacationLeft["value"];
+		$vacationLeftBookdate = $arrVacationLeft["bookdate"];
 		$ret .= "\t\t<td valign=top>\n";
 		$ret .= hoursLeft_formatNumber($vacationLeft, 1);
+		if ( $vacationLeftBookdate != '' && $vacationLeftBookdate < date("Ymd", mktime(0,0,0, date("m")-1, 1, date("Y")) )  ) {
+			$oD = new class_dateasstring($vacationLeftBookdate);
+			$ret .= "<a class=\"nolink\" title=\"Processed until: " . $oD->get("Y-m-d") . "\">*</a>";
+		}
 		$ret .= "\t\t</td>\n";
 
 		// NATIONAL HOLIDAYS LEFT
@@ -226,7 +232,7 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 
 		// LEFT 76
 		$ret .= "\t\t<td valign=top>\n";
-		$ret .= hoursLeft_formatNumber($left * class_settings::getSetting("rule76"), 1);
+		$ret .= hoursLeft_formatNumber(1.0 * $left * class_settings::getSetting("percentage_rule"), 1);
 		$ret .= "\t\t</td>\n";
 
 		$ret .= "\t</tr>\n";

@@ -527,6 +527,7 @@ function advancedSingleRecordSelectMysql($db, $table, $fields, $criterium, $fiel
 	}
 
 //debug($advSelect, 'advancedSingleRecordSelectMysql: ');
+
 	$resultAdvSelect = mysql_query($advSelect, $oConn->getConnection());
 	if ($rowSelect = mysql_fetch_assoc($resultAdvSelect)) {
 		$retval["__is_record_found"] = '1';

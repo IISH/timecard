@@ -6,3 +6,5 @@ settings.php
 *.ipr
 *.iml
 PHPExcel
+phpinfo.php
+test.php
