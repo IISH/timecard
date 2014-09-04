@@ -24,8 +24,18 @@ class class_datetime {
 			$time = 0;
 		}
 
+		$isNegative = ( $time < 0 );
+
+		if ( $isNegative ) {
+			$time *= -1;
+		}
+
 		$h = floor($time/60);
 		$time = $h . ":" . substr("0" . ( $time - ( $h * 60 ) ), -2);
+
+		if ( $isNegative ) {
+			$time = '-' . $time;
+		}
 
 		return $time;
 	}

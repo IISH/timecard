@@ -483,6 +483,21 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 	}
 
 	// TODOEXPLAIN
+	function getProtimeDayOvertimes($yyyymm) {
+		$arrExtras = array();
+
+		$protime_id = $this->getProtimeId();
+
+		$protime_day_total_extra = $this->getProtimeDayTotalsPart($protime_id, $yyyymm, 'extra');
+
+		foreach ( $protime_day_total_extra as $a=>$b ) {
+			$arrExtras[$a] += $b;
+		}
+
+		return $arrExtras;
+	}
+
+	// TODOEXPLAIN
 	function getProtimeDayTotalsPart($protime_id, $yyyymm, $type) {
 		global $settings;
 
@@ -491,7 +506,7 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 		if ( $protime_id != '' && $protime_id != '0' ) {
 
 			$query = "SELECT PERSNR, BOOKDATE, PREST, RPREST, WEEKPRES1, EXTRA FROM PROTIME_PR_MONTH WHERE PERSNR=" . $protime_id . " AND LEFT(BOOKDATE, 6)=" . $yyyymm;
-
+//debug( $query );
 			$oTc = new class_mysql($settings, 'timecard');
 			$oTc->connect();
 
