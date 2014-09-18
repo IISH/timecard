@@ -35,30 +35,19 @@ function createDepartmentsContent() {
 
 	require_once("./classes/class_view/class_view.inc.php");
 	require_once("./classes/class_view/fieldtypes/class_field_string.inc.php");
-	require_once("./classes/class_view/fieldtypes/class_field_button.inc.php");
 
 	$oDb = new class_mysql($settings, 'timecard');
 	$oView = new class_view($settings, $oDb);
 
 	$oView->set_view( array(
-		'query' => "SELECT * FROM Departments WHERE 1=1 AND isdisabled=0 AND isdeleted=0 "
+		'query' => "SELECT Departments.ID, Departments.name, vw_Employees.FULLNAME FROM Departments LEFT JOIN vw_Employees ON Departments.head = vw_Employees.ID WHERE Departments.isdisabled=0 AND Departments.isdeleted=0 "
 		, 'count_source_type' => 'query'
-		, 'order_by' => 'name, ID DESC '
+		, 'order_by' => 'Departments.name, Departments.ID DESC '
 		, 'anchor_field' => 'ID'
 		, 'viewfilter' => true
 		, 'table_parameters' => ' cellspacing="0" cellpadding="0" border="0" '
 		));
-/*
-	$oView->add_field( new class_field_button ( array(
-		'buttonlabel' => '(Users)'
-		, 'href' => 'departments_users.php?ID=[FLD:ID]&backurl=[BACKURL]'
-		)));
 
-	$oView->add_field( new class_field_button ( array(
-		'buttonlabel' => '(Edit)'
-		, 'href' => 'departments_edit.php?ID=[FLD:ID]&backurl=[BACKURL]'
-		)));
-*/
 	$oView->add_field( new class_field_string ( array(
 		'fieldname' => 'name'
 		, 'fieldlabel' => 'Department'
@@ -69,6 +58,21 @@ function createDepartmentsContent() {
 			, 'filter' => array (
 					array (
 						'fieldname' => 'name'
+						, 'type' => 'string'
+						, 'size' => 10
+					)
+				)
+			)
+		)));
+
+	$oView->add_field( new class_field_string ( array(
+		'fieldname' => 'FULLNAME'
+		, 'fieldlabel' => 'Head'
+		, 'viewfilter' => array(
+				'labelfilterseparator' => '<br>'
+				, 'filter' => array (
+					array (
+						'fieldname' => 'FULLNAME'
 						, 'type' => 'string'
 						, 'size' => 10
 					)

@@ -11,9 +11,9 @@ if ( !( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasFaAuthorisation() ) 
 // create webpage
 $oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
-$oPage->setTab($menuList->findTabNumber('misc.departments'));
-$oPage->setTitle('Timecard | Departments');
-$oPage->setContent(createDepartmentsContent());
+$oPage->setTab($menuList->findTabNumber('finad.projects'));
+$oPage->setTitle('Timecard | Projects (disabled)');
+$oPage->setContent(createProjectContent());
 
 // show page
 echo $oPage->getPage();
@@ -21,11 +21,11 @@ echo $oPage->getPage();
 require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
-function createDepartmentsContent() {
+function createProjectContent() {
 	global $settings;
 
 	// get design
-	$design = new class_contentdesign("page_departments_disabled");
+	$design = new class_contentdesign("page_projects_disabled");
 
 	// add header
 	$ret = $design->getHeader();
@@ -40,24 +40,54 @@ function createDepartmentsContent() {
 	$oView = new class_view($settings, $oDb);
 
 	$oView->set_view( array(
-		'query' => "SELECT Departments.ID, Departments.name, vw_Employees.FULLNAME FROM Departments LEFT JOIN vw_Employees ON Departments.head = vw_Employees.ID WHERE Departments.isdisabled<>0 AND Departments.isdeleted=0 "
+		'query' => "SELECT Workcodes.*, vw_Employees.FULLNAME  FROM Workcodes LEFT JOIN vw_Employees ON Workcodes.projectleader = vw_Employees.ID WHERE Workcodes.isdisabled<>0 "
 		, 'count_source_type' => 'query'
-		, 'order_by' => 'Departments.name, Departments.ID DESC '
+		, 'order_by' => 'Workcodes.Description, Workcodes.ID DESC '
 		, 'anchor_field' => 'ID'
 		, 'viewfilter' => true
 		, 'table_parameters' => ' cellspacing="0" cellpadding="0" border="0" '
 		));
 
 	$oView->add_field( new class_field_string ( array(
-		'fieldname' => 'name'
+		'fieldname' => 'Description'
 		, 'fieldlabel' => 'Department'
 		, 'if_no_value' => '-no value-'
-		, 'href' => 'departments_edit.php?ID=[FLD:ID]&backurl=[BACKURL]'
+		, 'href' => 'projects_edit.php?ID=[FLD:ID]&backurl=[BACKURL]'
+		, 'viewfilter' => array(
+			'labelfilterseparator' => '<br>'
+			, 'filter' => array (
+				array (
+					'fieldname' => 'Description'
+					, 'type' => 'string'
+					, 'size' => 10
+					)
+				)
+			)
+		)));
+
+	$oView->add_field( new class_field_string ( array(
+		'fieldname' => 'Projectnummer'
+		, 'fieldlabel' => 'Project number'
 		, 'viewfilter' => array(
 			'labelfilterseparator' => '<br>'
 			, 'filter' => array (
 					array (
-						'fieldname' => 'name'
+						'fieldname' => 'Projectnummer'
+						, 'type' => 'string'
+						, 'size' => 10
+					)
+				)
+			)
+		)));
+
+	$oView->add_field( new class_field_string ( array(
+		'fieldname' => 'lastdate'
+		, 'fieldlabel' => 'End date'
+		, 'viewfilter' => array(
+			'labelfilterseparator' => '<br>'
+			, 'filter' => array (
+					array (
+						'fieldname' => 'lastdate'
 						, 'type' => 'string'
 						, 'size' => 10
 					)
@@ -67,7 +97,7 @@ function createDepartmentsContent() {
 
 	$oView->add_field( new class_field_string ( array(
 		'fieldname' => 'FULLNAME'
-		, 'fieldlabel' => 'Head'
+		, 'fieldlabel' => 'Project leader'
 		, 'viewfilter' => array(
 			'labelfilterseparator' => '<br>'
 			, 'filter' => array (

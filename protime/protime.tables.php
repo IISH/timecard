@@ -1,4 +1,6 @@
-<?php 
+<?php
+die('disabled by gcu');
+
 require_once "../classes/start.inc.php";
 
 // connection to the database
@@ -46,7 +48,8 @@ while ( $row = mssql_fetch_array($result) ) {
 		if ( $where != '' ) {
 			$where .= ' AND ';
 		}
-		$where .= ' PERSNR=37 ';
+//		$where .= ' PERSNR=37 ';
+		$where .= ' PERSNR=202 ';
 	}
 
 	if ( in_array("BOOKDATE", $arrFields) ) {

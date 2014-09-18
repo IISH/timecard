@@ -63,7 +63,6 @@ ORDER BY FULLNAME ";
 	$oForm->add_field( new class_field_list ( $settings, array(
 		'fieldname' => 'Employee'
 		, 'fieldlabel' => 'Employee'
-		, 'XXXquery' => 'SELECT ID, FULLNAME FROM vw_Employees WHERE is_test_account=0 ORDER BY FULLNAME '
 		, 'query' => $q
 		, 'id_field' => 'ID'
 		, 'description_field' => 'FULLNAME'

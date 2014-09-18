@@ -26,7 +26,7 @@ if ( $oWebuser->hasAdminAuthorisation() ) {
 // TAB: MISC
 $menu->addMenuGroup( new class_menugroup('Miscellaneous') );
 if ( $oWebuser->hasAdminAuthorisation() ) {
-//	$menu->addMenuItem( new class_menuitem('misc.departments', 'Departments', 'departments.php') );
+	$menu->addMenuItem( new class_menuitem('misc.departments', 'Departments', 'departments.php') );
 	$menu->addMenuItem( new class_menuitem('misc.protimeabsenties', 'Protime Absences', 'admin_protime_absences.php') );
 	$menu->addMenuItem( new class_menuitem('misc.urenperweek', 'Hours per week', 'admin_hoursperweek.php') );
 	$menu->addMenuItem( new class_menuitem('misc.hoursleft', 'Hours left', 'admin_hoursleft.php') );

@@ -42,7 +42,6 @@ function createShortcutsList() {
 			$data["strike_start"] = '';
 			$data["strike_end"] = '';
 			$data["ratio_extra"] = '';
-//			$data["ratio_extra"] = ' / ' . $totalWeightOfEnabledDailyAddittions . ' = ' . number_format(100.0*$dailyaddition->getRatio()/$totalWeightOfEnabledDailyAddittions,2) . '%';
 		}
 
 		$data["url"] = "dailyautomaticadditions_edit.php?ID=" . $dailyaddition->getId() . "&backurl=" . urlencode(get_current_url());

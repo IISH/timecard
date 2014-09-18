@@ -55,4 +55,11 @@ class class_field_iframe extends class_field {
 
 		return $inputfield;
 	}
+
+	/**
+	 * TODOEXPLAIN
+	 */
+	function push_field_into_query_array($query_fields) {
+		return $query_fields;
+	}
 }

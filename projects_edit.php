@@ -71,7 +71,7 @@ function createProjectEditContent() {
 		'fieldname' => 'ID'
 		, 'fieldlabel' => '#'
 		)));
-
+/*
 	$oForm->add_field( new class_field_list ( $settings, array(
 		'fieldname' => 'ParentID'
 		, 'fieldlabel' => 'Menu Parent'
@@ -85,7 +85,7 @@ function createProjectEditContent() {
 		, 'show_empty_row' => true
 		, 'onNew' => $pid
 		)));
-
+*/
 	$oForm->add_field( new class_field_string ( array(
 		'fieldname' => 'Projectnummer'
 		, 'fieldlabel' => 'Projectnumber'
@@ -121,14 +121,6 @@ function createProjectEditContent() {
 		, 'required' => 0
 		, 'show_empty_row' => true
 		, 'onNew' => '0'
-		)));
-
-	$oForm->add_field( new class_field_string ( array(
-		'fieldname' => 'projectleader_email'
-		, 'fieldlabel' => 'Project leader email'
-		, 'required' => 0
-		, 'onNew' => ''
-		, 'style' => 'width:425px;'
 		)));
 
 	$oForm->add_field( new class_field_bit ( array(

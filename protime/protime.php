@@ -1,4 +1,6 @@
-<?php 
+<?php
+die('disabled by gcu');
+
 require_once "../classes/start.inc.php";
 
 // connection to the database
@@ -14,6 +16,7 @@ $pid=0;
 //$pid = 210; // tjerck
 //$pid = 131; // mmi
 //$pid = 35; // mco
+//$pid = 202; // lwo
 
 $arr = array( 210 );
 

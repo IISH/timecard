@@ -35,7 +35,6 @@ function createDepartmentsContent() {
 
 	require_once("./classes/class_view/class_view.inc.php");
 	require_once("./classes/class_view/fieldtypes/class_field_string.inc.php");
-	require_once("./classes/class_view/fieldtypes/class_field_button.inc.php");
 
 	$oDb = new class_mysql($settings, 'timecard');
 	$oView = new class_view($settings, $oDb);
