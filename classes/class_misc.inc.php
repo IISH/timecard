@@ -7,6 +7,18 @@ class class_misc {
 	}
 
 	// TODOEXPLAIN
+	public static function convertMinutesToHours($value, $zero_value = '0') {
+		if ( $value == 0 || $value == '' ) {
+			$retval = $zero_value = '0';
+		} else {
+			$retval = $value*1.0;
+			$retval /= 60;
+		}
+
+		return $retval;
+	}
+
+	// TODOEXPLAIN
 	function multiplyTag($tag, $code, $start, $end) {
 		$ret = '';
 		$separator = '';
@@ -38,16 +50,6 @@ class class_misc {
 			ereg($pattern, $return_value, $matches);
 		}
 
-//		if ( $change_back_url <> "no" ) {
-//			//
-//			$backurl = $_SERVER["QUERY_STRING"];
-//			if ( $backurl <> "" ) {
-//				$backurl = "?" . $backurl;
-//			}
-//			$backurl = urlencode($_SERVER["SCRIPT_NAME"] . $backurl);
-//		} else {
-//			$backurl = urlencode(getBackUrl());
-//		}
 		$return_value = str_replace("[BACKURL]", urlencode(getBackUrl()), $return_value);
 
 		return $return_value;

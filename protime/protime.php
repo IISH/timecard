@@ -1,5 +1,5 @@
 <?php
-die('disabled by gcu');
+die('disabled by GCU');
 
 require_once "../classes/start.inc.php";
 
@@ -14,11 +14,14 @@ $oWebuser->checkLoggedIn();
 $pid=0;
 //$pid = 37; // gcu
 //$pid = 210; // tjerck
-//$pid = 131; // mmi
 //$pid = 35; // mco
 //$pid = 202; // lwo
 
-$arr = array( 210 );
+//$pid = 131; // mmi
+//$pid = 169; // mieke
+//$pid = 191; // jwa
+
+$arr = array( 131 );
 
 foreach ( $arr as $pid) {
 
@@ -57,8 +60,8 @@ function advancedSingleRecordSelectMssql($handle, $table, $fields, $criterium, $
 		$advSelect .= " ORDER BY " . $order_by . " ";
 	}
 
-	$resultAdvSelect = mysql_query($advSelect, $handle);
-	if ($rowSelect = mysql_fetch_assoc($resultAdvSelect)) {
+	$resultAdvSelect = mssql_query($advSelect, $handle);
+	if ($rowSelect = mssql_fetch_assoc($resultAdvSelect)) {
 		$retval["__is_record_found"] = '1';
 		if ( is_array($fields) ) {
 			foreach ($fields as $a) {
@@ -68,7 +71,7 @@ function advancedSingleRecordSelectMssql($handle, $table, $fields, $criterium, $
 			$retval[strtolower($fields)] = $rowSelect[$fields];
 		}
 	}
-	mysql_free_result($resultAdvSelect);
+	mssql_free_result($resultAdvSelect);
 
 	return $retval;
 }

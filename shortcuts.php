@@ -8,7 +8,7 @@ $date = class_datetime::get_date($protect);
 // create webpage
 $oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
-$oPage->setTab($menuList->findTabNumber('pp.myshortcuts'));
+$oPage->setTab($menuList->findTabNumber('pp.shortcuts'));
 $oPage->setTitle('Timecard | Shortcuts');
 $oPage->setContent( createShortcutsList() );
 
@@ -41,7 +41,7 @@ function createShortcutsList() {
 			$data["strike_end"] = '';
 		}
 
-		$data["url"] = "myshortcuts_edit.php?ID=" . $shortcut["id"] . "&backurl=" . urlencode(get_current_url());
+		$data["url"] = "shortcuts_edit.php?ID=" . $shortcut["id"] . "&backurl=" . urlencode(get_current_url());
 		$data["projectname"] = trim($shortcut["projectnummer"] . ' ' . $shortcut["projectname"]);
 		$data["minutes"] = class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes($shortcut["minutes"]);
 		$data["description"] = htmlspecialchars($shortcut["description"]);
@@ -56,7 +56,7 @@ function createShortcutsList() {
 		$design->getContent()
 		, array(
 			"records" => $records
-		, 'onclickurl' => "myshortcuts_edit.php?ID=0&backurl=" . urlencode(get_current_url())
+		, 'onclickurl' => "shortcuts_edit.php?ID=0&backurl=" . urlencode(get_current_url())
 		)
 	);
 

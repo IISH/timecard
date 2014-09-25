@@ -852,4 +852,23 @@ AND `ProtimePersNr`>0
 	public function __toString() {
 		return "Class: " . get_class($this) . "\n#: " . $this->timecard_id . "\n";
 	}
+
+	// TODOEXPLAIN
+	function getEmail() {
+		$retval = '';
+
+		if ( $this->getProtimeId() != '0' ) {
+
+			$res = advancedSingleRecordSelectMysql(
+				'timecard'
+				, "PROTIME_CURRIC"
+				, array("EMAIL")
+				, "PERSNR=" . $this->getProtimeId()
+			);
+
+			$retval = $res["email"];
+		}
+
+		return $retval;
+	}
 }

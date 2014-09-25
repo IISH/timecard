@@ -48,7 +48,6 @@ function createDepartmentsEditContent() {
 		'query' => "SELECT * FROM Departments WHERE ID=[FLD:ID] "
 		, 'table' => 'Departments'
 		, 'primarykey' => 'ID'
-		, 'disallow_delete' => 1
 		));
 
 	// required !!!
@@ -79,9 +78,16 @@ function createDepartmentsEditContent() {
 		)));
 
 	$oForm->add_field( new class_field_bit ( array(
-		'fieldname' => 'isdisabled'
-		, 'fieldlabel' => 'Is disabled?'
+		'fieldname' => 'enable_weekly_report_mail'
+		, 'fieldlabel' => 'Enable weekly mail report?'
+		, 'onNew' => '1'
+		)));
+
+	$oForm->add_field( new class_field_bit ( array(
+		'fieldname' => 'isenabled'
+		, 'fieldlabel' => 'Is enabled?'
 		, 'required' => 0
+		, 'onNew' => '1'
 		)));
 
 	if ( $_GET["ID"] != '' && $_GET["ID"] != '0' ) {

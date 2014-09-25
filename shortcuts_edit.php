@@ -8,7 +8,7 @@ $date = class_datetime::get_date($protect);
 // create webpage
 $oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
-$oPage->setTab($menuList->findTabNumber('pp.myshortcuts'));
+$oPage->setTab($menuList->findTabNumber('pp.shortcuts'));
 $oPage->setTitle('Timecard | Shortcuts');
 $oPage->setContent(createShortcutsContent());
 
@@ -22,7 +22,7 @@ function createShortcutsContent() {
 	global $settings, $oWebuser, $protect;
 
 	// get design
-	$design = new class_contentdesign("page_myshortcuts_edit");
+	$design = new class_contentdesign("page_shortcuts_edit");
 
 	// add header
 	$ret = $design->getHeader();
@@ -66,7 +66,8 @@ function createShortcutsContent() {
 	$oForm->add_field( new class_field_list ( $settings, array(
 		'fieldname' => 'WorkCode'
 		, 'fieldlabel' => 'Project'
-		, 'query' => 'SELECT ID, Concat(Projectnummer, \' \', Description) AS ProjectNumberName FROM Workcodes WHERE ( isdisabled = 0 AND show_in_selectlist = 1 AND (lastdate IS NULL OR lastdate = \'\' OR lastdate >= \'' . date("Y-m-d") . '\') ) ' . $currentValueOnNew . ' ORDER BY Projectnummer, Description '
+		, 'XXXquery' => 'SELECT ID, Concat(Projectnummer, \' \', Description) AS ProjectNumberName FROM Workcodes WHERE ( isdisabled = 0 AND show_in_selectlist = 1 AND (lastdate IS NULL OR lastdate = \'\' OR lastdate >= \'' . date("Y-m-d") . '\') ) ' . $currentValueOnNew . ' ORDER BY Projectnummer, Description '
+		, 'query' => 'SELECT ID, Concat(Projectnummer, \' \', Description) AS ProjectNumberName FROM Workcodes WHERE ( isdisabled = 0 AND (lastdate IS NULL OR lastdate = \'\' OR lastdate >= \'' . date("Y-m-d") . '\') ) ' . $currentValueOnNew . ' ORDER BY Projectnummer, Description '
 		, 'id_field' => 'ID'
 		, 'description_field' => 'ProjectNumberName'
 		, 'empty_value' => '0'

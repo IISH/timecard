@@ -122,12 +122,18 @@ function createProjectEditContent() {
 		, 'show_empty_row' => true
 		, 'onNew' => '0'
 		)));
-
+/*
 	$oForm->add_field( new class_field_bit ( array(
 		'fieldname' => 'show_in_selectlist'
 		, 'fieldlabel' => 'Show in Select List'
 		, 'onNew' => '1'
 		)));
+*/
+	$oForm->add_field( new class_field_bit ( array(
+		'fieldname' => 'enable_weekly_report_mail'
+	, 'fieldlabel' => 'Enable weekly mail report?'
+	, 'onNew' => '1'
+	)));
 
 	$oForm->add_field( new class_field_string ( array(
 		'fieldname' => 'lastdate'

@@ -1,5 +1,5 @@
 <?php
-die('disabled by gcu');
+//die('disabled by gcu');
 
 require_once "../classes/start.inc.php";
 
@@ -17,8 +17,10 @@ error_reporting(E_ALL ^ E_NOTICE);
 <?php echo date('Y-m-d H:i:s'); ?><br>
 <br>
 <hr>
-<?php 
+<?php
 $result = mssql_query("SELECT * FROM sysobjects where xtype = 'U' ORDER BY name ");
+//$result = mssql_query("SELECT * FROM sysobjects ORDER BY name ");
+//$result = mssql_query("SELECT * FROM sysobjects WHERE name LIKE 'CTRLGROUP%' ORDER BY name ");
 while ( $row = mssql_fetch_array($result) ) {
 ?>
 <b><?php echo $row["name"]; ?></b><br>
@@ -38,7 +40,7 @@ while ( $row = mssql_fetch_array($result) ) {
 	}
 	mssql_free_result($resultFields);
 
-	$top = ' TOP 10 ';
+	$top = ' TOP 100 ';
 	$where = '';
 	$order = '';
 
@@ -48,8 +50,10 @@ while ( $row = mssql_fetch_array($result) ) {
 		if ( $where != '' ) {
 			$where .= ' AND ';
 		}
-//		$where .= ' PERSNR=37 ';
-		$where .= ' PERSNR=202 ';
+//		$where .= ' PERSNR=37 '; // gcu
+//		$where .= ' PERSNR=131 '; // mmi
+//		$where .= ' PERSNR=106 ';  // ed kool
+		$where .= ' PERSNR=130 ';  // gerben
 	}
 
 	if ( in_array("BOOKDATE", $arrFields) ) {

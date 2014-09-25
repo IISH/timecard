@@ -14,6 +14,7 @@ require_once dirname(__FILE__) . "/class_calendar.inc.php";
 require_once dirname(__FILE__) . "/class_contentdesign.inc.php";
 require_once dirname(__FILE__) . "/class_dailyaddition.inc.php";
 require_once dirname(__FILE__) . "/class_date.inc.php";
+require_once dirname(__FILE__) . "/class_date_static.inc.php";
 require_once dirname(__FILE__) . "/class_dateasstring.inc.php";
 require_once dirname(__FILE__) . "/class_datetime.inc.php";
 require_once dirname(__FILE__) . "/class_employee.inc.php";
@@ -30,7 +31,10 @@ require_once dirname(__FILE__) . "/class_recentlyused.inc.php";
 require_once dirname(__FILE__) . "/class_shortcuts.inc.php";
 require_once dirname(__FILE__) . "/class_syncprotimemysql.inc.php";
 require_once dirname(__FILE__) . "/class_website_protection.inc.php";
+require_once dirname(__FILE__) . "/class_project.inc.php";
+require_once dirname(__FILE__) . "/class_project_static.inc.php";
 require_once dirname(__FILE__) . "/class_workhours.inc.php";
+require_once dirname(__FILE__) . "/class_workhours_static.inc.php";
 require_once dirname(__FILE__) . "/class_settings.inc.php";
 
 //

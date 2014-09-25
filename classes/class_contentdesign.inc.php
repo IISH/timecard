@@ -84,7 +84,14 @@ class class_contentdesign {
 	 */
 	public function getContent()
 	{
-		return $this->content;
+		$t = $this->content;
+
+		$keys = array('cron_key');
+		foreach ( $keys as $key ) {
+			$t = str_replace('[' . strtoupper($key) . ']', class_settings::getSetting( strtolower($key) ), $t);
+		}
+
+		return $t;
 	}
 
 	/**

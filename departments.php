@@ -40,7 +40,7 @@ function createDepartmentsContent() {
 	$oView = new class_view($settings, $oDb);
 
 	$oView->set_view( array(
-		'query' => "SELECT Departments.ID, Departments.name, vw_Employees.FULLNAME FROM Departments LEFT JOIN vw_Employees ON Departments.head = vw_Employees.ID WHERE Departments.isdisabled=0 AND Departments.isdeleted=0 "
+		'query' => "SELECT Departments.ID, Departments.name, vw_Employees.FULLNAME FROM Departments LEFT JOIN vw_Employees ON Departments.head = vw_Employees.ID WHERE Departments.isenabled=1 AND Departments.isdeleted=0 "
 		, 'count_source_type' => 'query'
 		, 'order_by' => 'Departments.name, Departments.ID DESC '
 		, 'anchor_field' => 'ID'

@@ -31,6 +31,7 @@ if ( $oWebuser->hasAdminAuthorisation() ) {
 	$menu->addMenuItem( new class_menuitem('misc.urenperweek', 'Hours per week', 'admin_hoursperweek.php') );
 	$menu->addMenuItem( new class_menuitem('misc.hoursleft', 'Hours left', 'admin_hoursleft.php') );
 	$menu->addMenuItem( new class_menuitem('misc.not_linked_employees', 'Not Linked Employees', 'admin_not_linked_employees.php') );
+	$menu->addMenuItem( new class_menuitem('misc.crontab', 'Crontab', 'crontab.php') );
 	$menu->addMenuItem( new class_menuitem('misc.change_user', 'Switch user', 'switch_user.php') );
 }
 
@@ -61,7 +62,7 @@ if ( $oWebuser->isLoggedIn() ) {
 	$menu->addMenuItem( new class_menuitem('pp.personalinfo', 'About me', 'aboutme.php') );
 }
 if ( $oWebuser->isLoggedIn() ) {
-	$menu->addMenuItem( new class_menuitem('pp.myshortcuts', 'Shortcuts', 'myshortcuts.php') );
+	$menu->addMenuItem( new class_menuitem('pp.shortcuts', 'Shortcuts', 'shortcuts.php') );
 	$menu->addMenuItem( new class_menuitem('pp.dailyautomaticadditions', 'Daily automatic additions', 'dailyautomaticadditions.php') );
 }
 if ( $oWebuser->isLoggedIn() ) {

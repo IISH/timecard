@@ -31,10 +31,10 @@ class class_recentlyused {
 FROM Workhours INNER JOIN Workcodes on Workhours.WorkCode=Workcodes.ID
 WHERE YEAR(Workhours.DateWorked)>=::CURRENTYEAR:: AND Workhours.Employee=::USERID:: 
 AND Workcodes.isdisabled = 0
-AND Workcodes.show_in_selectlist = 1
 AND ( Workcodes.lastdate IS NULL OR Workcodes.lastdate = '' OR Workcodes.lastdate >= '" . $this->oDate->get("Y-m-d") . "' )
 GROUP BY Workcodes.ID, Workcodes.Description
 ORDER BY Workcodes.Description ";
+//AND Workcodes.show_in_selectlist = 1
 
 		$query = str_replace('::CURRENTYEAR::', date("Y"), $query);
 		$query = str_replace('::USERID::', $this->user, $query);

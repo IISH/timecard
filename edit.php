@@ -158,7 +158,8 @@ doc_submit('saveclose')
 		$oForm->add_field( new class_field_list ( $settings, array(
 			'fieldname' => 'WorkCode'
 			, 'fieldlabel' => 'Project'
-			, 'query' => 'SELECT ID, Concat(Projectnummer, \' \', Description) AS ProjectNumberName FROM Workcodes WHERE ( isdisabled = 0 AND show_in_selectlist = 1 AND (lastdate IS NULL OR lastdate = \'\' OR lastdate >= \'' . $oDate->get("Y-m-d") . '\') ) ' . $currentValueOnNew . ' ORDER BY Projectnummer, Description '
+			, 'XXXquery' => 'SELECT ID, Concat(Projectnummer, \' \', Description) AS ProjectNumberName FROM Workcodes WHERE ( isdisabled = 0 AND show_in_selectlist = 1 AND (lastdate IS NULL OR lastdate = \'\' OR lastdate >= \'' . $oDate->get("Y-m-d") . '\') ) ' . $currentValueOnNew . ' ORDER BY Projectnummer, Description '
+			, 'query' => 'SELECT ID, Concat(Projectnummer, \' \', Description) AS ProjectNumberName FROM Workcodes WHERE ( isdisabled = 0 AND (lastdate IS NULL OR lastdate = \'\' OR lastdate >= \'' . $oDate->get("Y-m-d") . '\') ) ' . $currentValueOnNew . ' ORDER BY Projectnummer, Description '
 			, 'id_field' => 'ID'
 			, 'description_field' => 'ProjectNumberName'
 			, 'empty_value' => '0'

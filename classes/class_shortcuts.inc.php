@@ -32,10 +32,10 @@ class class_shortcuts {
 FROM UserCreatedQuickAdds INNER JOIN Workcodes ON UserCreatedQuickAdds.WorkCode = Workcodes.ID
 WHERE UserCreatedQuickAdds.Employee = ::USER:: AND UserCreatedQuickAdds.isvisible = 1 AND UserCreatedQuickAdds.isdeleted = 0 AND Workcodes.isdisabled = 0
 AND (
-( Workcodes.isdisabled = 0 AND Workcodes.show_in_selectlist = 1 AND (Workcodes.lastdate IS NULL OR Workcodes.lastdate = '' OR Workcodes.lastdate >= '" . $this->oDate->get("Y-m-d") . "') )
+( Workcodes.isdisabled = 0 AND (Workcodes.lastdate IS NULL OR Workcodes.lastdate = '' OR Workcodes.lastdate >= '" . $this->oDate->get("Y-m-d") . "') )
 )
 ORDER BY Workcodes.Description, UserCreatedQuickAdds.TimeInMinutes DESC ";
-
+//AND Workcodes.show_in_selectlist = 1
 		$query = str_replace('::USER::', $this->user, $query);
 
 		$result = mysql_query($query, $oConn->getConnection());
@@ -63,10 +63,10 @@ ORDER BY Workcodes.Description, UserCreatedQuickAdds.TimeInMinutes DESC ";
 FROM vw_UserCreatedQuickAdds INNER JOIN Workcodes ON vw_UserCreatedQuickAdds.WorkCode = Workcodes.ID
 WHERE vw_UserCreatedQuickAdds.Employee=::USER::
 AND (
-( Workcodes.isdisabled = 0 AND Workcodes.show_in_selectlist = 1 AND (Workcodes.lastdate IS NULL OR Workcodes.lastdate = '' OR Workcodes.lastdate >= '" . $this->oDate->get("Y-m-d") . "') )
+( Workcodes.isdisabled = 0 AND (Workcodes.lastdate IS NULL OR Workcodes.lastdate = '' OR Workcodes.lastdate >= '" . $this->oDate->get("Y-m-d") . "') )
 )
 ORDER BY Projectnummer, Description, TimeInMinutes DESC ";
-
+//AND Workcodes.show_in_selectlist = 1
 		$query = str_replace('::USER::', $this->user, $query);
 
 		$result = mysql_query($query, $oConn->getConnection());
