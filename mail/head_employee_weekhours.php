@@ -38,25 +38,22 @@ foreach ( $departments as $oDepartment ) {
 
 	// get department head
 	$oHead = $oDepartment->getHead();
-	$mail_body .= "Head:" . $fieldseparator . $oHead->getFirstLastname() . " \n\n";
+	$mail_body .= "Head:" . $fieldseparator . $oHead->getFirstname . ' ' . verplaatsTussenvoegselNaarBegin($oHead->getLastname()) . " \n\n";
 
 	// start / end date
 	$mail_body .= "From:" . $fieldseparator . $startdate . " \n";
 	$mail_body .= "Until (incl.):" . $fieldseparator . $enddate . " \n\n";
 
-/*
-	// get list of deparmtent workhours for specified period
-	$workhours = class_workhours_static::getWorkhoursPerEmployeeGrouped($oProject->getId(), $startdate, $enddate);
-
-	// name / hours
-	foreach ($workhours as $p) {
-		$mail_body .= $p["employee"]->getFirstLastname() . ":" . $fieldseparator;
-		$mail_body .= number_format(class_misc::convertMinutesToHours($p["timeinminutes"]),2) . " hour(s) \n";
-		$total += $p["timeinminutes"];
+	//
+	$employees = $oDepartment->getEmployeesAndHours($startdate, $enddate);
+	foreach ( $employees as $oEmployee ) {
+		$mail_body .= $oEmployee["employee"]->getFirstname() . ' ' . verplaatsTussenvoegselNaarBegin($oEmployee["employee"]->getLastname()) . ":" . $fieldseparator;
+		$mail_body .= number_format(class_misc::convertMinutesToHours($oEmployee["timeinminutes"]),2) . " hour(s) \n";
+		$total += $oEmployee["timeinminutes"];
 	}
+
 	$mail_body .= "Total:" . $fieldseparator;
 	$mail_body .=  number_format(class_misc::convertMinutesToHours($total),2) . " hour(s) \n";
-*/
 
 	//
 	$mail_body .= "\nEmail sent on:" . $fieldseparator . date("Y-m-d H:i:s") . " \n\n";

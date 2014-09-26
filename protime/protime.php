@@ -46,8 +46,12 @@ foreach ( $arr as $pid) {
 mssql_close($dbhandlePT);
 
 // TODOEXPLAIN
-function advancedSingleRecordSelectMssql($handle, $table, $fields, $criterium, $fieldselect = '*', $order_by = '' ) {
+function advancedSingleRecordSelectMssql($handle, $table, $fields, $criterium, $fieldselect = '', $order_by = '' ) {
 	$retval = array();
+
+	if ( $fieldselect == '' || $fieldselect == '*' ) {
+		$fieldselect = implode(', ', $fields);
+	}
 
 	$advSelect = "SELECT " . $fieldselect . " FROM " . $table;
 	$retval["__is_record_found"] = '0';

@@ -648,7 +648,9 @@ ORDER BY Workcodes.Description
 		addEerderNaarHuisInTimecard($timecard_id, $protime_id, $oDate);
 
 		// add 'daily automatic additions'
-		$this->addDailyAutomaticAdditions($oDate);
+		$protimeDayData = $this->getProtimeDayTotal( array( 'y' => $oDate->get("Y"), 'm' => $oDate->get("m"), 'd' => $oDate->get("d")) );
+		$arrProtimeDayData = array( $oDate->get("Ymd") => $protimeDayData );
+		$this->addDailyAutomaticAdditions($oDate, $arrProtimeDayData);
 	}
 
 	// TODOEXPLAIN
@@ -674,24 +676,18 @@ ORDER BY Workcodes.Description
 		addEerderNaarHuisInTimecardMonth($timecard_id, $protime_id, $oDate);
 
 		// add 'daily automatic additions'
+		$protimeMonthData = $this->getProtimeDayTotalGroupedByDay( array( 'y' => $oDate->get("Y"), 'm' => $oDate->get("m"), 'd' => $oDate->get("d")) );
 		for ( $i = 1; $i <= date("t", mktime(0, 0, 0, (int)( $oDate->get("m") ), (int)( $oDate->get("d") ), (int)( $oDate->get("Y") ) )); $i++ ) {
 			$oDate2 = new class_date( $oDate->get("y"), $oDate->get("m"), $i );
-			$this->addDailyAutomaticAdditions($oDate2);
+			$this->addDailyAutomaticAdditions($oDate2, $protimeMonthData);
 		}
 	}
 
 	// TODOEXPLAIN
 	// add 'daily automatic additions'
-	function addDailyAutomaticAdditions($oDate) {
+	function addDailyAutomaticAdditions($oDate, $protimeMonthData) {
+		// don't do if too old, or date in the future
 		if ( $oDate->get("Y-m") < class_settings::getSetting("oldest_modifiable_daa_month") || $oDate->get("Y-m-d") >= date("Y-m-d") ) {
-			return;
-		}
-
-		// get list of enabled DAA
-		$arrEnabledDAA = $this->getEnabledDailyAdditions($oDate);
-
-		// if no DAA then do nothing
-		if ( count($arrEnabledDAA) == 0 ) {
 			return;
 		}
 
@@ -699,12 +695,9 @@ ORDER BY Workcodes.Description
 		$hoursTimecard = $this->getTimecardDayTotal( $oDate );
 
 		// get Protime totals
-		$date["y"] = $oDate->get("Y");
-		$date["m"] = $oDate->get("m");
-		$date["d"] = $oDate->get("d");
-		$hoursProtime = $this->getProtimeDayTotal($date);
+		$hoursProtime = $protimeMonthData[$oDate->get("Ymd")];
 
-		// calculate difference
+			// calculate difference
 		$difference = $hoursProtime - $hoursTimecard;
 
 		// if difference smaller than 3 minutes, exit,
@@ -725,6 +718,14 @@ ORDER BY Workcodes.Description
 
 		$totalFlexibleRatio = 0;
 		$arrFlexible = array();
+
+		// get list of enabled DAA
+		$arrEnabledDAA = $this->getEnabledDailyAdditions($oDate);
+
+		// if no DAA then do nothing
+		if ( count($arrEnabledDAA) == 0 ) {
+			return;
+		}
 
 		foreach ( $arrEnabledDAA as $daa ) {
 

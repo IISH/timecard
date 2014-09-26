@@ -206,11 +206,11 @@ function getAndProtectBackurlLabel() {
 function debug($text = "", $extra = '') {
     echo "<font color=red>";
 	if ( is_array($text) ) {
-		echo "<pre>" . date("H:i:s ") . $extra;
+		echo "<pre>" . date("H:i:s ") . " (" . microtime(true) . ") " . $extra;
 		print_r($text);
 		echo " +</pre><br>";
 	} else {
-		echo date("H:i:s ") . $extra . $text . " +<br>";
+		echo date("H:i:s ") . " (" . microtime(true) . ") " . $extra . $text . " +<br>";
 	}
     echo "</font>";
 }
@@ -507,13 +507,17 @@ function advancedRecordUpdate($db, $table, $fields, $criterium, $test = 0 ) {
 }
 
 // TODOEXPLAIN
-function advancedSingleRecordSelectMysql($db, $table, $fields, $criterium, $fieldselect = '*', $order_by = '' ) {
+function advancedSingleRecordSelectMysql($db, $table, $fields, $criterium, $fieldselect = '', $order_by = '' ) {
 	global $settings;
 
 	$retval = array();
 
 	$oConn = new class_mysql($settings, $db);
 	$oConn->connect();
+
+	if ( $fieldselect == '' || $fieldselect == '*' ) {
+		$fieldselect = implode(', ', $fields);
+	}
 
 	$advSelect = "SELECT " . $fieldselect . " FROM " . $table;
 	$retval["__is_record_found"] = '0';
@@ -916,9 +920,8 @@ function addEerderNaarHuisInTimecard($timecard_id, $protime_id, $oDate) {
 
 	//
 	$hours = advancedSingleRecordSelectMysql(
-		'timecard'
-		, "PROTIME_PR_MONTH"
-//			, array("PREST", "RPREST", "WEEKPRES1", "EXTRA")
+			'timecard'
+			, "PROTIME_PR_MONTH"
 			, array("EXTRA")
 			, "PERSNR=" . $protime_id . " AND BOOKDATE='" . $oDate->get("Ymd") . "' "
 		);
@@ -1257,4 +1260,22 @@ function getQuarterTotals( $date, $userTimecardId, $urlprefix ) {
 ";
 
 	return $ret;
+}
+
+// TODOEXPLAIN
+function fixBrokenChars($text) {
+	return htmlentities($text, ENT_COMPAT | ENT_XHTML, 'ISO-8859-1', true);
+}
+
+// TODOEXPLAIN
+function verplaatsTussenvoegselNaarBegin( $text ) {
+	$array = array( ' van den', ' van der', ' van', ' de', ' el' );
+
+	foreach ( $array as $t ) {
+		if ( strtolower(substr($text, -strlen($t))) == strtolower($t) ) {
+			$text = trim($t . ' ' . substr($text, 0, strlen($text)-strlen($t)));
+		}
+	}
+
+	return $text;
 }
