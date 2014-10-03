@@ -1,5 +1,5 @@
 <?php
-//die('disabled by gcu');
+die('disabled by gcu');
 
 require_once "../classes/start.inc.php";
 
@@ -53,7 +53,8 @@ while ( $row = mssql_fetch_array($result) ) {
 //		$where .= ' PERSNR=37 '; // gcu
 //		$where .= ' PERSNR=131 '; // mmi
 //		$where .= ' PERSNR=106 ';  // ed kool
-		$where .= ' PERSNR=130 ';  // gerben
+//		$where .= ' PERSNR=130 ';  // gerben
+		$where .= ' PERSNR=480 ';  // bas van leeuwen
 	}
 
 	if ( in_array("BOOKDATE", $arrFields) ) {
