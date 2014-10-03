@@ -20,6 +20,8 @@ class class_field_list extends class_field {
 
 	// TODOEXPLAIN
 	function class_field_list($settings, $fieldsettings) {
+		global $databases;
+
 		parent::class_field($fieldsettings);
 
 		$this->m_query = '';
@@ -32,7 +34,7 @@ class class_field_list extends class_field {
 		$this->m_javascriptcode = '';
 		$this->m_dbhandle = null;
 
-		$this->oDb = new class_mysql($settings, 'timecard');
+		$this->oDb = new class_mysql($databases['default']);
 		$this->oMisc = new class_misc();
 
 		if ( is_array( $fieldsettings ) ) {

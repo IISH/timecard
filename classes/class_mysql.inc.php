@@ -1,5 +1,5 @@
-<?php 
-// modified: 2014-06-03
+<?php
+// modified: 2014-10-03
 
 class class_mysql {
 	private $server;
@@ -9,18 +9,18 @@ class class_mysql {
 	private $conn;
 
 	// TODOEXPLAIN
-	function class_mysql($settings, $prefix) {
-		$this->server = $settings[$prefix . "_server"];
-		$this->user = $settings[$prefix . "_user"];
-		$this->password = $settings[$prefix . "_password"];
-		$this->database = $settings[$prefix . "_database"];
+	function __construct($database) {
+		$this->server = $database["host"];
+		$this->user = $database["username"];
+		$this->password = $database["password"];
+		$this->database = $database["database"];
 	}
 
 	// TODOEXPLAIN
 	function connect() {
 		$this->conn = mysql_connect($this->server, $this->user, $this->password);
 		if ( !$this->conn ) {
-			die('Error: 174154 - Could not connect to MySql server<br>' . mysql_error());
+			die('Error: 174154 - Could not connect to MySql server: ' . $this->server . "\n" . mysql_error());
 		}
 
 		// connect to database

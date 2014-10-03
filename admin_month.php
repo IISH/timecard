@@ -40,7 +40,7 @@ function createAdminMonthContent( $date ) {
 
 	// TODOEXPLAIN
 	function getAdminMonth( $date ) {
-		global $settings, $oEmployee, $oDate;
+		global $settings, $oEmployee, $oDate, $databases;
 		$ret = '';
 
 		if ( $oEmployee->getTimecardId() != '' ) {
@@ -49,7 +49,7 @@ function createAdminMonthContent( $date ) {
 			require_once("./classes/class_view/fieldtypes/class_field_time.inc.php");
 			require_once("./classes/class_view/fieldtypes/class_field_date.inc.php");
 
-			$oDb = new class_mysql($settings, 'timecard');
+			$oDb = new class_mysql($databases['default']);
 			$oView = new class_view($settings, $oDb);
 
 			if ( $oEmployee->getTimecardId() == -1 ) {

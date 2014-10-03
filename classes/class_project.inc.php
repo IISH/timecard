@@ -8,7 +8,7 @@ require_once dirname(__FILE__) . "/../sites/default/settings.php";
 require_once "class_mysql.inc.php";
 
 class class_project {
-	private $settings;
+	private $databases;
 
 	private $id;
 	private $description;
@@ -19,8 +19,8 @@ class class_project {
 
 	// TODOEXPLAIN
 	function class_project($id) {
-		global $settings;
-		$this->settings = $settings;
+		global $databases;
+		$this->databases = $databases;
 
 		$this->id = $id;
 		$this->description = 0;
@@ -35,7 +35,7 @@ class class_project {
 	// TODOEXPLAIN
 	private function initValues() {
 		if ( $this->getId() > 0 ) {
-			$oConn = new class_mysql($this->settings, 'timecard');
+			$oConn = new class_mysql($this->databases['default']);
 			$oConn->connect();
 
 			$query = "SELECT * FROM Workcodes WHERE ID=" . $this->getId();

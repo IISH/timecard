@@ -2,16 +2,17 @@
 // modified: 2012-12-27
 
 class class_hoursperweek {
-	private $settings;
+	private $databases;
 	private $hours;
 	private $startmonth;
 	private $endmonth;
 
 	// TODOEXPLAIN
 	function class_hoursperweek($id, $settings) {
-		$this->settings = $settings;
+		global $databases;
+		$this->databases = $databases;
 
-		$oConn = new class_mysql($this->settings, 'timecard');
+		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
 
 		// reset values

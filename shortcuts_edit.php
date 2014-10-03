@@ -19,7 +19,7 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createShortcutsContent() {
-	global $settings, $oWebuser, $protect;
+	global $settings, $oWebuser, $protect, $databases;
 
 	// get design
 	$design = new class_contentdesign("page_shortcuts_edit");
@@ -36,7 +36,7 @@ function createShortcutsContent() {
 	require_once("./classes/class_form/fieldtypes/class_field_time_double_field.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_time_single_field.inc.php");
 
-	$oDb = new class_mysql($settings, 'timecard');
+	$oDb = new class_mysql($databases['default']);
 	$oForm = new class_form($settings, $oDb);
 
 	$oForm->set_form( array(

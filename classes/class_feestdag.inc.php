@@ -27,9 +27,9 @@ class class_feestdag {
 
 	// TODOEXPLAIN
 	private function initValues() {
-		global $settings;
+		global $databases;
 
-		$oConn = new class_mysql($settings, 'timecard');
+		$oConn = new class_mysql($databases['default']);
 		$oConn->connect();
 
 		$query = "SELECT * FROM Feestdagen WHERE ID=" . $this->getId();

@@ -8,7 +8,7 @@ require_once dirname(__FILE__) . "/../sites/default/settings.php";
 require_once "class_mysql.inc.php";
 
 class class_department {
-	private $settings;
+	private $databases;
 
 	private $id;
 	private $name;
@@ -20,8 +20,8 @@ class class_department {
 
 	// TODOEXPLAIN
 	function class_department($id) {
-		global $settings;
-		$this->settings = $settings;
+		global $databases;
+		$this->databases = $databases;
 
 		$this->id = $id;
 		$this->name = '';
@@ -37,7 +37,7 @@ class class_department {
 	// TODOEXPLAIN
 	private function initValues() {
 		if ( $this->getId() > 0 ) {
-			$oConn = new class_mysql($this->settings, 'timecard');
+			$oConn = new class_mysql($this->databases['default']);
 			$oConn->connect();
 
 			$query = "SELECT * FROM Departments WHERE ID=" . $this->getId();
@@ -85,7 +85,7 @@ class class_department {
 	public function getEmployees() {
 		$ret = array();
 
-		$oConn = new class_mysql($this->settings, 'timecard');
+		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
 
 		$query = "SELECT * FROM DepartmentEmployee INNER JOIN vw_Employees ON DepartmentEmployee.EmployeeID=vw_Employees.ID WHERE DepartmentID=" . $this->id . " AND isdeleted=0 ORDER BY vw_Employees.FIRSTNAME, vw_Employees.NAME ";
@@ -101,7 +101,7 @@ class class_department {
 	public function getEmployeesAndHours($startdate, $enddate) {
 		$ret = array();
 
-		$oConn = new class_mysql($this->settings, 'timecard');
+		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
 
 		$query = "

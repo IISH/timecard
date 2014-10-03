@@ -17,7 +17,7 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createFeestdagenContent() {
-	global $settings, $oWebuser;
+	global $settings, $oWebuser, $databases;
 
 	// get design
 	$design = new class_contentdesign("page_nationalholidays");
@@ -30,7 +30,7 @@ function createFeestdagenContent() {
 	require_once("./classes/class_view/fieldtypes/class_field_string.inc.php");
 	require_once("./classes/class_view/fieldtypes/class_field_bit.inc.php");
 
-	$oDb = new class_mysql($settings, 'timecard');
+	$oDb = new class_mysql($databases['default']);
 	$oView = new class_view($settings, $oDb);
 
 	$add_new_url = '';

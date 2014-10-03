@@ -14,7 +14,7 @@ $s = getAndProtectSearch();
 
 $retval = '';
 
-$oConn2 = new class_mysql($settings, 'timecard');
+$oConn2 = new class_mysql($databases['default']);
 $oConn2->connect();
 $favIds = '0';
 $queryFav = "SELECT * FROM EmployeeFavourites WHERE TimecardID=" . $oWebuser->getTimecardId() . ' AND type=\'hoursleft\' ';
@@ -61,9 +61,9 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium, $favIds ) {
-	global $settings;
+	global $settings, $databases;
 
-	$oConn = new class_mysql($settings, 'timecard');
+	$oConn = new class_mysql($databases['default']);
 	$oConn->connect();
 
 	$ret = '';

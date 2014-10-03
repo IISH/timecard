@@ -10,9 +10,9 @@ require_once "class_department.inc.php";
 
 class class_department_static {
 	public static function getEnabledDepartmentsWithAHead() {
-		global $settings;
+		global $databases;
 
-		$oConn = new class_mysql($settings, 'timecard');
+		$oConn = new class_mysql($databases['default']);
 		$oConn->connect();
 
 		$arr = array();

@@ -140,9 +140,9 @@ function convertSpreadsheatColumnNumberToColumnCharacter($i, $choices = "ABCDEFG
 
 // TODOEXPLAIN
 function getTimecardUrenGroupedByMonth($id, $year, $pid) {
-	global $settings;
+	global $databases;
 
-	$oConn = new class_mysql($settings, 'timecard');
+	$oConn = new class_mysql($databases['default']);
 	$oConn->connect();
 
 	$retval = array();
@@ -168,9 +168,9 @@ function getTimecardUrenGroupedByMonth($id, $year, $pid) {
 
 // TODOEXPLAIN
 function getTimecardUrenGroupedByDay($id, $year, $month, $pid) {
-	global $settings;
+	global $databases;
 
-	$oConn = new class_mysql($settings, 'timecard');
+	$oConn = new class_mysql($databases['default']);
 	$oConn->connect();
 
 	$retval = array();
@@ -198,9 +198,9 @@ GROUP BY SUBSTR(DateWorked,1,10)
 
 // TODOEXPLAIN
 function getTimecardUren($id, $year, $month, $day, $pid) {
-	global $settings;
+	global $databases;
 
-	$oConn = new class_mysql($settings, 'timecard');
+	$oConn = new class_mysql($databases['default']);
 	$oConn->connect();
 
 	$retval = 0;
@@ -228,7 +228,7 @@ function getTimecardUren($id, $year, $month, $day, $pid) {
 
 // TODOEXPLAIN
 function getProtimeUrenGroupedByDay($protimeId, $year, $month, $view, $timecardid) {
-	global $settings;
+	global $databases;
 
 	$retval = array();
 
@@ -279,7 +279,7 @@ function getProtimeUrenGroupedByDay($protimeId, $year, $month, $view, $timecardi
 
 //echo $query . ' +<br>';
 
-	$oTc = new class_mysql($settings, 'timecard');
+	$oTc = new class_mysql($databases['default']);
 	$oTc->connect();
 
 	$result2 = mysql_query($query, $oTc->getConnection());
@@ -308,7 +308,7 @@ function getProtimeUrenGroupedByDay($protimeId, $year, $month, $view, $timecardi
 
 // TODOEXPLAIN
 function getProtimeUren($id, $year, $month, $day, $view, $timecardid) {
-	global $settings;
+	global $databases;
 
 	$retval = 0.0;
 
@@ -362,7 +362,7 @@ function getProtimeUren($id, $year, $month, $day, $view, $timecardid) {
 
 //echo $query . ' +<br>';
 
-	$oTc = new class_mysql($settings, 'timecard');
+	$oTc = new class_mysql($databases['default']);
 	$oTc->connect();
 
 	$result2 = mysql_query($query, $oTc->getConnection());
@@ -389,9 +389,9 @@ function getProtimeUren($id, $year, $month, $day, $view, $timecardid) {
 
 // TODOEXPLAIN
 function getProjectName( $id, $handle ) {
-	global $settings;
+	global $databases;
 
-	$oConn = new class_mysql($settings, 'timecard');
+	$oConn = new class_mysql($databases['default']);
 	$oConn->connect();
 
 	$retval = '';
@@ -457,9 +457,9 @@ function getMonthNameInDutch( $m, $length = 3) {
 
 // TODOEXPLAIN
 function getListOfShowSeparatedProjectsOnReports( $retval, $year, $level, $parent_id = 0 ) {
-	global $settings;
+	global $databases;
 
-	$oConn = new class_mysql($settings, 'timecard');
+	$oConn = new class_mysql($databases['default']);
 	$oConn->connect();
 	$query = "SELECT * FROM Workcodes ::WHERE:: ORDER BY Description ";
 
@@ -506,9 +506,9 @@ function getListOfShowSeparatedProjectsOnReports( $retval, $year, $level, $paren
 
 // TODOEXPLAIN
 function getNumberOfChildren( $projectId ) {
-	global $settings;
+	global $databases;
 
-	$oConn = new class_mysql($settings, 'timecard');
+	$oConn = new class_mysql($databases['default']);
 	$oConn->connect();
 
 	$retval = 0;

@@ -6,7 +6,7 @@ require_once "class_mysql.inc.php";
 
 class class_employee {
 	private $timecard_id = 0;
-	private $settings;
+	private $databases;
 	private $protime_id = 0;
 	private $hoursdoublefield = '';
 	private $is_disabled = 0;
@@ -19,12 +19,14 @@ class class_employee {
 
 	// TODOEXPLAIN
 	function class_employee($timecard_id, $settings) {
+		global $databases;
+
 		if ( $timecard_id == '' || $timecard_id < -1 ) {
 			$timecard_id = 0;
 		}
 
 		$this->timecard_id = $timecard_id;
-		$this->settings = $settings;
+		$this->databases = $databases;
 
 		if ( $timecard_id > 0 ) {
 			$this->getTimecardValues();
@@ -33,7 +35,7 @@ class class_employee {
 
 	// TODOEXPLAIN
 	function getTimecardValues() {
-		$oConn = new class_mysql($this->settings, 'timecard');
+		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
 
 		//
@@ -208,7 +210,7 @@ class class_employee {
 		if ( $this->getProtimeId() != '0' ) {
 
 			$vakantie = advancedSingleRecordSelectMysql(
-						'timecard'
+						'default'
 						, "PROTIME_P_LIMIT"
 						, array("BEGIN_VAL", "END_VAL", "BOOKDATE")
 						, "PERSNR=" . $this->getProtimeId() . " AND EXEC_ORDER=2 "
@@ -232,7 +234,7 @@ class class_employee {
 
 	// TODOEXPLAIN
 	function findTimecardIdUsingProtimeId($protime_id) {
-		$oConn = new class_mysql($this->settings, 'timecard');
+		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
 
 		$val = 0;
@@ -241,7 +243,7 @@ class class_employee {
 
 			// search in protime database
 			$record = advancedSingleRecordSelectMysql(
-					'timecard'
+					'default'
 					, "Employees"
 					, array("ID")
 					, "ProtimePersNr=" . $protime_id . " "
@@ -282,7 +284,7 @@ class class_employee {
 
 		$protime_id = $this->getProtimeId();
 
-		$oConn = new class_mysql($this->settings, 'timecard');
+		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
 
 		// reset values
@@ -345,7 +347,7 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 
 			// 
 			$hours = advancedSingleRecordSelectMysql(
-					'timecard'
+					'default'
 					, "PROTIME_PR_MONTH"
 					, array("PERSNR", "BOOKDATE", "PREST", "RPREST", "WEEKPRES1", "EXTRA")
 					, "PERSNR=" . $protime_id . " AND BOOKDATE='" . $oDate->get("Ymd") . "' "
@@ -361,7 +363,7 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 	}
 
 	function getHoursPerWeek2($year) {
-		$oConn = new class_mysql($this->settings, 'timecard');
+		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
 
 		$arr = array();
@@ -384,7 +386,7 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 		if ( $this->getProtimeId() != '0' ) {
 
 			$vakantie = advancedSingleRecordSelectMysql(
-						'timecard'
+						'default'
 						, "PROTIME_P_LIMIT"
 						, array("BEGIN_VAL", "END_VAL", "BOOKDATE")
 						, "PERSNR=" . $this->getProtimeId() . " AND EXEC_ORDER=2 "
@@ -407,7 +409,7 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 	}
 
 	function getFavourites( $type ) {
-		$oConn = new class_mysql($this->settings, 'timecard');
+		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
 
 		$ids = array();
@@ -425,7 +427,7 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 	}
 
 	function getTimecardDayTotals( $year, $month ) {
-		$oConn = new class_mysql($this->settings, 'timecard');
+		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
 
 		$ret = array();
@@ -446,7 +448,7 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 
 	// TODOEXPLAIN
 	function getEerderNaarHuisDayTotals( $year, $month ) {
-		$oConn = new class_mysql($this->settings, 'timecard');
+		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
 
 		$ret = array();
@@ -499,7 +501,7 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 
 	// TODOEXPLAIN
 	function getProtimeDayTotalsPart($protime_id, $yyyymm, $type) {
-		global $settings;
+		global $databases;
 
 		$ret = array();
 
@@ -507,7 +509,7 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 
 			$query = "SELECT PERSNR, BOOKDATE, PREST, RPREST, WEEKPRES1, EXTRA FROM PROTIME_PR_MONTH WHERE PERSNR=" . $protime_id . " AND LEFT(BOOKDATE, 6)=" . $yyyymm;
 //debug( $query );
-			$oTc = new class_mysql($settings, 'timecard');
+			$oTc = new class_mysql($databases['default']);
 			$oTc->connect();
 
 			$result = mysql_query($query, $oTc->getConnection());
@@ -529,7 +531,7 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 	function getAllDailyAdditions() {
 		$arr = array();
 
-		$oConn = new class_mysql($this->settings, 'timecard');
+		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
 
 		// TODOTODO
@@ -561,7 +563,7 @@ ORDER BY Workcodes.Description
 	function getEnabledDailyAdditions($oDate) {
 		$arr = array();
 
-		$oConn = new class_mysql($this->settings, 'timecard');
+		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
 
 		// TODOTODO: add first_date and last_date controle
@@ -597,7 +599,7 @@ ORDER BY Workcodes.Description
 	function getTotalWeightOfEnabledDailyAdditions() {
 		$total = 0;
 
-		$oConn = new class_mysql($this->settings, 'timecard');
+		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
 
 			// TODOTODO
@@ -770,7 +772,7 @@ ORDER BY Workcodes.Description
 	function getTimecardDayTotal( $oDate ) {
 		$hoursTotal = 0;
 
-		$oConn = new class_mysql($this->settings, 'timecard');
+		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
 
 		$query = 'SELECT * FROM vw_hours_user WHERE Employee=' . $this->getTimecardId() . ' AND DateWorked="' . $oDate->get("Y-m-d") . '" AND protime_absence_recnr>=0 ';
@@ -785,7 +787,7 @@ ORDER BY Workcodes.Description
 	}
 
 	function setZeroNoneFixedDaa( $oDate ) {
-		$oConn = new class_mysql($this->settings, 'timecard');
+		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
 
 		$query = "UPDATE Workhours SET TimeInMinutes=0 WHERE Employee=" . $this->getTimecardId() . " AND DateWorked=\"" . $oDate->get("Y-m-d") . "\" AND isdeleted=0 AND daily_automatic_addition_id>0 AND fixed_time=0 AND protime_absence_recnr>=0 AND TimeInMinutes<>0 ";
@@ -795,7 +797,7 @@ ORDER BY Workcodes.Description
 	}
 
 	public static function getListOfDaaEmployees() {
-		global $settings;
+		global $settings, $databases;
 
 		$ret = array();
 
@@ -811,7 +813,7 @@ AND `ProtimePersNr`>0
 			)
 ";
 
-		$oConn = new class_mysql($settings, 'timecard');
+		$oConn = new class_mysql($databases['default']);
 		$oConn->connect();
 
 		$result = mysql_query($query, $oConn->getConnection());
@@ -825,7 +827,7 @@ AND `ProtimePersNr`>0
 	}
 
 	public static function getListOfEnabledAndLinkedEmployees() {
-		global $settings;
+		global $settings, $databases;
 
 		$ret = array();
 
@@ -836,7 +838,7 @@ WHERE `isdisabled`=0
 AND `ProtimePersNr`>0
 ";
 
-		$oConn = new class_mysql($settings, 'timecard');
+		$oConn = new class_mysql($databases['default']);
 		$oConn->connect();
 
 		$result = mysql_query($query, $oConn->getConnection());
@@ -861,7 +863,7 @@ AND `ProtimePersNr`>0
 		if ( $this->getProtimeId() != '0' ) {
 
 			$res = advancedSingleRecordSelectMysql(
-				'timecard'
+				'default'
 				, "PROTIME_CURRIC"
 				, array("EMAIL")
 				, "PERSNR=" . $this->getProtimeId()

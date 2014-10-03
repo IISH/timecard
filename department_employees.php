@@ -22,7 +22,7 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createDepartmentsContent() {
-	global $settings, $protect;
+	global $settings, $protect, $databases;
 
 	// get design
 	$design = new class_contentdesign("page_department_employees");
@@ -36,7 +36,7 @@ function createDepartmentsContent() {
 	require_once("./classes/class_view/class_view.inc.php");
 	require_once("./classes/class_view/fieldtypes/class_field_string.inc.php");
 
-	$oDb = new class_mysql($settings, 'timecard');
+	$oDb = new class_mysql($databases['default']);
 	$oView = new class_view($settings, $oDb);
 
 	$oView->set_view( array(

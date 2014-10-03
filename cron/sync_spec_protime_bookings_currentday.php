@@ -30,7 +30,7 @@ echo "<br>Rows inserted/updated: " . $sync->getCounter() . "<br>";
 
 // remove old records
 $query = "DELETE FROM " . $sync->getTargetTable() . " WHERE BOOKDATE<'" . date("Ymd") . "' ";
-$oConn = new class_mysql($settings, 'timecard');
+$oConn = new class_mysql($databases['default']);
 $oConn->connect();
 $result = mysql_query($query, $oConn->getConnection());
 

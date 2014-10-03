@@ -1,5 +1,5 @@
-<?php 
-// modified: 2014-06-03
+<?php
+// modified: 2014-10-03
 
 class class_mssql {
 	private $server;
@@ -9,11 +9,11 @@ class class_mssql {
 	private $conn;
 
 	// TODOEXPLAIN
-	function class_mssql($settings, $prefix) {
-		$this->server = $settings[$prefix . "_server"];
-		$this->user = $settings[$prefix . "_user"];
-		$this->password = $settings[$prefix . "_password"];
-		$this->database = $settings[$prefix . "_database"];
+	function __construct($database) {
+		$this->server = $database["host"];
+		$this->user = $database["username"];
+		$this->password = $database["password"];
+		$this->database = $database["database"];
 	}
 
 	// TODOEXPLAIN

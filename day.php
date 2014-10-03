@@ -42,9 +42,9 @@ function createDayContent( $date ) {
 
 // TODOEXPLAIN
 function getUserDay( $date ) {
-	global $settings, $oWebuser, $oDate;
+	global $settings, $oWebuser, $oDate, $databases;
 
-	$oConn = new class_mysql($settings, 'timecard');
+	$oConn = new class_mysql($databases['default']);
 	$oConn->connect();
 
 	$ret = '';

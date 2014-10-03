@@ -22,8 +22,8 @@ class class_workhours {
 
 	// TODOEXPLAIN
 	function class_workhours($id) {
-		global $settings;
-		$this->settings = $settings;
+		global $databases;
+		$this->databases = $databases;
 
 		$this->id = $id;
 		$this->employeeId = 0;
@@ -41,7 +41,7 @@ class class_workhours {
 	// TODOEXPLAIN
 	private function initValues() {
 		if ( $this->getId() > 0 ) {
-			$oConn = new class_mysql($this->settings, 'timecard');
+			$oConn = new class_mysql($this->databases['default']);
 			$oConn->connect();
 
 			$query = "SELECT * FROM Workhours WHERE ID=" . $this->getId();
@@ -92,7 +92,7 @@ class class_workhours {
 		$query = str_replace("::DAAID::", $this->daily_automatic_addition_id, $query);
 		$query = str_replace("::ISTIMEFIXED::", $this->is_time_fixed, $query);
 
-		$oConn = new class_mysql($this->settings, 'timecard');
+		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
 
 		mysql_query($query, $oConn->getConnection());
@@ -104,7 +104,7 @@ class class_workhours {
 
 			$query = str_replace("::ID::", $this->getId(), $query);
 
-			$oConn = new class_mysql($this->settings, 'timecard');
+			$oConn = new class_mysql($this->databases['default']);
 			$oConn->connect();
 
 			mysql_query($query, $oConn->getConnection());
@@ -123,7 +123,7 @@ class class_workhours {
 		$query = str_replace("::DAAID::", $this->daily_automatic_addition_id, $query);
 		$query = str_replace("::ISTIMEFIXED::", $this->is_time_fixed, $query);
 
-		$oConn = new class_mysql($this->settings, 'timecard');
+		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
 
 		mysql_query($query, $oConn->getConnection());
@@ -208,10 +208,10 @@ class class_workhours {
 
 	// TODOEXPLAIN
 	public static function findDaaRecord( $employeeId, $daaId, $oDate ) {
-		global $settings;
+		global $settings, $databases;
 		$recordId = 0;
 
-		$oConn = new class_mysql($settings, 'timecard');
+		$oConn = new class_mysql($databases['default']);
 		$oConn->connect();
 
 		$query = "SELECT ID FROM Workhours WHERE Employee=" . $employeeId->getTimecardId() . " AND DateWorked LIKE '" . $oDate->get("Y-m-d") . "%' AND daily_automatic_addition_id=" . $daaId;

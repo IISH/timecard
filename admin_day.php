@@ -53,9 +53,9 @@ function createAdminDayContent( $date ) {
 
 // TODOEXPLAIN
 function getAdminDay( $date ) {
-	global $settings, $oEmployee, $oDate;
+	global $settings, $oEmployee, $oDate, $databases;
 
-	$oConn = new class_mysql($settings, 'timecard');
+	$oConn = new class_mysql($databases['default']);
 	$oConn->connect();
 
 	$ret = '';
@@ -69,7 +69,7 @@ function getAdminDay( $date ) {
 			require_once("./classes/class_view/fieldtypes/class_field_string.inc.php");
 			require_once("./classes/class_view/fieldtypes/class_field_time.inc.php");
 
-			$oDb = new class_mysql($settings, 'timecard');
+			$oDb = new class_mysql($databases['default']);
 			$oView = new class_view($settings, $oDb);
 
 			// if legacy, then no edit link

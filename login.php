@@ -6,7 +6,9 @@ $oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
 $oPage->setTab($menuList->findTabNumber('pp.login'));
 $oPage->setTitle('Timecard | Login');
+echo ' xxxx<br>';
 $oPage->setContent(createLoginPage());
+echo ' yyyy<br>';
 
 // show page
 echo $oPage->getPage();

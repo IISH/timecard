@@ -19,7 +19,7 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createSettingsPage() {
-	global $settings, $oWebuser;
+	global $settings, $oWebuser, $databases;
 
 	// get design
 	$design = new class_contentdesign("page_aboutme");
@@ -27,7 +27,7 @@ function createSettingsPage() {
 	// add header
 	$ret = $design->getHeader();
 
-	$oConn = new class_mysql($settings, 'timecard');
+	$oConn = new class_mysql($databases['default']);
 	$oConn->connect();
 
 	$query = "SELECT * FROM vw_Employees WHERE ID=" . $oWebuser->getTimecardId();

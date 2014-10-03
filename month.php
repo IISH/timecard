@@ -32,7 +32,7 @@ function createMonthContent( $date ) {
 
 	// TODOEXPLAIN
 	function getUserMonth( $date ) {
-		global $settings, $oWebuser, $oDate;
+		global $settings, $oWebuser, $oDate, $databases;
 
 		$ret = '';
 
@@ -42,7 +42,7 @@ function createMonthContent( $date ) {
 		require_once("./classes/class_view/fieldtypes/class_field_date.inc.php");
 		require_once("./classes/class_view/fieldtypes/class_field_jira_url_browse.inc.php");
 
-		$oDb = new class_mysql($settings, 'timecard');
+		$oDb = new class_mysql($databases['default']);
 		$oView = new class_view($settings, $oDb);
 
 		// if legacy, then no edit link

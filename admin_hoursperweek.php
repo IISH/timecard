@@ -22,7 +22,7 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createHoursperweekContent() {
-	global $settings;
+	global $settings, $databases;
 
 	// get design
 	$design = new class_contentdesign("page_admin_hoursperweek");
@@ -45,7 +45,7 @@ function createHoursperweekContent() {
 	require_once("./classes/class_view/fieldtypes/class_field_integer.inc.php");
 	require_once("./classes/class_view/fieldtypes/class_field_decimal.inc.php");
 
-	$oDb = new class_mysql($settings, 'timecard');
+	$oDb = new class_mysql($databases['default']);
 	$oView = new class_view($settings, $oDb);
 
 	$oView->set_view( array(

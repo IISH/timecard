@@ -117,9 +117,9 @@ function getEmployeesRibbon($currentlySelectedEmployee, $year, $hide_all_employe
 
 // TODOEXPLAIN
 function getListOfUsersActiveInSpecificYear($year) {
-	global $settings;
+	global $databases;
 
-	$oConn = new class_mysql($settings, 'timecard');
+	$oConn = new class_mysql($databases['default']);
 	$oConn->connect();
 
 	$ret = array();
@@ -403,7 +403,7 @@ function achterhaalQuarter($date) {
 
 // TODOEXPLAIN
 function advancedRecordDelete($db, $table, $criterium, $test = 0 ) {
-	global $settings;
+	global $databases;
 
 	$advQuery = "DELETE FROM " . $table;
 
@@ -417,7 +417,7 @@ function advancedRecordDelete($db, $table, $criterium, $test = 0 ) {
 		// test
 		//debug($advQuery);
 	} else {
-		$oConn = new class_mysql($settings, $db);
+		$oConn = new class_mysql($databases[$db]);
 		$oConn->connect();
 
 		// run
@@ -428,7 +428,7 @@ function advancedRecordDelete($db, $table, $criterium, $test = 0 ) {
 
 // TODOEXPLAIN
 function advancedRecordInsert($db, $table, $fields, $test = 0 ) {
-	global $settings;
+	global $databases;
 
 	$advQuery = "INSERT INTO " . $table . " ";
 
@@ -459,7 +459,7 @@ function advancedRecordInsert($db, $table, $fields, $test = 0 ) {
 		// test
 		//debug($advQuery);
 	} else {
-		$oConn = new class_mysql($settings, $db);
+		$oConn = new class_mysql($databases[$db]);
 		$oConn->connect();
 
 		// run
@@ -471,7 +471,7 @@ function advancedRecordInsert($db, $table, $fields, $test = 0 ) {
 
 // TODOEXPLAIN
 function advancedRecordUpdate($db, $table, $fields, $criterium, $test = 0 ) {
-	global $settings;
+	global $databases;
 
 	$advQuery = "UPDATE " . $table . " SET ";
 
@@ -497,7 +497,7 @@ function advancedRecordUpdate($db, $table, $fields, $criterium, $test = 0 ) {
 		// test
 		echo $advQuery . "+<br>";
 	} else {
-		$oConn = new class_mysql($settings, $db);
+		$oConn = new class_mysql($databases[$db]);
 		$oConn->connect();
 
 //debug($advQuery, "advancedRecordUpdate: ");
@@ -508,11 +508,11 @@ function advancedRecordUpdate($db, $table, $fields, $criterium, $test = 0 ) {
 
 // TODOEXPLAIN
 function advancedSingleRecordSelectMysql($db, $table, $fields, $criterium, $fieldselect = '', $order_by = '' ) {
-	global $settings;
+	global $databases;
 
 	$retval = array();
 
-	$oConn = new class_mysql($settings, $db);
+	$oConn = new class_mysql($databases[$db]);
 	$oConn->connect();
 
 	if ( $fieldselect == '' || $fieldselect == '*' ) {
@@ -551,7 +551,7 @@ function advancedSingleRecordSelectMysql($db, $table, $fields, $criterium, $fiel
 // TODOEXPLAIN
 function updateLastUserLogin($userid) {
 	advancedRecordUpdate(
-			'timecard'
+			'default'
 			, "Employees"
 			, array("last_user_login" => "'" . date("Y-m-d H:i:s") . "'", 'isdisabled' => '0')
 			, "ID=" . $userid
@@ -560,9 +560,9 @@ function updateLastUserLogin($userid) {
 
 // TODOEXPLAIN
 function getEmployeeIdByLongCode($longcode) {
-	global $settings;
+	global $databases;
 
-	$oConn = new class_mysql($settings, 'timecard');
+	$oConn = new class_mysql($databases['default']);
 	$oConn->connect();
 
 	$retval["id"] = '0';
@@ -580,9 +580,9 @@ function getEmployeeIdByLongCode($longcode) {
 
 // TODOEXPLAIN
 function getAddEmployeeToTimecard($longcode) {
-	global $protect, $settings;
+	global $protect, $databases;
 
-	$oConn = new class_mysql($settings, 'timecard');
+	$oConn = new class_mysql($databases['default']);
 	$oConn->connect();
 
 	$retval["id"] = '0';
@@ -621,7 +621,7 @@ After that you can close the Jira call.";
 
 // TODOEXPLAIN
 function getCheckedInCheckedOut($protimeid, $date = '') {
-	global $settings;
+	global $databases;
 
 	if ( $date == '' ) {
 		$date = date("Ymd");
@@ -642,7 +642,7 @@ function getCheckedInCheckedOut($protimeid, $date = '') {
 
 	$query = "SELECT REC_NR, PERSNR, BOOKDATE, BOOKTIME FROM PROTIME_BOOKINGS WHERE PERSNR=" . $protimeid . " AND BOOKDATE='" . $date . "' AND BOOKTIME<>9999 ORDER BY BOOKTIME ";
 
-	$oTc = new class_mysql($settings, 'timecard');
+	$oTc = new class_mysql($databases['default']);
 	$oTc->connect();
 
 	$result = mysql_query($query, $oTc->getConnection());
@@ -685,13 +685,13 @@ function getCheckedInCheckedOut($protimeid, $date = '') {
 
 // TODOEXPLAIN
 function addAndRemoveAbsentiesInTimecard($timecard_id, $protime_id, $oDate) {
-	global $settings;
+	global $databases;
 
 	if ( $oDate->get("Y") < class_settings::getSetting("oldest_modifiable_year") ) {
 		return;
 	}
 
-	$oConn = new class_mysql($settings, 'timecard');
+	$oConn = new class_mysql($databases['default']);
 	$oConn->connect();
 
 	// create a semicolon separated string of all absences used in this current day
@@ -720,7 +720,7 @@ WHERE PROTIME_P_ABSENCE.PERSNR = " . $protime_id . "
 			if ( strpos($timecard_absenties, ";" . $row2["REC_NR"] . ";") !== false ) {
 				// update
 				advancedRecordUpdate(
-						'timecard'
+						'default'
 						, "Workhours"
 						, array(
 								array("WorkCode" => $row2["workcode_id"])
@@ -736,7 +736,7 @@ WHERE PROTIME_P_ABSENCE.PERSNR = " . $protime_id . "
 			} else {
 				// insert
 				advancedRecordInsert(
-					'timecard'
+					'default'
 					, "Workhours"
 					, array(
 							array("Employee" => $timecard_id)
@@ -768,9 +768,9 @@ WHERE PROTIME_P_ABSENCE.PERSNR = " . $protime_id . "
 
 // TODOEXPLAIN
 function getEerderNaarHuisMonthTotal($timecard_id, $oDate) {
-	global $settings;
+	global $databases;
 
-	$oConn = new class_mysql($settings, 'timecard');
+	$oConn = new class_mysql($databases['default']);
 	$oConn->connect();
 
 	$eerderWeg = 0;
@@ -786,9 +786,9 @@ function getEerderNaarHuisMonthTotal($timecard_id, $oDate) {
 
 // TODOEXPLAIN
 function getEerderNaarHuisGroupedByDay($timecard_id, $oDate) {
-	global $settings;
+	global $databases;
 
-	$oConn = new class_mysql($settings, 'timecard');
+	$oConn = new class_mysql($databases['default']);
 	$oConn->connect();
 
 	$eerderWeg = array();
@@ -806,9 +806,9 @@ function getEerderNaarHuisGroupedByDay($timecard_id, $oDate) {
 
 // TODOEXPLAIN
 function getEerderNaarHuisDayTotal($timecard_id, $oDate) {
-	global $settings;
+	global $databases;
 
-	$oConn = new class_mysql($settings, 'timecard');
+	$oConn = new class_mysql($databases['default']);
 	$oConn->connect();
 
 	$eerderWeg = 0;
@@ -826,9 +826,9 @@ function getEerderNaarHuisDayTotal($timecard_id, $oDate) {
 
 // TODOEXPLAIN
 function addEerderNaarHuisInTimecardMonth($timecard_id, $protime_id, $oDate) {
-	global $settings;
+	global $databases;
 
-	$oConn = new class_mysql($settings, 'timecard');
+	$oConn = new class_mysql($databases['default']);
 	$oConn->connect();
 
 	$advSelect = "SELECT BOOKDATE, EXTRA FROM PROTIME_PR_MONTH WHERE PERSNR=" . $protime_id . " AND BOOKDATE LIKE '" . $oDate->get("Ym") . "%' GROUP BY BOOKDATE ";
@@ -859,7 +859,7 @@ function addEerderNaarHuisInTimecardMonth($timecard_id, $protime_id, $oDate) {
 		$eerderWeg *= -1;
 
 		$zoek = advancedSingleRecordSelectMysql(
-			'timecard'
+			'default'
 			, "Workhours"
 			, array("ID", "TimeInMinutes")
 			, "Employee=" . $timecard_id . " AND DateWorked LIKE '" . $oDate2->get("Y-m-d") . "%' AND protime_absence_recnr=-1 "
@@ -868,7 +868,7 @@ function addEerderNaarHuisInTimecardMonth($timecard_id, $protime_id, $oDate) {
 		if ( $zoek["id"] != '' && $zoek["id"] != '0' ) {
 			// update
 			advancedRecordUpdate(
-				'timecard'
+				'default'
 				, "Workhours"
 				, array(
 					array("WorkCode" => 7)
@@ -881,7 +881,7 @@ function addEerderNaarHuisInTimecardMonth($timecard_id, $protime_id, $oDate) {
 		} else {
 			// insert
 			advancedRecordInsert(
-				'timecard'
+				'default'
 				, "Workhours"
 				, array(
 					array("Employee" => $timecard_id)
@@ -897,7 +897,7 @@ function addEerderNaarHuisInTimecardMonth($timecard_id, $protime_id, $oDate) {
 	} else {
 		// verwijder (indien nodig) de 'oude' eerder weg
 		advancedRecordDelete(
-			'timecard'
+			'default'
 			, "Workhours"
 			, "Employee=" . $timecard_id . " AND DateWorked LIKE '" . $oDate2->get("Y-m-d") . "%' AND protime_absence_recnr=-1 "
 		);
@@ -908,19 +908,19 @@ function addEerderNaarHuisInTimecardMonth($timecard_id, $protime_id, $oDate) {
 
 // TODOEXPLAIN
 function addEerderNaarHuisInTimecard($timecard_id, $protime_id, $oDate) {
-	global $settings;
+	global $databases;
 
 	// add 'eerder naar huis' for dates until (excluding) today
 	if ( $oDate->get("Y") < class_settings::getSetting("oldest_modifiable_year") || $oDate->get("Ymd") >= date("Ymd") ) {
 		return;
 	}
 
-	$oConn = new class_mysql($settings, 'timecard');
+	$oConn = new class_mysql($databases['default']);
 	$oConn->connect();
 
 	//
 	$hours = advancedSingleRecordSelectMysql(
-			'timecard'
+			'default'
 			, "PROTIME_PR_MONTH"
 			, array("EXTRA")
 			, "PERSNR=" . $protime_id . " AND BOOKDATE='" . $oDate->get("Ymd") . "' "
@@ -931,7 +931,7 @@ function addEerderNaarHuisInTimecard($timecard_id, $protime_id, $oDate) {
 		$eerderWeg *= -1;
 
 		$zoek = advancedSingleRecordSelectMysql(
-				'timecard'
+				'default'
 				, "Workhours"
 				, array("ID", "TimeInMinutes")
 				, "Employee=" . $timecard_id . " AND DateWorked LIKE '" . $oDate->get("Y-m-d") . "%' AND protime_absence_recnr=-1 "
@@ -940,7 +940,7 @@ function addEerderNaarHuisInTimecard($timecard_id, $protime_id, $oDate) {
 		if ( $zoek["id"] != '' && $zoek["id"] != '0' ) {
 			// update
 			advancedRecordUpdate(
-					'timecard'
+					'default'
 					, "Workhours"
 					, array(
 							array("WorkCode" => 7)
@@ -953,7 +953,7 @@ function addEerderNaarHuisInTimecard($timecard_id, $protime_id, $oDate) {
 		} else {
 			// insert
 			advancedRecordInsert(
-					'timecard'
+					'default'
 					, "Workhours"
 					, array(
 							array("Employee" => $timecard_id)
@@ -970,7 +970,7 @@ function addEerderNaarHuisInTimecard($timecard_id, $protime_id, $oDate) {
 	} else {
 		// verwijder (indien nodig) de 'oude' eerder weg
 		advancedRecordDelete(
-			'timecard'
+			'default'
 			, "Workhours"
 			, "Employee=" . $timecard_id . " AND DateWorked LIKE '" . $oDate->get("Y-m-d") . "%' AND protime_absence_recnr=-1 "
 		);
@@ -979,10 +979,10 @@ function addEerderNaarHuisInTimecard($timecard_id, $protime_id, $oDate) {
 
 // TODOEXPLAIN
 function getAbsences($eid) {
-	global $settings;
+	global $databases;
 
 	$ret = '';
-	$oTc = new class_mysql($settings, 'timecard');
+	$oTc = new class_mysql($databases['default']);
 	$oTc->connect();
 
 	$query = "SELECT TOP 2000 PROTIME_P_ABSENCE.REC_NR, PROTIME_P_ABSENCE.PERSNR, PROTIME_P_ABSENCE.BOOKDATE, PROTIME_P_ABSENCE.ABSENCE_VALUE, PROTIME_P_ABSENCE.ABSENCE_STATUS, PROTIME_ABSENCE.SHORT_1, PROTIME_ABSENCE.ABSENCE
@@ -1049,7 +1049,7 @@ function removeLeftChar( $haystack, $needle ) {
 
 // TODOEXPLAIN
 function getAbsencesAndHolidays($eid, $year, $month, $min_minutes = 0) {
-	global $settings;
+	global $databases;
 
 	$ret = array();
 
@@ -1064,7 +1064,7 @@ AND ( PROTIME_P_ABSENCE.ABSENCE_VALUE>=" . $min_minutes . " OR PROTIME_P_ABSENCE
 ORDER BY PROTIME_P_ABSENCE.BOOKDATE, PROTIME_P_ABSENCE.REC_NR
 ";
 
-	$oTc = new class_mysql($settings, 'timecard');
+	$oTc = new class_mysql($databases['default']);
 	$oTc->connect();
 
 	$result = mysql_query($query, $oTc->getConnection());

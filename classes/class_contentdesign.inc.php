@@ -8,7 +8,7 @@ require_once dirname(__FILE__) . "/../sites/default/settings.php";
 require_once dirname(__FILE__) . "/class_mysql.inc.php";
 
 class class_contentdesign {
-	private $settings;
+	private $databases;
 	private $id;
 	private $design;
 	private $header;
@@ -19,9 +19,9 @@ class class_contentdesign {
 
 	// TODOEXPLAIN
 	function class_contentdesign($design) {
-		global $settings;
+		global $databases;
 
-		$this->settings = $settings;
+		$this->databases = $databases;
 		$this->id = 0;
 		$this->design = $design;
 		$this->header = '';
@@ -35,7 +35,7 @@ class class_contentdesign {
 
 	// TODOEXPLAIN
 	private function initValues() {
-		$oConn = new class_mysql($this->settings, 'timecard');
+		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
 
 		$query = "SELECT * FROM `Contentdesign` WHERE `design`='" . $this->design . "' ";

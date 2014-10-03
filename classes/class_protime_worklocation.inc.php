@@ -8,7 +8,7 @@ require_once dirname(__FILE__) . "/../sites/default/settings.php";
 require_once dirname(__FILE__) . "/class_mysql.inc.php";
 
 class class_protime_worklocation {
-	private $settings;
+	private $databases;
 	private $locationId;
 	private $short_1;
 	private $short_2;
@@ -16,8 +16,8 @@ class class_protime_worklocation {
 
 	// TODOEXPLAIN
 	function class_protime_worklocation($id) {
-		global $settings;
-		$this->settings = $settings;
+		global $databases;
+		$this->databases = $databases;
 
 		$this->locationId = $id;
 		$this->short_1 = '';
@@ -29,7 +29,7 @@ class class_protime_worklocation {
 
 	// TODOEXPLAIN
 	private function initValues() {
-		$oConn = new class_mysql($this->settings, 'timecard');
+		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
 
 		$query = "SELECT * FROM PROTIME_WORKLOCATION WHERE LOCATIONID=" . $this->getLocationId();
@@ -113,11 +113,11 @@ class class_protime_worklocation {
 	}
 
 	public static function getProtimeWorklocations() {
-		global $settings;
+		global $databases;
 
 		$arr_p_wl = array();
 
-		$oConn = new class_mysql($settings, 'timecard');
+		$oConn = new class_mysql($databases['default']);
 		$oConn->connect();
 
 		$query = "SELECT * FROM PROTIME_WORKLOCATION ORDER BY LOCATIONID";

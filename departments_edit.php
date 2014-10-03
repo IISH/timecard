@@ -23,7 +23,7 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createDepartmentsEditContent() {
-	global $protect, $settings, $oWebuser;
+	global $protect, $settings, $oWebuser, $databases;
 
 	$oMisc = new class_misc();
 
@@ -41,7 +41,7 @@ function createDepartmentsEditContent() {
 	require_once("./classes/class_form/fieldtypes/class_field_iframe.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_remark.inc.php");
 
-	$oDb = new class_mysql($settings, 'timecard');
+	$oDb = new class_mysql($databases['default']);
 	$oForm = new class_form($settings, $oDb);
 
 	$oForm->set_form( array(

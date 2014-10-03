@@ -10,9 +10,9 @@ require_once "class_project.inc.php";
 
 class class_project_static {
 	public static function getEnabledProjectsWithAProjectleader() {
-		global $settings;
+		global $databases;
 
-		$oConn = new class_mysql($settings, 'timecard');
+		$oConn = new class_mysql($databases['default']);
 		$oConn->connect();
 
 		$arr = array();

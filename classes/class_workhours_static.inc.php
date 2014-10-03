@@ -9,9 +9,9 @@ require_once "class_mysql.inc.php";
 
 class class_workhours_static {
 	public static function getWorkhoursPerEmployeeGrouped($projectid, $startdate, $enddate) {
-		global $settings;
+		global $settings, $databases;
 
-		$oConn = new class_mysql($settings, 'timecard');
+		$oConn = new class_mysql($databases['default']);
 		$oConn->connect();
 
 		$arr = array();

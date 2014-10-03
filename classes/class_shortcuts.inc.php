@@ -7,16 +7,18 @@ require_once "class_date.inc.php";
 
 class class_shortcuts {
 	private $user;
-	private $settings;
+	private $databases;
 	private $oDate;
 
 	// TODOEXPLAIN
 	function class_shortcuts($user, $settings, $oDate) {
+		global $databases;
+
 		if ( $user == '' ) {
 			$user = 0;
 		}
 		$this->user = $user;
-		$this->settings = $settings;
+		$this->databases = $databases;
 		$this->oDate = $oDate;
 	}
 
@@ -24,7 +26,7 @@ class class_shortcuts {
 	function getEnabledShortcuts() {
 		$arr = array();
 
-		$oConn = new class_mysql($this->settings, 'timecard');
+		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
 
 		// TODOTODO
@@ -55,7 +57,7 @@ ORDER BY Workcodes.Description, UserCreatedQuickAdds.TimeInMinutes DESC ";
 	function getAllShortcuts() {
 		$arr = array();
 
-		$oConn = new class_mysql($this->settings, 'timecard');
+		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
 
 		// TODOTODO

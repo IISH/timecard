@@ -73,7 +73,7 @@ doc_submit('saveclose')
 
 	// TODOEXPLAIN
 	function getUserDayEdit( $date ) {
-		global $settings, $desc, $onNew, $oWebuser, $oDate, $protect;
+		global $settings, $desc, $onNew, $oWebuser, $oDate, $protect, $databases;
 
 		// achterhaal hoeveel op de betreffende dag is gewerkt
 		// bereken hoeveel minuten er nog 'over' zijn
@@ -82,7 +82,7 @@ doc_submit('saveclose')
 		$protime_day_total = $oEmployee->getProtimeDayTotal($date);
 
 		if ( $protime_day_total > 0 ) {
-			$vandaagGewerkt = advancedSingleRecordSelectMysql('timecard', "Workhours", "AANTAL", "Employee=" . $oWebuser->getTimecardId() . " AND DateWorked LIKE '" . $oDate->get("Y-m-d") . "%'" , "SUM(TimeInMinutes) AS AANTAL");
+			$vandaagGewerkt = advancedSingleRecordSelectMysql('default', "Workhours", "AANTAL", "Employee=" . $oWebuser->getTimecardId() . " AND DateWorked LIKE '" . $oDate->get("Y-m-d") . "%'" , "SUM(TimeInMinutes) AS AANTAL");
 			if ( $vandaagGewerkt["aantal"] == '' ) {
 				$vandaagGewerkt["aantal"] = 0;
 			}
@@ -119,7 +119,7 @@ doc_submit('saveclose')
 		require_once("./classes/class_form/fieldtypes/class_field_time_single_field.inc.php");
 
 		// TODOTODO DIRTY
-		$oDb = new class_mysql($settings, 'timecard');
+		$oDb = new class_mysql($databases['default']);
 		$oForm = new workhours_class_form($settings, $oDb);
 
 		$oForm->set_form( array(

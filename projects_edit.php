@@ -22,7 +22,7 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createProjectEditContent() {
-	global $protect, $settings;
+	global $protect, $settings, $databases;
 
 	// get design
 	$design = new class_contentdesign("page_projects_edit");
@@ -56,7 +56,7 @@ function createProjectEditContent() {
 	require_once("./classes/class_form/fieldtypes/class_field_textarea.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_readonly.inc.php");
 
-	$oDb = new class_mysql($settings, 'timecard');
+	$oDb = new class_mysql($databases['default']);
 	$oForm = new class_form($settings, $oDb);
 
 	$oForm->set_form( array(

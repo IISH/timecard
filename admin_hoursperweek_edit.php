@@ -22,7 +22,7 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createHoursperweekEditContent() {
-	global $settings, $protect;
+	global $settings, $protect, $databases;
 
 	// get design
 	$design = new class_contentdesign("page_admin_hoursperweek_edit");
@@ -37,7 +37,7 @@ function createHoursperweekEditContent() {
 	require_once("./classes/class_form/fieldtypes/class_field_list.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_hidden.inc.php");
 
-	$oDb = new class_mysql($settings, 'timecard');
+	$oDb = new class_mysql($databases['default']);
 	$oForm = new class_form($settings, $oDb);
 
 	$oForm->set_form( array(

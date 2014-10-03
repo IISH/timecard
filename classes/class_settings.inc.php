@@ -11,9 +11,9 @@ class class_settings {
 	 * Load the settings from the database
 	 */
 	private static function loadSettings() {
-		global $settings;
+		global $databases;
 
-		$oConn = new class_mysql($settings, 'timecard');
+		$oConn = new class_mysql($databases['default']);
 		$oConn->connect();
 
 		$arr = array();
@@ -49,7 +49,7 @@ class class_settings {
 	}
 
 	public static function saveSetting( $setting_name, $value, $settingsTable = '' ) {
-		global $settings;
+		global $settings, $databases;
 		$setting_name = trim($setting_name);
 
 		$settingsTable = trim($settingsTable);
@@ -59,7 +59,7 @@ class class_settings {
 		}
 
 		if ( $setting_name != '' ) {
-			$oConn = new class_mysql($settings, 'timecard');
+			$oConn = new class_mysql($databases['default']);
 			$oConn->connect();
 
 			$result = mysql_query("SELECT * FROM `$settingsTable` WHERE `property`='" . $setting_name . "' ");

@@ -21,7 +21,6 @@ require_once dirname(__FILE__) . "/class_employee.inc.php";
 require_once dirname(__FILE__) . "/class_feestdag.inc.php";
 require_once dirname(__FILE__) . "/class_feestdagen.inc.php";
 require_once dirname(__FILE__) . "/class_hoursperweek.inc.php";
-require_once dirname(__FILE__) . "/class_mssql.inc.php";
 require_once dirname(__FILE__) . "/class_mysql.inc.php";
 require_once dirname(__FILE__) . "/class_page.inc.php";
 require_once dirname(__FILE__) . "/class_prevnext.inc.php";
@@ -53,5 +52,5 @@ require_once dirname(__FILE__) . "/class_menu.inc.php";
 $menuList = $menu->getMenuSubset();
 
 // always connect to timecard database
-$oConn = new class_mysql($settings, 'timecard');
+$oConn = new class_mysql($databases['default']);
 $oConn->connect();

@@ -7,16 +7,18 @@ require_once "class_date.inc.php";
 
 class class_recentlyused {
 	private $user;
-	private $settings;
+	private $databases;
 	private $oDate;
 
 	// TODOEXPLAIN
 	function class_recentlyused($user, $settings, $oDate) {
+		global $databases;
+
 		if ( $user == '' ) {
 			$user = 0;
 		}
 		$this->user = $user;
-		$this->settings = $settings;
+		$this->databases = $databases;
 		$this->oDate = $oDate;
 	}
 
@@ -24,7 +26,7 @@ class class_recentlyused {
 	function getRecentlyUsed() {
 		$arr = array();
 
-		$oConn = new class_mysql($this->settings, 'timecard');
+		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
 
 		$query = "SELECT Workcodes.ID, Workcodes.Description

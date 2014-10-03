@@ -6,7 +6,7 @@ require_once "class_mysql.inc.php";
 require_once "class_mssql.inc.php";
 
 class class_syncProtimeMysql {
-	protected $settings = null;
+	protected $databases = null;
 	protected $sourceTable = '';
 	protected $targetTable = '';
 	protected $primaryKeyField = '';
@@ -17,8 +17,8 @@ class class_syncProtimeMysql {
 
 	// TODOEXPLAIN
 	function __construct() {
-		global $settings;
-		$this->settings = $settings;
+		global $databases;
+		$this->databases = $databases;
 	}
 
 	// TODOEXPLAIN
@@ -87,10 +87,10 @@ class class_syncProtimeMysql {
 	public function doSync() {
 		echo "Sync " . $this->sourceTable . " (KNAW) -> " . $this->targetTable . " (IISG)<br>";
 
-		$oConn = new class_mysql($this->settings, 'timecard');
+		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
 
-		$oPt = new class_mssql($this->settings, 'protime');
+		$oPt = new class_mssql($this->database['protime_live']);
 		$oPt->connect();
 
 		// set records as being updated

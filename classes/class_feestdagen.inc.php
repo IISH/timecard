@@ -10,10 +10,10 @@ class class_feestdagen {
 
 	// TODOEXPLAIN
 	public static function getNationalHolidays() {
-		global $settings;
+		global $databases;
 		$arr = array();
 
-		$oConn = new class_mysql($settings, 'timecard');
+		$oConn = new class_mysql($databases['default']);
 		$oConn->connect();
 
 		$query = "SELECT * FROM Feestdagen WHERE datum>=" . date("Y") . " AND isdeleted=0 ORDER BY datum ";

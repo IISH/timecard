@@ -8,7 +8,7 @@ require_once dirname(__FILE__) . "/../sites/default/settings.php";
 require_once dirname(__FILE__) . "/class_mysql.inc.php";
 
 class class_dailyaddition {
-	private $settings;
+	private $databases;
 	private $id;
 	private $employeeId;
 	private $workcode;
@@ -23,8 +23,8 @@ class class_dailyaddition {
 
 	// TODOEXPLAIN
 	function class_dailyaddition($id) {
-		global $settings;
-		$this->settings = $settings;
+		global $databases;
+		$this->databases = $databases;
 		$this->id = $id;
 		$this->employeeId = 0;
 		$this->workcode = 0;
@@ -42,7 +42,7 @@ class class_dailyaddition {
 
 	// TODOEXPLAIN
 	private function initValues() {
-		$oConn = new class_mysql($this->settings, 'timecard');
+		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
 
 		$query = "SELECT DailyAutomaticAdditions.*, Workcodes.Projectnummer AS workcodeProjectnumber, Workcodes.Description AS workcodeDescription

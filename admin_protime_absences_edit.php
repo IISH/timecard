@@ -22,7 +22,7 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createAbsencesContent() {
-	global $settings;
+	global $settings, $databases;
 
 	// get design
 	$design = new class_contentdesign("page_admin_protime_absences_edit");
@@ -35,7 +35,7 @@ function createAbsencesContent() {
 	require_once("./classes/class_form/fieldtypes/class_field_readonly.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_list.inc.php");
 
-	$oDb = new class_mysql($settings, 'timecard');
+	$oDb = new class_mysql($databases['default']);
 	$oForm = new class_form($settings, $oDb);
 
 	$oForm->set_form( array(
