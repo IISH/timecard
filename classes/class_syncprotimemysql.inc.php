@@ -90,7 +90,7 @@ class class_syncProtimeMysql {
 		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
 
-		$oPt = new class_mssql($this->database['protime_live']);
+		$oPt = new class_mssql($this->databases['protime_live']);
 		$oPt->connect();
 
 		// set records as being updated

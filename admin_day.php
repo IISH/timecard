@@ -179,9 +179,9 @@ function getAdminDay( $date ) {
 <table>
 <tr>
 	<td colspan=\"2\">
- 		&nbsp; &nbsp; &nbsp;
-		<input type=\"button\" class=\"button\" name=\"addNewButton\" value=\"Add new\" onClick=\"javascript:open_page('admin_edit.php?ID=0&d=" . $date["Ymd"] . "&eid=" . $oEmployee->getTimecardId() . "&backurl=" . urlencode(get_current_url()) . "');\">
-		&nbsp;&nbsp;&nbsp;
+		<p style=\"line-height:20px\">
+ 		    <a href=\"admin_edit.php?ID=0&d=" . $date["Ymd"] . "&eid=" . $oEmployee->getTimecardId() . "&backurl=" . urlencode(get_current_url()) . "\" class=\"button\">Add new</a>
+		</p>
  	</td>
 </tr>
 </table>

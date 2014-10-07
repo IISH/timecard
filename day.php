@@ -59,8 +59,9 @@ function getUserDay( $date ) {
 <table>
 <tr>
 	<td colspan=\"2\">
- 		&nbsp; &nbsp; &nbsp;
-		<input type=\"button\" class=\"button\" name=\"addNewButton\" value=\"Add new\" onClick=\"javascript:open_page('edit.php?ID=0&d=" . $date["Ymd"] . "&backurl=" . urlencode(get_current_url()) . "');\">
+		<p style=\"line-height:20px\">
+ 	    	<a href=\"edit.php?ID=0&d=" . $date["Ymd"] . "&backurl=" . urlencode(get_current_url()) . "\" class=\"button\">Add new</a>
+		</p>
  	</td>
 </tr>
 </table>
