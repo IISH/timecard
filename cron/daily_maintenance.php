@@ -1,7 +1,5 @@
 <?php
 require_once "../classes/start.inc.php";
-//require_once "/home/www/timecard.iisg.nl/public_html/v6/classes/start.inc.php";
-//$path_parts = pathinfo($_SERVER["SCRIPT_FILENAME"]);
 $path_parts['filename'] = 'daily_maintenance';
 
 // check cron key

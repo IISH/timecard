@@ -92,8 +92,8 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 
 	$oConn->connect();
 	// loop employees
-	$querySelect = "SELECT ID FROM vw_Employees WHERE 1=1 and is_test_account=0 " . $queryCriterium . " ORDER BY NAME, FIRSTNAME ";
-//debug( $querySelect );
+	$querySelect = "SELECT ID FROM vw_Employees WHERE 1=1 and is_test_account=0 " . $queryCriterium . " ORDER BY FIRSTNAME, NAME ";
+
 	$resultSelect = mysql_query($querySelect, $oConn->getConnection());
 
 	$arrEmployees = array();
@@ -143,7 +143,7 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 
 		$ret .= $tmp;
 
-		$ret .= "<a href=\"employees_edit.php?ID=" . $oEmployee->getTimecardId() . "&backurl=" . urlencode(get_current_url()) . "\">" . $oEmployee->getLastFirstname() . "</a>";
+		$ret .= "<a href=\"employees_edit.php?ID=" . $oEmployee->getTimecardId() . "&backurl=" . urlencode(get_current_url()) . "\">" . $oEmployee->getFirstname() . ' ' . verplaatsTussenvoegselNaarBegin($oEmployee->getLastname()) . "</a>";
 		$ret .= "\t\t</td>\n";
 
 		$arrHoursPerWeek = $oEmployee->getHoursPerWeek2($year);

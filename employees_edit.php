@@ -58,7 +58,7 @@ function createEmployeesEditContent() {
 	if ( $oWebuser->hasAdminAuthorisation() ) {
 		$oForm->add_field( new class_field_string ( array(
 			'fieldname' => 'LongCode'
-			, 'fieldlabel' => 'SA/2X login'
+			, 'fieldlabel' => 'SA/2X login (firstname.lastname)'
 			, 'required' => 1
 			, 'size' => 35
 			)));
@@ -105,13 +105,13 @@ function createEmployeesEditContent() {
 
 	$oForm->add_field( new class_field_bit ( array(
 		'fieldname' => 'isdisabled'
-		, 'fieldlabel' => 'Is disabled?'
+		, 'fieldlabel' => 'Check if disabled?'
 		, 'required' => 0
 		)));
 
 	$oForm->add_field( new class_field_bit ( array(
 		'fieldname' => 'is_test_account'
-		, 'fieldlabel' => 'Is test account?'
+		, 'fieldlabel' => 'Check if test account?'
 		, 'required' => 0
 		)));
 

@@ -124,7 +124,6 @@ class class_field_list extends class_field {
 		// connect to server
 		$this->oDb->connect();
 
-//echo $veldwaarde . "  ----<br>";
 		// execute query
 		$veldwaarde_currentvalue = $veldwaarde;
 		if ( $veldwaarde_currentvalue == '' ) {
@@ -152,8 +151,6 @@ class class_field_list extends class_field {
 
 			$optionvalue = $row2[$this->m_id_field];
 			$inputfield .= "\t<option value=\"" . $optionvalue . "\"";
-
-//echo $optionvalue . ' - ' . $veldwaarde . ' ++++<br>' . "\n";
 
 			if ( $optionvalue == $veldwaarde ) {
 				$inputfield .= " SELECTED";

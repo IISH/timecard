@@ -35,7 +35,6 @@ function createProjectContent() {
 
 	require_once("./classes/class_view/class_view.inc.php");
 	require_once("./classes/class_view/fieldtypes/class_field_string.inc.php");
-//	require_once("./classes/class_view/fieldtypes/class_field_bit.inc.php");
 
 	$oDb = new class_mysql($databases['default']);
 	$oView = new class_view($settings, $oDb);
@@ -95,15 +94,7 @@ function createProjectContent() {
 				)
 			)
 		)));
-/*
-	$oView->add_field( new class_field_bit ( array(
-		'fieldname' => 'show_in_selectlist'
-		, 'fieldlabel' => 'Show in<br>selectlist'
-		, 'show_different_values' => 1
-		, 'different_true_value' => 'yes'
-		, 'different_false_value' => 'no'
-		)));
-*/
+
 	$oView->add_field( new class_field_string ( array(
 		'fieldname' => 'FULLNAME'
 		, 'fieldlabel' => 'Project leader'

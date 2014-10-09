@@ -51,7 +51,6 @@ function createFeestdagenContent() {
 	$oView->add_field( new class_field_date ( array(
 		'fieldname' => 'datum'
 		, 'fieldlabel' => 'Date'
-		, 'if_no_value' => '-no value-'
 		, 'format' => 'D j F Y'
 		)));
 

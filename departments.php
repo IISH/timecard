@@ -51,7 +51,6 @@ function createDepartmentsContent() {
 	$oView->add_field( new class_field_string ( array(
 		'fieldname' => 'name'
 		, 'fieldlabel' => 'Department'
-		, 'if_no_value' => '-no value-'
 		, 'href' => 'departments_edit.php?ID=[FLD:ID]&backurl=[BACKURL]'
 		, 'viewfilter' => array(
 			'labelfilterseparator' => '<br>'

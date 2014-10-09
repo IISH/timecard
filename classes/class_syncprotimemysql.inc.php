@@ -101,7 +101,7 @@ class class_syncProtimeMysql {
 			// all records
 			$query = "UPDATE " . $this->targetTable . " SET sync_state=2 ";
 		}
-//debug($query);
+
 		$resultData = mysql_query($query, $oConn->getConnection());
 
 		//
@@ -114,7 +114,6 @@ class class_syncProtimeMysql {
 		// save counter in table
 		class_settings::saveSetting('cron_counter_' . $this->getTargetTable(), $this->counter, $this->getTargetTable() . "_syncinfo");
 
-//debug($query);
 		$resultData = mssql_query($query, $oPt->getConnection());
 		while ( $rowData = mssql_fetch_array($resultData) ) {
 			$this->insertUpdateMysqlRecord($rowData, $oConn);
@@ -125,7 +124,6 @@ class class_syncProtimeMysql {
 
 		// remove deleted records
 		$query = "DELETE FROM " . $this->targetTable . " WHERE sync_state=2 ";
-//debug($query);
 		$resultData = mysql_query($query, $oConn->getConnection());
 	}
 

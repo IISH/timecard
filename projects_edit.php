@@ -71,21 +71,7 @@ function createProjectEditContent() {
 		'fieldname' => 'ID'
 		, 'fieldlabel' => '#'
 		)));
-/*
-	$oForm->add_field( new class_field_list ( $settings, array(
-		'fieldname' => 'ParentID'
-		, 'fieldlabel' => 'Menu Parent'
-		, 'query' => 'SELECT ID, Description FROM Workcodes WHERE 1=1 ' . $extra_project_filter . ' ORDER BY Description '
 
-		, 'id_field' => 'ID'
-		, 'description_field' => 'Description'
-
-		, 'empty_value' => '0'
-		, 'required' => 0
-		, 'show_empty_row' => true
-		, 'onNew' => $pid
-		)));
-*/
 	$oForm->add_field( new class_field_string ( array(
 		'fieldname' => 'Projectnummer'
 		, 'fieldlabel' => 'Projectnumber'
@@ -122,13 +108,7 @@ function createProjectEditContent() {
 		, 'show_empty_row' => true
 		, 'onNew' => '0'
 		)));
-/*
-	$oForm->add_field( new class_field_bit ( array(
-		'fieldname' => 'show_in_selectlist'
-		, 'fieldlabel' => 'Show in Select List'
-		, 'onNew' => '1'
-		)));
-*/
+
 	$oForm->add_field( new class_field_bit ( array(
 		'fieldname' => 'enable_weekly_report_mail'
 	, 'fieldlabel' => 'Enable weekly mail report?'

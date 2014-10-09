@@ -9,7 +9,6 @@ foreach ( $arrHandtekeningen as $handtekening ) {
 	$r += 4;
 }
 
-//die('zzzz');
 // + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
 
 // Set active sheet index to the first sheet, so Excel opens this as the first sheet
@@ -22,4 +21,3 @@ header("Content-Disposition: attachment; filename=\"" . $fnaam . "\"");
 $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
 $objWriter->save('php://output');
 exit;
-?>

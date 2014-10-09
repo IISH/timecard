@@ -49,8 +49,6 @@ HAVING SUM(Workhours.TimeInMinutes) > 0
 ORDER BY vw_Employees.REGISTERNR, vw_Employees.WORKLOCATION, vw_Employees.NAME, vw_Employees.FIRSTNAME, Workcodes.Projectnummer, Projectname
 ";
 
-//echo $query . ' +++';
-
 // calculate data
 $data = array();
 

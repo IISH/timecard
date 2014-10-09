@@ -10,7 +10,7 @@ $employee_name = $oEmployee->getLastname() . ', ' . $oEmployee->getFirstname();
 
 $projects = array();
 $projects = getListOfShowSeparatedProjectsOnReports($projects, $year, 0, 0);
-//debug($projects);
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 /** PHPExcel */
@@ -39,7 +39,6 @@ $margin = 0.5 / 2.54;
 $marginTB = 1.0 / 2.54;
 $objPHPExcel->getActiveSheet()->getPageMargins()->setLeft($margin);
 $objPHPExcel->getActiveSheet()->getPageMargins()->setRight($margin);
-//$objPHPExcel->getActiveSheet()->getPageMargins()->setTop($marginTB);
 $objPHPExcel->getActiveSheet()->getPageMargins()->setBottom($marginTB);
 
 // zet kolombreedtes
@@ -154,8 +153,6 @@ function getTimecardUrenGroupedByMonth($id, $year, $pid) {
 
 	$query .= " GROUP BY SUBSTR(DateWorked,1,7) ";
 
-	//debug($query);
-
 	$result = mysql_query($query, $oConn->getConnection());
 	while ($row = mysql_fetch_assoc($result)) {
 		$retval[$row["WORKDATE"]] = $row["AANTAL"];
@@ -213,8 +210,6 @@ function getTimecardUren($id, $year, $month, $day, $pid) {
 	} else {
 		$query = str_replace("::DATE::", " AND DateWorked LIKE '" . $year . '-' . str_pad($month, 2, '0', STR_PAD_LEFT) . "-%' ", $query);
 	}
-
-//die( $query );
 
 	$result = mysql_query($query, $oConn->getConnection());
 	if ($row = mysql_fetch_row($result)) {
@@ -277,15 +272,14 @@ function getProtimeUrenGroupedByDay($protimeId, $year, $month, $view, $timecardi
 	}
 	$query .= "	) GROUP BY SUBSTR(BOOKDATE, 1, 10) ";
 
-//echo $query . ' +<br>';
-
 	$oTc = new class_mysql($databases['default']);
 	$oTc->connect();
 
 	$result2 = mysql_query($query, $oTc->getConnection());
 
 	while ($row2 = mysql_fetch_assoc($result2)) {
-		$retval[$row2["WORKDATE"]] = $row2["AANTAL"];
+		$tmpDate = new class_dateasstring( $row2["WORKDATE"] );
+		$retval[ $tmpDate->get("Y-m-d") ] = $row2["AANTAL"];
 	}
 	mysql_free_result($result2);
 
@@ -307,7 +301,7 @@ function getProtimeUrenGroupedByDay($protimeId, $year, $month, $view, $timecardi
 }
 
 // TODOEXPLAIN
-function getProtimeUren($id, $year, $month, $day, $view, $timecardid) {
+function getProtimeUren($id, $year, $month, $view, $timecardid) {
 	global $databases;
 
 	$retval = 0.0;
@@ -338,12 +332,7 @@ function getProtimeUren($id, $year, $month, $day, $view, $timecardid) {
 	// 13	Werk buiten IISG
 	// 18	Werk thuis
 
-	if ( $day > 0 ) {
-		$query = "SELECT SUM(ABSENCE_VALUE) AS AANTAL FROM PROTIME_P_ABSENCE WHERE PERSNR=" . $id . " AND BOOKDATE='" . $year . substr('0'.$month,-2) . substr('0'.$day,-2) . "' ";
-	} else {
-		$query = "SELECT SUM(ABSENCE_VALUE) AS AANTAL FROM PROTIME_P_ABSENCE WHERE PERSNR=" . $id . " AND BOOKDATE LIKE '" . $year . substr('0'.$month,-2) . "%' ";
-	}
-	$query .= "	AND ABSENCE IN ( ";
+	$query = "SELECT SUM(ABSENCE_VALUE) AS AANTAL FROM PROTIME_P_ABSENCE WHERE PERSNR=" . $id . " AND BOOKDATE LIKE '" . $year . substr('0'.$month,-2) . "%' AND ABSENCE IN ( ";
 	switch ( $view ) {
 		case "verlof":
 			$query .= "1,2,8,9,10,11,16,17,7,3,19,12";
@@ -360,8 +349,6 @@ function getProtimeUren($id, $year, $month, $day, $view, $timecardid) {
 	}
 	$query .= "	) ";
 
-//echo $query . ' +<br>';
-
 	$oTc = new class_mysql($databases['default']);
 	$oTc->connect();
 
@@ -372,16 +359,9 @@ function getProtimeUren($id, $year, $month, $day, $view, $timecardid) {
 	}
 	mysql_free_result($result2);
 
+	// if 'verlof', add also 'eerder weg'
 	if ( $view == 'verlof' ) {
-		// achterhaal ook 'eerder weg'
-
-		$oDate = new class_date( $year, $month, $day );
-		if ( $day > 0 ) {
-			$eerderweg = getEerderNaarHuisDayTotal($timecardid, $oDate);
-		} else {
-			$eerderweg = getEerderNaarHuisMonthTotal($timecardid, $oDate);
-		}
-		$retval += $eerderweg;
+		$retval += getEerderNaarHuisMonthTotal($timecardid, new class_date( $year, $month, 1 ));
 	}
 
 	return $retval;
@@ -474,7 +454,6 @@ function getListOfShowSeparatedProjectsOnReports( $retval, $year, $level, $paren
 			 ", $query);
 	}
 
-//debug($query);
 	$result = mysql_query($query, $oConn->getConnection());
 
 	while ($row = mysql_fetch_array($result)) {

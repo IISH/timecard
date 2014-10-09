@@ -76,7 +76,7 @@ function createEuProjectsContent() {
 	$list_of_employees = '';
 	$separator = '';
 	foreach ( getListOfUsersActiveInSpecificYear($selyear) as $user ) {
-		$list_of_employees .= $separator . '<a href="#" onclick="createOverzicht(' . $user['id'] . ');return false;">' . trim($user["firstname"] .  ' ' . $user["lastname"]) . '</a>';
+		$list_of_employees .= $separator . '<a href="#" onclick="createOverzicht(' . $user['id'] . ');return false;">' . trim($user["firstname"] .  ' ' . verplaatsTussenvoegselNaarBegin($user["lastname"])) . '</a>';
 		$separator = '<br>';
 	}
 	$fields['list_of_employees'] = $list_of_employees;

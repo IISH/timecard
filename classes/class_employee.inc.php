@@ -293,7 +293,6 @@ FROM PROTIME_PR_MONTH
 WHERE PERSNR=" . $protime_id . " AND BOOKDATE LIKE '" . $date["y"] . str_pad( $date["m"], 2, '0', STR_PAD_LEFT) . "%'
 GROUP BY SUBSTR(BOOKDATE, 1, 10)
 ";
-//debug($query);
 
 		$result = mysql_query($query, $oConn->getConnection());
 		while ($row = mysql_fetch_assoc($result)) {
@@ -322,8 +321,8 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 		$protime_id = $this->getProtimeId();
 
 		$arr = $this->getProtimeDayTotalPart($protime_id, $date, array('weekpres1', 'extra'));
-		$protime_day_total = $arr['weekpres1']; //$this->getProtimeDayTotalPart($protime_id, $date, 'weekpres1');
-		$protime_day_total_extra = $arr['extra']; //$this->getProtimeDayTotalPart($protime_id, $date, 'extra');
+		$protime_day_total = $arr['weekpres1'];
+		$protime_day_total_extra = $arr['extra'];
 		if ( $protime_day_total == '' ) {
 			$protime_day_total = 0;
 		}
@@ -508,7 +507,6 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 		if ( $protime_id != '' && $protime_id != '0' ) {
 
 			$query = "SELECT PERSNR, BOOKDATE, PREST, RPREST, WEEKPRES1, EXTRA FROM PROTIME_PR_MONTH WHERE PERSNR=" . $protime_id . " AND LEFT(BOOKDATE, 6)=" . $yyyymm;
-//debug( $query );
 			$oTc = new class_mysql($databases['default']);
 			$oTc->connect();
 

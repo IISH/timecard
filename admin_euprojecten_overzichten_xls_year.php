@@ -78,7 +78,7 @@ foreach ( $projects as $one_project ) {
 
 	$month = 0;
 	$arrUren = getTimecardUrenGroupedByMonth($id, $year, $one_project[1]);
-//debug($arrUren);
+
 	for ( $i = 1; $i <= 16; $i++ ) {
 		$month++;
 
@@ -96,8 +96,7 @@ foreach ( $projects as $one_project ) {
 			if ( $one_project[3] > 0 ) {
 				$uren = "=sum(" . convertSpreadsheatColumnNumberToColumnCharacter($c+$i) . ($r+1) . ":" . convertSpreadsheatColumnNumberToColumnCharacter($c+$i) . ($r+$one_project[3]) . ")";
 			} else {
-				// TODOXXXYEARSLOW
-				//$uren = getTimecardUren($id, $year, $month, 0, $one_project[1]);
+				//
 				$uren = $arrUren[$year . '-' . str_pad($month, 2, '0', STR_PAD_LEFT)];
 
 				//
@@ -237,7 +236,7 @@ foreach ($arrAfwezigheden as $a => $b ) {
 		} else {
 			// DATA COLUMN
 			// TODOXXXYEARSLOW
-			$uren = getProtimeUren($oEmployee->getProtimeId(), $year, $month, 0, $b, $id);
+			$uren = getProtimeUren($oEmployee->getProtimeId(), $year, $month, $b, $id);
 			$uren = convertMinutesToHours($uren);
 			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(fixCol($c+$i), $r, $uren);
 		}

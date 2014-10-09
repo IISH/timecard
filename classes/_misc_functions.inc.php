@@ -76,12 +76,12 @@ function getEmployeesRibbon($currentlySelectedEmployee, $year, $hide_all_employe
 	foreach ( getListOfUsersActiveInSpecificYear($year) as $user ) {
 		if ( $currentlySelectedEmployee->getTimecardId() == $user["id"] ) {
 			$ret .= "<b>";
-			$selected_employee = trim($user["firstname"] . ' ' . $user["lastname"]);
+			$selected_employee = trim($user["firstname"] . ' ' . verplaatsTussenvoegselNaarBegin($user["lastname"]));
 			$prev = $user['prev'];
 			$next = $user['next'];
 		}
 
-		$current_employee = trim($user["firstname"] . ' ' . $user["lastname"]);
+		$current_employee = trim($user["firstname"] . ' ' . verplaatsTussenvoegselNaarBegin($user["lastname"]));
 
 		$ret .= "<a href=\"" . GetModifyReturnQueryString("?", "eid", $user["id"]) . "\" title=\"" . $current_employee . "\">" . $current_employee . "</a>";
 
@@ -776,8 +776,8 @@ function getEerderNaarHuisMonthTotal($timecard_id, $oDate) {
 	$eerderWeg = 0;
 	$query = "SELECT SUM(TimeInMinutes) AS TOTMINUTES FROM Workhours WHERE Employee=" . $timecard_id . " AND DateWorked LIKE '" . $oDate->get("Y-m") . "-%' AND protime_absence_recnr=-1 ";
 	$result = mysql_query($query, $oConn->getConnection());
-	if ( $row = mysql_fetch_array($result) ) {
-		$eerderWeg = $row["TOTMINUTES"];
+	while ( $row = mysql_fetch_array($result) ) {
+		$eerderWeg += $row["TOTMINUTES"];
 	}
 	mysql_free_result($result);
 
@@ -816,8 +816,8 @@ function getEerderNaarHuisDayTotal($timecard_id, $oDate) {
 	// achterhaal 
 	$query = "SELECT SUM(TimeInMinutes) AS TOTMINUTES FROM Workhours WHERE Employee=" . $timecard_id . " AND DateWorked LIKE '" . $oDate->get("Y-m-d") . "%' AND protime_absence_recnr=-1 ";
 	$result = mysql_query($query, $oConn->getConnection());
-	if ( $row = mysql_fetch_array($result) ) {
-		$eerderWeg = $row["TOTMINUTES"];
+	while ( $row = mysql_fetch_array($result) ) {
+		$eerderWeg += $row["TOTMINUTES"];
 	}
 	mysql_free_result($result);
 
@@ -848,60 +848,55 @@ function addEerderNaarHuisInTimecardMonth($timecard_id, $protime_id, $oDate) {
 			break;
 		}
 
-//debug ( $oDate2->get("Y-m-d") );
-//debug ( $arrExtras[$oDate2->get("Ymd")] , "extra");
-
-		//$eerderWeg = (int)($hours["extra"]);
 		$eerderWeg = (int)($arrExtras[$oDate2->get("Ymd")]);
-//debug ($eerderWeg, "eerder weg: ");
 
-	if ( $eerderWeg < 0 ) {
-		$eerderWeg *= -1;
+		if ( $eerderWeg < 0 ) {
+			$eerderWeg *= -1;
 
-		$zoek = advancedSingleRecordSelectMysql(
-			'default'
-			, "Workhours"
-			, array("ID", "TimeInMinutes")
-			, "Employee=" . $timecard_id . " AND DateWorked LIKE '" . $oDate2->get("Y-m-d") . "%' AND protime_absence_recnr=-1 "
-		);
-
-		if ( $zoek["id"] != '' && $zoek["id"] != '0' ) {
-			// update
-			advancedRecordUpdate(
+			$zoek = advancedSingleRecordSelectMysql(
 				'default'
 				, "Workhours"
-				, array(
-					array("WorkCode" => 7)
-				, array("WorkDescription" => "''")
-				, array("TimeInMinutes" => $eerderWeg)
-				)
-				, "ID=" . $zoek["id"]
-				, 0
+				, array("ID", "TimeInMinutes")
+				, "Employee=" . $timecard_id . " AND DateWorked LIKE '" . $oDate2->get("Y-m-d") . "%' AND protime_absence_recnr=-1 "
 			);
+
+			if ( $zoek["id"] != '' && $zoek["id"] != '0' ) {
+				// update
+				advancedRecordUpdate(
+					'default'
+					, "Workhours"
+					, array(
+						array("WorkCode" => 7)
+					, array("WorkDescription" => "''")
+					, array("TimeInMinutes" => $eerderWeg)
+					)
+					, "ID=" . $zoek["id"]
+					, 0
+				);
+			} else {
+				// insert
+				advancedRecordInsert(
+					'default'
+					, "Workhours"
+					, array(
+						array("Employee" => $timecard_id)
+					, array("DateWorked" => "'" . $oDate2->get("Y") . "-" . $oDate2->get("m") . "-" . $oDate2->get("d") . "'")
+					, array("WorkCode" => 7)
+					, array("WorkDescription" => "''")
+					, array("TimeInMinutes" => $eerderWeg)
+					, array("protime_absence_recnr" => "-1")
+					)
+					, 0
+				);
+			}
 		} else {
-			// insert
-			advancedRecordInsert(
+			// verwijder (indien nodig) de 'oude' eerder weg
+			advancedRecordDelete(
 				'default'
 				, "Workhours"
-				, array(
-					array("Employee" => $timecard_id)
-				, array("DateWorked" => "'" . $oDate2->get("Y") . "-" . $oDate2->get("m") . "-" . $oDate2->get("d") . "'")
-				, array("WorkCode" => 7)
-				, array("WorkDescription" => "''")
-				, array("TimeInMinutes" => $eerderWeg)
-				, array("protime_absence_recnr" => "-1")
-				)
-				, 0
+				, "Employee=" . $timecard_id . " AND DateWorked LIKE '" . $oDate2->get("Y-m-d") . "%' AND protime_absence_recnr=-1 "
 			);
 		}
-	} else {
-		// verwijder (indien nodig) de 'oude' eerder weg
-		advancedRecordDelete(
-			'default'
-			, "Workhours"
-			, "Employee=" . $timecard_id . " AND DateWorked LIKE '" . $oDate2->get("Y-m-d") . "%' AND protime_absence_recnr=-1 "
-		);
-	}
 
 	}
 }
@@ -1269,6 +1264,8 @@ function fixBrokenChars($text) {
 
 // TODOEXPLAIN
 function verplaatsTussenvoegselNaarBegin( $text ) {
+	$text = trim($text);
+
 	$array = array( ' van den', ' van der', ' van', ' de', ' el' );
 
 	foreach ( $array as $t ) {

@@ -464,10 +464,8 @@ function onchange_change_filter_doc_submit(obj) {
 		$res = mysql_query($this->m_view["query"], $this->oDb->getConnection()) or die( "error 8712378" . "<br>" . mysql_error());
 
 		// get submit buttons (add new / go back)
-		$view_buttons = $this->get_view_buttons();
-
 		// show buttons at top
-		$return_value .= $view_buttons;
+		$return_value .= $this->get_view_buttons();
 
 		if ( $_POST["form_fld_pressed_button"] != '-delete-' && $_POST["form_fld_pressed_button"] != '-delete-now-' ) {
 			// get filter buttons
@@ -531,8 +529,8 @@ function onchange_change_filter_doc_submit(obj) {
 			}
 
 			// moet overzicht wel getoond worden
-			// niet tonen als delete bevestigings bericht (-delete-now-)
-			// en ook niet tonen als men niks heeft geselecteerd bij -delete-
+			// niet tonen als delete bevestigings bericht (- delete - now -)
+			// en ook niet tonen als men niks heeft geselecteerd bij - delete -
 			$show_view_table = true;
 			if ( $_POST["form_fld_pressed_button"] == '-delete-now-' ) {
 				$show_view_table = false;

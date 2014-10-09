@@ -83,7 +83,6 @@ class class_field {
 	function get_onNew($primary_key = "") {
 		$veldwaarde = '';
 
-//echo 'primary key: ' . $primary_key . '*****<br>';
 		if ( $primary_key <> "" ) {
 			if ( $_GET[$primary_key] == '' || $_GET[$primary_key] == "0" ) {
 

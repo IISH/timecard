@@ -17,7 +17,6 @@ class class_workhours_static {
 		$arr = array();
 
 		$query = "SELECT Employee, SUM(TimeInMinutes) AS AantalMinuten FROM Workhours INNER JOIN vw_Employees ON Workhours.Employee = vw_Employees.ID WHERE WorkCode=$projectid AND DateWorked>='$startdate' AND DateWorked<='$enddate' GROUP BY Employee ORDER BY FIRSTNAME, NAME ";
-//echo "<br>" . $query . " +<br>";
 		$res = mysql_query($query, $oConn->getConnection());
 		while ($r = mysql_fetch_assoc($res)) {
 			$arrPerson = array();
