@@ -109,13 +109,13 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 	<tr>
 		<th>Name</th>
 		<th>Hours&nbsp;per&nbsp;week</th>
-		<th>Year total</th>
+		<th>Year total (100%)</th>
 		<th>Year total (" . (int)(class_settings::getSetting("percentage_rule")*100.0) . "%)</th>
-		<th>Until end of year total</th>
+		<th>Until end of year total (100%)</th>
 		<th>Vacation left</th>
 		<th>Nat. hol. left</th>
 		<th>(Max. transfer)</th>
-		<th>Left</th>
+		<th>Left (100%)</th>
 		<th>Left (" . (int)(class_settings::getSetting("percentage_rule")*100.0) . "%)</th>
 	</tr>
 ";
@@ -154,7 +154,7 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 				$endmonth = $arrHoursPerWeek[$y]->getEndmonth();
 				$hourspw = $arrHoursPerWeek[$y]->getHours();
 
-				$hoursPerWeekText .= $separator . $startmonth . '-' . $endmonth . ': ' . $hourspw . ' hpw';
+				$hoursPerWeekText .= $separator . $startmonth . '-' . $endmonth . ': ' . hoursLeft_formatNumber($hourspw,1);
 				$separator = '<br>';
 
 				for ( $k = $startmonth; $k <= $endmonth; $k++ ) {
@@ -200,10 +200,14 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 		$vacationLeftBookdate = $arrVacationLeft["bookdate"];
 		$ret .= "\t\t<td valign=top>\n";
 		$ret .= hoursLeft_formatNumber($vacationLeft, 1);
+
+		$sterretje = '*';
 		if ( $vacationLeftBookdate != '' && $vacationLeftBookdate < date("Ymd", mktime(0,0,0, date("m")-1, 1, date("Y")) )  ) {
-			$oD = new class_dateasstring($vacationLeftBookdate);
-			$ret .= "<a class=\"nolink\" title=\"Processed until: " . $oD->get("Y-m-d") . "\">*</a>";
+			$sterretje = '**';
 		}
+		$oD = new class_dateasstring($vacationLeftBookdate);
+		$ret .= "<a class=\"nolink\" title=\"Processed until: " . $oD->get("Y-m-d") . "\">$sterretje</a>";
+
 		$ret .= "\t\t</td>\n";
 
 		// NATIONAL HOLIDAYS LEFT
