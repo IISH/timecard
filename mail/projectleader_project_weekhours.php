@@ -57,25 +57,33 @@ foreach ( $projects as $oProject ) {
 	$mail_body .=  number_format(class_misc::convertMinutesToHours($total),2) . " hour(s) \n";
 
 	//
+	$mail_body .= "\n" . class_settings::getSetting('text_functional_maintainer_in_email') . "\n";
+
+	//
 	$mail_body .= "\nEmail sent on:" . $fieldseparator . date("Y-m-d H:i:s") . " \n\n";
 
 	// show message on screen
-	echo "Mail subject: " . str_replace("\t", " &nbsp; &nbsp; ", str_replace("\n", "<br>\n", $mail_subject)) . "<br><br>\n";
-	echo "Mail body: " . str_replace("\t", " &nbsp; &nbsp; ", str_replace("\n", "<br>\n", $mail_body)); echo "<br>";
+	echo str_replace("\t", " &nbsp; &nbsp; ", str_replace("\n", "<br>\n", $mail_subject)) . "<br>\n";
 
 	// check if weekly report e-mail is enabled
 	if ( !$oProject->getEnableweeklyreportmail() ) {
-		echo "SKIPPED: Weekly report e-mail is disabled for this project.";
+		$m = "SKIPPED: Weekly report e-mail is disabled for this project.";
+		echo $m;
+		$mail_body .= $m;
+		mail(class_settings::getSetting('admin_email'), 'SKIPPED ' . $mail_subject, $mail_body);
 	} else {
 		// get email projectleader
 		$projectleaderEmail = $oProjectleader->getEmail();
 		if ( $projectleaderEmail != '' ) {
 			// send email to projectleader
-			//mail($projectleaderEmail, $mail_subject, $mail_body);
-			//mail("gcu@iisg.nl", $mail_subject, $mail_body);
-			echo "DISABLED: Would have been sent to $projectleaderEmail";
+			$headers = 'bcc: ' . class_settings::getSetting('admin_email');
+			mail($projectleaderEmail, $mail_subject, $mail_body, $headers);
+			echo "E-mail sent to $projectleaderEmail";
 		} else {
-			echo "SKIPPED: Weekly report e-mail is disabled for this project.";
+			$m = "SKIPPED: The project leader for this project has no e-mail (contact IISG reception).";
+			echo $m;
+			$mail_body .= $m;
+			mail(class_settings::getSetting('admin_email'), 'SKIPPED ' . $mail_subject, $mail_body);
 		}
 	}
 
