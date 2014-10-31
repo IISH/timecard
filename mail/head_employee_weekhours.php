@@ -62,6 +62,10 @@ foreach ( $departments as $oDepartment ) {
 	echo "Mail subject: " . str_replace("\t", " &nbsp; &nbsp; ", str_replace("\n", "<br>\n", $mail_subject)) . "<br><br>\n";
 	echo "Mail body: " . str_replace("\t", " &nbsp; &nbsp; ", str_replace("\n", "<br>\n", $mail_body)); echo "<br>";
 
+	// set headers
+	$mail_headers = 'From: "' . class_settings::getSetting('email_sender_name') . '" <' . class_settings::getSetting('email_sender_email') . '>' . "\r\n" .
+		'Reply-To: "' . class_settings::getSetting('email_sender_name') . '" <' . class_settings::getSetting('email_sender_email') . '>';
+
 	// check if weekly report e-mail is enabled
 	if ( !$oDepartment->getEnableweeklyreportmail() ) {
 		echo "SKIPPED: Weekly report e-mail is disabled for this department.";
@@ -70,8 +74,8 @@ foreach ( $departments as $oDepartment ) {
 		$headEmail = $oHead->getEmail();
 		if ( $headEmail != '' ) {
 			// send email to department head
-			//mail($headEmail, $mail_subject, $mail_body);
-			//mail("gcu@iisg.nl", $mail_subject, $mail_body);
+			//mail($headEmail, $mail_subject, $mail_body, $mail_headers);
+			//mail("gcu@iisg.nl", $mail_subject, $mail_body, $mail_headers);
 			echo "DISABLED: Would have been sent to $headEmail";
 		} else {
 			echo "SKIPPED: Weekly report e-mail is disabled for this department.";
