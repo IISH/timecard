@@ -39,7 +39,7 @@ function createFeestdagenContent() {
 	}
 
 	$oView->set_view( array(
-		'query' => 'SELECT * FROM Feestdagen WHERE 1=1 AND isdeleted=0 AND datum >= \'' . date('Y') . '\''
+		'query' => 'SELECT * FROM Feestdagen WHERE 1=1 AND isdeleted=0 AND datum >= \'' . date('Y-m-d') . '\''
 		, 'count_source_type' => 'query'
 		, 'order_by' => 'datum ASC '
 		, 'anchor_field' => 'ID'
