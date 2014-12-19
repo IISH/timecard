@@ -28,7 +28,14 @@ $oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
 $oPage->setTab($menuList->findTabNumber('administrator.day'));
 $oPage->setTitle('Timecard | Admin Day (edit)');
-$oPage->setContent(createAdminDayEditContent( $date ));
+
+if ( class_datetime::is_legacy( $oDate ) ) {
+	$oPage->setContent( '<div class="youcannot">You cannot modify legacy data.</div>' );
+} elseif ( class_datetime::is_future( $oDate ) ) {
+	$oPage->setContent( '<div class="youcannot">You cannot add data in the future.</div>' );
+} else {
+	$oPage->setContent(createAdminDayEditContent( $date ));
+}
 
 // show page
 echo $oPage->getPage();

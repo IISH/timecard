@@ -278,8 +278,9 @@ function getProtimeUrenGroupedByDay($protimeId, $year, $month, $view, $timecardi
 	$result2 = mysql_query($query, $oTc->getConnection());
 
 	while ($row2 = mysql_fetch_assoc($result2)) {
-		$tmpDate = new class_dateasstring( $row2["WORKDATE"] );
-		$retval[ $tmpDate->get("Y-m-d") ] = $row2["AANTAL"];
+		$oD = new TCDateTime();
+		$oD->setFromString($row2["WORKDATE"], 'Ymd');
+		$retval[ $oD->get()->format("Y-m-d") ] = $row2["AANTAL"];
 	}
 	mysql_free_result($result2);
 

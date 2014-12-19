@@ -686,8 +686,9 @@ ORDER BY Workcodes.Description
 	// TODOEXPLAIN
 	// add 'daily automatic additions'
 	function addDailyAutomaticAdditions($oDate, $protimeMonthData) {
-		// don't do if too old, or date in the future
-		if ( $oDate->get("Y-m") < class_settings::getSetting("oldest_modifiable_daa_month") || $oDate->get("Y-m-d") >= date("Y-m-d") ) {
+		// don't do if legacy, or date in the future
+		//if ( $oDate->get("Y-m") < class_settings::getSetting("oldest_modifiable_daa_month") || $oDate->get("Y-m-d") >= date("Y-m-d") ) {
+		if ( class_datetime::is_legacy( $oDate ) || $oDate->get("Y-m-d") >= date("Y-m-d") ) {
 			return;
 		}
 

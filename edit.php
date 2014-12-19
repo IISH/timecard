@@ -24,9 +24,9 @@ $oPage->setTab($menuList->findTabNumber('timecard.day'));
 $oPage->setTitle('Timecard | Day (edit)');
 
 if ( class_datetime::is_legacy( $oDate ) ) {
-	$oPage->setContent( '<span class="youcannot">You cannot enter legacy data.</span><br><br>' );
-} elseif ( class_datetime::is_future( $oDate ) && $oWebuser->getTimecardId() != 1 ) {
-	$oPage->setContent( '<span class="youcannot">You cannot enter hours in the future.</span><br><br>' );
+	$oPage->setContent( '<div class="youcannot">You cannot modify legacy data.</div>' );
+} elseif ( class_datetime::is_future( $oDate ) ) {
+	$oPage->setContent( '<div class="youcannot">You cannot add data in the future.</div>' );
 } else {
 	$oPage->setContent(createDayEditContent( $date ));
 }

@@ -36,10 +36,9 @@ class class_misc {
 		$return_value = $query;
 
 		// vervang in de url, de FLD: door waardes
-		$pattern = '\[FLD\:[a-zA-Z0-9_]*\]';
-		ereg($pattern, $return_value, $matches);
-		while ( count($matches) > 0 ) { 
-
+		$pattern = '/\[FLD\:[a-zA-Z0-9_]*\]/';
+		preg_match($pattern, $return_value, $matches);
+		while ( count($matches) > 0 ) {
 			if ( "[FLD:" . $this->m_form["primarykey"] . "]" == $matches[0] ) {
 				$return_value = str_replace($matches[0], $this->m_doc_id, $return_value);
 			} else {
@@ -47,7 +46,7 @@ class class_misc {
 			}
 
 			$matches = null;
-			ereg($pattern, $return_value, $matches);
+			preg_match($pattern, $return_value, $matches);
 		}
 
 		$return_value = str_replace("[BACKURL]", urlencode(getBackUrl()), $return_value);
@@ -60,12 +59,12 @@ class class_misc {
 		$return_value = $url;
 
 		// vervang in de url, de FLD: door waardes
-		$pattern = '\[FLD\:[a-zA-Z0-9_]*\]';
-		ereg($pattern, $return_value, $matches);
-		while ( count($matches) > 0 ) { 
+		$pattern = '/\[FLD\:[a-zA-Z0-9_]*\]/';
+		preg_match($pattern, $return_value, $matches);
+		while ( count($matches) > 0 ) {
 			$return_value = str_replace($matches[0], addslashes($row[str_replace("]", '', str_replace("[FLD:", '', $matches[0]))]), $return_value);
 			$matches = null;
-			ereg($pattern, $return_value, $matches);
+			preg_match($pattern, $return_value, $matches);
 		}
 
 		$backurl = $_SERVER["QUERY_STRING"];
@@ -83,12 +82,12 @@ class class_misc {
 		$return_value = $url;
 
 		// vervang in de url, de FLD: door waardes
-		$pattern = '\[QUERYSTRING\:[a-zA-Z0-9_]*\]';
-		ereg($pattern, $return_value, $matches);
-		while ( count($matches) > 0 ) { 
+		$pattern = '/\[QUERYSTRING\:[a-zA-Z0-9_]*\]/';
+		preg_match($pattern, $return_value, $matches);
+		while ( count($matches) > 0 ) {
 			$return_value = str_replace($matches[0], addslashes($_GET[str_replace("]", '', str_replace("[QUERYSTRING:", '', $matches[0]))]), $return_value);
 			$matches = null;
-			ereg($pattern, $return_value, $matches);
+			preg_match($pattern, $return_value, $matches);
 		}
 
 		// calculate 'go back' url

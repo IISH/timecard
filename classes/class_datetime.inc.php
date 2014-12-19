@@ -4,12 +4,8 @@
 class class_datetime {
 
 	// TODOEXPLAIN
-	function class_datetime() {
-	}
-
-	// TODOEXPLAIN
 	// todoprotectie
-	function getQueryDate() {
+	public static function getQueryDate() {
 		$d = $_GET["d"];
 		if ( $d == '' ) {
 			$d = date("Ymd");
@@ -41,7 +37,7 @@ class class_datetime {
 	}
 
 	// TODOEXPLAIN
-	function check_date($date) {
+	public static function check_date($date) {
 
 		// snelle controle of maand/dag niet te hoog/laag zijn
 		if ( $date["m"] < 1 ) {
@@ -156,14 +152,20 @@ class class_datetime {
 	}
 
 	// TODOEXPLAIN
-	public static function is_legacy($oDate, $max = 1) {
+	public static function is_legacy($oDate, $max_age_in_months = 2) {
 		$isLegacy = false;
 
-		if ( $max < 0 ) {
-			$max = 0;
+		if ( $max_age_in_months < 0 ) {
+			$max_age_in_months = 0;
 		}
 
-		if ( $oDate->get("Y") < ( date("Y") - $max ) ) {
+		$a = new TCDateTime(); // current date
+		for ( $i = 1; $i <= $max_age_in_months; $i++ ) {
+			// go back a month
+			$a->subMonth();
+		}
+
+		if ( $oDate->get("Y-m-d") < $a->getFirstDate()->format("Y-m-d") ) {
 			$isLegacy = true;
 		}
 
@@ -171,7 +173,7 @@ class class_datetime {
 	}
 
 	// TODOEXPLAIN
-	function is_future( $oDate ) {
+	public static function is_future( $oDate ) {
 		$isFuture = false;
 
 		if ( $oDate->get("Ymd") > date("Ymd") ) {
@@ -182,36 +184,11 @@ class class_datetime {
 	}
 
 	// TODOEXPLAIN
-	function formatDateAsString($datum) {
+	public static function formatDateAsString($datum) {
 		$retval = $datum["y"];
 		$retval .= str_pad( $datum["m"], 2, '0', STR_PAD_LEFT);
 		$retval .= str_pad( $datum["d"], 2, '0', STR_PAD_LEFT);
 
 		return $retval;
-	}
-
-	// TODOEXPLAIN
-	function formatDate($date) {
-		$retval = trim($date);
-
-		if ( $retval != '' && $retval != '0' ) {
-			// 
-			if ( strlen($retval) == 8 ) {
-				$year = substr($retval, 0, 4);
-				$month = substr($retval, 4, 2);
-				$day = substr($retval, 6, 2);
-				$dag = mktime(0, 0, 0, $month, $day, $year);
-				$retval = date("d", $dag) . '-' . date("m", $dag) . '-' . date("Y", $dag);
-			}
-		} else {
-			$retval = '?';
-		}
-
-		return $retval;
-	}
-
-	// TODOEXPLAIN
-	public function __toString() {
-		return "Class: " . get_class($this) . "\n";
 	}
 }

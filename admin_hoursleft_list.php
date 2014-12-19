@@ -205,8 +205,10 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 		if ( $vacationLeftBookdate != '' && $vacationLeftBookdate < date("Ymd", mktime(0,0,0, date("m")-1, 1, date("Y")) )  ) {
 			$sterretje = '**';
 		}
-		$oD = new class_dateasstring($vacationLeftBookdate);
-		$ret .= "<a class=\"nolink\" title=\"Processed until: " . $oD->get("Y-m-d") . "\">$sterretje</a>";
+
+		$oD = new TCDateTime();
+		$oD->setFromString($vacationLeftBookdate, 'Ymd');
+		$ret .= "<a class=\"nolink\" title=\"Processed until: " . $oD->get()->format("Y-m-d") . "\">$sterretje</a>";
 
 		$ret .= "\t\t</td>\n";
 

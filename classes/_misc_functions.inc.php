@@ -594,8 +594,14 @@ function getAddEmployeeToTimecard($longcode) {
 	if ( $row = mysql_fetch_array($result) ) {
 		$retval["id"] = $row["ID"];
 	} else {
+		//
+		$a = new TCDateTime();
+		$a->subMonth();
+		$year = date("Y");
+		$allow_additions_starting_date = $a->getFirstDate()->format("Y-m-d");
+
 		// insert new record in Employees database
-		$queryInsert = "INSERT INTO Employees (LongCode) VALUES ('" . addslashes($longcode) . "') ";
+		$queryInsert = "INSERT INTO Employees (LongCode, firstyear, lastyear, allow_additions_starting_date) VALUES ('" . addslashes($longcode) . "', $year, $year, '$allow_additions_starting_date') ";
 		$resultInsert = mysql_query($queryInsert, $oConn->getConnection());
 
 		// get the id of the last created document

@@ -172,16 +172,21 @@ function getAdminDay( $date ) {
 
 			return $ret;
 		} else {
-
 			// SINGLE USER
-			if ( !class_datetime::is_legacy( $oDate ) ) {
+
+			// hide add new button if ...
+			if ( class_datetime::is_legacy( $oDate ) ) {
+				$ret .= '<div class="youcannot">You cannot modify legacy data.</div>';
+			} elseif ( class_datetime::is_future( $oDate ) ) {
+				$ret .= '<div class="youcannot">You cannot add data in the future.</div>';
+			} else {
 				$ret .= "
 <table>
 <tr>
 	<td colspan=\"2\">
-		<p style=\"line-height:20px\">
+		<div class='add_new_button'>
  		    <a href=\"admin_edit.php?ID=0&d=" . $date["Ymd"] . "&eid=" . $oEmployee->getTimecardId() . "&backurl=" . urlencode(get_current_url()) . "\" class=\"button\">Add new</a>
-		</p>
+		</div>
  	</td>
 </tr>
 </table>

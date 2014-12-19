@@ -52,7 +52,7 @@ function createHoursperweekEditContent() {
 		, 'fieldlabel' => '#'
 		)));
 
-	$q = "SELECT Employees.ID, CONCAT( RTRIM( LTRIM( IFNULL(PROTIME_CURRIC.FIRSTNAME,'') ) ) , ' ', RTRIM( LTRIM( IFNULL(PROTIME_CURRIC.NAME,'') ) ), ' (#', Employees.ID , ')' ) AS FULLNAME
+	$q = "SELECT Employees.ID, CONCAT( RTRIM( LTRIM( IFNULL(PROTIME_CURRIC.FIRSTNAME,'') ) ) , ' ', RTRIM( LTRIM( IFNULL(PROTIME_CURRIC.NAME,'') ) ), ' (#', Employees.ID, IF(Employees.is_test_account=1, ', testaccount', ''), ')' ) AS FULLNAME
 FROM Employees
 	LEFT JOIN PROTIME_CURRIC ON Employees.ProtimePersNr = PROTIME_CURRIC.PERSNR
 	LEFT JOIN PROTIME_WORKLOCATION ON PROTIME_CURRIC.WORKLOCATION = PROTIME_WORKLOCATION.LOCATIONID

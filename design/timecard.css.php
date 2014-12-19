@@ -425,6 +425,8 @@ ul {
 .youcannot {
 	font-style: italic;
 	color: red;
+	margin-bottom: 20px;
+	margin-top: 20px;
 }
 
 .recorditem {
@@ -439,4 +441,9 @@ a.favourites_on:link, a.favourites_on:visited {
 a.favourites_off:link, a.favourites_off:visited {
 	color: lightgrey;
 	font-size: 120%;
+}
+
+div.add_new_button {
+	margin-bottom: 20px;
+	margin-top: 20px;
 }
