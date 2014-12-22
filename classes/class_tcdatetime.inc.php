@@ -1,4 +1,5 @@
 <?php
+
 //
 class TCDateTime {
 	private $date = '';
@@ -18,11 +19,13 @@ class TCDateTime {
 	}
 
 	//
-	public function setFromString($date, $format = 'Y-m-d') {
+	public function setFromString($date_as_string, $format = 'Y-m-d') {
 		if ( method_exists ( new DateTime(), "createFromFormat" ) ) {
-			$this->date = DateTime::createFromFormat($format, $date);
+			$this->date = DateTime::createFromFormat($format, $date_as_string);
 		} else {
-			die('TCDateTime setFromString - createFromFormat not implemented yet.');
+			$newDate = strtotime($date_as_string);
+			$this->date->setDate( date('Y', $newDate), date('m', $newDate), date('d', $newDate));
+			$this->date->setTime( date('H', $newDate), date('i', $newDate), date('s', $newDate));
 		}
 	}
 

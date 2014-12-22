@@ -93,6 +93,12 @@ function createEmployeesEditContent() {
 		, 'onNew' => '0'
 		)));
 
+	$oForm->add_field( new class_field_string ( array(
+		'fieldname' => 'allow_additions_starting_date'
+		, 'fieldlabel' => 'Allow additions starting (yyyy-mm-dd)'
+		, 'size' => 35
+	)));
+
 	$oForm->add_field( new class_field_readonly ( array(
 		'fieldname' => 'REGISTERNR'
 		, 'fieldlabel' => 'KNAW #'

@@ -51,9 +51,11 @@ function getUserDay( $date ) {
 
 	// hide add new button if ...
 	if ( class_datetime::is_legacy( $oDate ) ) {
-		$ret .= '<div class="youcannot">You cannot modify legacy data.</div>';
+		$ret .= '<div class="youcannot">' . class_settings::getSetting('error_cannot_modify_legacy') . '</div>';
+	} elseif ( $oDate->get("Y-m-d") < $oWebuser->getAllowAdditionsStartingDate() ) {
+		$ret .= '<div class="youcannot">' . class_settings::getSetting('error_cannot_modify_legacy_contact_fa') . '</div>';
 	} elseif ( class_datetime::is_future( $oDate ) ) {
-		$ret .= '<div class="youcannot">You cannot add data in the future.</div>';
+		$ret .= '<div class="youcannot">' . class_settings::getSetting('error_cannot_add_in_the_future') . '</div>';
 	} else {
 		$ret .= "
 <table>
@@ -123,7 +125,7 @@ function getUserDay( $date ) {
 			}
 
 			// if legacy, then no edit link
-			if ( class_datetime::is_legacy( $oDate ) ) {
+			if ( class_datetime::is_legacy( $oDate ) || $oDate->get("Y-m-d") < $oWebuser->getAllowAdditionsStartingDate() ) {
 				$ret .= "
 		<TD class=\"recorditem\"><nobr>" . $row["Description"] . "</nobr></td>
 ";

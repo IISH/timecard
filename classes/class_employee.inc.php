@@ -16,6 +16,7 @@ class class_employee {
 	private $daysperweek = 0;
 	private $authorisation = array();
 	private $show_jira_field = false;
+	private $allow_additions_starting_date = '';
 
 	// TODOEXPLAIN
 	function class_employee($timecard_id, $settings) {
@@ -50,6 +51,7 @@ class class_employee {
 			$this->firstname = $row_project["FIRSTNAME"];
 			$this->hoursperweek = $row_project["hoursperweek"];
 			$this->daysperweek = $row_project["daysperweek"];
+			$this->allow_additions_starting_date = $row_project["allow_additions_starting_date"];
 
 			if ( $row_project["show_jira_field"] == 1 ) {
 				$this->show_jira_field = true;
@@ -75,6 +77,11 @@ class class_employee {
 	// TODOEXPLAIN
 	function getAuthorisation() {
 		return $this->authorisation ;
+	}
+
+	// TODOEXPLAIN
+	function getAllowAdditionsStartingDate() {
+		return $this->allow_additions_starting_date ;
 	}
 
 	// TODOEXPLAIN

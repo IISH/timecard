@@ -202,7 +202,7 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 		$ret .= hoursLeft_formatNumber($vacationLeft, 1);
 
 		$sterretje = '*';
-		if ( $vacationLeftBookdate != '' && $vacationLeftBookdate < date("Ymd", mktime(0,0,0, date("m")-1, 1, date("Y")) )  ) {
+		if ( $vacationLeftBookdate != '' && $vacationLeftBookdate < date("Ymd", mktime(0,0,0, date("m")-1, 1, date("Y")) ) ) {
 			$sterretje = '**';
 		}
 

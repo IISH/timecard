@@ -74,8 +74,7 @@ function getAdminDay( $date ) {
 
 			// if legacy, then no edit link
 			$add_new_url = '';
-			if ( !class_datetime::is_legacy( $oDate ) ) {
-			} else {
+			if ( !class_datetime::is_legacy( $oDate ) && !( $oDate->get("Y-m-d") < $oEmployee->getAllowAdditionsStartingDate() ) ) {
 				$add_new_url = "admin_edit.php?ID=0&d=" . $oDate->get("Ymd") . "&eid=" . $oEmployee->getTimecardId() . "&backurl=[BACKURL]";
 			}
 
@@ -109,7 +108,7 @@ function getAdminDay( $date ) {
 
 			// if legacy, then no edit link
 			$href = '';
-			if ( !class_datetime::is_legacy( $oDate ) ) {
+			if ( !class_datetime::is_legacy( $oDate ) && !( $oDate->get("Y-m-d") < $oEmployee->getAllowAdditionsStartingDate() ) ) {
 				$href = 'admin_edit.php?ID=[FLD:ID]&d=' . $oDate->get("Ymd") . '&backurl=[BACKURL]';
 			}
 
@@ -176,9 +175,11 @@ function getAdminDay( $date ) {
 
 			// hide add new button if ...
 			if ( class_datetime::is_legacy( $oDate ) ) {
-				$ret .= '<div class="youcannot">You cannot modify legacy data.</div>';
+				$ret .= '<div class="youcannot">' . class_settings::getSetting('error_cannot_modify_legacy') . '</div>';
+			} elseif ( $oDate->get("Y-m-d") < $oEmployee->getAllowAdditionsStartingDate() ) {
+				$ret .= '<div class="youcannot">' . class_settings::getSetting('error_cannot_modify_legacy_contact_fa') . '</div>';
 			} elseif ( class_datetime::is_future( $oDate ) ) {
-				$ret .= '<div class="youcannot">You cannot add data in the future.</div>';
+				$ret .= '<div class="youcannot">' . class_settings::getSetting('error_cannot_add_in_the_future') . '</div>';
 			} else {
 				$ret .= "
 <table>
@@ -240,7 +241,7 @@ function getAdminDay( $date ) {
 					}
 
 					// if legacy, then no edit link
-					if ( class_datetime::is_legacy( $oDate ) ) {
+					if ( class_datetime::is_legacy( $oDate ) || $oDate->get("Y-m-d") < $oEmployee->getAllowAdditionsStartingDate() ) {
 						$ret .= "
 		<TD class=\"recorditem\"><nobr>" . $row["Description"] . "</nobr></td>
 ";

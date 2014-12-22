@@ -33,8 +33,7 @@ function createExportOracleContent() {
 <table>
 <tr>
 	<td>Year: </td>
-	<td>
-";
+	<td>";
 
 	// checked year/month
 	$checkedyear = date("Y");
@@ -46,28 +45,28 @@ function createExportOracleContent() {
 
 	// show years
 	for ($i = (date("Y")-1); $i <= date("Y"); $i++) {
-		$ret .= "<input type=\"radio\" name=\"year\" id=\"year\" value=\"" . $i . "\" " . (($i == $checkedyear) ? 'CHECKED' : '') . " > " . $i . ' &nbsp; ';
+		$ret .= "\n\t\t<input type=\"radio\" name=\"year\" id=\"year\" value=\"" . $i . "\" " . (($i == $checkedyear) ? 'CHECKED' : '') . " > " . $i . ' &nbsp; ';
 	}
 
-	$ret .= "</td>
+	$ret .= "
+	</td>
 </tr>";
 
 	// show months
 	$ret .= "
 <tr>
 	<td valign=\"top\">Month: </td>
-	<td>
-";
+	<td>";
 
 	for ( $i=1; $i<=12; $i++) {
 		if ( $i>1 ) {
 			$ret .= ' &nbsp; ';
 		}
-		$ret .= "<input type=\"radio\" name=\"month\" id=\"month\" value=\"" . $i . "\" " . (($i == $checkedMonth) ? 'CHECKED' : '') . " > " . date("M", mktime(0,0,0,$i,1,date("Y")));
+		$ret .= "\n\t\t<input type=\"radio\" name=\"month\" id=\"month\" value=\"" . $i . "\" " . (($i == $checkedMonth) ? 'CHECKED' : '') . " > " . date("M", mktime(0,0,0,$i,1,date("Y")));
 	}
 
-	$ret .= "</td>
-</tr>
+	$ret .= "
+	</td>
 </tr>";
 
 	// show submit button

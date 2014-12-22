@@ -30,9 +30,11 @@ $oPage->setTab($menuList->findTabNumber('administrator.day'));
 $oPage->setTitle('Timecard | Admin Day (edit)');
 
 if ( class_datetime::is_legacy( $oDate ) ) {
-	$oPage->setContent( '<div class="youcannot">You cannot modify legacy data.</div>' );
+	$oPage->setContent( '<div class="youcannot">' . class_settings::getSetting('error_cannot_modify_legacy') . '</div>' );
+} elseif ( $oDate->get("Y-m-d") < $oEmployee->getAllowAdditionsStartingDate() ) {
+	$ret .= '<div class="youcannot">' . class_settings::getSetting('error_cannot_modify_legacy_contact_fa') . '</div>';
 } elseif ( class_datetime::is_future( $oDate ) ) {
-	$oPage->setContent( '<div class="youcannot">You cannot add data in the future.</div>' );
+	$oPage->setContent( '<div class="youcannot">' . class_settings::getSetting('error_cannot_add_in_the_future') . '</div>' );
 } else {
 	$oPage->setContent(createAdminDayEditContent( $date ));
 }
