@@ -49,7 +49,7 @@ function createEuProjectsContent() {
 	$fields["url_year"] = 'admin_euprojecten_overzichten_xls_year.php';
 	$fields["url_month"] = 'admin_euprojecten_overzichten_xls_month.php';
 
-	// make html list of years
+	// make html list of years (current and previous)
 	$list_of_years = '';
 	for ($i = (date("Y")-1); $i <= date("Y"); $i++) {
 		if ( $i == $selyear ) {
@@ -67,17 +67,23 @@ function createEuProjectsContent() {
 		if ( $i>1 ) {
 			$list_of_months .= ' &nbsp; ';
 		}
-		$list_of_months .= "<input type=\"radio\" name=\"fldMonth\" id=\"fldMonth\" value=\"" . $i . "\" " . (($i == $checkedMonth) ? 'CHECKED' : '') . " > " . date("M", mktime(0,0,0,$i,1,date("Y")));
+		$list_of_months .= "\n\t\t<input type=\"radio\" name=\"fldMonth\" id=\"fldMonth\" value=\"" . $i . "\" " . (($i == $checkedMonth) ? 'CHECKED' : '') . " > " . date("M", mktime(0,0,0,$i,1,date("Y")));
 	}
-	$list_of_months .= "<br><input type=\"radio\" name=\"fldMonth\" id=\"fldMonth\" value=\"0\" " . (('0' == $checkedMonth) ? 'CHECKED' : '') . " > Grouped by Month/Quarter/Year</td>";
+	$list_of_months .= "<br>\n<input type=\"radio\" name=\"fldMonth\" id=\"fldMonth\" value=\"0\" " . (('0' == $checkedMonth) ? 'CHECKED' : '') . " > Grouped by Month/Quarter/Year</td>";
 	$fields['list_of_months'] = $list_of_months;
 
 	// make html list of employees
 	$list_of_employees = '';
-	$separator = '';
+	$separator = "\t\t";
 	foreach ( getListOfUsersActiveInSpecificYear($selyear) as $user ) {
-		$list_of_employees .= $separator . '<a href="#" onclick="createOverzicht(' . $user['id'] . ');return false;">' . trim($user["firstname"] .  ' ' . verplaatsTussenvoegselNaarBegin($user["lastname"])) . '</a>';
-		$separator = '<br>';
+		$nameLabel = trim($user["firstname"] .  ' ' . verplaatsTussenvoegselNaarBegin($user["lastname"]));
+		if ( $nameLabel == '' ) {
+				$nameLabel = $user['longcode'];
+		}
+		$nameLabel .= ' (#' . $user['id'] . ')';
+
+		$list_of_employees .= $separator . '<a href="#" onclick="createOverzicht(' . $user['id'] . ');return false;">' . $nameLabel . '</a>';
+		$separator = "<br>\n\t\t";
 	}
 	$fields['list_of_employees'] = $list_of_employees;
 

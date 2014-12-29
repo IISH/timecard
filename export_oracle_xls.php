@@ -125,9 +125,12 @@ while ($row = mysql_fetch_assoc($result)) {
 
 mysql_free_result($result);
 
+//
+closeDataEntry($year, $month);
 
 // + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
 
+// OUTPUT
 if ( $output == 'debug'  ) {
 
 	echo "<pre>";

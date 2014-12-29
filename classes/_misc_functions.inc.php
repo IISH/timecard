@@ -596,9 +596,9 @@ function getAddEmployeeToTimecard($longcode) {
 	} else {
 		//
 		$a = new TCDateTime();
-		$a->subMonth();
-		$year = date("Y");
+		$a->subMonth(); // one month back
 		$allow_additions_starting_date = $a->getFirstDate()->format("Y-m-d");
+		$year = date("Y");
 
 		// insert new record in Employees database
 		$queryInsert = "INSERT INTO Employees (LongCode, firstyear, lastyear, allow_additions_starting_date) VALUES ('" . addslashes($longcode) . "', $year, $year, '$allow_additions_starting_date') ";
@@ -1281,4 +1281,26 @@ function verplaatsTussenvoegselNaarBegin( $text ) {
 	}
 
 	return $text;
+}
+
+// TODOEXPLAIN
+function closeDataEntry($year, $month, $id = 0 ) {
+	global $databases;
+
+	// calculate new allow_date
+	$a = new TCDateTime();
+	$a->setFromString($year . '-' . $month . '-01', 'Y-m-d');
+	$a->addMonth(); // add one month
+	$allow_date = $a->get()->format("Y-m-d");
+
+	//
+	$oConn = new class_mysql($databases['default']);
+	$oConn->connect();
+
+	// update records
+	$query = "UPDATE Employees SET allow_additions_starting_date = '$allow_date' WHERE allow_additions_starting_date < '$allow_date' ";
+	if ( $id > 0 ) {
+		$query .= ' AND ID=' . $id;
+	}
+	$result = mysql_query($query, $oConn->getConnection());
 }
