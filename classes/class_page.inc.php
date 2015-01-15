@@ -37,7 +37,6 @@ class class_page {
 		$oFile = new class_file();
 		$page = $oFile->getFileSource($this->page_template);
 		$page = str_replace('{url}', $this->getUrl(), $page);
-		$page = str_replace('{lastmodified}', $this->getLastModified(), $page);
 
 		$page = str_replace('{content}', $this->getContent(), $page);
 		$page = str_replace('{shortcuts}', $this->getShortcuts(), $page);
@@ -153,11 +152,6 @@ class class_page {
 	// TODOEXPLAIN
 	function getUrl() {
 		return 'https://' . ( $_SERVER["HTTP_X_FORWARDED_HOST"] != '' ? $_SERVER["HTTP_X_FORWARDED_HOST"] : $_SERVER["SERVER_NAME"] ) . $_SERVER["SCRIPT_NAME"];
-	}
-
-	// TODOEXPLAIN
-	function getLastModified( $dateformat = "j F Y") {
-		return date($dateformat, strtotime(class_settings::getSetting("last_modified")));
 	}
 
 	// TODOEXPLAIN

@@ -1293,14 +1293,17 @@ function closeDataEntry($year, $month, $id = 0 ) {
 	$a->addMonth(); // add one month
 	$allow_date = $a->get()->format("Y-m-d");
 
-	//
-	$oConn = new class_mysql($databases['default']);
-	$oConn->connect();
+	// don't change the allow date if it is in the future (months)
+	if ( $allow_date <= date("Y-m-01") ) {
+		//
+		$oConn = new class_mysql($databases['default']);
+		$oConn->connect();
 
-	// update records
-	$query = "UPDATE Employees SET allow_additions_starting_date = '$allow_date' WHERE allow_additions_starting_date < '$allow_date' ";
-	if ( $id > 0 ) {
-		$query .= ' AND ID=' . $id;
+		// update records
+		$query = "UPDATE Employees SET allow_additions_starting_date = '$allow_date' WHERE allow_additions_starting_date < '$allow_date' ";
+		if ( $id > 0 ) {
+			$query .= ' AND ID=' . $id;
+		}
+		$result = mysql_query($query, $oConn->getConnection());
 	}
-	$result = mysql_query($query, $oConn->getConnection());
 }
