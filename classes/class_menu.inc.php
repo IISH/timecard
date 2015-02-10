@@ -24,6 +24,14 @@ if ( $oWebuser->hasAdminAuthorisation() ) {
 // + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
 
 // TAB: MISC
+$menu->addMenuGroup( new class_menugroup('Projects') );
+if ( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasFaAuthorisation() || $oWebuser->isProjectLeader() ) {
+	$menu->addMenuItem( new class_menuitem('pl.projects', 'Projects', 'pl-projects.php') );
+}
+
+// + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
+
+// TAB: MISC
 $menu->addMenuGroup( new class_menugroup('Miscellaneous') );
 if ( $oWebuser->hasAdminAuthorisation() ) {
 	$menu->addMenuItem( new class_menuitem('misc.departments', 'Departments', 'departments.php') );

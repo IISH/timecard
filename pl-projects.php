@@ -3,7 +3,7 @@ require_once "classes/start.inc.php";
 
 $oWebuser->checkLoggedIn();
 
-if ( !( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasFaAuthorisation() ) ) {
+if ( !( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasFaAuthorisation() || $oWebuser->isProjectLeader() ) ) {
 	echo "You are not authorized to access this page.<br>";
 	die('Go to <a href="index.php">time card home</a>');
 }
@@ -11,7 +11,7 @@ if ( !( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasFaAuthorisation() ) 
 // create webpage
 $oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
-$oPage->setTab($menuList->findTabNumber('finad.projects'));
+$oPage->setTab($menuList->findTabNumber('pl.projects'));
 $oPage->setTitle('Timecard | Projects');
 $oPage->setContent(createProjectContent());
 
@@ -22,10 +22,10 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createProjectContent() {
-	global $settings, $databases;
+	global $settings, $databases, $oWebuser;
 
 	// get design
-	$design = new class_contentdesign("page_projects");
+	$design = new class_contentdesign("page_pl_projects");
 
 	// add header
 	$ret = $design->getHeader();
@@ -39,8 +39,15 @@ function createProjectContent() {
 	$oDb = new class_mysql($databases['default']);
 	$oView = new class_view($settings, $oDb);
 
+	//
+	$extraQueryCriterium = "";
+	if ( !( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasFaAuthorisation() ) ) {
+		$extraQueryCriterium = " AND projectleader=" . $oWebuser->getTimecardId();
+	}
+
+	//
 	$oView->set_view( array(
-		'query' => "SELECT Workcodes.*, vw_Employees.FULLNAME  FROM Workcodes LEFT JOIN vw_Employees ON Workcodes.projectleader = vw_Employees.ID WHERE Workcodes.isdisabled=0 "
+		'query' => "SELECT Workcodes.*, vw_Employees.FULLNAME  FROM Workcodes LEFT JOIN vw_Employees ON Workcodes.projectleader = vw_Employees.ID WHERE 1=1 " . $extraQueryCriterium
 		, 'count_source_type' => 'query'
 		, 'order_by' => 'Workcodes.Description, Workcodes.ID DESC '
 		, 'anchor_field' => 'ID'
@@ -52,7 +59,7 @@ function createProjectContent() {
 		'fieldname' => 'Description'
 		, 'fieldlabel' => 'Project'
 		, 'if_no_value' => '-no value-'
-		, 'href' => 'projects_edit.php?ID=[FLD:ID]&backurl=[BACKURL]'
+		, 'href' => 'pl-projects-totals.php?ID=[FLD:ID]&backurl=[BACKURL]'
 		, 'viewfilter' => array(
 			'labelfilterseparator' => '<br>'
 			, 'filter' => array (
@@ -95,20 +102,24 @@ function createProjectContent() {
 			)
 		)));
 
-	$oView->add_field( new class_field_string ( array(
-		'fieldname' => 'FULLNAME'
-		, 'fieldlabel' => 'Project leader'
-		, 'viewfilter' => array(
-			'labelfilterseparator' => '<br>'
-			, 'filter' => array (
-					array (
-						'fieldname' => 'FULLNAME'
-						, 'type' => 'string'
-						, 'size' => 10
+	// show project leader only if admin or FinAdm
+	// don't show if projectleader
+	if ( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasFaAuthorisation() ) {
+		$oView->add_field( new class_field_string ( array(
+			'fieldname' => 'FULLNAME'
+			, 'fieldlabel' => 'Project leader'
+			, 'viewfilter' => array(
+				'labelfilterseparator' => '<br>'
+				, 'filter' => array (
+						array (
+							'fieldname' => 'FULLNAME'
+							, 'type' => 'string'
+							, 'size' => 10
+						)
 					)
 				)
-			)
-		)));
+			)));
+	}
 
 	// generate view
 	$ret .= $oView->generate_view();

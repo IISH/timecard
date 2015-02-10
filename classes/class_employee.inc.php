@@ -17,6 +17,7 @@ class class_employee {
 	private $authorisation = array();
 	private $show_jira_field = false;
 	private $allow_additions_starting_date = '';
+	private $projects = array();
 
 	// TODOEXPLAIN
 	function class_employee($timecard_id, $settings) {
@@ -62,7 +63,7 @@ class class_employee {
 				$this->hoursdoublefield = 1;
 			}
 
-			// 
+			// AUTHORISATION
 			$queryAuthorisation = "SELECT * FROM Employee_Authorisation WHERE EmployeeID=" . $this->timecard_id;
 			$resultAuthorisation = mysql_query($queryAuthorisation, $oConn->getConnection());
 			while ($rowAuthorisation = mysql_fetch_assoc($resultAuthorisation)) {
@@ -70,6 +71,13 @@ class class_employee {
 			}
 			mysql_free_result($resultAuthorisation);
 
+			// PROJECTS
+			$queryProjects = "SELECT * FROM Workcodes WHERE projectleader=" . $this->timecard_id . " ORDER BY Description";
+			$resultProjects = mysql_query($queryProjects, $oConn->getConnection());
+			while ($rowProjects = mysql_fetch_assoc($resultProjects)) {
+				$this->projects[] = $rowProjects["ID"];
+			}
+			mysql_free_result($resultProjects);
 		}
 		mysql_free_result($resultReset);
 	}
@@ -92,6 +100,11 @@ class class_employee {
 	// TODOEXPLAIN
 	function hasAdminAuthorisation() {
 		return ( in_array( 'admin', $this->getAuthorisation() ) ) ? true : false ;
+	}
+
+	// TODOEXPLAIN
+	function isProjectLeader() {
+		return ( count($this->projects) > 0 );
 	}
 
 	// TODOEXPLAIN
