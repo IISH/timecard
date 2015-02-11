@@ -11,8 +11,8 @@ if ( !( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasFaAuthorisation() ||
 // create webpage
 $oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
-$oPage->setTab($menuList->findTabNumber('pl.projects'));
-$oPage->setTitle('Timecard | Projects');
+$oPage->setTab($menuList->findTabNumber('pl.projects_month_pl'));
+$oPage->setTitle('Timecard | Project hours - Month overview');
 $oPage->setContent(createProjectContent());
 
 // show page
@@ -25,7 +25,7 @@ function createProjectContent() {
 	global $settings, $databases, $oWebuser;
 
 	// get design
-	$design = new class_contentdesign("page_pl_projects");
+	$design = new class_contentdesign("page_projects_month_pl");
 
 	// add header
 	$ret = $design->getHeader();
@@ -40,14 +40,8 @@ function createProjectContent() {
 	$oView = new class_view($settings, $oDb);
 
 	//
-	$extraQueryCriterium = "";
-	if ( !( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasFaAuthorisation() ) ) {
-		$extraQueryCriterium = " AND projectleader=" . $oWebuser->getTimecardId();
-	}
-
-	//
 	$oView->set_view( array(
-		'query' => "SELECT Workcodes.*, vw_Employees.FULLNAME  FROM Workcodes LEFT JOIN vw_Employees ON Workcodes.projectleader = vw_Employees.ID WHERE 1=1 " . $extraQueryCriterium
+		'query' => "SELECT Workcodes.*, vw_Employees.FULLNAME  FROM Workcodes LEFT JOIN vw_Employees ON Workcodes.projectleader = vw_Employees.ID WHERE projectleader=" . $oWebuser->getTimecardId()
 		, 'count_source_type' => 'query'
 		, 'order_by' => 'Workcodes.Description, Workcodes.ID DESC '
 		, 'anchor_field' => 'ID'
@@ -59,7 +53,7 @@ function createProjectContent() {
 		'fieldname' => 'Description'
 		, 'fieldlabel' => 'Project'
 		, 'if_no_value' => '-no value-'
-		, 'href' => 'pl-projects-totals.php?ID=[FLD:ID]&backurl=[BACKURL]'
+		, 'href' => 'projects-month-totals.php?ID=[FLD:ID]&backurl=[BACKURL]'
 		, 'viewfilter' => array(
 			'labelfilterseparator' => '<br>'
 			, 'filter' => array (

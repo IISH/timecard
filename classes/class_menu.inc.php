@@ -25,8 +25,13 @@ if ( $oWebuser->hasAdminAuthorisation() ) {
 
 // TAB: MISC
 $menu->addMenuGroup( new class_menugroup('Projects') );
-if ( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasFaAuthorisation() || $oWebuser->isProjectLeader() ) {
-	$menu->addMenuItem( new class_menuitem('pl.projects', 'Projects', 'pl-projects.php') );
+if ( $oWebuser->isProjectLeader() ) {
+	$menu->addMenuItem( new class_menuitem('pl.projects_month_pl', 'Project hours - Month', 'projects-month-pl.php') );
+	$menu->addMenuItem( new class_menuitem('pl.projects_year_pl', 'Project hours - Year', 'projects-year-pl.php') );
+}
+if ( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasFaAuthorisation() ) {
+	$menu->addMenuItem( new class_menuitem('pl.projects_month_admin', 'Project hours (all) - Month', 'projects-month-admin.php') );
+	$menu->addMenuItem( new class_menuitem('pl.projects_year_admin', 'Project hours (all) - Year', 'projects-year-admin.php') );
 }
 
 // + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +

@@ -242,7 +242,7 @@ class class_employee {
 			if ( $end_val != '' ) {
 				$bookdate = $vakantie["bookdate"];
 				$bookdate = substr($bookdate, 0, 4) . "-" . substr($bookdate, 4, 2) . "-" . substr($bookdate, 6, 2);
-				$retval .= number_format( $end_val/60, 2 ) . " hours <i>(processed until: " . $bookdate . "*)</i>";
+				$retval .= number_format( $end_val/60, 2, ',', '.' ) . " hours <i>(processed until: " . $bookdate . "*)</i>";
 			} else {
 				$retval .= "<i>(no days off found)</i><br>";
 			}

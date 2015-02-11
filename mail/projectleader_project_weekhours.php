@@ -45,16 +45,16 @@ foreach ( $projects as $oProject ) {
 	$mail_body .= "Until (incl.):" . $fieldseparator . $enddate . " \n\n";
 
 	// get list of project workhours for specified period
-	$workhours = class_workhours_static::getWorkhoursPerEmployeeGrouped($oProject->getId(), $startdate, $enddate);
+	$workhours = class_workhours_static::getWorkhoursPerEmployeeGroupedFromTill($oProject->getId(), $startdate, $enddate);
 
 	// name / hours
 	foreach ($workhours as $p) {
 		$mail_body .= $p["employee"]->getFirstname() . ' ' . verplaatsTussenvoegselNaarBegin($p["employee"]->getLastname()) . ":" . $fieldseparator;
-		$mail_body .= number_format(class_misc::convertMinutesToHours($p["timeinminutes"]),2) . " hour(s) \n";
+		$mail_body .= number_format(class_misc::convertMinutesToHours($p["timeinminutes"]),2, ',', '.') . " hour(s) \n";
 		$total += $p["timeinminutes"];
 	}
 	$mail_body .= "Total:" . $fieldseparator;
-	$mail_body .=  number_format(class_misc::convertMinutesToHours($total),2) . " hour(s) \n";
+	$mail_body .=  number_format(class_misc::convertMinutesToHours($total),2, ',', '.') . " hour(s) \n";
 
 	//
 	$mail_body .= "\n" . class_settings::getSetting('text_functional_maintainer_in_email') . "\n";
