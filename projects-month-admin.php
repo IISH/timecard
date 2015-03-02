@@ -12,7 +12,7 @@ if ( !( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasFaAuthorisation() ) 
 $oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
 $oPage->setTab($menuList->findTabNumber('pl.projects_month_admin'));
-$oPage->setTitle('Timecard | Project hours (all) - Month overview');
+$oPage->setTitle('Timecard | Project hours - Month overview (all)');
 $oPage->setContent(createProjectContent());
 
 // show page

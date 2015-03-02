@@ -4,10 +4,10 @@ die('disabled by gcu');
 require_once "../classes/start.inc.php";
 
 // connection to the database
-$dbhandlePT = mssql_connect($settings["protime_server"], $settings["protime_user"], $settings["protime_password"]) or die("Couldn't connect to SQL Server on: " . $settings["protime_server"]);
+$dbhandlePT = mssql_connect($databases['protime_live']['host'], $databases['protime_live']['username'], $databases['protime_live']['password']) or die("Couldn't connect to SQL Server on: " . $databases['protime_live']['host']);
 
 // select a database to work with
-$selectedPT = mssql_select_db($settings["protime_database"], $dbhandlePT) or die("Couldn't open database " . $settings["protime_database"]);
+$selectedPT = mssql_select_db($databases['protime_live']['database'], $dbhandlePT) or die("Couldn't open database " . $databases['protime_live']['database']);
 
 $oWebuser->checkLoggedIn();
 
@@ -19,8 +19,6 @@ error_reporting(E_ALL ^ E_NOTICE);
 <hr>
 <?php
 $result = mssql_query("SELECT * FROM sysobjects where xtype = 'U' ORDER BY name ");
-//$result = mssql_query("SELECT * FROM sysobjects ORDER BY name ");
-//$result = mssql_query("SELECT * FROM sysobjects WHERE name LIKE 'CTRLGROUP%' ORDER BY name ");
 while ( $row = mssql_fetch_array($result) ) {
 ?>
 <b><?php echo $row["name"]; ?></b><br>
@@ -50,11 +48,11 @@ while ( $row = mssql_fetch_array($result) ) {
 		if ( $where != '' ) {
 			$where .= ' AND ';
 		}
-//		$where .= ' PERSNR=37 '; // gcu
+		$where .= ' PERSNR=37 '; // gcu
 //		$where .= ' PERSNR=131 '; // mmi
 //		$where .= ' PERSNR=106 ';  // ed kool
 //		$where .= ' PERSNR=130 ';  // gerben
-		$where .= ' PERSNR=480 ';  // bas van leeuwen
+//		$where .= ' PERSNR=480 ';  // bas van leeuwen
 	}
 
 	if ( in_array("BOOKDATE", $arrFields) ) {

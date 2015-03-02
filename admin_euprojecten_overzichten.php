@@ -3,7 +3,7 @@ require_once "classes/start.inc.php";
 
 $oWebuser->checkLoggedIn();
 
-if ( !( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasExportsAuthorisation() ) ) {
+if ( !( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasReportsAuthorisation() ) ) {
 	echo "You are not authorized to access this page.<br>";
 	die('Go to <a href="index.php">time card home</a>');
 }

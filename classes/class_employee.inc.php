@@ -93,11 +93,6 @@ class class_employee {
 	}
 
 	// TODOEXPLAIN
-	function hasInOutTimeAuthorisation() {
-		return ( in_array( 'inouttime', $this->getAuthorisation() ) ) ? true : false ;
-	}
-
-	// TODOEXPLAIN
 	function hasAdminAuthorisation() {
 		return ( in_array( 'admin', $this->getAuthorisation() ) ) ? true : false ;
 	}
@@ -108,23 +103,13 @@ class class_employee {
 	}
 
 	// TODOEXPLAIN
-	function hasProtimeAuthorisation() {
-		return ( in_array( 'protime', $this->getAuthorisation() ) ) ? true : false ;
-	}
-
-	// TODOEXPLAIN
 	function hasFaAuthorisation() {
 		return ( in_array( 'fa', $this->getAuthorisation() ) ) ? true : false ;
 	}
 
 	// TODOEXPLAIN
-	function hasPresentAuthorisation() {
-		return ( in_array( 'present', $this->getAuthorisation() ) ) ? true : false ;
-	}
-
-	// TODOEXPLAIN
-	function hasAbsenceAuthorisation() {
-		return ( in_array( 'absence', $this->getAuthorisation() ) ) ? true : false ;
+	function hasDepartmentAuthorisation() {
+		return ( in_array( 'department', $this->getAuthorisation() ) ) ? true : false ;
 	}
 
 	// TODOEXPLAIN

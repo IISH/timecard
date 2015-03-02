@@ -4,10 +4,10 @@ die('disabled by GCU');
 require_once "../classes/start.inc.php";
 
 // connection to the database
-$dbhandlePT = mssql_connect($settings["protime_server"], $settings["protime_user"], $settings["protime_password"]) or die("Couldn't connect to SQL Server on: " . $settings["protime_server"]);
+$dbhandlePT = mssql_connect($databases['protime_live']['host'], $databases['protime_live']['username'], $databases['protime_live']['password']) or die("Couldn't connect to SQL Server on: " . $databases['protime_live']['host']);
 
 // select a database to work with
-$selectedPT = mssql_select_db($settings["protime_database"], $dbhandlePT) or die("Couldn't open database " . $settings["protime_database"]);
+$selectedPT = mssql_select_db($databases['protime_live']['database'], $dbhandlePT) or die("Couldn't open database " . $databases['protime_live']['database']);
 
 $oWebuser->checkLoggedIn();
 
@@ -23,7 +23,7 @@ $pid=0;
 
 //$pid = 480; // bas van leeuwen
 
-$arr = array( 131 );
+$arr = array( 37 );
 
 foreach ( $arr as $pid) {
 
