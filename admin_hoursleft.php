@@ -13,8 +13,8 @@ $date = class_datetime::get_date($protect);
 // create webpage
 $oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
-$oPage->setTab($menuList->findTabNumber('misc.hoursleft'));
-$oPage->setTitle('Timecard | Hours left');
+$oPage->setTab($menuList->findTabNumber('pl.hoursleft'));
+$oPage->setTitle('Timecard | Hours for planning');
 $oPage->setContent(createHoursLeftContent() . createHoursLeftRemarks());
 
 // show page
@@ -23,11 +23,16 @@ echo $oPage->getPage();
 require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
-function createHoursLeftContent() {
+function createHoursLeftContent( $curyear = '' ) {
 	//
 	$s = getAndProtectSearch();
 
-	$ret = "
+	if ( $curyear == '' ) {
+		$curyear = date("Y");
+	}
+
+	$ret = "<h2>Hours for planning " . $curyear . "</h2>
+<br>
 <script type=\"text/javascript\">
 <!--
 var xmlhttpSearch=false;
@@ -65,7 +70,6 @@ if (!xmlhttpAddRemove && window.createRequest) {
 
 // TODOEXPLAIN
 function setDate(iYear, iMonth) {
-	document.getElementById('fldMonth').value = iMonth;
 	document.getElementById('fldYear').value = iYear;
 
 	//
@@ -75,7 +79,7 @@ function setDate(iYear, iMonth) {
 // TODOEXPLAIN
 function tcRefreshSearch() {
 	var strZoek = document.getElementById('fldZoek').value;
-	xmlhttpSearch.open(\"GET\", \"admin_hoursleft_list.php?s=\" + escape(document.getElementById('fldZoek').value) + \"&y=\" + escape(document.getElementById('fldYear').value) + \"&m=\" + escape(document.getElementById('fldMonth').value), true);
+	xmlhttpSearch.open(\"GET\", \"admin_hoursleft_list.php?s=\" + escape(document.getElementById('fldZoek').value) + \"&y=\" + escape(document.getElementById('fldYear').value), true);
 	xmlhttpSearch.onreadystatechange=function() {
 		if (xmlhttpSearch.readyState==4) {
 			document.getElementById('tcContentSearch').innerHTML = xmlhttpSearch.responseText;
@@ -120,24 +124,11 @@ Quick search: <input type=\"\" name=\"fldZoek\" id=\"fldZoek\" maxlength=\"20\" 
 	<TD align=\"right\">
 	</TD>
 </TR>
-<TR>
-	<TD>Start month: 
 ";
-	$curyear = date("Y");
-	$curmonth = date("m");
 
 	$ret .= "<input type=\"hidden\" name=\"fldYear\" id=\"fldYear\" value=\"" . $curyear . "\">";
-	$ret .= "<input type=\"hidden\" name=\"fldMonth\" id=\"fldMonth\" value=\"" . $curmonth . "\">";
 
-	$separator = ' &nbsp; &nbsp;';
-	for ( $i = $curmonth; $i <= 12; $i++ ) {
-		$ret .= $separator . "<a href=\"#\" onclick=\"javascript:setDate(" . $curyear . ", " . $i . ");\">" . $curyear . '-' . str_pad( $i, 2, '0', STR_PAD_LEFT) . "</a>";
-	}
-	$ret .= $separator . "<a href=\"#\" onclick=\"javascript:setDate(" . ($curyear+1) . ", 1);\">" . ($curyear+1) . "-01</a>";
-
-$ret .= "
-	</TD>
-</TR>
+	$ret .= "
 </table>
 </form>
 <br>
@@ -157,10 +148,8 @@ function createHoursLeftRemarks() {
 	// REMARKS
 	$ret = "<br>Remarks
 <ol>
-	<li>List of not disabled employees or employees with hours entered in current year</li>
-	<li>If there a no vacation hours shown, please edit user and set 'Protime link'</li>
-	<li>If there is no hour calculation, please go to <a href=\"admin_hoursperweek.php?backurl=" . urlencode(get_current_url()) . "\">Hours per week</a> and enter how many hours the user works per week.</li>
 	<li>Every year the <a href=\"nationalholidays.php?backurl=" . urlencode(get_current_url()) . "\">holidays</a> must be entered.</li>
+	<li>If there a no vacation hours shown, please edit user and set <a href=\"admin_not_linked_employees.php?backurl=" . urlencode(get_current_url()) . "\">Protime link'</a></li>
 	<li>" . (int)(class_settings::getSetting("percentage_rule")*100.0) . "% rule = " . class_settings::getSetting("percentage_rule") . ", the rest of the hours is for overhead (meetings, courses, sick leaves, ...)</li>
 </ol>
 ";

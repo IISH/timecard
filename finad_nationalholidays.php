@@ -1,4 +1,4 @@
-<?php 
+<?php
 require_once "classes/start.inc.php";
 
 $oWebuser->checkLoggedIn();
@@ -33,33 +33,47 @@ function createFeestdagenContent() {
 	$oDb = new class_mysql($databases['default']);
 	$oView = new class_view($settings, $oDb);
 
+	$add_new_url = '';
+	if ( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasFaAuthorisation() ) {
+		$add_new_url = "finad_nationalholidays_edit.php?ID=0&backurl=[BACKURL]";
+	}
+
 	$oView->set_view( array(
 		'query' => 'SELECT * FROM Feestdagen WHERE 1=1 AND isdeleted=0 AND datum >= \'' . date('Y-m-d') . '\''
-		, 'count_source_type' => 'query'
-		, 'order_by' => 'datum ASC '
-		, 'anchor_field' => 'ID'
-		, 'viewfilter' => true
-		, 'table_parameters' => ' cellspacing="0" cellpadding="0" border="0" '
-		));
+	, 'count_source_type' => 'query'
+	, 'order_by' => 'datum ASC '
+	, 'anchor_field' => 'ID'
+	, 'viewfilter' => true
+	, 'table_parameters' => ' cellspacing="0" cellpadding="0" border="0" '
+	, 'add_new_url' => $add_new_url
+	));
 
 	$oView->add_field( new class_field_date ( array(
 		'fieldname' => 'datum'
-		, 'fieldlabel' => 'Date'
-		, 'format' => 'D j F Y'
-		)));
+	, 'fieldlabel' => 'Date'
+	, 'format' => 'D j F Y'
+	)));
 
-	$oView->add_field( new class_field_string ( array(
-		'fieldname' => 'omschrijving'
+	if ( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasFaAuthorisation() ) {
+		$oView->add_field( new class_field_string ( array(
+			'fieldname' => 'omschrijving'
+		, 'fieldlabel' => 'Description'
+		, 'href' => 'finad_nationalholidays_edit.php?ID=[FLD:ID]&backurl=[BACKURL]'
+		)));
+	} else {
+		$oView->add_field( new class_field_string ( array(
+			'fieldname' => 'omschrijving'
 		, 'fieldlabel' => 'Description'
 		)));
+	}
 
 	$oView->add_field( new class_field_bit ( array(
 		'fieldname' => 'vooreigenrekening'
-		, 'fieldlabel' => 'For own account'
-		, 'show_different_values' => 1
-		, 'different_true_value' => 'yes'
-		, 'different_false_value' => 'no'
-		)));
+	, 'fieldlabel' => 'For own account'
+	, 'show_different_values' => 1
+	, 'different_true_value' => 'yes'
+	, 'different_false_value' => 'no'
+	)));
 
 	// generate view
 	$ret .= $oView->generate_view();

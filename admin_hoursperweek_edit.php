@@ -1,4 +1,6 @@
-<?php 
+<?php
+die('Disabled by GCU');
+
 require_once "classes/start.inc.php";
 
 $oWebuser->checkLoggedIn();

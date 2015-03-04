@@ -11,7 +11,7 @@ if ( !$oWebuser->hasAdminAuthorisation() ) {
 // create webpage
 $oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
-$oPage->setTab($menuList->findTabNumber('misc.change_user'));
+$oPage->setTab($menuList->findTabNumber('administrator.change_user'));
 $oPage->setTitle('Timecard | Switch user');
 $oPage->setContent(createChangeUserContent());
 

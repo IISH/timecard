@@ -11,7 +11,7 @@ if ( !$oWebuser->hasAdminAuthorisation() ) {
 // create webpage
 $oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
-$oPage->setTab($menuList->findTabNumber('misc.not_linked_employees'));
+$oPage->setTab($menuList->findTabNumber('finad.not_linked_employees'));
 $oPage->setTitle('Timecard | Not Linked Employees');
 $oPage->setContent(createEmployeesContent());
 
@@ -48,25 +48,39 @@ function createEmployeesContent() {
 		));
 
 	$oView->add_field( new class_field_string ( array(
+		'fieldname' => 'LongCode'
+		, 'fieldlabel' => 'SA/2X login'
+		, 'href' => 'employees_edit.php?ID=[FLD:ID]&backurl=[BACKURL]'
+		, 'viewfilter' => array(
+				'labelfilterseparator' => '<br>'
+				, 'filter' => array (
+						array (
+							'fieldname' => 'LongCode'
+							, 'type' => 'string'
+							, 'size' => 10
+						)
+					)
+				)
+		)));
+
+	$oView->add_field( new class_field_string ( array(
 		'fieldname' => 'FIRSTNAME'
 		, 'fieldlabel' => 'First name'
 		, 'viewfilter' => array(
-							'labelfilterseparator' => '<br>'
-							, 'filter' => array (
-												array (
-													'fieldname' => 'FIRSTNAME'
-													, 'type' => 'string'
-													, 'size' => 10
-												)
-											)
-							)
+				'labelfilterseparator' => '<br>'
+				, 'filter' => array (
+						array (
+							'fieldname' => 'FIRSTNAME'
+							, 'type' => 'string'
+							, 'size' => 10
+						)
+					)
+				)
 		)));
 
 	$oView->add_field( new class_field_string ( array(
 		'fieldname' => 'NAME'
 		, 'fieldlabel' => 'Last name'
-		, 'if_no_value' => '-no value-'
-		, 'href' => 'employees_edit.php?ID=[FLD:ID]&backurl=[BACKURL]'
 		, 'viewfilter' => array(
 				'labelfilterseparator' => '<br>'
 				, 'filter' => array (

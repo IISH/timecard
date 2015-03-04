@@ -1,5 +1,5 @@
 <?php
-die('disabled by gcu');
+//die('disabled by gcu');
 
 require_once "../classes/start.inc.php";
 
@@ -38,7 +38,7 @@ while ( $row = mssql_fetch_array($result) ) {
 	}
 	mssql_free_result($resultFields);
 
-	$top = ' TOP 100 ';
+	$top = ' TOP 200 ';
 	$where = '';
 	$order = '';
 
@@ -48,8 +48,8 @@ while ( $row = mssql_fetch_array($result) ) {
 		if ( $where != '' ) {
 			$where .= ' AND ';
 		}
-		$where .= ' PERSNR=37 '; // gcu
-//		$where .= ' PERSNR=131 '; // mmi
+//		$where .= ' PERSNR=37 '; // gcu
+		$where .= ' PERSNR=131 '; // mmi
 //		$where .= ' PERSNR=106 ';  // ed kool
 //		$where .= ' PERSNR=130 ';  // gerben
 //		$where .= ' PERSNR=480 ';  // bas van leeuwen

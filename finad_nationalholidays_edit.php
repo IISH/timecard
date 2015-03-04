@@ -3,7 +3,7 @@ require_once "classes/start.inc.php";
 
 $oWebuser->checkLoggedIn();
 
-if ( !$oWebuser->hasAdminAuthorisation() ) {
+if ( !$oWebuser->hasAdminAuthorisation() && !$oWebuser->hasFaAuthorisation() ) {
 	echo "You are not authorized to access this page.<br>";
 	die('Go to <a href="index.php">time card home</a>');
 }
@@ -11,7 +11,7 @@ if ( !$oWebuser->hasAdminAuthorisation() ) {
 // create webpage
 $oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
-$oPage->setTab($menuList->findTabNumber('misc.feestdagen'));
+$oPage->setTab($menuList->findTabNumber('finad.feestdagen'));
 $oPage->setTitle('Timecard | National holidays (edit)');
 $oPage->setContent(createFeestdagenEditContent());
 

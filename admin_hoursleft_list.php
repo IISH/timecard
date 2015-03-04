@@ -69,13 +69,11 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 	$ret = '';
 
 	$year = trim($_GET["y"]);
-	$curyear = (int)date("Y");
 	if ( $year == '' ) {
 		$year = date("Y");
 	}
 
 	$month = trim($_GET["m"]);
-	$curmonth = (int)date("m");
 	if ( $month == '' ) {
 		$month = date("m");
 	}
@@ -103,7 +101,7 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 	}
 
 	if ( count($arrEmployees) > 0 ) {
-		$ret .= "<h2>Hours left " . $year . '-' . substr('0'.$month,-2) . " until end of year</h2>
+		$ret .= "
 <br>
 <table border=1>
 	<tr>

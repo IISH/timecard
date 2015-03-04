@@ -13,12 +13,15 @@ $menu->addMenuItem( new class_menuitem('timecard.quartertotals', 'Quarter Totals
 // + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
 
 // TAB: TIMECARD (ADMIN)
-$menu->addMenuGroup( new class_menugroup('Timecard (admin)') );
+$menu->addMenuGroup( new class_menugroup('Administrator') );
 if ( $oWebuser->hasAdminAuthorisation() ) {
 	$menu->addMenuItem( new class_menuitem('administrator.day', 'Day', 'admin_day.php?d={date}&eid={eid}') );
 	$menu->addMenuItem( new class_menuitem('administrator.month', 'Month', 'admin_month.php?d={date}&eid={eid}') );
 	$menu->addMenuItem( new class_menuitem('administrator.quarter', 'Quarter', 'admin_quarter.php?d={date}&eid={eid}') );
 	$menu->addMenuItem( new class_menuitem('administrator.quartertotals', 'Quarter Totals', 'admin_quartertotals.php?d={date}&eid={eid}') );
+	$menu->addMenuItem( new class_menuitem('administrator.protimeabsenties', 'Protime Absences', 'admin_protime_absences.php') );
+	$menu->addMenuItem( new class_menuitem('administrator.crontab', 'Crontab', 'crontab.php') );
+	$menu->addMenuItem( new class_menuitem('administrator.change_user', 'Switch user', 'switch_user.php') );
 }
 
 // + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
@@ -30,25 +33,11 @@ if ( $oWebuser->isProjectLeader() ) {
 	$menu->addMenuItem( new class_menuitem('pl.projects_year_pl', 'Year hours', 'projects-year-pl.php') );
 }
 if ( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasFaAuthorisation() ) {
-	$menu->addMenuItem( new class_menuitem('pl.projects_month_admin', 'Month hours (all)', 'projects-month-admin.php') );
-	$menu->addMenuItem( new class_menuitem('pl.projects_year_admin', 'Year hours (all)', 'projects-year-admin.php') );
+	$menu->addMenuItem( new class_menuitem('pl.projects_month_admin', 'Month hours (admin)', 'projects-month-admin.php') );
+	$menu->addMenuItem( new class_menuitem('pl.projects_year_admin', 'Year hours (admin)', 'projects-year-admin.php') );
 }
-// TODO: add department head
-if ( $oWebuser->hasAdminAuthorisation() ) {
-	$menu->addMenuItem( new class_menuitem('misc.hoursleft', 'Hours left', 'admin_hoursleft.php') );
-}
-
-// + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
-
-// TAB: MISC
-$menu->addMenuGroup( new class_menugroup('Miscellaneous') );
-if ( $oWebuser->hasAdminAuthorisation() ) {
-	$menu->addMenuItem( new class_menuitem('misc.departments', 'Departments', 'departments.php') );
-	$menu->addMenuItem( new class_menuitem('misc.protimeabsenties', 'Protime Absences', 'admin_protime_absences.php') );
-	$menu->addMenuItem( new class_menuitem('misc.urenperweek', 'Hours per week', 'admin_hoursperweek.php') );
-	$menu->addMenuItem( new class_menuitem('misc.not_linked_employees', 'Not Linked Employees', 'admin_not_linked_employees.php') );
-	$menu->addMenuItem( new class_menuitem('misc.crontab', 'Crontab', 'crontab.php') );
-	$menu->addMenuItem( new class_menuitem('misc.change_user', 'Switch user', 'switch_user.php') );
+if ( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasDepartmentAuthorisation() ) {
+	$menu->addMenuItem( new class_menuitem('pl.hoursleft', 'Hours for planning', 'admin_hoursleft.php') );
 }
 
 // + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
@@ -68,6 +57,8 @@ if ( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasFaAuthorisation() ) {
 	$menu->addMenuItem( new class_menuitem('finad.employees', 'Employees', 'employees.php') );
 	$menu->addMenuItem( new class_menuitem('finad.projects', 'Projects', 'projects.php') );
 	$menu->addMenuItem( new class_menuitem('finad.worklocations', 'Work locations', 'worklocations.php') );
+	$menu->addMenuItem( new class_menuitem('finad.not_linked_employees', 'Not Linked Employees', 'admin_not_linked_employees.php') );
+	$menu->addMenuItem( new class_menuitem('finad.feestdagen', 'National holidays', 'finad_nationalholidays.php') );
 }
 
 // + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +

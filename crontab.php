@@ -11,7 +11,7 @@ if ( !( $oWebuser->hasAdminAuthorisation() ) ) {
 // create webpage
 $oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
-$oPage->setTab($menuList->findTabNumber('misc.crontab'));
+$oPage->setTab($menuList->findTabNumber('administrator.crontab'));
 $oPage->setTitle('Timecard | Crontab');
 $oPage->setContent(createCrontabContent());
 

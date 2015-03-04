@@ -11,7 +11,7 @@ if ( !$oWebuser->hasAdminAuthorisation() ) {
 // create webpage
 $oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
-$oPage->setTab($menuList->findTabNumber('misc.protimeabsenties'));
+$oPage->setTab($menuList->findTabNumber('administrator.protimeabsenties'));
 $oPage->setTitle('Timecard | Absences (edit)');
 $oPage->setContent(createAbsencesContent());
 
