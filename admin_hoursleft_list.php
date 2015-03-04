@@ -107,6 +107,253 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 	<tr>
 		<th>Name</th>
 		<th>Hours&nbsp;per&nbsp;week</th>
+		<th>Year total</th>
+		<th>Year total </th>
+		<th colspan=3>January</th>
+		<th colspan=3>February</th>
+		<th colspan=3>March</th>
+		<th colspan=3 style=\"background-color:lightgrey\">Q1</th>
+		<th colspan=3>April</th>
+		<th colspan=3>May</th>
+		<th colspan=3>June</th>
+		<th colspan=3 style=\"background-color:lightgrey\">Q2</th>
+		<th colspan=3>July</th>
+		<th colspan=3>August</th>
+		<th colspan=3>September</th>
+		<th colspan=3 style=\"background-color:lightgrey\">Q3</th>
+		<th colspan=3>October</th>
+		<th colspan=3>November</th>
+		<th colspan=3>December</th>
+		<th colspan=3 style=\"background-color:lightgrey\">Q4</th>
+	</tr>
+";
+$ret .= "
+	<tr>
+		<td colspan=2>&nbsp;</td>
+		<td align=center>(100%)</td>
+		<td align=center>(" . (int)(class_settings::getSetting("percentage_rule")*100.0) . "%)</td>
+
+		<td align=center>{a}</td>
+		<td align=center>{b}</td>
+		<td align=center>{c}</td>
+
+		<td align=center>{a}</td>
+		<td align=center>{b}</td>
+		<td align=center>{c}</td>
+
+		<td align=center>{a}</td>
+		<td align=center>{b}</td>
+		<td align=center>{c}</td>
+
+		<td align=center style=\"background-color:lightgrey\">{a}</td>
+		<td align=center style=\"background-color:lightgrey\">{b}</td>
+		<td align=center style=\"background-color:lightgrey\">{c}</td>
+
+		<td align=center>{a}</td>
+		<td align=center>{b}</td>
+		<td align=center>{c}</td>
+
+		<td align=center>{a}</td>
+		<td align=center>{b}</td>
+		<td align=center>{c}</td>
+
+		<td align=center>{a}</td>
+		<td align=center>{b}</td>
+		<td align=center>{c}</td>
+
+		<td align=center style=\"background-color:lightgrey\">{a}</td>
+		<td align=center style=\"background-color:lightgrey\">{b}</td>
+		<td align=center style=\"background-color:lightgrey\">{c}</td>
+
+		<td align=center>{a}</td>
+		<td align=center>{b}</td>
+		<td align=center>{c}</td>
+
+		<td align=center>{a}</td>
+		<td align=center>{b}</td>
+		<td align=center>{c}</td>
+
+		<td align=center>{a}</td>
+		<td align=center>{b}</td>
+		<td align=center>{c}</td>
+
+		<td align=center style=\"background-color:lightgrey\">{a}</td>
+		<td align=center style=\"background-color:lightgrey\">{b}</td>
+		<td align=center style=\"background-color:lightgrey\">{c}</td>
+
+		<td align=center>{a}</td>
+		<td align=center>{b}</td>
+		<td align=center>{c}</td>
+
+		<td align=center>{a}</td>
+		<td align=center>{b}</td>
+		<td align=center>{c}</td>
+
+		<td align=center>{a}</td>
+		<td align=center>{b}</td>
+		<td align=center>{c}</td>
+
+		<td align=center style=\"background-color:lightgrey\">{a}</td>
+		<td align=center style=\"background-color:lightgrey\">{b}</td>
+		<td align=center style=\"background-color:lightgrey\">{c}</td>
+	</tr>
+";
+
+		$template = "
+	<tr>
+		<td valign=top width=\"200px\">{name}</td>
+		<td>{hours_per_week}</td>
+		<td align=right>{year_total_100_percent}</td>
+		<td align=right>{year_total_percentage_rule}</td>
+
+		<td align=right>{M1_1}</td>
+		<td align=right>{M1_2}</td>
+		<td align=right>{M1_3}</td>
+
+		<td align=right>{M2_1}</td>
+		<td align=right>{M2_2}</td>
+		<td align=right>{M2_3}</td>
+
+		<td align=right>{M3_1}</td>
+		<td align=right>{M3_2}</td>
+		<td align=right>{M3_3}</td>
+
+		<td align=right style=\"background-color:lightgrey\">{Q1_1}</td>
+		<td align=right style=\"background-color:lightgrey\">{Q1_2}</td>
+		<td align=right style=\"background-color:lightgrey\">{Q1_3}</td>
+
+		<td align=right>{M4_1}</td>
+		<td align=right>{M4_2}</td>
+		<td align=right>{M4_3}</td>
+
+		<td align=right>{M5_1}</td>
+		<td align=right>{M5_2}</td>
+		<td align=right>{M5_3}</td>
+
+		<td align=right>{M6_1}</td>
+		<td align=right>{M6_2}</td>
+		<td align=right>{M6_3}</td>
+
+		<td align=right style=\"background-color:lightgrey\">{Q2_1}</td>
+		<td align=right style=\"background-color:lightgrey\">{Q2_2}</td>
+		<td align=right style=\"background-color:lightgrey\">{Q2_3}</td>
+
+		<td align=right>{M7_1}</td>
+		<td align=right>{M7_2}</td>
+		<td align=right>{M7_3}</td>
+
+		<td align=right>{M8_1}</td>
+		<td align=right>{M8_2}</td>
+		<td align=right>{M8_3}</td>
+
+		<td align=right>{M9_1}</td>
+		<td align=right>{M9_2}</td>
+		<td align=right>{M9_3}</td>
+
+		<td align=right style=\"background-color:lightgrey\">{Q3_1}</td>
+		<td align=right style=\"background-color:lightgrey\">{Q3_2}</td>
+		<td align=right style=\"background-color:lightgrey\">{Q3_3}</td>
+
+		<td align=right>{M10_1}</td>
+		<td align=right>{M10_2}</td>
+		<td align=right>{M10_3}</td>
+
+		<td align=right>{M11_1}</td>
+		<td align=right>{M11_2}</td>
+		<td align=right>{M11_3}</td>
+
+		<td align=right>{M12_1}</td>
+		<td align=right>{M12_2}</td>
+		<td align=right>{M12_3}</td>
+
+		<td align=right style=\"background-color:lightgrey\">{Q4_1}</td>
+		<td align=right style=\"background-color:lightgrey\">{Q4_2}</td>
+		<td align=right style=\"background-color:lightgrey\">{Q4_3}</td>
+	</tr>
+";
+
+		for ( $i = 0; $i < count($arrEmployees); $i++ ) {
+			$oEmployee = $arrEmployees[$i];
+
+			$hoursForPlanning = new HoursForPlanning($oEmployee, 2015);
+
+
+			$tmp = $template;
+
+			// sterretje
+			$tmpDiv = "<div id=\"divAddRemove" . $oEmployee->getTimecardId() . "\" style=\"display:inline;\" >::ADDREMOVE::</div> ";
+			if ( strpos(',' . $favIds . ',', ',' . $oEmployee->getTimecardId() . ',') !== false ) {
+				$tmpDiv = str_replace('::ADDREMOVE::', '<a href="#" onClick="addRemove(' . $oEmployee->getTimecardId() . ', \'r\');" alt="Stop following this person" title="Stop following this person" class="nolink favourites_on">&#9733;</a>', $tmpDiv);
+			} else {
+				$tmpDiv = str_replace('::ADDREMOVE::', '<a href="#" onClick="addRemove(' . $oEmployee->getTimecardId() . ', \'a\');" alt="Start following this person" title="Start following this person" class="nolink favourites_off">&#9733;</a>', $tmpDiv);
+			}
+
+			// link name
+			$nameLink = "<a href=\"employees_edit.php?ID=" . $oEmployee->getTimecardId() . "&backurl=" . urlencode(get_current_url()) . "\">" . $oEmployee->getFirstname() . ' ' . verplaatsTussenvoegselNaarBegin($oEmployee->getLastname()) . "</a>";
+
+			//
+			$monthWorkTotals = array();
+			$monthAbsenceTotals = array();
+			$monthDifferenceTotals = array();
+			for ( $j = 1; $j <= 12; $j++ ) {
+				$monthWorkTotals["$j"] = $hoursForPlanning->getWorkValue("2015" . substr('0'.$j,-2));
+				$monthAbsenceTotals["$j"] = $hoursForPlanning->getAbsenceValue("2015" . substr('0'.$j,-2));
+				$difference = $monthWorkTotals["$j"] - $monthAbsenceTotals["$j"];
+				if ( $difference < 0 ) {
+//					$difference = 0;
+				}
+				$monthDifferenceTotals["$j"] = $difference;
+			}
+
+			$quarterWorkTotals = array();
+			$quarterAbsenceTotals = array();
+			$quarterDifferenceTotals = array();
+			for ( $q = 1; $q <= 4; $q++ ) {
+				$quarterWorkTotals["$q"] = $monthWorkTotals[((($q-1)*3)+1).""] + $monthWorkTotals[((($q-1)*3)+2).""] + $monthWorkTotals[((($q-1)*3)+3).""];
+				$quarterAbsenceTotals["$q"] = $monthAbsenceTotals[((($q-1)*3)+1).""] + $monthAbsenceTotals[((($q-1)*3)+2).""] + $monthAbsenceTotals[((($q-1)*3)+3).""];
+
+				$difference = $quarterWorkTotals["$q"] - $quarterAbsenceTotals["$q"];
+				if ( $difference < 0 ) {
+//					$difference = 0;
+				}
+				$quarterDifferenceTotals["$q"] = $difference;
+			}
+
+			$yearWorkTotal = $quarterWorkTotals["1"] + $quarterWorkTotals["2"] + $quarterWorkTotals["3"] + $quarterWorkTotals["4"];
+
+			// name link
+			$tmp = str_replace('{name}', $tmpDiv . $nameLink, $tmp);
+			// months
+			for ( $j = 1; $j <= 12; $j++ ) {
+				$tmp = str_replace('{M' . $j .'_1}', hoursLeft_formatNumber($monthWorkTotals["$j"]), $tmp);
+				$tmp = str_replace('{M' . $j .'_2}', hoursLeft_formatNumber($monthAbsenceTotals["$j"]), $tmp);
+				$tmp = str_replace('{M' . $j .'_3}', hoursLeft_formatNumber($monthDifferenceTotals["$j"]), $tmp);
+			}
+			// quarter
+			for ( $j = 1; $j <= 4; $j++ ) {
+				$tmp = str_replace('{Q' . $j .'_1}', hoursLeft_formatNumber($quarterWorkTotals["$j"]), $tmp);
+				$tmp = str_replace('{Q' . $j .'_2}', hoursLeft_formatNumber($quarterAbsenceTotals["$j"]), $tmp);
+				$tmp = str_replace('{Q' . $j .'_3}', hoursLeft_formatNumber($quarterDifferenceTotals["$j"]), $tmp);
+			}
+			// year
+			$tmp = str_replace('{year_total_100_percent}', hoursLeft_formatNumber($yearWorkTotal), $tmp);
+			$tmp = str_replace('{year_total_percentage_rule}', hoursLeft_formatNumber($yearWorkTotal * class_settings::getSetting("percentage_rule")), $tmp);
+
+			$ret .= $tmp;
+		}
+
+		$ret .= "\t</tr>\n";
+		$ret .= "</table>\n";
+	}
+
+
+	if ( count($arrEmployees) > 0 ) {
+		$ret .= "
+<br>
+<table border=1>
+	<tr>
+		<th>Name</th>
+		<th>Hours&nbsp;per&nbsp;week</th>
 		<th>Year total (100%)</th>
 		<th>Year total (" . (int)(class_settings::getSetting("percentage_rule")*100.0) . "%)</th>
 		<th>Until end of year total (100%)</th>
@@ -122,7 +369,7 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 		$oEmployee = $arrEmployees[$i];
 
 		$hoursPerWeekText = '';
-		$yearTotal = 0;
+		$yearWorkTotal = 0;
 		$endyearTotal = 0;
 		$natHoliday = 0;
 		$maxMeenemen = 0;
@@ -156,7 +403,7 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 				$separator = '<br>';
 
 				for ( $k = $startmonth; $k <= $endmonth; $k++ ) {
-					$yearTotal += ($hourspw * 4.333333333);
+					$yearWorkTotal += ($hourspw * 4.333333333);
 
 					if ( $k >= $month ) {
 						$endyearTotal += ($hourspw * 4.333333333);
@@ -179,12 +426,12 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 
 		// YEAR TOTAL
 		$ret .= "\t\t<td valign=top>\n";
-		$ret .= hoursLeft_formatNumber($yearTotal, 1);
+		$ret .= hoursLeft_formatNumber($yearWorkTotal, 1);
 		$ret .= "\t\t</td>\n";
 
 		// YEAR TOTAL 76
 		$ret .= "\t\t<td valign=top>\n";
-		$ret .= hoursLeft_formatNumber(1.0 * $yearTotal * class_settings::getSetting("percentage_rule"), 1);
+		$ret .= hoursLeft_formatNumber(1.0 * $yearWorkTotal * class_settings::getSetting("percentage_rule"), 1);
 		$ret .= "\t\t</td>\n";
 
 		// END YEAR TOTAL
@@ -225,7 +472,7 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 		$ret .= "\t\t</td>\n";
 
 		//
-		if ( $yearTotal > 0 ) {
+		if ( $yearWorkTotal > 0 ) {
 			$left = $endyearTotal - $vacationLeft - $natHoliday;
 		}
 
@@ -249,7 +496,7 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 }
 
 // TODOEXPLAIN
-function hoursLeft_formatNumber($value, $decimal) {
+function hoursLeft_formatNumber($value, $decimal = 1) {
 	$ret = '';
 
 	if ( $value != 0 ) {

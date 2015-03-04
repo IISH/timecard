@@ -1,5 +1,5 @@
 <?php
-//die('disabled by gcu');
+die('disabled by gcu');
 
 require_once "../classes/start.inc.php";
 
