@@ -15,6 +15,7 @@ class class_page {
 	private $title;
 	private $color;
 	private $left_menu;
+	private $cssextension;
 
 	// TODOEXPLAIN
 	function class_page($page_template, $settings) {
@@ -28,6 +29,7 @@ class class_page {
 		$this->title = '';
 		$this->color = '73A0C9';
 		$this->left_menu = '';
+		$this->cssextension = '';
 	}
 
 	// TODOEXPLAIN
@@ -46,6 +48,7 @@ class class_page {
 
 		$page = str_replace('{title}', $this->getTitle(), $page);
 		$page = str_replace('{color}', $this->getColor(), $page);
+		$page = str_replace('{cssextension}', $this->cssextension, $page);
 
 		if ( $this->left_menu == '' ) {
 			$page = str_replace('{extraleftmenuclass}', ' hidden', $page);
@@ -162,6 +165,11 @@ class class_page {
 	// TODOEXPLAIN
 	function setContent( $content ) {
 		$this->content = $content;
+	}
+
+	// TODOEXPLAIN
+	function setCssExtension( $css ) {
+		$this->cssextension = $css;
 	}
 
 	// TODOEXPLAIN

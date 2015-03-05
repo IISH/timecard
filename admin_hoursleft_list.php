@@ -102,8 +102,11 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 
 	if ( count($arrEmployees) > 0 ) {
 		$ret .= "
+
+<button onclick=\"hideMonths();\">Hide months</button>  &nbsp; <button onclick=\"showMonths();\">Show months</button>
+<!-- &nbsp; <button onclick=\"hidePastMonths();\">Hide past months</button> -->
 <br>
-<table border=1>
+<table border=1 id=\"tblHours\">
 	<tr>
 		<th>Name</th>
 		<th>Hours&nbsp;per&nbsp;week</th>
@@ -125,11 +128,15 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 		<th colspan=3>November</th>
 		<th colspan=3>December</th>
 		<th colspan=3 style=\"background-color:lightgrey\">Q4</th>
+		<th>Vacation left</th>
+		<th>Left (100%)</th>
+		<th>Left (80%)</th>
 	</tr>
 ";
 $ret .= "
 	<tr>
-		<td colspan=2>&nbsp;</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
 		<td align=center>(100%)</td>
 		<td align=center>(" . (int)(class_settings::getSetting("percentage_rule")*100.0) . "%)</td>
 
@@ -196,12 +203,14 @@ $ret .= "
 		<td align=center style=\"background-color:lightgrey\">{a}</td>
 		<td align=center style=\"background-color:lightgrey\">{b}</td>
 		<td align=center style=\"background-color:lightgrey\">{c}</td>
+
+		<td align=center colspan=3>&nbsp;</td>
 	</tr>
 ";
 
 		$template = "
 	<tr>
-		<td valign=top width=\"200px\">{name}</td>
+		<td valign=top xxxwidth=\"200px\"><nobr>{name}</nobr></td>
 		<td>{hours_per_week}</td>
 		<td align=right>{year_total_100_percent}</td>
 		<td align=right>{year_total_percentage_rule}</td>
@@ -269,6 +278,10 @@ $ret .= "
 		<td align=right style=\"background-color:lightgrey\">{Q4_1}</td>
 		<td align=right style=\"background-color:lightgrey\">{Q4_2}</td>
 		<td align=right style=\"background-color:lightgrey\">{Q4_3}</td>
+
+		<td align=right>{VL}</td>
+		<td align=right>{L100}</td>
+		<td align=right>{L80}</td>
 	</tr>
 ";
 
@@ -347,6 +360,7 @@ $ret .= "
 	}
 
 
+	// OUDE VERSIE
 	if ( count($arrEmployees) > 0 ) {
 		$ret .= "
 <br>

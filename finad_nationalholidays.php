@@ -3,6 +3,11 @@ require_once "classes/start.inc.php";
 
 $oWebuser->checkLoggedIn();
 
+if ( !$oWebuser->hasAdminAuthorisation() && !$oWebuser->hasFaAuthorisation() ) {
+	echo "You are not authorized to access this page.<br>";
+	die('Go to <a href="index.php">time card home</a>');
+}
+
 // create webpage
 $oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();

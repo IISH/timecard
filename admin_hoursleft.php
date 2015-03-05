@@ -16,6 +16,7 @@ $oPage->removeSidebar();
 $oPage->setTab($menuList->findTabNumber('pl.hoursleft'));
 $oPage->setTitle('Timecard | Hours for planning');
 $oPage->setContent(createHoursLeftContent() . createHoursLeftRemarks());
+$oPage->setCssExtension('_full');
 
 // show page
 echo $oPage->getPage();
@@ -110,6 +111,86 @@ function setSearchField(fldValue) {
 	document.getElementById('fldZoek').value = fldValue;
 	tcRefreshSearch();
 	return false;
+}
+
+function toggleMonths() {
+	// hide headers
+	start = 5;
+	for ( j = 1; j <= 4; j++ ) {
+		for ( i = start; i <= start+2; i++ ) {
+			$('#tblHours th:nth-child(' + i + ')').toggle();
+		}
+		start = start+4;
+	}
+
+	// hide months
+	start = 5;
+	for ( j = 1; j <= 4; j++ ) {
+		for ( i = start; i <= start+8; i++ ) {
+			$('#tblHours td:nth-child(' + i + ')').toggle();
+		}
+		start = start+12;
+	}
+}
+
+function hideMonths() {
+	// hide headers
+	start = 5;
+	for ( j = 1; j <= 4; j++ ) {
+		for ( i = start; i <= start+2; i++ ) {
+			$('#tblHours th:nth-child(' + i + ')').hide();
+		}
+		start = start+4;
+	}
+
+	// hide months
+	start = 5;
+	for ( j = 1; j <= 4; j++ ) {
+		for ( i = start; i <= start+8; i++ ) {
+			$('#tblHours td:nth-child(' + i + ')').hide();
+		}
+		start = start+12;
+	}
+}
+
+function hidePastMonths() {
+	// hide headers
+	start = 5;
+	for ( j = 1; j <= 4; j++ ) {
+		for ( i = start; i <= start+2; i++ ) {
+			$('#tblHours th:nth-child(' + i + ')').hide();
+		}
+		start = start+4;
+	}
+
+	// hide months
+	start = 5;
+	for ( j = 1; j <= 4; j++ ) {
+		for ( i = start; i <= start+8; i++ ) {
+			$('#tblHours td:nth-child(' + i + ')').hide();
+		}
+		start = start+12;
+	}
+}
+
+function showMonths() {
+	// hide headers
+	start = 5;
+	for ( j = 1; j <= 4; j++ ) {
+		for ( i = start; i <= start+2; i++ ) {
+			$('#tblHours th:nth-child(' + i + ')').show();
+		}
+		start = start+4;
+	}
+
+	// hide months
+	start = 5;
+	for ( j = 1; j <= 4; j++ ) {
+		for ( i = start; i <= start+8; i++ ) {
+			$('#tblHours td:nth-child(' + i + ')').show();
+		}
+		start = start+12;
+	}
 }
 // -->
 </script>

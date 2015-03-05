@@ -18,7 +18,7 @@
 </head>
 <body>
 
-<div class="main">
+<div class="main{cssextension}">
 
 	<div class="header">
 		<div class="welcome"><span><span class="name">{welcome}</span><span class="logout">{logout}</span></span></div>
@@ -34,7 +34,7 @@
 			<tr>
 				<td valign="top">
 
-					<div class="content content {extracontentclass}">
+					<div class="content content {extracontentclass}{cssextension}">
 						{content}
 					</div>
 
@@ -52,7 +52,7 @@
 
 	</div>
 
-	<div id="footer" class="footer">{url} - 4 March 2015</div>
+	<div id="footer" class="footer footerwidth{cssextension}">{url} - 5 March 2015</div>
 </div>
 
 <script language="Javascript">

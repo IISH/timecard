@@ -152,6 +152,12 @@ div.main {
 	margin-right: auto;
 }
 
+div.main_full {
+	width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
 div.mainiframe {
 }
 
@@ -257,6 +263,10 @@ div.contentfullwidth {
 	width: 945px;
 }
 
+div.contentfullwidth_full {
+	width: 100%;
+}
+
 div.contentfullwidth_admin {
 	width: 760px;
 }
@@ -313,7 +323,14 @@ div.footer {
 	background-color: <?php echo $c; ?>;
 	text-align: right;
 	border: 1px solid #AAAAAA;
+}
+
+div.footerwidth {
 	width: 960px;
+}
+
+div.footerwidth {
+	width: 100%;
 }
 
 #footer {
