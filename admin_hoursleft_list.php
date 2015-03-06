@@ -140,78 +140,90 @@ $ret .= "
 		<td align=center>(100%)</td>
 		<td align=center>(" . (int)(class_settings::getSetting("percentage_rule")*100.0) . "%)</td>
 
-		<td align=center>{a}</td>
-		<td align=center>{b}</td>
-		<td align=center>{c}</td>
+		<td align=center><a title=\"{a_title}\">{a}</a></td>
+		<td align=center><a title=\"{b_title}\">{b}</a></td>
+		<td align=center><a title=\"{c_title}\">{c}</a></td>
 
-		<td align=center>{a}</td>
-		<td align=center>{b}</td>
-		<td align=center>{c}</td>
+		<td align=center><a title=\"{a_title}\">{a}</a></td>
+		<td align=center><a title=\"{b_title}\">{b}</a></td>
+		<td align=center><a title=\"{c_title}\">{c}</a></td>
 
-		<td align=center>{a}</td>
-		<td align=center>{b}</td>
-		<td align=center>{c}</td>
+		<td align=center><a title=\"{a_title}\">{a}</a></td>
+		<td align=center><a title=\"{b_title}\">{b}</a></td>
+		<td align=center><a title=\"{c_title}\">{c}</a></td>
 
-		<td align=center style=\"background-color:lightgrey\">{a}</td>
-		<td align=center style=\"background-color:lightgrey\">{b}</td>
-		<td align=center style=\"background-color:lightgrey\">{c}</td>
+		<td align=center style=\"background-color:lightgrey\"><a title=\"{a_title}\">{a}</a></td>
+		<td align=center style=\"background-color:lightgrey\"><a title=\"{b_title}\">{b}</a></td>
+		<td align=center style=\"background-color:lightgrey\"><a title=\"{c_title}\">{c}</a></td>
 
-		<td align=center>{a}</td>
-		<td align=center>{b}</td>
-		<td align=center>{c}</td>
+		<td align=center><a title=\"{a_title}\">{a}</a></td>
+		<td align=center><a title=\"{b_title}\">{b}</a></td>
+		<td align=center><a title=\"{c_title}\">{c}</a></td>
 
-		<td align=center>{a}</td>
-		<td align=center>{b}</td>
-		<td align=center>{c}</td>
+		<td align=center><a title=\"{a_title}\">{a}</a></td>
+		<td align=center><a title=\"{b_title}\">{b}</a></td>
+		<td align=center><a title=\"{c_title}\">{c}</a></td>
 
-		<td align=center>{a}</td>
-		<td align=center>{b}</td>
-		<td align=center>{c}</td>
+		<td align=center><a title=\"{a_title}\">{a}</a></td>
+		<td align=center><a title=\"{b_title}\">{b}</a></td>
+		<td align=center><a title=\"{c_title}\">{c}</a></td>
 
-		<td align=center style=\"background-color:lightgrey\">{a}</td>
-		<td align=center style=\"background-color:lightgrey\">{b}</td>
-		<td align=center style=\"background-color:lightgrey\">{c}</td>
+		<td align=center style=\"background-color:lightgrey\"><a title=\"{a_title}\">{a}</a></td>
+		<td align=center style=\"background-color:lightgrey\"><a title=\"{b_title}\">{b}</a></td>
+		<td align=center style=\"background-color:lightgrey\"><a title=\"{c_title}\">{c}</a></td>
 
-		<td align=center>{a}</td>
-		<td align=center>{b}</td>
-		<td align=center>{c}</td>
+		<td align=center><a title=\"{a_title}\">{a}</a></td>
+		<td align=center><a title=\"{b_title}\">{b}</a></td>
+		<td align=center><a title=\"{c_title}\">{c}</a></td>
 
-		<td align=center>{a}</td>
-		<td align=center>{b}</td>
-		<td align=center>{c}</td>
+		<td align=center><a title=\"{a_title}\">{a}</a></td>
+		<td align=center><a title=\"{b_title}\">{b}</a></td>
+		<td align=center><a title=\"{c_title}\">{c}</a></td>
 
-		<td align=center>{a}</td>
-		<td align=center>{b}</td>
-		<td align=center>{c}</td>
+		<td align=center><a title=\"{a_title}\">{a}</a></td>
+		<td align=center><a title=\"{b_title}\">{b}</a></td>
+		<td align=center><a title=\"{c_title}\">{c}</a></td>
 
-		<td align=center style=\"background-color:lightgrey\">{a}</td>
-		<td align=center style=\"background-color:lightgrey\">{b}</td>
-		<td align=center style=\"background-color:lightgrey\">{c}</td>
+		<td align=center style=\"background-color:lightgrey\"><a title=\"{a_title}\">{a}</a></td>
+		<td align=center style=\"background-color:lightgrey\"><a title=\"{b_title}\">{b}</a></td>
+		<td align=center style=\"background-color:lightgrey\"><a title=\"{c_title}\">{c}</a></td>
 
-		<td align=center>{a}</td>
-		<td align=center>{b}</td>
-		<td align=center>{c}</td>
+		<td align=center><a title=\"{a_title}\">{a}</a></td>
+		<td align=center><a title=\"{b_title}\">{b}</a></td>
+		<td align=center><a title=\"{c_title}\">{c}</a></td>
 
-		<td align=center>{a}</td>
-		<td align=center>{b}</td>
-		<td align=center>{c}</td>
+		<td align=center><a title=\"{a_title}\">{a}</a></td>
+		<td align=center><a title=\"{b_title}\">{b}</a></td>
+		<td align=center><a title=\"{c_title}\">{c}</a></td>
 
-		<td align=center>{a}</td>
-		<td align=center>{b}</td>
-		<td align=center>{c}</td>
+		<td align=center><a title=\"{a_title}\">{a}</a></td>
+		<td align=center><a title=\"{b_title}\">{b}</a></td>
+		<td align=center><a title=\"{c_title}\">{c}</a></td>
 
-		<td align=center style=\"background-color:lightgrey\">{a}</td>
-		<td align=center style=\"background-color:lightgrey\">{b}</td>
-		<td align=center style=\"background-color:lightgrey\">{c}</td>
+		<td align=center style=\"background-color:lightgrey\"><a title=\"{a_title}\">{a}</a></td>
+		<td align=center style=\"background-color:lightgrey\"><a title=\"{b_title}\">{b}</a></td>
+		<td align=center style=\"background-color:lightgrey\"><a title=\"{c_title}\">{c}</a></td>
 
 		<td align=center colspan=3>&nbsp;</td>
 	</tr>
 ";
 
+		//
+		$ret = str_replace('{a}', 'TH', $ret);
+		$ret = str_replace('{a_title}', 'Total Hours', $ret);
+
+		$ret = str_replace('{b}', 'B', $ret);
+		$ret = str_replace('{b_title}', 'Already booked', $ret);
+
+		$ret = str_replace('{c}', 'P', $ret);
+		$ret = str_replace('{c_title}', 'Projects', $ret);
+
+		// + + + + + + +
+
 		$template = "
 	<tr>
 		<td valign=top xxxwidth=\"200px\"><nobr>{name}</nobr></td>
-		<td>{hours_per_week}</td>
+		<td align=right><a xxxalt=\"{hours_per_week_text}\" title=\"{hours_per_week_text}\">{hours_per_week}</a></td>
 		<td align=right>{year_total_100_percent}</td>
 		<td align=right>{year_total_percentage_rule}</td>
 
@@ -333,6 +345,15 @@ $ret .= "
 			}
 
 			$yearWorkTotal = $quarterWorkTotals["1"] + $quarterWorkTotals["2"] + $quarterWorkTotals["3"] + $quarterWorkTotals["4"];
+
+			// hours per week
+			$oHoursPerWeek = $oEmployee->getHoursPerWeek3($year);
+
+			// + + + + + + + + + + + + + + + + + + +
+			// add values to template
+
+			$tmp = str_replace('{hours_per_week}', hoursLeft_formatNumber($oHoursPerWeek->getHoursPerWeek()), $tmp);
+			$tmp = str_replace('{hours_per_week_text}', $oHoursPerWeek->getHoursPerWeekText(), $tmp);
 
 			// name link
 			$tmp = str_replace('{name}', $tmpDiv . $nameLink, $tmp);

@@ -384,6 +384,25 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 		return $arr;
 	}
 
+	function getHoursPerWeek3($year) {
+/*		$oConn = new class_mysql($this->databases['default']);
+		$oConn->connect();
+
+		$arr = array();
+
+		// reset values
+		$query = "SELECT ID FROM HoursPerWeek WHERE year=" . $year . " AND Employee=" . $this->getTimecardId() . " AND isdeleted=0 ORDER BY startmonth ";
+		$result = mysql_query($query, $oConn->getConnection());
+		while ($row = mysql_fetch_assoc($result)) {
+			$oHoursPerWeek = new class_hoursperweek($row["ID"], $this->settings);
+			$arr[] = $oHoursPerWeek;
+		}
+		mysql_free_result($result);
+*/
+		$oHoursPerWeek = new class_employee_hours_per_week($this, date("Y"));
+		return $oHoursPerWeek;
+	}
+
 	function getVacationHours() {
 		$ret = array();
 

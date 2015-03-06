@@ -12,6 +12,7 @@ require_once dirname(__FILE__) . "/class_date.inc.php";
 require_once dirname(__FILE__) . "/class_date_static.inc.php";
 require_once dirname(__FILE__) . "/class_datetime.inc.php";
 require_once dirname(__FILE__) . "/class_employee.inc.php";
+require_once dirname(__FILE__) . "/class_employee_hours_per_week.inc.php";
 require_once dirname(__FILE__) . "/class_feestdag.inc.php";
 require_once dirname(__FILE__) . "/class_feestdagen.inc.php";
 require_once dirname(__FILE__) . "/class_hours_for_planning.inc.php";
