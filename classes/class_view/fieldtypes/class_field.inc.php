@@ -1,6 +1,4 @@
 <?php 
-// modified: 2009-02-19
-
 require_once("./classes/class_misc.inc.php");
 
 class class_field {

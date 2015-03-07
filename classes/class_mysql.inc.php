@@ -1,6 +1,4 @@
 <?php
-// modified: 2014-10-03
-
 class class_mysql {
 	private $server;
 	private $user;

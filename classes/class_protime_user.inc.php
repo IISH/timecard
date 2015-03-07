@@ -1,6 +1,4 @@
 <?php 
-// modified: 2013-09-24
-
 class class_protime_user {
 	private $protime_id = 0;
 	private $settings;

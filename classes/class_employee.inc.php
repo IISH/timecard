@@ -1,6 +1,4 @@
 <?php 
-// modified: 2014-06-03
-
 require_once dirname(__FILE__) . "/../sites/default/settings.php";
 require_once "class_mysql.inc.php";
 
@@ -385,21 +383,11 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 	}
 
 	function getHoursPerWeek3($year) {
-/*		$oConn = new class_mysql($this->databases['default']);
-		$oConn->connect();
-
-		$arr = array();
-
-		// reset values
-		$query = "SELECT ID FROM HoursPerWeek WHERE year=" . $year . " AND Employee=" . $this->getTimecardId() . " AND isdeleted=0 ORDER BY startmonth ";
-		$result = mysql_query($query, $oConn->getConnection());
-		while ($row = mysql_fetch_assoc($result)) {
-			$oHoursPerWeek = new class_hoursperweek($row["ID"], $this->settings);
-			$arr[] = $oHoursPerWeek;
+		$oHoursPerWeek = new class_employee_hours_per_week($this, $year);
+		if ( date(class_settings::getSetting("timeStampRefreshLowPriority")) > $oHoursPerWeek->getLastRefresh() ) {
+			$oHoursPerWeek->refresh();
 		}
-		mysql_free_result($result);
-*/
-		$oHoursPerWeek = new class_employee_hours_per_week($this, date("Y"));
+
 		return $oHoursPerWeek;
 	}
 
@@ -859,6 +847,34 @@ SELECT ID
 FROM `Employees`
 WHERE `isdisabled`=0
 AND `ProtimePersNr`>0
+";
+
+		$oConn = new class_mysql($databases['default']);
+		$oConn->connect();
+
+		$result = mysql_query($query, $oConn->getConnection());
+
+		while ($row = mysql_fetch_assoc($result)) {
+			$ret[] = new class_employee($row["ID"], $settings);
+		}
+		mysql_free_result($result);
+
+		return $ret;
+	}
+
+	public static function getListOfAllHoursLeftEmployees() {
+		global $settings, $databases;
+
+		$ret = array();
+
+		$query = "
+SELECT ProtimeID AS ID
+FROM `Employees` INNER JOIN EmployeeFavourites
+	ON Employees.ID  = EmployeeFavourites.ProtimeID
+WHERE `isdisabled`=0
+	AND `ProtimePersNr`>0
+	AND type = 'hoursleft'
+GROUP BY ProtimeID
 ";
 
 		$oConn = new class_mysql($databases['default']);

@@ -1,6 +1,4 @@
 <?php 
-// modified: 2012-12-02
-
 require_once dirname(__FILE__) . "/class_file.inc.php";
 require_once dirname(__FILE__) . "/class_misc.inc.php";
 

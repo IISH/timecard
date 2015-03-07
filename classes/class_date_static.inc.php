@@ -1,6 +1,4 @@
 <?php
-// modified: 2014-09-19
-
 class class_date_static {
 	public static function previousWeekMonday( $date = '' ) {
 		if ( $date == '' ) {

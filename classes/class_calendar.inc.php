@@ -1,6 +1,4 @@
 <?php 
-// modified: 2013-02-08
-
 class class_calendar {
 
 	// TODOEXPLAIN

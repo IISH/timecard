@@ -1,6 +1,4 @@
 <?php
-// modified: 2012-11-29
-
 class class_website_protection {
 	// construct
 	function class_website_protection() {

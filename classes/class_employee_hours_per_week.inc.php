@@ -1,5 +1,4 @@
 <?php
-// modified: 2014-06-03
 
 require_once dirname(__FILE__) . "/../sites/default/settings.php";
 require_once "class_mysql.inc.php";
@@ -8,33 +7,19 @@ class class_employee_hours_per_week {
 	private $oEmployee;
 	private $databases;
 	private $year;
-	private $protime_id = 0;
-	private $hoursdoublefield = '';
-	private $is_disabled = 0;
-	private $lastname = '';
-	private $firstname = '';
-	private $hoursperweek = 0;
-	private $daysperweek = 0;
-	private $authorisation = array();
-	private $show_jira_field = false;
-	private $allow_additions_starting_date = '';
-	private $projects = array();
-	private $hours_per_week = 666;
-	private $hours_per_week_text = 'xxx';
+	private $hours_per_week;
+	private $hours_per_week_text;
+	private $last_refresh;
 
 	// TODOEXPLAIN
 	function class_employee_hours_per_week($oEmployee, $year) {
 		global $databases;
 
-//		if ( $timecard_id == '' || $timecard_id < -1 ) {
-//			$timecard_id = 0;
-//		}
-
 		$this->oEmployee = $oEmployee;
 		$this->year = $year;
 		$this->databases = $databases;
 
-		$this->initValues();
+		$this->initValues( true );
 	}
 
 	public function getHoursPerWeek() {
@@ -45,7 +30,41 @@ class class_employee_hours_per_week {
 		return $this->hours_per_week_text;
 	}
 
-	private function initValues() {
+	public function getLastRefresh() {
+		return $this->last_refresh;
+	}
 
+	private function initValues( $recursive = false ) {
+		$oConn = new class_mysql($this->databases['default']);
+		$oConn->connect();
+
+		$isRecordFound = false;
+
+		$query = "SELECT * FROM Employee_Hours_Per_Week WHERE EmployeeID={$this->oEmployee->getTimecardId()} AND year={$this->year}";
+
+		$result = mysql_query($query, $oConn->getConnection());
+		if ($row = mysql_fetch_assoc($result)) {
+			$this->hours_per_week = $row['hours_per_week'];
+			$this->hours_per_week_text = $row['hours_per_week_text'];
+			$this->last_refresh = $row['last_refresh'];
+
+			$isRecordFound = true;
+		}
+
+		if ( $recursive && !$isRecordFound || date(class_settings::getSetting("timeStampRefreshLowPriority")) != $this->last_refresh ) {
+			$oRefresh = new class_refresh_employee_hours_per_week($this->oEmployee, 2015);
+			$oRefresh->refresh( false );
+
+			//
+			$this->initValues( false );
+		}
+	}
+
+	public function refresh() {
+		$oRefresh = new class_refresh_employee_hours_per_week($this->oEmployee, 2015);
+		$oRefresh->refresh( false );
+
+		//
+		$this->initValues( false );
 	}
 }

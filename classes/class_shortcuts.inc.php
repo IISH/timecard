@@ -1,6 +1,4 @@
 <?php 
-// modified: 2012-12-02
-
 require_once dirname(__FILE__) . "/../sites/default/settings.php";
 require_once "class_mysql.inc.php";
 require_once "class_date.inc.php";

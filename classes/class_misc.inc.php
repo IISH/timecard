@@ -1,6 +1,4 @@
 <?php 
-// modified: 2013-01-02
-
 class class_misc {
 
 	function class_misc() {

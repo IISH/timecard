@@ -1,6 +1,4 @@
 <?php 
-// modified: 2014-03-19
-
 class class_prevnext {
 	private $date;
 

@@ -1,7 +1,4 @@
 <?php
-ini_set("display_errors", 1);
-error_reporting(E_ALL ^ E_NOTICE);
-
 require_once dirname(__FILE__) . "/../sites/default/settings.php";
 require_once "class_mysql.inc.php";
 require_once "class_feestdag.inc.php";

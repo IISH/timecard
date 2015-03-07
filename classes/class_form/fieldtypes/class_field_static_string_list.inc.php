@@ -1,6 +1,4 @@
 <?php 
-// modified: 2009-06-29
-
 require_once("./classes/class_form/fieldtypes/class_field.inc.php");
 
 class class_field_static_string_list extends class_field {

@@ -2,6 +2,21 @@
 require_once dirname(__FILE__) . "/class_calendar.inc.php";
 
 // TODOEXPLAIN
+function hoursLeft_formatNumber($value, $decimal = 1, $show_zero = false) {
+	$ret = '';
+
+	if ( $value = '' ) {
+		$value = 0;
+	}
+
+	if ( $value != 0 || $show_zero ) {
+		$ret = number_format($value, $decimal, ',', '.');
+	}
+
+	return $ret;
+}
+
+// TODOEXPLAIN
 function fixCharErrors( $text ) {
 	$text = str_replace("Ã«", "&euml;", $text);
 	$text = str_replace("ë", "&euml;", $text);

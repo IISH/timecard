@@ -1,6 +1,4 @@
 <?php 
-// modified: 2012-12-27
-
 class class_hoursperweek {
 	private $databases;
 	private $hours;

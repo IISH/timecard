@@ -24,6 +24,7 @@ require_once dirname(__FILE__) . "/class_prevnext.inc.php";
 require_once dirname(__FILE__) . "/class_protime_user.inc.php";
 require_once dirname(__FILE__) . "/class_protime_worklocation.inc.php";
 require_once dirname(__FILE__) . "/class_recentlyused.inc.php";
+require_once dirname(__FILE__) . "/class_refresh_employee_hours_per_week.inc.php";
 require_once dirname(__FILE__) . "/class_shortcuts.inc.php";
 require_once dirname(__FILE__) . "/class_syncprotimemysql.inc.php";
 require_once dirname(__FILE__) . "/class_tcdatetime.inc.php";

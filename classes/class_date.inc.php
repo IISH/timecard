@@ -1,6 +1,4 @@
 <?php 
-// modified: 2013-06-02
-
 class class_date {
 	private $date;
 

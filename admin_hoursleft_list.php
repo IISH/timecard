@@ -216,7 +216,7 @@ $ret .= "
 		$ret = str_replace('{b_title}', 'Already booked', $ret);
 
 		$ret = str_replace('{c}', 'P', $ret);
-		$ret = str_replace('{c_title}', 'Projects', $ret);
+		$ret = str_replace('{c_title}', 'Free for projects', $ret);
 
 		// + + + + + + +
 
@@ -525,17 +525,6 @@ $ret .= "
 	}
 	$ret .= "</table>\n";
 
-	}
-
-	return $ret;
-}
-
-// TODOEXPLAIN
-function hoursLeft_formatNumber($value, $decimal = 1) {
-	$ret = '';
-
-	if ( $value != 0 ) {
-		$ret = number_format($value, $decimal, ',', '.');
 	}
 
 	return $ret;
