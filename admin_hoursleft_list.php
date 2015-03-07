@@ -213,7 +213,7 @@ $ret .= "
 		$ret = str_replace('{a_title}', 'Total Hours', $ret);
 
 		$ret = str_replace('{b}', 'B', $ret);
-		$ret = str_replace('{b_title}', 'Already booked', $ret);
+		$ret = str_replace('{b_title}', "Already booked\n- national holidays\n- brugdagen", $ret);
 
 		$ret = str_replace('{c}', 'P', $ret);
 		$ret = str_replace('{c_title}', 'Free for projects', $ret);
@@ -241,7 +241,7 @@ $ret .= "
 
 		<td align=right style=\"background-color:lightgrey\">{Q1_1}</td>
 		<td align=right style=\"background-color:lightgrey\">{Q1_2}</td>
-		<td align=right style=\"background-color:lightgrey\">{Q1_3}</td>
+		<td align=right style=\"background-color:{Q1_3_color}\">{Q1_3}</td>
 
 		<td align=right>{M4_1}</td>
 		<td align=right>{M4_2}</td>
@@ -257,7 +257,7 @@ $ret .= "
 
 		<td align=right style=\"background-color:lightgrey\">{Q2_1}</td>
 		<td align=right style=\"background-color:lightgrey\">{Q2_2}</td>
-		<td align=right style=\"background-color:lightgrey\">{Q2_3}</td>
+		<td align=right style=\"background-color:{Q2_3_color}\">{Q2_3}</td>
 
 		<td align=right>{M7_1}</td>
 		<td align=right>{M7_2}</td>
@@ -273,7 +273,7 @@ $ret .= "
 
 		<td align=right style=\"background-color:lightgrey\">{Q3_1}</td>
 		<td align=right style=\"background-color:lightgrey\">{Q3_2}</td>
-		<td align=right style=\"background-color:lightgrey\">{Q3_3}</td>
+		<td align=right style=\"background-color:{Q3_3_color}\">{Q3_3}</td>
 
 		<td align=right>{M10_1}</td>
 		<td align=right>{M10_2}</td>
@@ -289,7 +289,7 @@ $ret .= "
 
 		<td align=right style=\"background-color:lightgrey\">{Q4_1}</td>
 		<td align=right style=\"background-color:lightgrey\">{Q4_2}</td>
-		<td align=right style=\"background-color:lightgrey\">{Q4_3}</td>
+		<td align=right style=\"background-color:{Q4_3_color}\">{Q4_3}</td>
 
 		<td align=right>{VL}</td>
 		<td align=right>{L100}</td>
@@ -300,7 +300,7 @@ $ret .= "
 		for ( $i = 0; $i < count($arrEmployees); $i++ ) {
 			$oEmployee = $arrEmployees[$i];
 
-			$hoursForPlanning = new HoursForPlanning($oEmployee, 2015);
+			$hoursForPlanning = new class_employee_hours_for_planning( $oEmployee, date("Y") );
 
 
 			$tmp = $template;
@@ -314,15 +314,15 @@ $ret .= "
 			}
 
 			// link name
-			$nameLink = "<a href=\"employees_edit.php?ID=" . $oEmployee->getTimecardId() . "&backurl=" . urlencode(get_current_url()) . "\">" . $oEmployee->getFirstname() . ' ' . verplaatsTussenvoegselNaarBegin($oEmployee->getLastname()) . "</a>";
+			$nameLink = "<a href=\"employees_edit.php?ID=" . $oEmployee->getTimecardId() . "&backurl=" . urlencode(get_current_url()) . "\">" . $oEmployee->getFirstname() . ' ' . verplaatsTussenvoegselNaarBegin( $oEmployee->getLastname() ) . "</a>";
 
 			//
 			$monthWorkTotals = array();
 			$monthAbsenceTotals = array();
 			$monthDifferenceTotals = array();
 			for ( $j = 1; $j <= 12; $j++ ) {
-				$monthWorkTotals["$j"] = $hoursForPlanning->getWorkValue("2015" . substr('0'.$j,-2));
-				$monthAbsenceTotals["$j"] = $hoursForPlanning->getAbsenceValue("2015" . substr('0'.$j,-2));
+				$monthWorkTotals["$j"] = $hoursForPlanning->getWorkValue(date("Y") . '-' . substr('0'.$j,-2));
+				$monthAbsenceTotals["$j"] = $hoursForPlanning->getNationalHolidayValue(date("Y") . '-' . substr('0'.$j,-2)) + $hoursForPlanning->getBrugdagValue(date("Y") . '-' . substr('0'.$j,-2));
 				$difference = $monthWorkTotals["$j"] - $monthAbsenceTotals["$j"];
 				if ( $difference < 0 ) {
 //					$difference = 0;
@@ -352,7 +352,7 @@ $ret .= "
 			// + + + + + + + + + + + + + + + + + + +
 			// add values to template
 
-			$tmp = str_replace('{hours_per_week}', hoursLeft_formatNumber($oHoursPerWeek->getHoursPerWeek()), $tmp);
+			$tmp = str_replace('{hours_per_week}', hoursLeft_formatNumber( $oHoursPerWeek->getHoursPerWeek() ), $tmp);
 			$tmp = str_replace('{hours_per_week_text}', $oHoursPerWeek->getHoursPerWeekText(), $tmp);
 
 			// name link
@@ -368,6 +368,11 @@ $ret .= "
 				$tmp = str_replace('{Q' . $j .'_1}', hoursLeft_formatNumber($quarterWorkTotals["$j"]), $tmp);
 				$tmp = str_replace('{Q' . $j .'_2}', hoursLeft_formatNumber($quarterAbsenceTotals["$j"]), $tmp);
 				$tmp = str_replace('{Q' . $j .'_3}', hoursLeft_formatNumber($quarterDifferenceTotals["$j"]), $tmp);
+				if ( $quarterDifferenceTotals["$j"] < 0 ) {
+					$tmp = str_replace('{Q' . $j .'_3_color}', 'yellow', $tmp);
+				} else {
+					$tmp = str_replace('{Q' . $j .'_3_color}', 'lightgrey', $tmp);
+				}
 			}
 			// year
 			$tmp = str_replace('{year_total_100_percent}', hoursLeft_formatNumber($yearWorkTotal), $tmp);
@@ -423,7 +428,7 @@ $ret .= "
 
 		$ret .= $tmp;
 
-		$ret .= "<a href=\"employees_edit.php?ID=" . $oEmployee->getTimecardId() . "&backurl=" . urlencode(get_current_url()) . "\">" . $oEmployee->getFirstname() . ' ' . verplaatsTussenvoegselNaarBegin($oEmployee->getLastname()) . "</a>";
+		$ret .= "<a href=\"employees_edit.php?ID=" . $oEmployee->getTimecardId() . "&backurl=" . urlencode(get_current_url()) . "\">" . $oEmployee->getFirstname() . ' ' . verplaatsTussenvoegselNaarBegin( $oEmployee->getLastname() ) . "</a>";
 		$ret .= "\t\t</td>\n";
 
 		$arrHoursPerWeek = $oEmployee->getHoursPerWeek2($year);

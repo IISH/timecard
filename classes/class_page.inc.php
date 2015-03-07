@@ -78,8 +78,8 @@ class class_page {
 		$welcome = 'Welcome';
 		$logout = '';
 		if ( $oWebuser->isLoggedIn() ) {
-			if ( trim($oWebuser->getFirstLastname()) != '' ) {
-				$welcome .= ', ' . trim($oWebuser->getFirstLastname());
+			if ( trim( $oWebuser->getFirstLastname() ) != '' ) {
+				$welcome .= ', ' . trim( $oWebuser->getFirstLastname() );
 			}
 			$logout = '<a href="logout.php" onclick="if (!confirm(\'Please confirm logout\')) return false;">(logout)</a>';
 		}

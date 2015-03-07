@@ -19,7 +19,7 @@ $oPage->removeSidebar();
 $oPage->setTab($menuList->findTabNumber('administrator.quarter'));
 $oPage->setTitle('Timecard | Admin Quarter');
 $oPage->setContent(createAdminQuarterContent( $date ));
-$oPage->setLeftMenu( getEmployeesRibbon($oEmployee, $date["y"]) );
+$oPage->setLeftMenu( getEmployeesRibbon( $oEmployee, $date["y"] ) );
 
 // show page
 echo $oPage->getPage();

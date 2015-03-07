@@ -12,7 +12,7 @@ class class_employee_hours_per_week {
 	private $last_refresh;
 
 	// TODOEXPLAIN
-	function class_employee_hours_per_week($oEmployee, $year) {
+	function class_employee_hours_per_week( $oEmployee, $year ) {
 		global $databases;
 
 		$this->oEmployee = $oEmployee;
@@ -51,8 +51,8 @@ class class_employee_hours_per_week {
 			$isRecordFound = true;
 		}
 
-		if ( $recursive && !$isRecordFound || date(class_settings::getSetting("timeStampRefreshLowPriority")) != $this->last_refresh ) {
-			$oRefresh = new class_refresh_employee_hours_per_week($this->oEmployee, 2015);
+		if ( $recursive && ( !$isRecordFound || date(class_settings::getSetting("timeStampRefreshLowPriority")) != $this->last_refresh ) ) {
+			$oRefresh = new class_refresh_employee_hours_per_week($this->oEmployee, $this->year);
 			$oRefresh->refresh( false );
 
 			//
@@ -61,7 +61,7 @@ class class_employee_hours_per_week {
 	}
 
 	public function refresh() {
-		$oRefresh = new class_refresh_employee_hours_per_week($this->oEmployee, 2015);
+		$oRefresh = new class_refresh_employee_hours_per_week($this->oEmployee, $this->year);
 		$oRefresh->refresh( false );
 
 		//

@@ -5,7 +5,7 @@ require_once dirname(__FILE__) . "/class_calendar.inc.php";
 function hoursLeft_formatNumber($value, $decimal = 1, $show_zero = false) {
 	$ret = '';
 
-	if ( $value = '' ) {
+	if ( $value == '' ) {
 		$value = 0;
 	}
 

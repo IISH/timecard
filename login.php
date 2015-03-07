@@ -55,7 +55,7 @@ function createLoginPage() {
 				$oWebuser = new class_employee($persinfo["id"], $settings);
 
 				// update wanneer gebruiker voor het laatst is ingelogd op timecard
-				updateLastUserLogin($oWebuser->getTimecardId());
+				updateLastUserLogin( $oWebuser->getTimecardId() );
 
 				// redirect to prev page
 				if ( $burl == '' ) {

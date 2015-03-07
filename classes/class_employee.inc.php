@@ -1,4 +1,4 @@
-<?php 
+<?php
 require_once dirname(__FILE__) . "/../sites/default/settings.php";
 require_once "class_mysql.inc.php";
 
@@ -121,17 +121,17 @@ class class_employee {
 	}
 
 	// TODOEXPLAIN
-	function getId() {
+	public function getId() {
 		return $this->getTimecardId();
 	}
 
 	// TODOEXPLAIN
-	function getTimecardId() {
+	public function getTimecardId() {
 		return $this->timecard_id;
 	}
 
 	// TODOEXPLAIN
-	function getProtimeId() {
+	public function getProtimeId() {
 		return $this->protime_id;
 	}
 
@@ -570,7 +570,7 @@ ORDER BY Workcodes.Description
 	}
 
 	// TODOEXPLAIN
-	function getEnabledDailyAdditions($oDate) {
+	function getEnabledDailyAdditions( $oDate ) {
 		$arr = array();
 
 		$oConn = new class_mysql($this->databases['default']);
@@ -641,7 +641,7 @@ ORDER BY Workcodes.Description
 	}
 
 	// TODOEXPLAIN
-	function syncTimecardProtimeDayInformation($oDate) {
+	function syncTimecardProtimeDayInformation( $oDate ) {
 		$timecard_id = $this->timecard_id;
 		$protime_id = $this->protime_id;
 
@@ -662,11 +662,11 @@ ORDER BY Workcodes.Description
 		// add 'daily automatic additions'
 		$protimeDayData = $this->getProtimeDayTotal( array( 'y' => $oDate->get("Y"), 'm' => $oDate->get("m"), 'd' => $oDate->get("d")) );
 		$arrProtimeDayData = array( $oDate->get("Ymd") => $protimeDayData );
-		$this->addDailyAutomaticAdditions($oDate, $arrProtimeDayData);
+		$this->addDailyAutomaticAdditions( $oDate, $arrProtimeDayData );
 	}
 
 	// TODOEXPLAIN
-	function syncTimecardProtimeMonthInformation($oDate) {
+	function syncTimecardProtimeMonthInformation( $oDate ) {
 		$timecard_id = $this->timecard_id;
 		$protime_id = $this->protime_id;
 
@@ -691,13 +691,13 @@ ORDER BY Workcodes.Description
 		$protimeMonthData = $this->getProtimeDayTotalGroupedByDay( array( 'y' => $oDate->get("Y"), 'm' => $oDate->get("m"), 'd' => $oDate->get("d")) );
 		for ( $i = 1; $i <= date("t", mktime(0, 0, 0, (int)( $oDate->get("m") ), (int)( $oDate->get("d") ), (int)( $oDate->get("Y") ) )); $i++ ) {
 			$oDate2 = new class_date( $oDate->get("y"), $oDate->get("m"), $i );
-			$this->addDailyAutomaticAdditions($oDate2, $protimeMonthData);
+			$this->addDailyAutomaticAdditions( $oDate2, $protimeMonthData );
 		}
 	}
 
 	// TODOEXPLAIN
 	// add 'daily automatic additions'
-	function addDailyAutomaticAdditions($oDate, $protimeMonthData) {
+	function addDailyAutomaticAdditions( $oDate, $protimeMonthData ) {
 		// don't do if legacy, or date in the future
 		//if ( $oDate->get("Y-m") < class_settings::getSetting("oldest_modifiable_daa_month") || $oDate->get("Y-m-d") >= date("Y-m-d") ) {
 		if ( class_datetime::is_legacy( $oDate ) || $oDate->get("Y-m-d") >= date("Y-m-d") ) {
@@ -733,7 +733,7 @@ ORDER BY Workcodes.Description
 		$arrFlexible = array();
 
 		// get list of enabled DAA
-		$arrEnabledDAA = $this->getEnabledDailyAdditions($oDate);
+		$arrEnabledDAA = $this->getEnabledDailyAdditions( $oDate );
 
 		// if no DAA then do nothing
 		if ( count($arrEnabledDAA) == 0 ) {

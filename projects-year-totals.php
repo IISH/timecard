@@ -91,7 +91,7 @@ function createProjectContent() {
 	$total = 0.0;
 
 	// get list of project workhours for specified period
-	$workhours = class_workhours_static::getWorkhoursPerEmployeeGroupedMonth($oProject->getId(), $year);
+	$workhours = class_workhours_static::getWorkhoursPerEmployeeGroupedMonth( $oProject->getId(), $year );
 
 	// name / hours
 	foreach ($workhours as $p) {

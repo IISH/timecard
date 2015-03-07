@@ -64,7 +64,7 @@ foreach ( $projects as $one_project ) {
 	}
 
 	$c = 1;
-	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(fixCol($c), $r, $one_project[0] . getProjectName($one_project[1], $oConn->getConnection()));
+	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(fixCol($c), $r, $one_project[0] . getProjectName( $one_project[1], $oConn->getConnection() ) );
 	if ( $one_project[3] >= 0 ) {
 		$objPHPExcel->getActiveSheet()->getStyle(convertSpreadsheatColumnNumberToColumnCharacter($c) . $r)->applyFromArray($boldLeftStyle);
 	}
@@ -176,7 +176,7 @@ foreach ($arrAfwezigheden as $a => $b ) {
 	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(fixCol($c), $r, $a);
 	$objPHPExcel->getActiveSheet()->getStyle(convertSpreadsheatColumnNumberToColumnCharacter($c) . $r)->applyFromArray($boldLeftStyle);
 	$objPHPExcel->getActiveSheet()->getStyle(convertSpreadsheatColumnNumberToColumnCharacter($c) . $r)->applyFromArray($borderStyle);
-	$arrUren = getProtimeUrenGroupedByDay($oEmployee->getProtimeId(), $year, $month, $b, $id);
+	$arrUren = getProtimeUrenGroupedByDay( $oEmployee->getProtimeId(), $year, $month, $b, $id );
 	for ( $i = 1; $i <= 31; $i++ ) {
 		if ( $lastDayOfMonth < $i ) {
 			$objPHPExcel->getActiveSheet()->getStyle(convertSpreadsheatColumnNumberToColumnCharacter($c+$i) . $r)->applyFromArray($greyBackgroundStyle);

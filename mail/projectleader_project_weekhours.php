@@ -38,14 +38,14 @@ foreach ( $projects as $oProject ) {
 
 	// get projectleader
 	$oProjectleader = $oProject->getProjectleader();
-	$mail_body .= "Project leader:" . $fieldseparator . $oProjectleader->getFirstname() . ' ' . verplaatsTussenvoegselNaarBegin($oProjectleader->getLastname()) . " \n\n";
+	$mail_body .= "Project leader:" . $fieldseparator . $oProjectleader->getFirstname() . ' ' . verplaatsTussenvoegselNaarBegin( $oProjectleader->getLastname() ) . " \n\n";
 
 	// start / end date
 	$mail_body .= "From:" . $fieldseparator . $startdate . " \n";
 	$mail_body .= "Until (incl.):" . $fieldseparator . $enddate . " \n\n";
 
 	// get list of project workhours for specified period
-	$workhours = class_workhours_static::getWorkhoursPerEmployeeGroupedFromTill($oProject->getId(), $startdate, $enddate);
+	$workhours = class_workhours_static::getWorkhoursPerEmployeeGroupedFromTill( $oProject->getId(), $startdate, $enddate );
 
 	// name / hours
 	foreach ($workhours as $p) {

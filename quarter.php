@@ -7,7 +7,7 @@ $date = class_datetime::get_date($protect);
 $oDate = new class_date( $date["y"], $date["m"], $date["d"] );
 
 // sync Timecard Protime
-//syncTimecardProtimeQuarter($oWebuser->getTimecardId(), $oWebuser->getProtimeId(), $date);
+//syncTimecardProtimeQuarter( $oWebuser->getTimecardId(), $oWebuser->getProtimeId(), $date );
 
 // create webpage
 $oPage = new class_page('design/page.php', $settings);
@@ -77,7 +77,7 @@ function createQuarterContent( $date ) {
 
 		// if legacy, then no edit link
 		$href = '';
-		if ( !class_datetime::is_legacy( $oDate ) && !($oDate->get("Y-m-d") < $oWebuser->getAllowAdditionsStartingDate()) ) {
+		if ( !class_datetime::is_legacy( $oDate ) && !( $oDate->get("Y-m-d") < $oWebuser->getAllowAdditionsStartingDate() ) ) {
 			$href = 'edit.php?ID=[FLD:ID]&d=' . $oDate->get("Ymd") . '&backurl=[BACKURL]';
 		}
 

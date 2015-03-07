@@ -12,7 +12,7 @@ class class_refresh_employee_hours_per_week {
 	private $isNew;
 
 	// TODOEXPLAIN
-	function class_refresh_employee_hours_per_week($oEmployee, $year) {
+	function class_refresh_employee_hours_per_week( $oEmployee, $year ) {
 		global $databases;
 		$this->databases = $databases;
 
@@ -40,7 +40,7 @@ class class_refresh_employee_hours_per_week {
 
 		if ( $force_refresh ) {
 			// get current total hours per week
-			$oEmployeeHoursPerDayStarting = new class_employee_hours_per_day_starting($this->oEmployee, 2015);
+			$oEmployeeHoursPerDayStarting = new class_employee_hours_per_day_starting($this->oEmployee, $this->year);
 			$this->totalHoursPerWeek = $oEmployeeHoursPerDayStarting->getCurrentTotalHoursPerWeek();
 
 			// get text for all hours per week until (including) the first one of a previous year
@@ -140,7 +140,7 @@ class class_employee_hours_per_day_starting {
 	private $startDayTotals = array();
 
 	// TODOEXPLAIN
-	function class_employee_hours_per_day_starting($oEmployee, $last_year) {
+	function class_employee_hours_per_day_starting( $oEmployee, $last_year ) {
 		global $databases;
 		$this->databases = $databases;
 

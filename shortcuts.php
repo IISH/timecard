@@ -29,7 +29,7 @@ function createShortcutsList() {
 
 	$oDate = new class_date( date("Y"), date("m"), date("d") );
 
-	$oShortcuts = new class_shortcuts($oWebuser->getTimecardId(), $settings, $oDate);
+	$oShortcuts = new class_shortcuts( $oWebuser->getTimecardId(), $settings, $oDate );
 
 	$records = '';
 	foreach ( $oShortcuts->getAllShortcuts() as $shortcut) {

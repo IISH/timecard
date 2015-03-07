@@ -20,7 +20,7 @@ $oPage->removeSidebar();
 $oPage->setTab($menuList->findTabNumber('administrator.month'));
 $oPage->setTitle('Timecard | Admin Month');
 $oPage->setContent(createAdminMonthContent( $date ));
-$oPage->setLeftMenu( getEmployeesRibbon($oEmployee, $date["y"]) );
+$oPage->setLeftMenu( getEmployeesRibbon( $oEmployee, $date["y"] ) );
 
 // show page
 echo $oPage->getPage();

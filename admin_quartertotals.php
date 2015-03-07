@@ -18,7 +18,7 @@ $oPage->removeSidebar();
 $oPage->setTab($menuList->findTabNumber('administrator.quartertotals'));
 $oPage->setTitle('Timecard | Admin Quarter Totals');
 $oPage->setContent(createAdminQuarterContent( $date ));
-$oPage->setLeftMenu( getEmployeesRibbon($oEmployee, $date["y"], 1) );
+$oPage->setLeftMenu( getEmployeesRibbon( $oEmployee, $date["y"], 1 ) );
 
 // show page
 echo $oPage->getPage();

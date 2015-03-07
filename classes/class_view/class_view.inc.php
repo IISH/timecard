@@ -236,7 +236,7 @@ class class_view {
 				}
 				$tmp_header = str_replace("::ALTTITLE::", $one_field_in_array_of_fields->get_fieldlabel_alttitle(), $tmp_header);
 
-				if ( is_array($one_field_in_array_of_fields->m_viewfilter ) ) {
+				if ( is_array( $one_field_in_array_of_fields->m_viewfilter ) ) {
 					$filter = $one_field_in_array_of_fields->m_viewfilter["labelfilterseparator"];
 
 					$separator = '';
@@ -586,7 +586,7 @@ function onchange_change_filter_doc_submit(obj) {
 							$dbwaarde = $one_field_in_array_of_fields->get_value($row, $criteriumResult);
 							// add calculate_total
 							if ( is_array($this->m_view["calculate_total"]) ) {
-								if ( strtolower($one_field_in_array_of_fields->get_fieldname()) == strtolower($this->m_view["calculate_total"]["field"]) ) {
+								if ( strtolower( $one_field_in_array_of_fields->get_fieldname() ) == strtolower($this->m_view["calculate_total"]["field"]) ) {
 									$calculate_total[$this->m_view["calculate_total"]["field"]] += $dbwaarde;
 								}
 							}

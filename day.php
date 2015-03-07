@@ -7,18 +7,18 @@ $date = class_datetime::get_date($protect);
 $oDate = new class_date( $date["y"], $date["m"], $date["d"] );
 
 // sync Timecard Protime
-$oWebuser->syncTimecardProtimeDayInformation($oDate);
+$oWebuser->syncTimecardProtimeDayInformation( $oDate );
 
 // create webpage
 $oPage = new class_page('design/page.php', $settings);
 $oPage->setTab($menuList->findTabNumber('timecard.day'));
 $oPage->setTitle('Timecard | Day');
-$oPage->setContent(createDayContent( $date ) . getCheckedInCheckedOut($oWebuser->getProtimeId(), $date["Ymd"]) );
+$oPage->setContent(createDayContent( $date ) . getCheckedInCheckedOut( $oWebuser->getProtimeId(), $date["Ymd"] ) );
 
 // add shortcuts and recently used
 if ( $date["y"] >= "2013" ) {
-	$oPage->setShortcuts(getUserShortcuts($oWebuser->getTimecardId(), $oDate, $settings));
-	$oPage->setRecentlyUsed(getUserRecentlyUsed($oWebuser->getTimecardId(), $oDate, $settings));
+	$oPage->setShortcuts(getUserShortcuts( $oWebuser->getTimecardId(), $oDate, $settings ) );
+	$oPage->setRecentlyUsed(getUserRecentlyUsed( $oWebuser->getTimecardId(), $oDate, $settings ) );
 }
 
 // show page
@@ -156,7 +156,7 @@ function getUserDay( $date ) {
 	}
 	mysql_free_result($result);
 
-	$dagvakantie = getEerderNaarHuisDayTotal($oWebuser->getTimecardId(), $oDate);
+	$dagvakantie = getEerderNaarHuisDayTotal( $oWebuser->getTimecardId(), $oDate );
 	if ( $dagvakantie > 0 ) {
 		$ret .= "
 	<tr><td colspan=\"5\"><hr></td></tr>

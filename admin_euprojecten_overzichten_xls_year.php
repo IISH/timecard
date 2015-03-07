@@ -70,7 +70,7 @@ foreach ( $projects as $one_project ) {
 	}
 
 	$c = 1;
-	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(fixCol($c), $r, $one_project[0] . getProjectName($one_project[1], $oConn->getConnection()));
+	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(fixCol($c), $r, $one_project[0] . getProjectName( $one_project[1], $oConn->getConnection() ) );
 	if ( $one_project[3] >= 0 ) {
 		$objPHPExcel->getActiveSheet()->getStyle(convertSpreadsheatColumnNumberToColumnCharacter($c) . $r)->applyFromArray($boldLeftStyle);
 	}
@@ -236,7 +236,7 @@ foreach ($arrAfwezigheden as $a => $b ) {
 		} else {
 			// DATA COLUMN
 			// TODOXXXYEARSLOW
-			$uren = getProtimeUren($oEmployee->getProtimeId(), $year, $month, $b, $id);
+			$uren = getProtimeUren( $oEmployee->getProtimeId(), $year, $month, $b, $id );
 			$uren = convertMinutesToHours($uren);
 			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(fixCol($c+$i), $r, $uren);
 		}

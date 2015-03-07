@@ -13,7 +13,7 @@ $oDate = new class_date( $date["y"], $date["m"], $date["d"] );
 
 // sync Timecard Protime
 $oEmployee = new class_employee($protect->request('get', 'eid'), $settings);
-$oEmployee->syncTimecardProtimeDayInformation($oDate);
+$oEmployee->syncTimecardProtimeDayInformation( $oDate );
 
 // create webpage
 $oPage = new class_page('design/page_admin.php', $settings);
@@ -22,13 +22,13 @@ if ( $oEmployee->getTimecardId() == -1 || $oEmployee->getTimecardId() == '' ) {
 }
 $oPage->setTab($menuList->findTabNumber('administrator.day'));
 $oPage->setTitle('Timecard | Admin Day');
-$oPage->setContent(createAdminDayContent( $date ) . getCheckedInCheckedOut($oEmployee->getProtimeId(), $date["Ymd"]));
-$oPage->setLeftMenu( getEmployeesRibbon($oEmployee, $date["y"]) );
+$oPage->setContent(createAdminDayContent( $date ) . getCheckedInCheckedOut( $oEmployee->getProtimeId(), $date["Ymd"] ) );
+$oPage->setLeftMenu( getEmployeesRibbon( $oEmployee, $date["y"] ) );
 
 // add shortcuts and recently used
 if ( $date["y"] >= "2013" ) {
-	$oPage->setShortcuts(getAdminShortcuts($oEmployee->getTimecardId(), $oDate, $settings));
-	$oPage->setRecentlyUsed(getAdminRecentlyUsed($oEmployee->getTimecardId(), $oDate, $settings));
+	$oPage->setShortcuts(getAdminShortcuts( $oEmployee->getTimecardId(), $oDate, $settings ) );
+	$oPage->setRecentlyUsed(getAdminRecentlyUsed( $oEmployee->getTimecardId(), $oDate, $settings ) );
 }
 
 // show page
@@ -267,7 +267,7 @@ function getAdminDay( $date ) {
 			}
 			mysql_free_result($result);
 
-			$dagvakantie = getEerderNaarHuisDayTotal($oEmployee->getTimecardId(), $oDate);
+			$dagvakantie = getEerderNaarHuisDayTotal( $oEmployee->getTimecardId(), $oDate );
 
 			$ret .= "
 	<tr><td colspan=\"5\"><hr></td></tr>

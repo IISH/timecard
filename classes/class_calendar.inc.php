@@ -69,7 +69,7 @@ class class_calendar {
 		// + + + + + + + + + + + + + + + + +
 
 		// select year
-		$select = "<select name=\"selectYear\" onchange=\"tcRefreshCalendar(" . "this.value" . "+'" . $date["m"] . $date["d"] . "', '" . class_datetime::formatDateAsString($originalDate) . "'); return false;\">\n";
+		$select = "<select name=\"selectYear\" onchange=\"tcRefreshCalendar(" . "this.value" . "+'" . $date["m"] . $date["d"] . "', '" . class_datetime::formatDateAsString( $originalDate ) . "'); return false;\">\n";
 		// q&d fix
 		$select = str_replace('?&d=', '?d=', $select);
 		$begin_jaar = 2009;
@@ -97,7 +97,7 @@ class class_calendar {
 // + + + + + + + + + + + + + + + + +
 
 		// select month
-		$select = "<select name=\"selectMonth\" onchange=\"tcRefreshCalendar('" . $date["y"] . "'+" . "this.value" . "+'" . $date["d"] . "', '" . class_datetime::formatDateAsString($originalDate) . "'); return false;\">\n";
+		$select = "<select name=\"selectMonth\" onchange=\"tcRefreshCalendar('" . $date["y"] . "'+" . "this.value" . "+'" . $date["d"] . "', '" . class_datetime::formatDateAsString( $originalDate ) . "'); return false;\">\n";
 		// q&d fix
 		$select = str_replace('?&d=', '?d=', $select);
 		for ( $i=1; $i<=12; $i++) {
@@ -158,7 +158,7 @@ class class_calendar {
 			$prev = 12;
 			$prev_year--;
 		}
-		$prevScript = "tcRefreshCalendar('" . $prev_year . substr("0" . $prev, -2) . substr("0" . $date["d"], -2) . "', '" . class_datetime::formatDateAsString($originalDate) . "');return false;";
+		$prevScript = "tcRefreshCalendar('" . $prev_year . substr("0" . $prev, -2) . substr("0" . $date["d"], -2) . "', '" . class_datetime::formatDateAsString( $originalDate ) . "');return false;";
 		$retval = str_replace("::PREVIOUS::", $prevScript, $retval);
 
 		// next
@@ -168,7 +168,7 @@ class class_calendar {
 			$next = 1;
 			$next_year++;
 		}
-		$nextScript = "tcRefreshCalendar('" . $next_year . substr("0" . $next, -2) . substr("0" . $date["d"], -2) . "', '" . class_datetime::formatDateAsString($originalDate) . "');return false;";
+		$nextScript = "tcRefreshCalendar('" . $next_year . substr("0" . $next, -2) . substr("0" . $date["d"], -2) . "', '" . class_datetime::formatDateAsString( $originalDate ) . "');return false;";
 		$retval = str_replace("::NEXT::", $nextScript, $retval);
 
 		// + + + + + + + + + + + + + + + + +

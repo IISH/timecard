@@ -141,7 +141,7 @@ class class_form {
 
 			if ( is_array($query_fields) ) {
 				foreach ($query_fields as $one_item_from_array) {
-					foreach ($one_item_from_array as $fieldname => $fieldvalue) {
+					foreach ( $one_item_from_array as $fieldname => $fieldvalue ) {
 						if ( $fieldname != 'ID' ) {
 							$fields .= $separator . $fieldname;
 							$values .= $separator . $fieldvalue;
@@ -153,7 +153,7 @@ class class_form {
 
 			if ( is_array($extra_query_fields) ) {
 				foreach ($extra_query_fields as $one_item_from_array) {
-					foreach ($one_item_from_array as $fieldname => $fieldvalue) {
+					foreach ( $one_item_from_array as $fieldname => $fieldvalue ) {
 						$fields .= $separator . $fieldname;
 						$values .= $separator . $fieldvalue;
 						$separator = ", ";
@@ -169,7 +169,7 @@ class class_form {
 
 			if ( is_array($query_fields) ) {
 				foreach ($query_fields as $one_item_from_array) {
-					foreach ($one_item_from_array as $fieldname => $fieldvalue) {
+					foreach ( $one_item_from_array as $fieldname => $fieldvalue ) {
 
 						if ( $fieldname != 'ID' ) {
 							$query .= $separator . $fieldname . "=" . $fieldvalue;
@@ -182,7 +182,7 @@ class class_form {
 
 			if ( is_array($extra_query_fields) ) {
 				foreach ($extra_query_fields as $one_item_from_array) {
-					foreach ($one_item_from_array as $fieldname => $fieldvalue) {
+					foreach ( $one_item_from_array as $fieldname => $fieldvalue ) {
 						$query .= $separator . $fieldname . "=" . $fieldvalue;
 						$separator = ", ";
 					}

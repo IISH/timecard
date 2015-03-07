@@ -1,6 +1,6 @@
 <?php
 require_once "../classes/start.inc.php";
-$path_parts['filename'] = 'refresh_employee_hours_per_week';
+$path_parts['filename'] = 'refresh_employee_hours_for_planning';
 
 // check cron key
 $cron_key = '';
@@ -28,7 +28,7 @@ foreach ( class_employee::getListOfAllHoursLeftEmployees() as $oUser ) {
 	// save current state
 	class_settings::saveSetting('cron_' . $path_parts['filename'] . '_state', $oUser->getTimecardId());
 
-	$oRefresh = new class_refresh_employee_hours_per_week( $oUser, date("Y") );
+	$oRefresh = new class_refresh_employee_hours_for_planning( $oUser, date("Y") );
 	$oRefresh->refresh(true);
 
 	$separator = ', ';
