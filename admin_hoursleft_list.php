@@ -228,67 +228,67 @@ $ret .= "
 		<td align=right>{year_total_percentage_rule}</td>
 
 		<td align=right>{M1_1}</td>
-		<td align=right>{M1_2}</td>
+		<td align=right><a title=\"{M1_2_title}\">{M1_2}</a></td>
 		<td align=right>{M1_3}</td>
 
 		<td align=right>{M2_1}</td>
-		<td align=right>{M2_2}</td>
+		<td align=right><a title=\"{M2_2_title}\">{M2_2}</a></td>
 		<td align=right>{M2_3}</td>
 
 		<td align=right>{M3_1}</td>
-		<td align=right>{M3_2}</td>
+		<td align=right><a title=\"{M3_2_title}\">{M3_2}</a></td>
 		<td align=right>{M3_3}</td>
 
 		<td align=right style=\"background-color:lightgrey\">{Q1_1}</td>
-		<td align=right style=\"background-color:lightgrey\">{Q1_2}</td>
+		<td align=right style=\"background-color:lightgrey\"><a title=\"{Q1_2_title}\">{Q1_2}</a></td>
 		<td align=right style=\"background-color:{Q1_3_color}\">{Q1_3}</td>
 
 		<td align=right>{M4_1}</td>
-		<td align=right>{M4_2}</td>
+		<td align=right><a title=\"{M4_2_title}\">{M4_2}</a></td>
 		<td align=right>{M4_3}</td>
 
 		<td align=right>{M5_1}</td>
-		<td align=right>{M5_2}</td>
+		<td align=right><a title=\"{M5_2_title}\">{M5_2}</a></td>
 		<td align=right>{M5_3}</td>
 
 		<td align=right>{M6_1}</td>
-		<td align=right>{M6_2}</td>
+		<td align=right><a title=\"{M6_2_title}\">{M6_2}</a></td>
 		<td align=right>{M6_3}</td>
 
 		<td align=right style=\"background-color:lightgrey\">{Q2_1}</td>
-		<td align=right style=\"background-color:lightgrey\">{Q2_2}</td>
+		<td align=right style=\"background-color:lightgrey\"><a title=\"{Q2_2_title}\">{Q2_2}</a></td>
 		<td align=right style=\"background-color:{Q2_3_color}\">{Q2_3}</td>
 
 		<td align=right>{M7_1}</td>
-		<td align=right>{M7_2}</td>
+		<td align=right><a title=\"{M7_2_title}\">{M7_2}</a></td>
 		<td align=right>{M7_3}</td>
 
 		<td align=right>{M8_1}</td>
-		<td align=right>{M8_2}</td>
+		<td align=right><a title=\"{M8_2_title}\">{M8_2}</a></td>
 		<td align=right>{M8_3}</td>
 
 		<td align=right>{M9_1}</td>
-		<td align=right>{M9_2}</td>
+		<td align=right><a title=\"{M9_2_title}\">{M9_2}</a></td>
 		<td align=right>{M9_3}</td>
 
 		<td align=right style=\"background-color:lightgrey\">{Q3_1}</td>
-		<td align=right style=\"background-color:lightgrey\">{Q3_2}</td>
+		<td align=right style=\"background-color:lightgrey\"><a title=\"{Q3_2_title}\">{Q3_2}</a></td>
 		<td align=right style=\"background-color:{Q3_3_color}\">{Q3_3}</td>
 
 		<td align=right>{M10_1}</td>
-		<td align=right>{M10_2}</td>
+		<td align=right><a title=\"{M10_2_title}\">{M10_2}</a></td>
 		<td align=right>{M10_3}</td>
 
 		<td align=right>{M11_1}</td>
-		<td align=right>{M11_2}</td>
+		<td align=right><a title=\"{M11_2_title}\">{M11_2}</a></td>
 		<td align=right>{M11_3}</td>
 
 		<td align=right>{M12_1}</td>
-		<td align=right>{M12_2}</td>
+		<td align=right><a title=\"{M12_2_title}\">{M12_2}</a></td>
 		<td align=right>{M12_3}</td>
 
 		<td align=right style=\"background-color:lightgrey\">{Q4_1}</td>
-		<td align=right style=\"background-color:lightgrey\">{Q4_2}</td>
+		<td align=right style=\"background-color:lightgrey\"><a title=\"{Q4_2_title}\">{Q4_2}</a></td>
 		<td align=right style=\"background-color:{Q4_3_color}\">{Q4_3}</td>
 
 		<td align=right>{VL}</td>
@@ -301,7 +301,6 @@ $ret .= "
 			$oEmployee = $arrEmployees[$i];
 
 			$hoursForPlanning = new class_employee_hours_for_planning( $oEmployee, date("Y") );
-
 
 			$tmp = $template;
 
@@ -320,6 +319,10 @@ $ret .= "
 			$monthWorkTotals = array();
 			$monthAbsenceTotals = array();
 			$monthDifferenceTotals = array();
+			$numberOfNationalHolidays = array();
+			$numberOfBrugdagen = array();
+			$monthTitles = array();
+
 			for ( $j = 1; $j <= 12; $j++ ) {
 				$monthWorkTotals["$j"] = $hoursForPlanning->getWorkValue(date("Y") . '-' . substr('0'.$j,-2));
 				$monthAbsenceTotals["$j"] = $hoursForPlanning->getNationalHolidayValue(date("Y") . '-' . substr('0'.$j,-2)) + $hoursForPlanning->getBrugdagValue(date("Y") . '-' . substr('0'.$j,-2));
@@ -328,11 +331,30 @@ $ret .= "
 //					$difference = 0;
 				}
 				$monthDifferenceTotals["$j"] = $difference;
+				$numberOfNationalHolidays["$j"] = $hoursForPlanning->getNumberOfNationalHolidays( date("Y") . '-' . substr('0'.$j,-2) );
+				$numberOfBrugdagen["$j"] = $hoursForPlanning->getNumberOfBrugdagen( date("Y") . '-' . substr('0'.$j,-2) );
+
+				$title = '';
+				if ( $numberOfNationalHolidays["$j"] > 0 ) {
+					$days = ( $numberOfNationalHolidays["$j"] == 1 ) ? 'day' : 'days';
+					$title .= "- National holiday: " . $numberOfNationalHolidays["$j"] . " $days\n";
+				}
+				if ( $numberOfBrugdagen["$j"] > 0 ) {
+					$days = ( $numberOfBrugdagen["$j"] == 1 ) ? 'day' : 'days';
+					$title .= "- Brugdag: " . $numberOfBrugdagen["$j"] . " $days\n";
+				}
+				if ( $title != '' ) {
+					$oTmpDate = new TCDateTime();
+					$oTmpDate->setFromString(date("Y") . '-' . substr('0'.$j,-2) . "-01", "Y-m-d");
+					$title = $oTmpDate->getToString("F") . "\n" . $title . "\n";
+				}
+				$monthTitles["$j"] = $title;
 			}
 
 			$quarterWorkTotals = array();
 			$quarterAbsenceTotals = array();
 			$quarterDifferenceTotals = array();
+			$quarterTitles = array();
 			for ( $q = 1; $q <= 4; $q++ ) {
 				$quarterWorkTotals["$q"] = $monthWorkTotals[((($q-1)*3)+1).""] + $monthWorkTotals[((($q-1)*3)+2).""] + $monthWorkTotals[((($q-1)*3)+3).""];
 				$quarterAbsenceTotals["$q"] = $monthAbsenceTotals[((($q-1)*3)+1).""] + $monthAbsenceTotals[((($q-1)*3)+2).""] + $monthAbsenceTotals[((($q-1)*3)+3).""];
@@ -342,6 +364,8 @@ $ret .= "
 //					$difference = 0;
 				}
 				$quarterDifferenceTotals["$q"] = $difference;
+
+				$quarterTitles["$q"] = $monthTitles[((($q-1)*3)+1)] . $monthTitles[((($q-1)*3)+2)] . $monthTitles[((($q-1)*3)+3)];
 			}
 
 			$yearWorkTotal = $quarterWorkTotals["1"] + $quarterWorkTotals["2"] + $quarterWorkTotals["3"] + $quarterWorkTotals["4"];
@@ -362,6 +386,8 @@ $ret .= "
 				$tmp = str_replace('{M' . $j .'_1}', hoursLeft_formatNumber($monthWorkTotals["$j"]), $tmp);
 				$tmp = str_replace('{M' . $j .'_2}', hoursLeft_formatNumber($monthAbsenceTotals["$j"]), $tmp);
 				$tmp = str_replace('{M' . $j .'_3}', hoursLeft_formatNumber($monthDifferenceTotals["$j"]), $tmp);
+
+				$tmp = str_replace('{M' . $j .'_2_title}', $monthTitles["$j"], $tmp);
 			}
 			// quarter
 			for ( $j = 1; $j <= 4; $j++ ) {
@@ -373,6 +399,7 @@ $ret .= "
 				} else {
 					$tmp = str_replace('{Q' . $j .'_3_color}', 'lightgrey', $tmp);
 				}
+				$tmp = str_replace('{Q' . $j .'_2_title}', $quarterTitles["$j"], $tmp);
 			}
 			// year
 			$tmp = str_replace('{year_total_100_percent}', hoursLeft_formatNumber($yearWorkTotal), $tmp);

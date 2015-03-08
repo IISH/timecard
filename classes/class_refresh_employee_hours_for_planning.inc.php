@@ -170,6 +170,7 @@ WHERE EmployeeID = {$this->oEmployee->getTimecardId()} AND yearmonth = '{$this->
 	// TODOEXPLAIN
 	private function updateRecordNationalHoliday( $month ) {
 		$month2 = substr('0'.$month,-2);
+		$aantalNationalHolidays = 0;
 
 		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
@@ -187,11 +188,16 @@ SET
 				$aantalUur = $this->nationalHolidayPerDag[$i];
 			}
 
+			if ( $aantalUur > 0 ) {
+				$aantalNationalHolidays++;
+			}
+
 			$query .= $separator . "`nationalholiday$i` = " . ($aantalUur*1.0);
 			$separator = ', ';
 		}
 
 		$query .= "
+	, `number_of_nationalholidays` = {$aantalNationalHolidays}
 WHERE `EmployeeID` = {$this->oEmployee->getTimecardId()} AND `yearmonth` = '{$this->year}-{$month2}' ";
 
 		$result = mysql_query($query, $oConn->getConnection());
@@ -200,6 +206,7 @@ WHERE `EmployeeID` = {$this->oEmployee->getTimecardId()} AND `yearmonth` = '{$th
 	// TODOEXPLAIN
 	private function updateRecordBrugdag( $month ) {
 		$month2 = substr('0'.$month,-2);
+		$aantalBrugdagen = 0;
 
 		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
@@ -217,11 +224,16 @@ SET
 				$aantalUur = $this->brugdagPerDag[$i];
 			}
 
+			if ( $aantalUur > 0 ) {
+				$aantalBrugdagen++;
+			}
+
 			$query .= $separator . "`brugdag$i` = " . ($aantalUur*1.0);
 			$separator = ', ';
 		}
 
 		$query .= "
+	, number_of_brugdagen = {$aantalBrugdagen}
 WHERE `EmployeeID` = {$this->oEmployee->getTimecardId()} AND `yearmonth` = '{$this->year}-{$month2}' ";
 
 		$result = mysql_query($query, $oConn->getConnection());

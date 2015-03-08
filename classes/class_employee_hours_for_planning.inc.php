@@ -11,6 +11,8 @@ class class_employee_hours_for_planning {
 	private $workMonthTotals = array();
 	private $nationalHolidayMonthTotals = array();
 	private $brugdagMonthTotals = array();
+	private $number_of_nationalholidays = array();
+	private $number_of_brugdagen = array();
 
 	// TODOEXPLAIN
 	function class_employee_hours_for_planning( $oEmployee, $year ) {
@@ -77,6 +79,9 @@ class class_employee_hours_for_planning {
 			$this->nationalHolidayMonthTotals[$r["yearmonth"]] = $total_nationalholiday;
 			$this->brugdagMonthTotals[$r["yearmonth"]] = $total_brugdag;
 
+			$this->number_of_nationalholidays[$r["yearmonth"]] = $r['number_of_nationalholidays'];
+			$this->number_of_brugdagen[$r["yearmonth"]] = $r['number_of_brugdagen'];
+
 			if ( date(class_settings::getSetting("timeStampRefreshLowPriority")) != $r['last_refresh'] ) {
 				$areAllLastRefreshOkay = false;
 			}
@@ -102,5 +107,21 @@ class class_employee_hours_for_planning {
 	// TODOEXPLAIN
 	public function __toString() {
 		return "Class: " . get_class($this) . "\ntimecard #: " . $this->oEmployee->getTimecardId() . "\n";
+	}
+
+	public function getNumberOfNationalHolidays( $yyyy_mm ) {
+		if ( isset($this->number_of_nationalholidays[$yyyy_mm]) ) {
+			return $this->number_of_nationalholidays[$yyyy_mm];
+		}
+
+		return 0;
+	}
+
+	public function getNumberOfBrugdagen( $yyyy_mm ) {
+		if ( isset($this->number_of_brugdagen[$yyyy_mm]) ) {
+			return $this->number_of_brugdagen[$yyyy_mm];
+		}
+
+		return 0;
 	}
 }
