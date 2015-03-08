@@ -52,7 +52,7 @@
 
 	</div>
 
-	<div id="footer" class="footer footerwidth{cssextension}">{url} - 7 March 2015</div>
+	<div id="footer" class="footer footerwidth{cssextension}">{url} - 8 March 2015</div>
 </div>
 
 <script language="Javascript">

@@ -106,28 +106,28 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 <button onclick=\"hideMonths();\">Hide months</button>  &nbsp; <button onclick=\"showMonths();\">Show months</button>
 <!-- &nbsp; <button onclick=\"hidePastMonths();\">Hide past months</button> -->
 <br>
-<table border=1 id=\"tblHours\">
+<table border=1 id=\"tblHours\" CELLPADDING=\"3\">
 	<tr>
 		<th>Name</th>
-		<th>Hours&nbsp;per&nbsp;week</th>
+		<th>Hours per week</th>
 		<th>Year total</th>
 		<th>Year total </th>
 		<th colspan=3>January</th>
 		<th colspan=3>February</th>
 		<th colspan=3>March</th>
-		<th colspan=3 style=\"background-color:lightgrey\">Q1</th>
+		<th colspan=3 style=\"background-color:lightgrey;border-left-style: solid;border-left-width: 2px;border-right-style: solid;border-right-width: 2px;\">Q1</th>
 		<th colspan=3>April</th>
 		<th colspan=3>May</th>
 		<th colspan=3>June</th>
-		<th colspan=3 style=\"background-color:lightgrey\">Q2</th>
+		<th colspan=3 style=\"background-color:lightgrey;border-left-style: solid;border-left-width: 2px;border-right-style: solid;border-right-width: 2px;\">Q2</th>
 		<th colspan=3>July</th>
 		<th colspan=3>August</th>
 		<th colspan=3>September</th>
-		<th colspan=3 style=\"background-color:lightgrey\">Q3</th>
+		<th colspan=3 style=\"background-color:lightgrey;border-left-style: solid;border-left-width: 2px;border-right-style: solid;border-right-width: 2px;\">Q3</th>
 		<th colspan=3>October</th>
 		<th colspan=3>November</th>
 		<th colspan=3>December</th>
-		<th colspan=3 style=\"background-color:lightgrey\">Q4</th>
+		<th colspan=3 style=\"background-color:lightgrey;border-left-style: solid;border-left-width: 2px;border-right-style: solid;border-right-width: 2px;\">Q4</th>
 		<th>Vacation left</th>
 		<th>Left (100%)</th>
 		<th>Left (80%)</th>
@@ -152,9 +152,9 @@ $ret .= "
 		<td align=center><a title=\"{b_title}\">{b}</a></td>
 		<td align=center><a title=\"{c_title}\">{c}</a></td>
 
-		<td align=center style=\"background-color:lightgrey\"><a title=\"{a_title}\">{a}</a></td>
+		<td align=center style=\"background-color:lightgrey;border-left-style: solid;border-left-width: 2px;\"><a title=\"{a_title}\">{a}</a></td>
 		<td align=center style=\"background-color:lightgrey\"><a title=\"{b_title}\">{b}</a></td>
-		<td align=center style=\"background-color:lightgrey\"><a title=\"{c_title}\">{c}</a></td>
+		<td align=center style=\"background-color:lightgrey;border-right-style: solid;border-right-width: 2px;\"><a title=\"{c_title}\">{c}</a></td>
 
 		<td align=center><a title=\"{a_title}\">{a}</a></td>
 		<td align=center><a title=\"{b_title}\">{b}</a></td>
@@ -168,9 +168,9 @@ $ret .= "
 		<td align=center><a title=\"{b_title}\">{b}</a></td>
 		<td align=center><a title=\"{c_title}\">{c}</a></td>
 
-		<td align=center style=\"background-color:lightgrey\"><a title=\"{a_title}\">{a}</a></td>
+		<td align=center style=\"background-color:lightgrey;border-left-style: solid;border-left-width: 2px;\"><a title=\"{a_title}\">{a}</a></td>
 		<td align=center style=\"background-color:lightgrey\"><a title=\"{b_title}\">{b}</a></td>
-		<td align=center style=\"background-color:lightgrey\"><a title=\"{c_title}\">{c}</a></td>
+		<td align=center style=\"background-color:lightgrey;border-right-style: solid;border-right-width: 2px;\"><a title=\"{c_title}\">{c}</a></td>
 
 		<td align=center><a title=\"{a_title}\">{a}</a></td>
 		<td align=center><a title=\"{b_title}\">{b}</a></td>
@@ -184,9 +184,9 @@ $ret .= "
 		<td align=center><a title=\"{b_title}\">{b}</a></td>
 		<td align=center><a title=\"{c_title}\">{c}</a></td>
 
-		<td align=center style=\"background-color:lightgrey\"><a title=\"{a_title}\">{a}</a></td>
+		<td align=center style=\"background-color:lightgrey;border-left-style: solid;border-left-width: 2px;\"><a title=\"{a_title}\">{a}</a></td>
 		<td align=center style=\"background-color:lightgrey\"><a title=\"{b_title}\">{b}</a></td>
-		<td align=center style=\"background-color:lightgrey\"><a title=\"{c_title}\">{c}</a></td>
+		<td align=center style=\"background-color:lightgrey;border-right-style: solid;border-right-width: 2px;\"><a title=\"{c_title}\">{c}</a></td>
 
 		<td align=center><a title=\"{a_title}\">{a}</a></td>
 		<td align=center><a title=\"{b_title}\">{b}</a></td>
@@ -200,9 +200,9 @@ $ret .= "
 		<td align=center><a title=\"{b_title}\">{b}</a></td>
 		<td align=center><a title=\"{c_title}\">{c}</a></td>
 
-		<td align=center style=\"background-color:lightgrey\"><a title=\"{a_title}\">{a}</a></td>
+		<td align=center style=\"background-color:lightgrey;border-left-style: solid;border-left-width: 2px;\"><a title=\"{a_title}\">{a}</a></td>
 		<td align=center style=\"background-color:lightgrey\"><a title=\"{b_title}\">{b}</a></td>
-		<td align=center style=\"background-color:lightgrey\"><a title=\"{c_title}\">{c}</a></td>
+		<td align=center style=\"background-color:lightgrey;border-right-style: solid;border-right-width: 2px;\"><a title=\"{c_title}\">{c}</a></td>
 
 		<td align=center colspan=3>&nbsp;</td>
 	</tr>
@@ -213,7 +213,7 @@ $ret .= "
 		$ret = str_replace('{a_title}', 'Total Hours', $ret);
 
 		$ret = str_replace('{b}', 'B', $ret);
-		$ret = str_replace('{b_title}', "Already booked\n- national holidays\n- brugdagen", $ret);
+		$ret = str_replace('{b_title}', "Already booked\n- National holidays\n- Brugdagen", $ret);
 
 		$ret = str_replace('{c}', 'P', $ret);
 		$ret = str_replace('{c_title}', 'Free for projects', $ret);
@@ -239,9 +239,9 @@ $ret .= "
 		<td align=right><a title=\"{M3_2_title}\">{M3_2}</a></td>
 		<td align=right>{M3_3}</td>
 
-		<td align=right style=\"background-color:lightgrey\">{Q1_1}</td>
+		<td align=right style=\"background-color:lightgrey;border-left-style: solid;border-left-width: 2px;\">{Q1_1}</td>
 		<td align=right style=\"background-color:lightgrey\"><a title=\"{Q1_2_title}\">{Q1_2}</a></td>
-		<td align=right style=\"background-color:{Q1_3_color}\">{Q1_3}</td>
+		<td align=right style=\"background-color:{Q1_3_color};border-right-style: solid;border-right-width: 2px;\">{Q1_3}</td>
 
 		<td align=right>{M4_1}</td>
 		<td align=right><a title=\"{M4_2_title}\">{M4_2}</a></td>
@@ -255,9 +255,9 @@ $ret .= "
 		<td align=right><a title=\"{M6_2_title}\">{M6_2}</a></td>
 		<td align=right>{M6_3}</td>
 
-		<td align=right style=\"background-color:lightgrey\">{Q2_1}</td>
+		<td align=right style=\"background-color:lightgrey;border-left-style: solid;border-left-width: 2px;\">{Q2_1}</td>
 		<td align=right style=\"background-color:lightgrey\"><a title=\"{Q2_2_title}\">{Q2_2}</a></td>
-		<td align=right style=\"background-color:{Q2_3_color}\">{Q2_3}</td>
+		<td align=right style=\"background-color:{Q2_3_color};border-right-style: solid;border-right-width: 2px;\">{Q2_3}</td>
 
 		<td align=right>{M7_1}</td>
 		<td align=right><a title=\"{M7_2_title}\">{M7_2}</a></td>
@@ -271,9 +271,9 @@ $ret .= "
 		<td align=right><a title=\"{M9_2_title}\">{M9_2}</a></td>
 		<td align=right>{M9_3}</td>
 
-		<td align=right style=\"background-color:lightgrey\">{Q3_1}</td>
+		<td align=right style=\"background-color:lightgrey;border-left-style: solid;border-left-width: 2px;\">{Q3_1}</td>
 		<td align=right style=\"background-color:lightgrey\"><a title=\"{Q3_2_title}\">{Q3_2}</a></td>
-		<td align=right style=\"background-color:{Q3_3_color}\">{Q3_3}</td>
+		<td align=right style=\"background-color:{Q3_3_color};border-right-style: solid;border-right-width: 2px;\">{Q3_3}</td>
 
 		<td align=right>{M10_1}</td>
 		<td align=right><a title=\"{M10_2_title}\">{M10_2}</a></td>
@@ -287,9 +287,9 @@ $ret .= "
 		<td align=right><a title=\"{M12_2_title}\">{M12_2}</a></td>
 		<td align=right>{M12_3}</td>
 
-		<td align=right style=\"background-color:lightgrey\">{Q4_1}</td>
+		<td align=right style=\"background-color:lightgrey;border-left-style: solid;border-left-width: 2px;\">{Q4_1}</td>
 		<td align=right style=\"background-color:lightgrey\"><a title=\"{Q4_2_title}\">{Q4_2}</a></td>
-		<td align=right style=\"background-color:{Q4_3_color}\">{Q4_3}</td>
+		<td align=right style=\"background-color:{Q4_3_color};border-right-style: solid;border-right-width: 2px;\">{Q4_3}</td>
 
 		<td align=right>{VL}</td>
 		<td align=right>{L100}</td>
@@ -413,8 +413,9 @@ $ret .= "
 	}
 
 
+	// TODO REMOVE THIS SECTION
 	// OUDE VERSIE
-	if ( count($arrEmployees) > 0 ) {
+	if ( count($arrEmployees) > 0 && false ) {
 		$ret .= "
 <br>
 <table border=1>

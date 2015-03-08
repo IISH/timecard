@@ -92,7 +92,8 @@ class class_employee_hours_for_planning {
 
 		if ( $recursive && ( $recordsFound < 12 || !$areAllLastRefreshOkay ) ) {
 			$oRefresh = new class_refresh_employee_hours_for_planning($this->oEmployee, $this->year);
-			$oRefresh->refresh( false );
+			$oRefresh->refresh( false ); // TODO SET THIS LINE
+//			$oRefresh->refresh( true ); // TODO remove this line
 
 			//
 			$this->initValues( false );

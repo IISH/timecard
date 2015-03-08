@@ -43,6 +43,10 @@ require_once dirname(__FILE__) . "/_misc_functions.inc.php";
 //
 $protect = new class_website_protection();
 
+// TODO remove before submit
+//$_SESSION["timecard"]["id"] = 1;
+//error_reporting(E_ERROR | E_PARSE);
+
 //
 $oWebuser = new class_employee($_SESSION["timecard"]["id"], $settings);
 

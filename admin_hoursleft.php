@@ -230,7 +230,7 @@ function createHoursLeftRemarks() {
 	$ret = "<br>Remarks
 <ol>
 	<li>Every year the <a href=\"nationalholidays.php?backurl=" . urlencode(get_current_url()) . "\">holidays</a> must be entered.</li>
-	<li>If there a no vacation hours shown, please edit user and set <a href=\"admin_not_linked_employees.php?backurl=" . urlencode(get_current_url()) . "\">Protime link'</a></li>
+	<li>If there a no hours shown, please edit user and set <a href=\"admin_not_linked_employees.php?backurl=" . urlencode(get_current_url()) . "\">Protime link'</a></li>
 	<li>" . (int)(class_settings::getSetting("percentage_rule")*100.0) . "% rule = " . class_settings::getSetting("percentage_rule") . ", the rest of the hours is for overhead (meetings, courses, sick leaves, ...)</li>
 </ol>
 ";

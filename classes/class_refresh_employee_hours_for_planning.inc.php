@@ -14,6 +14,7 @@ class class_refresh_employee_hours_for_planning {
 	private $oLow;
 	private $oNationalHolidayBrugdag;
 
+	private $workPerDag = array();
 	private $nationalHolidayPerDag = array();
 	private $brugdagPerDag = array();
 
@@ -35,6 +36,8 @@ class class_refresh_employee_hours_for_planning {
 public function refresh( $force_refresh = false ) {
 
 		for ( $i = 1; $i <= 12; $i++ ) {
+			unset($this->workPerDag);
+			$this->workPerDag = array();
 
 			unset($this->nationalHolidayPerDag);
 			$this->nationalHolidayPerDag = array();
@@ -55,7 +58,6 @@ public function refresh( $force_refresh = false ) {
 				$force_refresh = true;
 			}
 
-//$force_refresh = true; // TODO TEMP VERWIJDEREN REGEL
 			if ( $force_refresh ) {
 //				// get current total hours per week
 //				$oEmployeeHoursPerDayStarting = new class_employee_hours_per_day_starting($this->oEmployee, $this->year);
@@ -68,13 +70,32 @@ public function refresh( $force_refresh = false ) {
 //				}
 //echo str_replace("\n", '<br>', $text);
 
-//				$this->totalHoursPerWeekText = $text;
+				for ( $iDag = 1; $iDag <= 31; $iDag++ ) {
+					$concatDatum = $this->year . '-' . substr('0'.$i,-2) . '-' . substr('0'.$iDag,-2);
 
+					$oDatum = new TCDateTime();
+					$oDatum->setFromString($concatDatum, 'Y-m-d');
+
+					// protection against 2015-02-31
+					if ( $concatDatum == $oDatum->getToString('Y-m-d') ) {
+						$dayOfWeek = $oDatum->getToString('w');
+						$length = $this->oLow->getLengthOfWorkdayInHours( $oDatum->getToString('Ymd'), $dayOfWeek );
+					} else {
+						$length = 0;
+					}
+
+					$this->workPerDag[ $iDag."" ] = $length;
+				}
+//echo count($this->workPerDag) . " ++++<br>";;
+//echo "Month $i<br><pre>";
+//print_r( $this->workPerDag );
+//echo '</pre>';
 				foreach ( $this->oNationalHolidayBrugdag->getAll() as $item ) {
 					if ( substr( $item['date'], 0, 8) == $this->year . '-' . substr('0'.$i,-2) . '-' ) {
 						$oDatum = new TCDateTime();
 						$oDatum->setFromString($item['date'], 'Y-m-d');
 						$dayOfWeek = $oDatum->getToString('w');
+						// TODO verwijderen de check of dag 1 .. 5 ???
 						if ( $dayOfWeek >=1 && $dayOfWeek <= 5 ) {
 							$length = $this->oLow->getLengthOfWorkdayInHours( $oDatum->getToString('Ymd'), $dayOfWeek );
 							if ( $length > 0 ) {
@@ -155,11 +176,37 @@ INSERT INTO Employee_Planning (
 		$curtime = date( class_settings::getSetting("timeStampRefreshLowPriority") );
 //		$totalHoursPerWeekText = addslashes($this->totalHoursPerWeekText);
 
+		$total = 0;
+
 		$query = "
-UPDATE Employee_Planning
+UPDATE `Employee_Planning`
 SET
-	last_refresh = '{$curtime}'
-WHERE EmployeeID = {$this->oEmployee->getTimecardId()} AND yearmonth = '{$this->year}-{$month2}'";
+";
+
+		$separator = '';
+		for ( $i = 1; $i <= 31; $i ++ ) {
+			$aantalUur = 0;
+
+			if ( isset( $this->workPerDag[$i] ) ) {
+				$aantalUur = $this->workPerDag[$i];
+			}
+
+			$total += $aantalUur;
+
+//			if ( $aantalUur > 0 ) {
+//				$aantalNationalHolidays++;
+//			}
+
+			$query .= $separator . "`work$i` = " . ($aantalUur*1.0);
+			$separator = ', ';
+		}
+
+		$query .= "
+	, `total_work` = '{$total}'
+	, `last_refresh` = '{$curtime}'
+WHERE `EmployeeID` = {$this->oEmployee->getTimecardId()} AND `yearmonth` = '{$this->year}-{$month2}'";
+
+//echo "<br><br>" . $query . " ++<br>";
 
 		$result = mysql_query($query, $oConn->getConnection());
 
@@ -171,6 +218,7 @@ WHERE EmployeeID = {$this->oEmployee->getTimecardId()} AND yearmonth = '{$this->
 	private function updateRecordNationalHoliday( $month ) {
 		$month2 = substr('0'.$month,-2);
 		$aantalNationalHolidays = 0;
+		$total = 0;
 
 		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
@@ -188,6 +236,8 @@ SET
 				$aantalUur = $this->nationalHolidayPerDag[$i];
 			}
 
+			$total += $aantalUur;
+
 			if ( $aantalUur > 0 ) {
 				$aantalNationalHolidays++;
 			}
@@ -197,6 +247,7 @@ SET
 		}
 
 		$query .= "
+	, `total_nationalholiday` = '{$total}'
 	, `number_of_nationalholidays` = {$aantalNationalHolidays}
 WHERE `EmployeeID` = {$this->oEmployee->getTimecardId()} AND `yearmonth` = '{$this->year}-{$month2}' ";
 
@@ -207,6 +258,7 @@ WHERE `EmployeeID` = {$this->oEmployee->getTimecardId()} AND `yearmonth` = '{$th
 	private function updateRecordBrugdag( $month ) {
 		$month2 = substr('0'.$month,-2);
 		$aantalBrugdagen = 0;
+		$total = 0;
 
 		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
@@ -224,6 +276,8 @@ SET
 				$aantalUur = $this->brugdagPerDag[$i];
 			}
 
+			$total += $aantalUur;
+
 			if ( $aantalUur > 0 ) {
 				$aantalBrugdagen++;
 			}
@@ -233,7 +287,8 @@ SET
 		}
 
 		$query .= "
-	, number_of_brugdagen = {$aantalBrugdagen}
+	, `total_brugdag` = '{$total}'
+	, `number_of_brugdagen` = {$aantalBrugdagen}
 WHERE `EmployeeID` = {$this->oEmployee->getTimecardId()} AND `yearmonth` = '{$this->year}-{$month2}' ";
 
 		$result = mysql_query($query, $oConn->getConnection());
