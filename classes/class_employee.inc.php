@@ -196,15 +196,10 @@ class class_employee {
 		return trim($this->firstname);
 	}
 
-	// TODOEXPLAIN
-	function getHoursperweek() {
-		return $this->hoursperweek;
-	}
-
-	// TODOEXPLAIN
-	function getDaysperweek() {
-		return $this->daysperweek;
-	}
+//	// TODOEXPLAIN
+//	function getHoursperweek() {
+//		return $this->hoursperweek;
+//	}
 
 	// TODOEXPLAIN
 	function calculateVacationHours() {
@@ -364,23 +359,23 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 		return $retval;
 	}
 
-	function getHoursPerWeek2($year) {
-		$oConn = new class_mysql($this->databases['default']);
-		$oConn->connect();
-
-		$arr = array();
-
-		// reset values
-		$query = "SELECT ID FROM HoursPerWeek WHERE year=" . $year . " AND Employee=" . $this->getTimecardId() . " AND isdeleted=0 ORDER BY startmonth ";
-		$result = mysql_query($query, $oConn->getConnection());
-		while ($row = mysql_fetch_assoc($result)) {
-			$oHoursPerWeek = new class_hoursperweek($row["ID"], $this->settings);
-			$arr[] = $oHoursPerWeek;
-		}
-		mysql_free_result($result);
-
-		return $arr;
-	}
+//	function getHoursPerWeek2($year) {
+//		$oConn = new class_mysql($this->databases['default']);
+//		$oConn->connect();
+//
+//		$arr = array();
+//
+//		// reset values
+//		$query = "SELECT ID FROM HoursPerWeek WHERE year=" . $year . " AND Employee=" . $this->getTimecardId() . " AND isdeleted=0 ORDER BY startmonth ";
+//		$result = mysql_query($query, $oConn->getConnection());
+//		while ($row = mysql_fetch_assoc($result)) {
+//			$oHoursPerWeek = new class_hoursperweek($row["ID"], $this->settings);
+//			$arr[] = $oHoursPerWeek;
+//		}
+//		mysql_free_result($result);
+//
+//		return $arr;
+//	}
 
 	function getHoursPerWeek3($year) {
 		$oHoursPerWeek = new class_employee_hours_per_week($this, $year);
@@ -389,6 +384,44 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 		}
 
 		return $oHoursPerWeek;
+	}
+
+	function getAmountOfNotPlannedVacationInMinutes( $year ) {
+		$ret = 0;
+
+		if ( $this->getProtimeId() != '0' ) {
+
+			$vakantie = advancedSingleRecordSelectMysql(
+				'default'
+				, "PROTIME_P_LIMIT"
+				, array("BEGIN_VAL", "END_VAL", "BOOKDATE")
+				, "PERSNR=" . $this->getProtimeId() . " AND EXEC_ORDER=2 "
+				, '*'
+				, "BOOKDATE DESC"
+			);
+
+			$ret = $vakantie["end_val"];
+
+			if ( ret == '' ) {
+				$ret = 0;
+			}
+
+			$oConn = new class_mysql($this->databases['default']);
+			$oConn->connect();
+
+			$query = "SELECT SUM(ABSENCE_VALUE) AS SOM FROM PROTIME_P_ABSENCE  WHERE PERSNR=" . $this->getProtimeId() . " AND ABSENCE IN ( 12 ) AND BOOKDATE LIKE '$year%' AND BOOKDATE > '{$vakantie["bookdate"]}' ";
+			$result = mysql_query($query, $oConn->getConnection());
+			if ( $row = mysql_fetch_array($result) ) {
+				$ret -= $row["SOM"];
+			}
+			mysql_free_result($result);
+		}
+
+		return $ret;
+	}
+
+	public function getAmountOfNotPlannedVacationInHours( $year ) {
+		return $this->getAmountOfNotPlannedVacationInMinutes( $year )/60.0;
 	}
 
 	function getVacationHours() {
@@ -407,7 +440,7 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 
 			$end_val = $vakantie["end_val"];
 			if ( $end_val != '' ) {
-				$ret["value"] = $end_val/60;
+				$ret["value"] = $end_val/60.0;
 				$ret["bookdate"] = $vakantie["bookdate"];
 			} else {
 				$ret["value"] = 0;

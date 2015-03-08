@@ -1,4 +1,6 @@
-<?php 
+<?php
+die('disabled by gcu');
+
 class class_hoursperweek {
 	private $databases;
 	private $hours;

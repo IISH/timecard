@@ -17,7 +17,7 @@ require_once dirname(__FILE__) . "/class_employee_hours_per_week.inc.php";
 require_once dirname(__FILE__) . "/class_employee_not_work_related_absences.inc.php";
 require_once dirname(__FILE__) . "/class_feestdag.inc.php";
 require_once dirname(__FILE__) . "/class_feestdagen.inc.php";
-require_once dirname(__FILE__) . "/class_hoursperweek.inc.php";
+//require_once dirname(__FILE__) . "/class_hoursperweek.inc.php";
 require_once dirname(__FILE__) . "/class_length_of_workday.inc.php";
 require_once dirname(__FILE__) . "/class_mysql.inc.php";
 require_once dirname(__FILE__) . "/class_national_holiday_brugdag.inc.php";
