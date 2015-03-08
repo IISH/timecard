@@ -57,7 +57,7 @@ class class_employee_hours_for_planning {
 		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
 
-		$query = "SELECT * FROM Employee_Planning WHERE EmployeeId=" . $this->oEmployee->getTimecardId() . " AND yearmonth LIKE '" . $this->year . "-%' ORDER BY yearmonth ";
+		$query = "SELECT * FROM Employee_Cache_Planning WHERE EmployeeId=" . $this->oEmployee->getTimecardId() . " AND yearmonth LIKE '" . $this->year . "-%' ORDER BY yearmonth ";
 
 		$res = mysql_query($query, $oConn->getConnection());
 		$recordsFound = 0;

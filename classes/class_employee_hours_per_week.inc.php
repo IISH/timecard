@@ -40,7 +40,7 @@ class class_employee_hours_per_week {
 
 		$isRecordFound = false;
 
-		$query = "SELECT * FROM Employee_Hours_Per_Week WHERE EmployeeID={$this->oEmployee->getTimecardId()} AND year={$this->year}";
+		$query = "SELECT * FROM Employee_Cache_Hours_Per_Week WHERE EmployeeID={$this->oEmployee->getTimecardId()} AND year={$this->year}";
 
 		$result = mysql_query($query, $oConn->getConnection());
 		if ($row = mysql_fetch_assoc($result)) {

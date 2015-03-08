@@ -73,7 +73,7 @@ class class_refresh_employee_hours_per_week {
 		$totalHoursPerWeekText = addslashes($this->totalHoursPerWeekText);
 
 		$query = "
-INSERT INTO Employee_Hours_Per_Week (
+INSERT INTO Employee_Cache_Hours_Per_Week (
 	EmployeeID
 	, year
 	, last_refresh
@@ -99,7 +99,7 @@ INSERT INTO Employee_Hours_Per_Week (
 		$totalHoursPerWeekText = addslashes($this->totalHoursPerWeekText);
 
 		$query = "
-UPDATE Employee_Hours_Per_Week
+UPDATE Employee_Cache_Hours_Per_Week
 SET
 	last_refresh = '{$curtime}'
 	, hours_per_week = {$this->totalHoursPerWeek}
@@ -121,7 +121,7 @@ WHERE EmployeeID = {$this->oEmployee->getTimecardId()} AND year = {$this->year}"
 		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
 
-		$query = "SELECT * FROM Employee_Hours_Per_Week WHERE EmployeeID=" . $this->oEmployee->getTimecardId() . " AND year=" . $this->year;
+		$query = "SELECT * FROM Employee_Cache_Hours_Per_Week WHERE EmployeeID=" . $this->oEmployee->getTimecardId() . " AND year=" . $this->year;
 
 		$result = mysql_query($query, $oConn->getConnection());
 		if ($row = mysql_fetch_assoc($result)) {

@@ -150,7 +150,7 @@ public function refresh( $force_refresh = false ) {
 //		$totalHoursPerWeekText = addslashes($this->totalHoursPerWeekText);
 
 		$query = "
-INSERT INTO Employee_Planning (
+INSERT INTO `Employee_Cache_Planning` (
 	EmployeeID
 	, yearmonth
 	, last_refresh
@@ -162,8 +162,9 @@ INSERT INTO Employee_Planning (
 
 		$result = mysql_query($query, $oConn->getConnection());
 
-		$this->updateRecordNationalHoliday( $month );
-		$this->updateRecordBrugdag( $month );
+		// TODO temp disabled
+		//$this->updateRecordNationalHoliday( $month );
+		//$this->updateRecordBrugdag( $month );
 	}
 
 	// TODOEXPLAIN
@@ -179,7 +180,7 @@ INSERT INTO Employee_Planning (
 		$total = 0;
 
 		$query = "
-UPDATE `Employee_Planning`
+UPDATE `Employee_Cache_Planning`
 SET
 ";
 
@@ -210,8 +211,9 @@ WHERE `EmployeeID` = {$this->oEmployee->getTimecardId()} AND `yearmonth` = '{$th
 
 		$result = mysql_query($query, $oConn->getConnection());
 
-		$this->updateRecordNationalHoliday( $month );
-		$this->updateRecordBrugdag( $month );
+		// TODO temp disabled
+		//$this->updateRecordNationalHoliday( $month );
+		//$this->updateRecordBrugdag( $month );
 	}
 
 	// TODOEXPLAIN
@@ -224,7 +226,7 @@ WHERE `EmployeeID` = {$this->oEmployee->getTimecardId()} AND `yearmonth` = '{$th
 		$oConn->connect();
 
 		$query = "
-UPDATE `Employee_Planning`
+UPDATE `Employee_Cache_Planning`
 SET
 ";
 
@@ -264,7 +266,7 @@ WHERE `EmployeeID` = {$this->oEmployee->getTimecardId()} AND `yearmonth` = '{$th
 		$oConn->connect();
 
 		$query = "
-UPDATE `Employee_Planning`
+UPDATE `Employee_Cache_Planning`
 SET
 ";
 
@@ -306,7 +308,7 @@ WHERE `EmployeeID` = {$this->oEmployee->getTimecardId()} AND `yearmonth` = '{$th
 		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
 
-		$query = "SELECT * FROM Employee_Planning WHERE EmployeeID=" . $this->oEmployee->getTimecardId() . " AND yearmonth='" . $this->year . '-' . substr('0'.$month,-2) . "' ";
+		$query = "SELECT * FROM Employee_Cache_Planning WHERE EmployeeID=" . $this->oEmployee->getTimecardId() . " AND yearmonth='" . $this->year . '-' . substr('0'.$month,-2) . "' ";
 
 		$result = mysql_query($query, $oConn->getConnection());
 		if ($row = mysql_fetch_assoc($result)) {

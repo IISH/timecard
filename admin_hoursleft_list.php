@@ -212,8 +212,10 @@ $ret .= "
 		$ret = str_replace('{a}', 'TH', $ret);
 		$ret = str_replace('{a_title}', 'Total Hours', $ret);
 
-		$ret = str_replace('{b}', 'B', $ret);
-		$ret = str_replace('{b_title}', "Already booked\n- National holidays\n- Brugdagen", $ret);
+//		$ret = str_replace('{b}', 'B', $ret);
+//		$ret = str_replace('{b_title}', "Already booked\n- National holidays\n- Brugdagen", $ret);
+		$ret = str_replace('{b}', 'A', $ret);
+		$ret = str_replace('{b_title}', "Not work related absences", $ret);
 
 		$ret = str_replace('{c}', 'P', $ret);
 		$ret = str_replace('{c_title}', 'Free for projects', $ret);
@@ -291,16 +293,17 @@ $ret .= "
 		<td align=right style=\"background-color:lightgrey\"><a title=\"{Q4_2_title}\">{Q4_2}</a></td>
 		<td align=right style=\"background-color:{Q4_3_color};border-right-style: solid;border-right-width: 2px;\">{Q4_3}</td>
 
-		<td align=right>{VL}</td>
-		<td align=right>{L100}</td>
-		<td align=right>{L80}</td>
+		<td align=right>{vacation_left}</td>
+		<td align=right>{left_total_100_percent}</td>
+		<td align=right>{left_total_percentage_rule}</td>
 	</tr>
 ";
 
 		for ( $i = 0; $i < count($arrEmployees); $i++ ) {
 			$oEmployee = $arrEmployees[$i];
 
-			$hoursForPlanning = new class_employee_hours_for_planning( $oEmployee, date("Y") );
+			$oHoursForPlanning = new class_employee_hours_for_planning( $oEmployee, date("Y") );
+			$oAbsences = new class_employee_not_work_related_absences( $oEmployee, date("Y") );
 
 			$tmp = $template;
 
@@ -324,25 +327,31 @@ $ret .= "
 			$monthTitles = array();
 
 			for ( $j = 1; $j <= 12; $j++ ) {
-				$monthWorkTotals["$j"] = $hoursForPlanning->getWorkValue(date("Y") . '-' . substr('0'.$j,-2));
-				$monthAbsenceTotals["$j"] = $hoursForPlanning->getNationalHolidayValue(date("Y") . '-' . substr('0'.$j,-2)) + $hoursForPlanning->getBrugdagValue(date("Y") . '-' . substr('0'.$j,-2));
+				$monthWorkTotals["$j"] = $oHoursForPlanning->getWorkValue(date("Y") . '-' . substr('0'.$j,-2));
+//				$monthAbsenceTotals["$j"] = $hoursForPlanning->getNationalHolidayValue(date("Y") . '-' . substr('0'.$j,-2)) + $hoursForPlanning->getBrugdagValue(date("Y") . '-' . substr('0'.$j,-2));
+				$monthAbsenceTotals["$j"] = $oAbsences->getTotalInHoursForSpecifiedMonth( date("Y") . substr('0'.$j,-2) );
 				$difference = $monthWorkTotals["$j"] - $monthAbsenceTotals["$j"];
 				if ( $difference < 0 ) {
 //					$difference = 0;
 				}
 				$monthDifferenceTotals["$j"] = $difference;
-				$numberOfNationalHolidays["$j"] = $hoursForPlanning->getNumberOfNationalHolidays( date("Y") . '-' . substr('0'.$j,-2) );
-				$numberOfBrugdagen["$j"] = $hoursForPlanning->getNumberOfBrugdagen( date("Y") . '-' . substr('0'.$j,-2) );
 
+//				$numberOfNationalHolidays["$j"] = $hoursForPlanning->getNumberOfNationalHolidays( date("Y") . '-' . substr('0'.$j,-2) );
+//				$numberOfBrugdagen["$j"] = $hoursForPlanning->getNumberOfBrugdagen( date("Y") . '-' . substr('0'.$j,-2) );
+
+				//
 				$title = '';
-				if ( $numberOfNationalHolidays["$j"] > 0 ) {
-					$days = ( $numberOfNationalHolidays["$j"] == 1 ) ? 'day' : 'days';
-					$title .= "- National holiday: " . $numberOfNationalHolidays["$j"] . " $days\n";
+				if ( $monthAbsenceTotals["$j"] > 0 ) {
+					$title .= $oAbsences->getSummarizationForSpecifiedMonth( date("Y") . substr('0'.$j,-2) );
 				}
-				if ( $numberOfBrugdagen["$j"] > 0 ) {
-					$days = ( $numberOfBrugdagen["$j"] == 1 ) ? 'day' : 'days';
-					$title .= "- Brugdag: " . $numberOfBrugdagen["$j"] . " $days\n";
-				}
+//				if ( $numberOfNationalHolidays["$j"] > 0 ) {
+//					$days = ( $numberOfNationalHolidays["$j"] == 1 ) ? 'day' : 'days';
+//					$title .= "- National holiday: " . $numberOfNationalHolidays["$j"] . " $days\n";
+//				}
+//				if ( $numberOfBrugdagen["$j"] > 0 ) {
+//					$days = ( $numberOfBrugdagen["$j"] == 1 ) ? 'day' : 'days';
+//					$title .= "- Brugdag: " . $numberOfBrugdagen["$j"] . " $days\n";
+//				}
 				if ( $title != '' ) {
 					$oTmpDate = new TCDateTime();
 					$oTmpDate->setFromString(date("Y") . '-' . substr('0'.$j,-2) . "-01", "Y-m-d");
@@ -369,6 +378,11 @@ $ret .= "
 			}
 
 			$yearWorkTotal = $quarterWorkTotals["1"] + $quarterWorkTotals["2"] + $quarterWorkTotals["3"] + $quarterWorkTotals["4"];
+
+			// TODO
+			$vacationLeft = 0;
+
+			$yearLeftTotal = $quarterDifferenceTotals["1"] + $quarterDifferenceTotals["2"] + $quarterDifferenceTotals["3"] + $quarterDifferenceTotals["4"] - $vacationLeft;
 
 			// hours per week
 			$oHoursPerWeek = $oEmployee->getHoursPerWeek3($year);
@@ -401,9 +415,14 @@ $ret .= "
 				}
 				$tmp = str_replace('{Q' . $j .'_2_title}', $quarterTitles["$j"], $tmp);
 			}
+
 			// year
 			$tmp = str_replace('{year_total_100_percent}', hoursLeft_formatNumber($yearWorkTotal), $tmp);
 			$tmp = str_replace('{year_total_percentage_rule}', hoursLeft_formatNumber($yearWorkTotal * class_settings::getSetting("percentage_rule")), $tmp);
+			$tmp = str_replace('{left_total_100_percent}', hoursLeft_formatNumber($yearLeftTotal), $tmp);
+			$tmp = str_replace('{left_total_percentage_rule}', hoursLeft_formatNumber($yearLeftTotal * class_settings::getSetting("percentage_rule")), $tmp);
+
+			$tmp = str_replace('{vacation_left}', hoursLeft_formatNumber($vacationLeft), $tmp);
 
 			$ret .= $tmp;
 		}

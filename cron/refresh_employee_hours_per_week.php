@@ -1,6 +1,6 @@
 <?php
 require_once "../classes/start.inc.php";
-$path_parts['filename'] = 'refresh_employee_hours_per_week';
+$path_parts['filename'] = 'refresh_cache_employee_hours_per_week';
 
 // check cron key
 $cron_key = '';
