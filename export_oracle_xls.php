@@ -7,7 +7,7 @@ $oWebuser->checkLoggedIn();
 // check authorisation
 if ( !( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasReportsAuthorisation() ) ) {
 	echo "You are not authorized to access this page.<br>";
-	die('Go to <a href="index.php">time card home</a>');
+	die('Go to <a href="index.php">timecard home</a>');
 }
 
 // get protime worklocations

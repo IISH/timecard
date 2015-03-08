@@ -4,9 +4,9 @@ require_once "classes/start.inc.php";
 
 $oWebuser->checkLoggedIn();
 
-if ( !$oWebuser->hasAdminAuthorisation() ) {
+if ( !$oWebuser->hasAdminAuthorisation() && !$oWebuser->hasDepartmentAuthorisation() ) {
 	echo "You are not authorized to access this page.<br>";
-	die('Go to <a href="index.php">time card home</a>');
+	die('Go to <a href="index.php">timecard home</a>');
 }
 
 //

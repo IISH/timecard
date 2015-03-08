@@ -7,7 +7,7 @@ $oWebuser->checkLoggedIn();
 
 if ( !$oWebuser->hasAdminAuthorisation() ) {
 	echo "You are not authorized to access this page.<br>";
-	die('Go to <a href="index.php">time card home</a>');
+	die('Go to <a href="index.php">timecard home</a>');
 }
 
 // create webpage
