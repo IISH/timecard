@@ -110,6 +110,7 @@ class class_employee_hours_for_planning {
 		return "Class: " . get_class($this) . "\ntimecard #: " . $this->oEmployee->getTimecardId() . "\n";
 	}
 
+	// TODOEXPLAIN
 	public function getNumberOfNationalHolidays( $yyyy_mm ) {
 		if ( isset($this->number_of_nationalholidays[$yyyy_mm]) ) {
 			return $this->number_of_nationalholidays[$yyyy_mm];
@@ -118,6 +119,7 @@ class class_employee_hours_for_planning {
 		return 0;
 	}
 
+	// TODOEXPLAIN
 	public function getNumberOfBrugdagen( $yyyy_mm ) {
 		if ( isset($this->number_of_brugdagen[$yyyy_mm]) ) {
 			return $this->number_of_brugdagen[$yyyy_mm];

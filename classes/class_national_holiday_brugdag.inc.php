@@ -19,22 +19,22 @@ class class_national_holiday_brugdag {
 
 	// TODOEXPLAIN
 	private function initValues() {
-			$oConn = new class_mysql($this->databases['default']);
-			$oConn->connect();
+		$oConn = new class_mysql($this->databases['default']);
+		$oConn->connect();
 
-			$query = "SELECT * FROM Feestdagen WHERE datum LIKE '{$this->year}-%' AND isdeleted=0 ORDER BY datum ASC ";
+		$query = "SELECT * FROM Feestdagen WHERE datum LIKE '{$this->year}-%' AND isdeleted=0 ORDER BY datum ASC ";
 
-			$res = mysql_query($query, $oConn->getConnection());
-			while ($r = mysql_fetch_assoc($res)) {
+		$res = mysql_query($query, $oConn->getConnection());
+		while ($r = mysql_fetch_assoc($res)) {
 
-				$dayOfWeek = $r["DAYNR"];
-				if ( $dayOfWeek == '7' ) {
-					$dayOfWeek = '0';
-				}
-
-				$this->low[] = array('date' => $r["datum"], 'description' => $r['omschrijving'], 'vooreigenrekening' => $r['vooreigenrekening'], 'dayofweek' => $dayOfWeek);
+			$dayOfWeek = $r["DAYNR"];
+			if ( $dayOfWeek == '7' ) {
+				$dayOfWeek = '0';
 			}
-			mysql_free_result($res);
+
+			$this->low[] = array('date' => $r["datum"], 'description' => $r['omschrijving'], 'vooreigenrekening' => $r['vooreigenrekening'], 'dayofweek' => $dayOfWeek);
+		}
+		mysql_free_result($res);
 	}
 
 	// TODOEXPLAIN

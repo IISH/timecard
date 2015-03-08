@@ -48,7 +48,7 @@ class class_refresh_employee_hours_per_week {
 			foreach ( $oEmployeeHoursPerDayStarting->getStartDayTotals( true ) as $element ) {
 				$text .= "Starting " . $element['date'] . ' : ' . hoursLeft_formatNumber($element['minutes']/60.0,1,true) . " hours per week\n";
 			}
-//echo str_replace("\n", '<br>', $text);
+
 			$this->totalHoursPerWeekText = $text;
 
 			$this->saveRecord();

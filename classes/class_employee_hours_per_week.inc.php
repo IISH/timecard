@@ -22,18 +22,22 @@ class class_employee_hours_per_week {
 		$this->initValues( true );
 	}
 
+	// TODOEXPLAIN
 	public function getHoursPerWeek() {
 		return $this->hours_per_week;
 	}
 
+	// TODOEXPLAIN
 	public function getHoursPerWeekText() {
 		return $this->hours_per_week_text;
 	}
 
+	// TODOEXPLAIN
 	public function getLastRefresh() {
 		return $this->last_refresh;
 	}
 
+	// TODOEXPLAIN
 	private function initValues( $recursive = false ) {
 		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
@@ -60,6 +64,7 @@ class class_employee_hours_per_week {
 		}
 	}
 
+	// TODOEXPLAIN
 	public function refresh() {
 		$oRefresh = new class_refresh_employee_hours_per_week($this->oEmployee, $this->year);
 		$oRefresh->refresh( false );

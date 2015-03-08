@@ -102,15 +102,14 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 
 	if ( count($arrEmployees) > 0 ) {
 		$ret .= "
-
-<button onclick=\"hideMonths();\">Hide months</button>  &nbsp; <button onclick=\"showMonths();\">Show months</button>
+<a href=\"#\" onclick=\"javascript:hideMonths();return false;\" class=\"button extrabuttonmargin\">Hide months</a> &nbsp; <a href=\"#\" onclick=\"javascript:showMonths();return false;\" class=\"button extrabuttonmargin\">Show months</a>
 <!-- &nbsp; <button onclick=\"hidePastMonths();\">Hide past months</button> -->
 <br>
 <table border=1 id=\"tblHours\" CELLPADDING=\"3\">
 	<tr>
 		<th>Name</th>
 		<th>Hours per week</th>
-		<th>Year total</th>
+		<th><a title=\"Exact calculation of\nyear total\">Year total</a></th>
 		<th>Year total </th>
 		<th colspan=3>January</th>
 		<th colspan=3>February</th>
@@ -129,7 +128,7 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 		<th colspan=3>December</th>
 		<th colspan=3 style=\"background-color:lightgrey;border-left-style: solid;border-left-width: 2px;border-right-style: solid;border-right-width: 2px;\">Q4</th>
 		<th><a title=\"Not yet booked\nvacation hours\">Vacation hours</a></th>
-		<th><a title=\"After deduction of all absences,\nnational holidays, brugdagen\nand vacation days,\nthis are the hours available for projects\">Left (100%)</a></th>
+		<th><a title=\"After deduction of all absences,\nnational holidays, brugdagen\nand not booked vacation days,\nthis are the hours available for projects\">Left (100%)</a></th>
 		<th>Left (80%)</th>
 	</tr>
 ";
@@ -212,10 +211,9 @@ $ret .= "
 		$ret = str_replace('{a}', 'TH', $ret);
 		$ret = str_replace('{a_title}', 'Total Hours', $ret);
 
-//		$ret = str_replace('{b}', 'B', $ret);
+		$ret = str_replace('{b}', 'B', $ret);
 //		$ret = str_replace('{b_title}', "Already booked\n- National holidays\n- Brugdagen", $ret);
-		$ret = str_replace('{b}', 'A', $ret);
-		$ret = str_replace('{b_title}', "Not work related absences", $ret);
+		$ret = str_replace('{b_title}', "Not work related absences\nand booked 'vast werk'", $ret);
 
 		$ret = str_replace('{c}', 'P', $ret);
 		$ret = str_replace('{c_title}', 'Available for projects', $ret);
@@ -304,6 +302,7 @@ $ret .= "
 
 			$oHoursForPlanning = new class_employee_hours_for_planning( $oEmployee, date("Y") );
 			$oAbsences = new class_employee_not_work_related_absences( $oEmployee, date("Y") );
+			$oVastWerk = new class_employee_vast_werk( $oEmployee, date("Y") );
 
 			$tmp = $template;
 
@@ -325,11 +324,17 @@ $ret .= "
 			$numberOfNationalHolidays = array();
 			$numberOfBrugdagen = array();
 			$monthTitles = array();
+			$vastWerkTotals = array();
 
 			for ( $j = 1; $j <= 12; $j++ ) {
 				$monthWorkTotals["$j"] = $oHoursForPlanning->getWorkValue(date("Y") . '-' . substr('0'.$j,-2));
 //				$monthAbsenceTotals["$j"] = $hoursForPlanning->getNationalHolidayValue(date("Y") . '-' . substr('0'.$j,-2)) + $hoursForPlanning->getBrugdagValue(date("Y") . '-' . substr('0'.$j,-2));
-				$monthAbsenceTotals["$j"] = $oAbsences->getTotalInHoursForSpecifiedMonth( date("Y") . substr('0'.$j,-2) );
+
+				$vastWerkTotals["$j"] = $oVastWerk->getMonthTotal( $j );
+				$monthAbsenceTotals["$j"] = $oAbsences->getTotalInHoursForSpecifiedMonth( date("Y") . substr('0'.$j,-2) ) + $vastWerkTotals["$j"];
+
+//				$vastWerkTotals["$j"] = $oVastWerk->getMonthTotal( $j );
+
 				$difference = $monthWorkTotals["$j"] - $monthAbsenceTotals["$j"];
 				if ( $difference < 0 ) {
 //					$difference = 0;
@@ -343,6 +348,9 @@ $ret .= "
 				$title = '';
 				if ( $monthAbsenceTotals["$j"] > 0 ) {
 					$title .= $oAbsences->getSummarizationForSpecifiedMonth( date("Y") . substr('0'.$j,-2) );
+				}
+				if ( $vastWerkTotals["$j"] > 0 ) {
+					$title .= 'Vast werk: ' .  hoursLeft_formatNumber($vastWerkTotals["$j"]) . " hours\n";
 				}
 //				if ( $numberOfNationalHolidays["$j"] > 0 ) {
 //					$days = ( $numberOfNationalHolidays["$j"] == 1 ) ? 'day' : 'days';

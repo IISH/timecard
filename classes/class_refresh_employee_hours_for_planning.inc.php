@@ -30,10 +30,10 @@ class class_refresh_employee_hours_for_planning {
 
 		$this->oLow = new class_length_of_workday( $oEmployee );
 		$this->oNationalHolidayBrugdag = new class_national_holiday_brugdag( $year );
-}
+	}
 
-// TODOEXPLAIN
-public function refresh( $force_refresh = false ) {
+	// TODOEXPLAIN
+	public function refresh( $force_refresh = false ) {
 
 		for ( $i = 1; $i <= 12; $i++ ) {
 			unset($this->workPerDag);
@@ -63,13 +63,6 @@ public function refresh( $force_refresh = false ) {
 //				$oEmployeeHoursPerDayStarting = new class_employee_hours_per_day_starting($this->oEmployee, $this->year);
 //				$this->totalHoursPerWeek = $oEmployeeHoursPerDayStarting->getCurrentTotalHoursPerWeek();
 
-//				// get text for all hours per week until (including) the first one of a previous year
-//				$text = '';
-//				foreach ( $oEmployeeHoursPerDayStarting->getStartDayTotals( true ) as $element ) {
-//					$text .= "Starting " . $element['date'] . ' : ' . hoursLeft_formatNumber($element['minutes']/60.0,1,true) . " hours per week\n";
-//				}
-//echo str_replace("\n", '<br>', $text);
-
 				for ( $iDag = 1; $iDag <= 31; $iDag++ ) {
 					$concatDatum = $this->year . '-' . substr('0'.$i,-2) . '-' . substr('0'.$iDag,-2);
 
@@ -86,10 +79,7 @@ public function refresh( $force_refresh = false ) {
 
 					$this->workPerDag[ $iDag."" ] = $length;
 				}
-//echo count($this->workPerDag) . " ++++<br>";;
-//echo "Month $i<br><pre>";
-//print_r( $this->workPerDag );
-//echo '</pre>';
+
 				foreach ( $this->oNationalHolidayBrugdag->getAll() as $item ) {
 					if ( substr( $item['date'], 0, 8) == $this->year . '-' . substr('0'.$i,-2) . '-' ) {
 						$oDatum = new TCDateTime();
@@ -175,7 +165,6 @@ INSERT INTO `Employee_Cache_Planning` (
 		$oConn->connect();
 
 		$curtime = date( class_settings::getSetting("timeStampRefreshLowPriority") );
-//		$totalHoursPerWeekText = addslashes($this->totalHoursPerWeekText);
 
 		$total = 0;
 
@@ -194,10 +183,6 @@ SET
 
 			$total += $aantalUur;
 
-//			if ( $aantalUur > 0 ) {
-//				$aantalNationalHolidays++;
-//			}
-
 			$query .= $separator . "`work$i` = " . ($aantalUur*1.0);
 			$separator = ', ';
 		}
@@ -206,8 +191,6 @@ SET
 	, `total_work` = '{$total}'
 	, `last_refresh` = '{$curtime}'
 WHERE `EmployeeID` = {$this->oEmployee->getTimecardId()} AND `yearmonth` = '{$this->year}-{$month2}'";
-
-//echo "<br><br>" . $query . " ++<br>";
 
 		$result = mysql_query($query, $oConn->getConnection());
 

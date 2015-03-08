@@ -110,6 +110,10 @@ input, select, textarea {
 	padding-bottom: 3px;
 }
 
+.extrabuttonmargin {
+	line-height: 2;
+}
+
 h2 {
 	color: <?php echo $c; ?>;
 	margin-top: 0px;

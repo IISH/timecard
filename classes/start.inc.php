@@ -15,6 +15,7 @@ require_once dirname(__FILE__) . "/class_employee.inc.php";
 require_once dirname(__FILE__) . "/class_employee_hours_for_planning.inc.php";
 require_once dirname(__FILE__) . "/class_employee_hours_per_week.inc.php";
 require_once dirname(__FILE__) . "/class_employee_not_work_related_absences.inc.php";
+require_once dirname(__FILE__) . "/class_employee_vast_werk.inc.php";
 require_once dirname(__FILE__) . "/class_feestdag.inc.php";
 require_once dirname(__FILE__) . "/class_feestdagen.inc.php";
 //require_once dirname(__FILE__) . "/class_hoursperweek.inc.php";
