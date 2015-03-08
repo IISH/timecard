@@ -229,15 +229,15 @@ $ret .= "
 
 		<td align=right>{M1_1}</td>
 		<td align=right><a title=\"{M1_2_title}\">{M1_2}</a></td>
-		<td align=right>{M1_3}</td>
+		<td align=right style=\"background-color:{M1_3_color};\">{M1_3}</td>
 
 		<td align=right>{M2_1}</td>
 		<td align=right><a title=\"{M2_2_title}\">{M2_2}</a></td>
-		<td align=right>{M2_3}</td>
+		<td align=right style=\"background-color:{M2_3_color};\">{M2_3}</td>
 
 		<td align=right>{M3_1}</td>
 		<td align=right><a title=\"{M3_2_title}\">{M3_2}</a></td>
-		<td align=right>{M3_3}</td>
+		<td align=right style=\"background-color:{M3_3_color};\">{M3_3}</td>
 
 		<td align=right style=\"background-color:lightgrey;border-left-style: solid;border-left-width: 2px;\">{Q1_1}</td>
 		<td align=right style=\"background-color:lightgrey\"><a title=\"{Q1_2_title}\">{Q1_2}</a></td>
@@ -245,15 +245,15 @@ $ret .= "
 
 		<td align=right>{M4_1}</td>
 		<td align=right><a title=\"{M4_2_title}\">{M4_2}</a></td>
-		<td align=right>{M4_3}</td>
+		<td align=right style=\"background-color:{M4_3_color};\">{M4_3}</td>
 
 		<td align=right>{M5_1}</td>
 		<td align=right><a title=\"{M5_2_title}\">{M5_2}</a></td>
-		<td align=right>{M5_3}</td>
+		<td align=right style=\"background-color:{M5_3_color};\">{M5_3}</td>
 
 		<td align=right>{M6_1}</td>
 		<td align=right><a title=\"{M6_2_title}\">{M6_2}</a></td>
-		<td align=right>{M6_3}</td>
+		<td align=right style=\"background-color:{M6_3_color};\">{M6_3}</td>
 
 		<td align=right style=\"background-color:lightgrey;border-left-style: solid;border-left-width: 2px;\">{Q2_1}</td>
 		<td align=right style=\"background-color:lightgrey\"><a title=\"{Q2_2_title}\">{Q2_2}</a></td>
@@ -261,15 +261,15 @@ $ret .= "
 
 		<td align=right>{M7_1}</td>
 		<td align=right><a title=\"{M7_2_title}\">{M7_2}</a></td>
-		<td align=right>{M7_3}</td>
+		<td align=right style=\"background-color:{M7_3_color};\">{M7_3}</td>
 
 		<td align=right>{M8_1}</td>
 		<td align=right><a title=\"{M8_2_title}\">{M8_2}</a></td>
-		<td align=right>{M8_3}</td>
+		<td align=right style=\"background-color:{M8_3_color};\">{M8_3}</td>
 
 		<td align=right>{M9_1}</td>
 		<td align=right><a title=\"{M9_2_title}\">{M9_2}</a></td>
-		<td align=right>{M9_3}</td>
+		<td align=right style=\"background-color:{M9_3_color};\">{M9_3}</td>
 
 		<td align=right style=\"background-color:lightgrey;border-left-style: solid;border-left-width: 2px;\">{Q3_1}</td>
 		<td align=right style=\"background-color:lightgrey\"><a title=\"{Q3_2_title}\">{Q3_2}</a></td>
@@ -277,15 +277,15 @@ $ret .= "
 
 		<td align=right>{M10_1}</td>
 		<td align=right><a title=\"{M10_2_title}\">{M10_2}</a></td>
-		<td align=right>{M10_3}</td>
+		<td align=right style=\"background-color:{M10_3_color};\">{M10_3}</td>
 
 		<td align=right>{M11_1}</td>
 		<td align=right><a title=\"{M11_2_title}\">{M11_2}</a></td>
-		<td align=right>{M11_3}</td>
+		<td align=right style=\"background-color:{M11_3_color};\">{M11_3}</td>
 
 		<td align=right>{M12_1}</td>
 		<td align=right><a title=\"{M12_2_title}\">{M12_2}</a></td>
-		<td align=right>{M12_3}</td>
+		<td align=right style=\"background-color:{M12_3_color};\">{M12_3}</td>
 
 		<td align=right style=\"background-color:lightgrey;border-left-style: solid;border-left-width: 2px;\">{Q4_1}</td>
 		<td align=right style=\"background-color:lightgrey\"><a title=\"{Q4_2_title}\">{Q4_2}</a></td>
@@ -406,7 +406,15 @@ $ret .= "
 				$tmp = str_replace('{M' . $j .'_2}', hoursLeft_formatNumber($monthAbsenceTotals["$j"]), $tmp);
 				$tmp = str_replace('{M' . $j .'_3}', hoursLeft_formatNumber($monthDifferenceTotals["$j"]), $tmp);
 
+				// title for absence/booked column
 				$tmp = str_replace('{M' . $j .'_2_title}', $monthTitles["$j"], $tmp);
+
+				// color for project column
+				if ( $monthDifferenceTotals["$j"] < 0.0 ) {
+					$tmp = str_replace('{M' . $j .'_3_color}', 'yellow', $tmp);
+				} else {
+					$tmp = str_replace('{M' . $j .'_3_color}', 'white', $tmp);
+				}
 			}
 			// quarter
 			for ( $j = 1; $j <= 4; $j++ ) {
