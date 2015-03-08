@@ -38,6 +38,7 @@ if ( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasFaAuthorisation() ) {
 }
 if ( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasDepartmentAuthorisation() ) {
 	$menu->addMenuItem( new class_menuitem('pl.hoursleft', 'Hours for planning', 'admin_hoursleft.php') );
+	$menu->addMenuItem( new class_menuitem('pl.vastwerk', 'Vast werk', 'vast_werk.php') );
 }
 
 // + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
