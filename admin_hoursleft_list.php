@@ -78,19 +78,20 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 		$month = date("m");
 	}
 
-	// calculate number of holidays until end of year
-	$nrOfHolidays = 0;
-	$queryHolidays = "SELECT COUNT(*) AS aantal FROM Feestdagen WHERE datum LIKE '" . $year . "%' AND datum>='" . date("Y-m-d") . "' AND isdeleted=0 ";
-	$resultHolidays = mysql_query($queryHolidays, $oConn->getConnection());
-	if ( $rowHolidays = mysql_fetch_array($resultHolidays) ) {
-		$nrOfHolidays = $rowHolidays["aantal"];
-	}
-	mysql_free_result($resultHolidays);
+//	// calculate number of holidays until end of year
+//	$nrOfHolidays = 0;
+//	$queryHolidays = "SELECT COUNT(*) AS aantal FROM Feestdagen WHERE datum LIKE '" . $year . "%' AND datum>='" . date("Y-m-d") . "' AND isdeleted=0 ";
+//	$resultHolidays = mysql_query($queryHolidays, $oConn->getConnection());
+//	if ( $rowHolidays = mysql_fetch_array($resultHolidays) ) {
+//		$nrOfHolidays = $rowHolidays["aantal"];
+//	}
+//	mysql_free_result($resultHolidays);
 	//
 
 	$oConn->connect();
+
 	// loop employees
-	$querySelect = "SELECT ID FROM vw_Employees WHERE 1=1 and is_test_account=0 " . $queryCriterium . " ORDER BY FIRSTNAME, NAME ";
+	$querySelect = "SELECT ID FROM vw_Employees WHERE isdisabled=0 AND is_test_account=0 " . $queryCriterium . " ORDER BY FIRSTNAME, NAME ";
 
 	$resultSelect = mysql_query($querySelect, $oConn->getConnection());
 
@@ -109,8 +110,8 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 	<tr>
 		<th>Name</th>
 		<th>Hours per week</th>
-		<th><a title=\"Exact calculation of\nyear total\">Year total</a></th>
-		<th>Year total </th>
+		<th><a title=\"Exact calculation of\nyear total\">Year total (100%)</a></th>
+		<th>Year total (" . (int)(class_settings::getSetting("percentage_rule")*100.0) . "%)</th>
 		<th colspan=3>January</th>
 		<th colspan=3>February</th>
 		<th colspan=3>March</th>
@@ -132,13 +133,17 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 		<th>Left (80%)</th>
 	</tr>
 ";
-$ret .= "
+
+		$ret .= "
 	<tr>
 		<td>&nbsp;</td>
 		<td>&nbsp;</td>
-		<td align=center>(100%)</td>
-		<td align=center>(" . (int)(class_settings::getSetting("percentage_rule")*100.0) . "%)</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+";
 
+		for ( $i =1 ; $i <= 4; $i++ ) {
+			$ret .= "
 		<td align=center><a title=\"{a_title}\">{a}</a></td>
 		<td align=center><a title=\"{b_title}\">{b}</a></td>
 		<td align=center><a title=\"{c_title}\">{c}</a></td>
@@ -154,55 +159,10 @@ $ret .= "
 		<td align=center style=\"background-color:lightgrey;border-left-style: solid;border-left-width: 2px;\"><a title=\"{a_title}\">{a}</a></td>
 		<td align=center style=\"background-color:lightgrey\"><a title=\"{b_title}\">{b}</a></td>
 		<td align=center style=\"background-color:lightgrey;border-right-style: solid;border-right-width: 2px;\"><a title=\"{c_title}\">{c}</a></td>
+";
+		}
 
-		<td align=center><a title=\"{a_title}\">{a}</a></td>
-		<td align=center><a title=\"{b_title}\">{b}</a></td>
-		<td align=center><a title=\"{c_title}\">{c}</a></td>
-
-		<td align=center><a title=\"{a_title}\">{a}</a></td>
-		<td align=center><a title=\"{b_title}\">{b}</a></td>
-		<td align=center><a title=\"{c_title}\">{c}</a></td>
-
-		<td align=center><a title=\"{a_title}\">{a}</a></td>
-		<td align=center><a title=\"{b_title}\">{b}</a></td>
-		<td align=center><a title=\"{c_title}\">{c}</a></td>
-
-		<td align=center style=\"background-color:lightgrey;border-left-style: solid;border-left-width: 2px;\"><a title=\"{a_title}\">{a}</a></td>
-		<td align=center style=\"background-color:lightgrey\"><a title=\"{b_title}\">{b}</a></td>
-		<td align=center style=\"background-color:lightgrey;border-right-style: solid;border-right-width: 2px;\"><a title=\"{c_title}\">{c}</a></td>
-
-		<td align=center><a title=\"{a_title}\">{a}</a></td>
-		<td align=center><a title=\"{b_title}\">{b}</a></td>
-		<td align=center><a title=\"{c_title}\">{c}</a></td>
-
-		<td align=center><a title=\"{a_title}\">{a}</a></td>
-		<td align=center><a title=\"{b_title}\">{b}</a></td>
-		<td align=center><a title=\"{c_title}\">{c}</a></td>
-
-		<td align=center><a title=\"{a_title}\">{a}</a></td>
-		<td align=center><a title=\"{b_title}\">{b}</a></td>
-		<td align=center><a title=\"{c_title}\">{c}</a></td>
-
-		<td align=center style=\"background-color:lightgrey;border-left-style: solid;border-left-width: 2px;\"><a title=\"{a_title}\">{a}</a></td>
-		<td align=center style=\"background-color:lightgrey\"><a title=\"{b_title}\">{b}</a></td>
-		<td align=center style=\"background-color:lightgrey;border-right-style: solid;border-right-width: 2px;\"><a title=\"{c_title}\">{c}</a></td>
-
-		<td align=center><a title=\"{a_title}\">{a}</a></td>
-		<td align=center><a title=\"{b_title}\">{b}</a></td>
-		<td align=center><a title=\"{c_title}\">{c}</a></td>
-
-		<td align=center><a title=\"{a_title}\">{a}</a></td>
-		<td align=center><a title=\"{b_title}\">{b}</a></td>
-		<td align=center><a title=\"{c_title}\">{c}</a></td>
-
-		<td align=center><a title=\"{a_title}\">{a}</a></td>
-		<td align=center><a title=\"{b_title}\">{b}</a></td>
-		<td align=center><a title=\"{c_title}\">{c}</a></td>
-
-		<td align=center style=\"background-color:lightgrey;border-left-style: solid;border-left-width: 2px;\"><a title=\"{a_title}\">{a}</a></td>
-		<td align=center style=\"background-color:lightgrey\"><a title=\"{b_title}\">{b}</a></td>
-		<td align=center style=\"background-color:lightgrey;border-right-style: solid;border-right-width: 2px;\"><a title=\"{c_title}\">{c}</a></td>
-
+		$ret .= "
 		<td align=center colspan=3>&nbsp;</td>
 	</tr>
 ";
@@ -400,6 +360,7 @@ $ret .= "
 
 			// name link
 			$tmp = str_replace('{name}', $tmpDiv . $nameLink, $tmp);
+
 			// months
 			for ( $j = 1; $j <= 12; $j++ ) {
 				$tmp = str_replace('{M' . $j .'_1}', hoursLeft_formatNumber($monthWorkTotals["$j"]), $tmp);
@@ -410,23 +371,30 @@ $ret .= "
 				$tmp = str_replace('{M' . $j .'_2_title}', $monthTitles["$j"], $tmp);
 
 				// color for project column
-				if ( $monthDifferenceTotals["$j"] < 0.0 ) {
-					$tmp = str_replace('{M' . $j .'_3_color}', 'yellow', $tmp);
-				} else {
-					$tmp = str_replace('{M' . $j .'_3_color}', 'white', $tmp);
-				}
+//				if ( $monthDifferenceTotals["$j"] < 0.0 ) {
+//					$tmp = str_replace('{M' . $j .'_3_color}', 'yellow', $tmp);
+//				} else {
+//					$tmp = str_replace('{M' . $j .'_3_color}', 'white', $tmp);
+//				}
+				$tmp = str_replace('{M' . $j .'_3_color}', getListColor($monthDifferenceTotals["$j"]), $tmp);
 			}
+
 			// quarter
 			for ( $j = 1; $j <= 4; $j++ ) {
 				$tmp = str_replace('{Q' . $j .'_1}', hoursLeft_formatNumber($quarterWorkTotals["$j"]), $tmp);
 				$tmp = str_replace('{Q' . $j .'_2}', hoursLeft_formatNumber($quarterAbsenceTotals["$j"]), $tmp);
 				$tmp = str_replace('{Q' . $j .'_3}', hoursLeft_formatNumber($quarterDifferenceTotals["$j"]), $tmp);
-				if ( $quarterDifferenceTotals["$j"] < 0 ) {
-					$tmp = str_replace('{Q' . $j .'_3_color}', 'yellow', $tmp);
-				} else {
-					$tmp = str_replace('{Q' . $j .'_3_color}', 'lightgrey', $tmp);
-				}
+
+				// title for absence/booked column
 				$tmp = str_replace('{Q' . $j .'_2_title}', $quarterTitles["$j"], $tmp);
+
+				// color for project column
+//				if ( $quarterDifferenceTotals["$j"] < 0 ) {
+//					$tmp = str_replace('{Q' . $j .'_3_color}', 'yellow', $tmp);
+//				} else {
+//					$tmp = str_replace('{Q' . $j .'_3_color}', 'lightgrey', $tmp);
+//				}
+				$tmp = str_replace('{Q' . $j .'_3_color}', getListColor($quarterDifferenceTotals["$j"], 'lightgrey'), $tmp);
 			}
 
 			// year
@@ -591,4 +559,16 @@ $ret .= "
 //	}
 
 	return $ret;
+}
+
+function getListColor( $value, $default_color = 'white' ) {
+	$color = $default_color;
+
+	if ( $value < -5 ) {
+		$color = 'red';
+	} elseif ( $value < 0 ) {
+		$color = 'yellow';
+	}
+
+	return $color;
 }

@@ -97,6 +97,7 @@ function createEmployeesEditContent() {
 		'fieldname' => 'allow_additions_starting_date'
 		, 'fieldlabel' => 'Allow additions starting (yyyy-mm-dd)'
 		, 'size' => 35
+		, 'onNew' => date("Y-m-01")
 	)));
 
 	$oForm->add_field( new class_field_readonly ( array(
