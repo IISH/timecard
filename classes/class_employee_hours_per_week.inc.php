@@ -19,6 +19,9 @@ class class_employee_hours_per_week {
 		$this->year = $year;
 		$this->databases = $databases;
 
+		// TODO remove refresh
+		//$this->refresh( true );
+
 		$this->initValues( true );
 	}
 
@@ -65,9 +68,9 @@ class class_employee_hours_per_week {
 	}
 
 	// TODOEXPLAIN
-	public function refresh() {
+	public function refresh( $force_refresh = false ) {
 		$oRefresh = new class_refresh_employee_hours_per_week($this->oEmployee, $this->year);
-		$oRefresh->refresh( false );
+		$oRefresh->refresh( $force_refresh );
 
 		//
 		$this->initValues( false );

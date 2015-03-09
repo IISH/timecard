@@ -30,6 +30,9 @@ class class_refresh_employee_hours_for_planning {
 
 		$this->oLow = new class_length_of_workday( $oEmployee );
 		$this->oNationalHolidayBrugdag = new class_national_holiday_brugdag( $year );
+
+		// TODO remove refresh
+		//$this->refresh( true );
 	}
 
 	// TODOEXPLAIN

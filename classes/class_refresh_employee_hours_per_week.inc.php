@@ -154,15 +154,30 @@ class class_employee_hours_per_day_starting {
 		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
 
+		// OLD QUERY
 		// exclude datefrom starting a year in the future
-		$query = "SELECT PROTIME_LNK_CURRIC_PROFILE.DATEFROM, PROTIME_CYC_DP.DAYNR, PROTIME_DAYPROG.NORM
+		$query = "
+SELECT PROTIME_LNK_CURRIC_PROFILE.DATEFROM, PROTIME_CYC_DP.DAYNR, PROTIME_DAYPROG.NORM
 FROM PROTIME_LNK_CURRIC_PROFILE
-LEFT JOIN PROTIME_CYC_DP ON PROTIME_LNK_CURRIC_PROFILE.PROFILE = PROTIME_CYC_DP.CYCLIQ
-LEFT JOIN PROTIME_DAYPROG ON PROTIME_CYC_DP.DAYPROG = PROTIME_DAYPROG.DAYPROG
+	LEFT JOIN PROTIME_CYC_DP ON PROTIME_LNK_CURRIC_PROFILE.PROFILE = PROTIME_CYC_DP.CYCLIQ
+	LEFT JOIN PROTIME_DAYPROG ON PROTIME_CYC_DP.DAYPROG = PROTIME_DAYPROG.DAYPROG
 WHERE PROFILETYPE = '4'
-AND PERSNR = '" . $this->oEmployee->getProtimeId() . "'
-AND PROTIME_LNK_CURRIC_PROFILE.DATEFROM < '" . ($this->last_year+1)  . "'
-ORDER BY DATEFROM DESC , PROTIME_CYC_DP.DAYNR ASC
+	AND PERSNR = '" . $this->oEmployee->getProtimeId() . "'
+	AND PROTIME_LNK_CURRIC_PROFILE.DATEFROM < '" . ($this->last_year+1)  . "'
+	AND PROTIME_CYC_DP.DAYNR <= 7
+ORDER BY DATEFROM DESC, CAST(PROTIME_CYC_DP.DAYNR AS UNSIGNED) ASC
+";
+		// nieuwe query naar aanleiding van wisselende week roosters
+		$query = "
+SELECT PROTIME_LNK_CURRIC_PROFILE.DATEFROM, MOD(CAST(PROTIME_CYC_DP.DAYNR AS UNSIGNED),7) AS DAG, SUM(PROTIME_DAYPROG.NORM)/count(*) AS HOEVEEL
+FROM PROTIME_LNK_CURRIC_PROFILE
+	LEFT JOIN PROTIME_CYC_DP ON PROTIME_LNK_CURRIC_PROFILE.PROFILE = PROTIME_CYC_DP.CYCLIQ
+	LEFT JOIN PROTIME_DAYPROG ON PROTIME_CYC_DP.DAYPROG = PROTIME_DAYPROG.DAYPROG
+WHERE PROFILETYPE = '4'
+	AND PERSNR = '" . $this->oEmployee->getProtimeId() . "'
+	AND PROTIME_LNK_CURRIC_PROFILE.DATEFROM < '" . ($this->last_year+1)  . "'
+GROUP BY PROTIME_LNK_CURRIC_PROFILE.DATEFROM, MOD(CAST(PROTIME_CYC_DP.DAYNR AS UNSIGNED),7)
+ORDER BY PROTIME_LNK_CURRIC_PROFILE.DATEFROM DESC, MOD(CAST(PROTIME_CYC_DP.DAYNR AS UNSIGNED),7) ASC
 ";
 
 		$lastDate = '';
@@ -170,14 +185,17 @@ ORDER BY DATEFROM DESC , PROTIME_CYC_DP.DAYNR ASC
 
 		$result = mysql_query($query, $oConn->getConnection());
 		while ($row = mysql_fetch_assoc($result)) {
+
 			// convert date format
 			$oTCDate = new TCDateTime();
 			$oTCDate->setFromString($row['DATEFROM'], "Ymd");
 			$date = $oTCDate->getToString("Y-m-d");
 
 			//
-			$dayOfWeek = $row['DAYNR'];
-			$minutes = $row['NORM'];
+//			$dayOfWeek = $row['DAYNR'];
+//			$minutes = $row['NORM'];
+			$dayOfWeek = $row['DAG'];
+			$minutes = $row['HOEVEEL'];
 
 			if ( $lastDate != '' && $lastDate != $date ) {
 				// save in grouped array
@@ -189,10 +207,19 @@ ORDER BY DATEFROM DESC , PROTIME_CYC_DP.DAYNR ASC
 			$total += $minutes;
 			$lastDate = $date;
 		}
+
 		if ( $lastDate != '' ) {
 			// save in grouped array
 			$this->startDayTotals[] = array( 'date' => $lastDate, 'minutes' => $total );
 		}
+
+//echo '<pre>';
+//print_r( $this->arr );
+//echo '</pre>';
+//echo '<hr>';
+//echo '<pre>';
+//print_r( $this->startDayTotals );
+//echo '</pre>';
 
 		mysql_free_result($result);
 	}
