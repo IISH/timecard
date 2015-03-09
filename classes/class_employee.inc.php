@@ -7,7 +7,7 @@ class class_employee {
 	private $databases;
 	private $protime_id = 0;
 	private $hoursdoublefield = '';
-	private $is_disabled = 0;
+	private $isdisabled = 0;
 	private $lastname = '';
 	private $firstname = '';
 	private $hoursperweek = 0;
@@ -44,7 +44,7 @@ class class_employee {
 		$resultReset = mysql_query($query_project, $oConn->getConnection());
 		if ($row_project = mysql_fetch_assoc($resultReset)) {
 
-			$this->is_disabled = $row_project["is_disabled"];
+			$this->isdisabled = $row_project["isdisabled"];
 			$this->protime_id = $row_project["ProtimePersNr"];
 			$this->lastname = $row_project["NAME"];
 			$this->firstname = $row_project["FIRSTNAME"];
@@ -117,7 +117,7 @@ class class_employee {
 
 	// TODOEXPLAIN
 	function isDisabled() {
-		return $this->is_disabled;
+		return $this->isdisabled;
 	}
 
 	// TODOEXPLAIN

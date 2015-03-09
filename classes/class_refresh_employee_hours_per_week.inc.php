@@ -154,6 +154,7 @@ class class_employee_hours_per_day_starting {
 		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
 
+		// exclude datefrom starting a year in the future
 		$query = "SELECT PROTIME_LNK_CURRIC_PROFILE.DATEFROM, PROTIME_CYC_DP.DAYNR, PROTIME_DAYPROG.NORM
 FROM PROTIME_LNK_CURRIC_PROFILE
 LEFT JOIN PROTIME_CYC_DP ON PROTIME_LNK_CURRIC_PROFILE.PROFILE = PROTIME_CYC_DP.CYCLIQ
@@ -192,7 +193,6 @@ ORDER BY DATEFROM DESC , PROTIME_CYC_DP.DAYNR ASC
 			// save in grouped array
 			$this->startDayTotals[] = array( 'date' => $lastDate, 'minutes' => $total );
 		}
-
 
 		mysql_free_result($result);
 	}
