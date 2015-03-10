@@ -102,6 +102,7 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 	}
 
 	if ( count($arrEmployees) > 0 ) {
+		$fixedColWidth = "70px";
 		$ret .= "
 <a href=\"#\" onclick=\"javascript:hideMonths();return false;\" class=\"button extrabuttonmargin\">Hide months</a> &nbsp; <a href=\"#\" onclick=\"javascript:showMonths();return false;\" class=\"button extrabuttonmargin\">Show months</a>
 <!-- &nbsp; <button onclick=\"hidePastMonths();\">Hide past months</button> -->
@@ -109,9 +110,9 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 <table border=1 id=\"tblHours\" CELLPADDING=\"3\">
 	<tr>
 		<th>Name</th>
-		<th>Hours per week</th>
-		<th><a title=\"Exact calculation of\nyear total\">Year total (100%)</a></th>
-		<th>Year total (" . (int)(class_settings::getSetting("percentage_rule")*100.0) . "%)</th>
+		<th style=\"width:$fixedColWidth;\">Hours per week</th>
+		<th style=\"width:$fixedColWidth;\"><a title=\"Exact calculation of\nyear total\">Year total (100%)</a></th>
+		<th style=\"width:$fixedColWidth;\">Year total (" . (int)(class_settings::getSetting("percentage_rule")*100.0) . "%)</th>
 		<th colspan=3>January</th>
 		<th colspan=3>February</th>
 		<th colspan=3>March</th>
@@ -128,9 +129,9 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 		<th colspan=3>November</th>
 		<th colspan=3>December</th>
 		<th colspan=3 style=\"background-color:lightgrey;border-left-style: solid;border-left-width: 2px;border-right-style: solid;border-right-width: 2px;\">Q4</th>
-		<th><a title=\"Not yet booked\nvacation hours\">Vacation hours</a></th>
-		<th><a title=\"After deduction of all absences,\nnational holidays, brugdagen\nand not booked vacation days,\nthis are the hours available for projects\">Left (100%)</a></th>
-		<th>Left (80%)</th>
+		<th style=\"width:$fixedColWidth;\"><a title=\"Not yet booked\nvacation hours\">Vacation hours</a></th>
+		<th style=\"width:$fixedColWidth;\"><a title=\"After deduction of all absences,\nnational holidays, brugdagen\nand not booked vacation days,\nthis are the hours available for projects\">Left (100%)</a></th>
+		<th style=\"width:$fixedColWidth;\">Left (80%)</th>
 	</tr>
 ";
 
@@ -371,11 +372,6 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 				$tmp = str_replace('{M' . $j .'_2_title}', $monthTitles["$j"], $tmp);
 
 				// color for project column
-//				if ( $monthDifferenceTotals["$j"] < 0.0 ) {
-//					$tmp = str_replace('{M' . $j .'_3_color}', 'yellow', $tmp);
-//				} else {
-//					$tmp = str_replace('{M' . $j .'_3_color}', 'white', $tmp);
-//				}
 				$tmp = str_replace('{M' . $j .'_3_color}', getListColor($monthDifferenceTotals["$j"]), $tmp);
 			}
 
@@ -389,12 +385,8 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 				$tmp = str_replace('{Q' . $j .'_2_title}', $quarterTitles["$j"], $tmp);
 
 				// color for project column
-//				if ( $quarterDifferenceTotals["$j"] < 0 ) {
-//					$tmp = str_replace('{Q' . $j .'_3_color}', 'yellow', $tmp);
-//				} else {
-//					$tmp = str_replace('{Q' . $j .'_3_color}', 'lightgrey', $tmp);
-//				}
-				$tmp = str_replace('{Q' . $j .'_3_color}', getListColor($quarterDifferenceTotals["$j"], 'lightgrey'), $tmp);
+//				$tmp = str_replace('{Q' . $j .'_3_color}', getListColor($quarterDifferenceTotals["$j"], 'lightgrey'), $tmp);
+				$tmp = str_replace('{Q' . $j .'_3_color}', getListColorQuarter($monthDifferenceTotals[((($j-1)*3)+1).""], $monthDifferenceTotals[((($j-1)*3)+2).""], $monthDifferenceTotals[((($j-1)*3)+3).""], 'lightgrey'), $tmp);
 			}
 
 			// year
@@ -567,6 +559,18 @@ function getListColor( $value, $default_color = 'white' ) {
 	if ( $value < -5 ) {
 		$color = 'red';
 	} elseif ( $value < 0 ) {
+		$color = 'yellow';
+	}
+
+	return $color;
+}
+
+function getListColorQuarter( $value1, $value2, $value3, $default_color = 'white' ) {
+	$color = $default_color;
+
+	if ( $value1 < -5 || $value2 < -5 || $value3 < -5 ) {
+		$color = 'red';
+	} elseif ( $value1 < 0 || $value2 < 0 || $value3 < 0 ) {
 		$color = 'yellow';
 	}
 
