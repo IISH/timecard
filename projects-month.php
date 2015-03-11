@@ -3,16 +3,16 @@ require_once "classes/start.inc.php";
 
 $oWebuser->checkLoggedIn();
 
-if ( !( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasFaAuthorisation() ) ) {
-	echo "You are not authorized to access this page.<br>";
-	die('Go to <a href="index.php">timecard home</a>');
-}
+//if ( !( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasFaAuthorisation() ) ) {
+//	echo "You are not authorized to access this page.<br>";
+//	die('Go to <a href="index.php">timecard home</a>');
+//}
 
 // create webpage
 $oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
-$oPage->setTab($menuList->findTabNumber('pl.projects_month_admin'));
-$oPage->setTitle('Timecard | Project hours - Month overview (all)');
+$oPage->setTab($menuList->findTabNumber('projects.projects_month'));
+$oPage->setTitle('Timecard | Project hours - Month overview');
 $oPage->setContent(createProjectContent());
 
 // show page

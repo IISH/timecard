@@ -13,7 +13,7 @@ $date = class_datetime::get_date($protect);
 // create webpage
 $oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
-$oPage->setTab($menuList->findTabNumber('pl.hoursleft'));
+$oPage->setTab($menuList->findTabNumber('projects.hoursleft'));
 $oPage->setTitle('Timecard | Hours for planning');
 //$oPage->setContent(createHoursLeftContent() . createHoursLeftRemarks());
 $oPage->setContent(createHoursLeftContent());

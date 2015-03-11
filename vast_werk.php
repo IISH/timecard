@@ -11,7 +11,7 @@ if ( !( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasDepartmentAuthorisat
 // create webpage
 $oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
-$oPage->setTab($menuList->findTabNumber('pl.vastwerk'));
+$oPage->setTab($menuList->findTabNumber('projects.vastwerk'));
 $oPage->setTitle('Timecard | Vast werk');
 $oPage->setContent(createVastWerkContent());
 

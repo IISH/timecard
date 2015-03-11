@@ -111,7 +111,7 @@ class class_employee {
 	}
 
 	// TODOEXPLAIN
-	function hasExportsAuthorisation() {
+	function hasReportsAuthorisation() {
 		return ( in_array( 'reports', $this->getAuthorisation() ) ) ? true : false ;
 	}
 

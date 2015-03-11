@@ -48,6 +48,7 @@ $protect = new class_website_protection();
 // TODO remove before submit
 //$_SESSION["timecard"]["id"] = 1;
 //error_reporting(E_ERROR | E_PARSE);
+//error_reporting(E_ALL);
 
 //
 $oWebuser = new class_employee($_SESSION["timecard"]["id"], $settings);

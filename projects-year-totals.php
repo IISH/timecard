@@ -13,9 +13,9 @@ $oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
 
 if ( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasFaAuthorisation() ) {
-	$oPage->setTab($menuList->findTabNumber('pl.projects_year_admin'));
+	$oPage->setTab($menuList->findTabNumber('projects.projects_year'));
 } else {
-	$oPage->setTab($menuList->findTabNumber('pl.projects_year_pl'));
+	$oPage->setTab($menuList->findTabNumber('projects.projects_year_pl'));
 }
 
 $oPage->setTitle('Timecard | Project Hours - Month overview - Totals');

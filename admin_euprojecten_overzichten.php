@@ -12,7 +12,7 @@ if ( !( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasReportsAuthorisation
 $oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
 $oPage->setTab($menuList->findTabNumber('exports.euprojects'));
-$oPage->setTitle('Timecard | Exports - Employee Project totals');
+$oPage->setTitle('Timecard | Exports - Employee-Project totals');
 $oPage->setContent(createEuProjectsContent());
 
 // show page
