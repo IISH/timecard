@@ -188,7 +188,7 @@ class class_employee {
 
 	// TODOEXPLAIN
 	function getFirstLastname() {
-		return trim($this->firstname . ' ' . $this->lastname);
+		return trim($this->firstname . ' ' . verplaatsTussenvoegselNaarBegin($this->lastname));
 	}
 
 	// TODOEXPLAIN

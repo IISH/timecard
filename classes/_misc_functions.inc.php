@@ -2,6 +2,31 @@
 require_once dirname(__FILE__) . "/class_calendar.inc.php";
 
 // TODOEXPLAIN
+function c( $c) {
+	return convertSpreadsheatColumnNumberToColumnCharacter($c);
+}
+
+// TODOEXPLAIN
+function rc( $r, $c) {
+	return convertSpreadsheatColumnNumberToColumnCharacter($c) . $r;
+}
+
+// TODOEXPLAIN
+function convertSpreadsheatColumnNumberToColumnCharacter($i, $choices = "ABCDEFGHIJKLMNOPQRSTUVWXYZ") {
+	$len = strlen($choices);
+
+	$mod = ($i-1) % $len;
+	if ( $i - ($mod+1) > 0 ) {
+		$rest = ($i - ($mod+1))/$len;
+		$retval = convertSpreadsheatColumnNumberToColumnCharacter($rest, $choices) . substr($choices, $mod, 1);
+	} else {
+		$retval = substr($choices, $mod, 1);
+	}
+
+	return $retval;
+}
+
+// TODOEXPLAIN
 function hoursLeft_formatNumber($value, $decimal = 1, $show_zero = false) {
 	$ret = '';
 

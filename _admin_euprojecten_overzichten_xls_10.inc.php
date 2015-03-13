@@ -123,21 +123,6 @@ function fixCol($value) {
 }
 
 // TODOEXPLAIN
-function convertSpreadsheatColumnNumberToColumnCharacter($i, $choices = "ABCDEFGHIJKLMNOPQRSTUVWXYZ") {
-	$len = strlen($choices);
-
-	$mod = ($i-1) % $len;
-	if ( $i - ($mod+1) > 0 ) {
-		$rest = ($i - ($mod+1))/$len;
-		$retval = convertSpreadsheatColumnNumberToColumnCharacter($rest, $choices) . substr($choices, $mod, 1);
-	} else {
-		$retval = substr($choices, $mod, 1);
-	}
-
-	return $retval;
-}
-
-// TODOEXPLAIN
 function getTimecardUrenGroupedByMonth($id, $year, $pid) {
 	global $databases;
 

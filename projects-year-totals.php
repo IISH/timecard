@@ -84,7 +84,7 @@ function createProjectContent() {
 		$projectLeaderName = $oProject->getProjectleader()->getFirstLastname();
 	}
 	$ret .= "Project leader: " . $projectLeaderName . "<br>\n";
-	$ret .= "Month: " . $prev . " " . $today . " " . $next . " " . $year . "<br>\n";
+	$ret .= "Year: " . $prev . " " . $today . " " . $next . " " . $year . "<br>\n";
 
 	//
 	$body = "<br><table>\n";
