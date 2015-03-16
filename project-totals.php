@@ -36,31 +36,39 @@ function createProjectContent() {
 	$year = date("Y");
 //	}
 
-	$templateUrl = "<a href=\"#\" onClick=\"javascript:changeYear('{direction}');\" xxxhref=\"?ID={ID}&y={y}\" title=\"{alt}\">{label}</a>";
+	$templateUrl = "<a href=\"#\" onClick=\"javascript:changeYear('{direction}');\" title=\"{alt}\">{label}</a>";
+	$downloadButtonTemplate = "<a xxxtarget=\"_blank\" href=\"#\" onClick=\"javascript:downloadHours();return false;\" title=\"{alt}\">{label}</a>";
 
 	// PREVIOS MONTH
 	$dataPrev['label'] = "&laquo;";
-	$dataPrev['ID'] = $oProject->getId();
-	$dataPrev['y'] = $year-1;
+//	$dataPrev['ID'] = $oProject->getId();
+//	$dataPrev['y'] = $year-1;
 	$dataPrev['alt'] = 'go to previous year';
 	$dataPrev['direction'] = '-';
 	$prev = fillTemplate($templateUrl, $dataPrev);
 
 	// NEXT MONTH
 	$dataNext['label'] = "&raquo;";
-	$dataNext['ID'] = $oProject->getId();
-	$dataNext['y'] = $year+1;
+//	$dataNext['ID'] = $oProject->getId();
+//	$dataNext['y'] = $year+1;
 	$dataNext['alt'] = 'go to next year';
 	$dataNext['direction'] = '+';
 	$next = fillTemplate($templateUrl, $dataNext);
 
 	// CURRENT DATE
 	$dataToday['label'] = '*';
-	$dataToday['ID'] = $oProject->getId();
-	$dataToday['y'] = date("Y");
+//	$dataToday['ID'] = $oProject->getId();
+//	$dataToday['y'] = date("Y");
 	$dataToday['direction'] = '0';
 	$dataToday['alt'] = 'go to current year';
 	$today = fillTemplate($templateUrl, $dataToday);
+
+	// CURRENT DATE
+	$download['label'] = 'Download';
+//	$download['ID'] = $oProject->getId();
+	$download['alt'] = 'Download excel file';
+//	$download['y'] = $year;
+	$downloadButton = fillTemplate($downloadButtonTemplate, $download);
 
 	$ret .= "
 <script language=\"JavaScript\">
@@ -80,6 +88,13 @@ if (!xmlhttpSearch && window.createRequest) {
 	} catch (e) {
 		xmlhttpSearch=false;
 	}
+}
+
+// TODOEXPLAIN
+function downloadHours() {
+	var url = \"project-totals-data.php?o=xlsx&y=\" + escape(document.getElementById('spanYear').innerHTML) + \"&ID=" . $oProject->getId() . "\";
+//	alert(url);
+	window.open(url);
 }
 
 // TODOEXPLAIN
@@ -113,7 +128,7 @@ function changeYear( direction ) {
 }
 // -->
 </script>
-Year: <span id=\"spanYear\">" . $year . "</span> " . $prev . " " . $today . " " . $next . "<br><br>
+Year: <span id=\"spanYear\">" . $year . "</span> &nbsp; &nbsp; " . $prev . " " . $today . " " . $next . " &nbsp; &nbsp; " . $downloadButton . "<br><br>
 
 <span id=\"spanData\">...</span><br>
 
@@ -131,7 +146,7 @@ refreshProjectOutput();
 //		$projectLeaderName = $oProject->getProjectleader()->getFirstLastname();
 //	}
 //	$ret .= "Project leader: " . $projectLeaderName . "<br>\n";
-
+/*
 	//
 	$body = "<br><table>\n";
 	$total = 0.0;
@@ -152,6 +167,7 @@ refreshProjectOutput();
 	$body .= "</table>\n";
 
 	$ret .= $body;
+*/
 // + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
 // + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
 
