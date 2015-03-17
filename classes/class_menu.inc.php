@@ -28,12 +28,7 @@ if ( $oWebuser->hasAdminAuthorisation() ) {
 
 // TAB: PROJECTS
 $menu->addMenuGroup( new class_menugroup('Projects') );
-if ( $oWebuser->isProjectLeader() ) {
-	$menu->addMenuItem( new class_menuitem('projects.projects_month_pl', 'Projectleader - Project hours (per month)', 'projects-month-pl.php') );
-	$menu->addMenuItem( new class_menuitem('projects.projects_year_pl', 'Projectleader - Project hours (per year)', 'projects-year-pl.php') );
-}
-$menu->addMenuItem( new class_menuitem('projects.projects_month', 'Project hours (per month)', 'projects-month.php') );
-$menu->addMenuItem( new class_menuitem('projects.projects_year', 'Project hours (per year)', 'projects-year.php') );
+$menu->addMenuItem( new class_menuitem('projects.project_hour_totals', 'Project-employee totals', 'project_employee_totals.php') );
 if ( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasDepartmentAuthorisation() ) {
 	$menu->addMenuItem( new class_menuitem('projects.hoursleft', 'Hours for planning', 'admin_hoursleft.php') );
 	$menu->addMenuItem( new class_menuitem('projects.vastwerk', 'Vast werk', 'vast_werk.php') );
@@ -44,6 +39,7 @@ if ( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasDepartmentAuthorisation
 // TAB: REPORTS
 $menu->addMenuGroup( new class_menugroup('Exports') );
 if ( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasFaAuthorisation() ) {
+	$menu->addMenuItem( new class_menuitem('exports.projectemployeetotaals', 'Project-Employee totals', 'export_project_employee_totals.php') );
 	$menu->addMenuItem( new class_menuitem('exports.euprojects', 'Employee-Project totals', 'admin_euprojecten_overzichten.php') );
 	$menu->addMenuItem( new class_menuitem('exports.oracle', 'Oracle', 'export_oracle.php') );
 }

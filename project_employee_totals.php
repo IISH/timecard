@@ -3,17 +3,20 @@ require_once "classes/start.inc.php";
 
 $oWebuser->checkLoggedIn();
 
-if ( !( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasFaAuthorisation() || $oWebuser->isProjectLeader() ) ) {
-	echo "You are not authorized to access this page.<br>";
-	die('Go to <a href="index.php">timecard home</a>');
-}
-
 // create webpage
 $oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
-$oPage->setTab($menuList->findTabNumber('projects.projects_month_pl'));
-$oPage->setTitle('Timecard | Project hours - Month overview');
-$oPage->setContent(createProjectContent());
+
+if ( !isset($tab) ) {
+	$tab = '';
+}
+if (  $tab == 'exports' ) {
+	$oPage->setTab($menuList->findTabNumber('exports.projectemployeetotaals'));
+} else {
+	$oPage->setTab($menuList->findTabNumber('projects.project_hour_totals'));
+}
+$oPage->setTitle('Timecard | Project hours - Totals');
+$oPage->setContent(createProjectContent( $tab ));
 
 // show page
 echo $oPage->getPage();
@@ -21,11 +24,11 @@ echo $oPage->getPage();
 require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
-function createProjectContent() {
+function createProjectContent( $tab ) {
 	global $settings, $databases, $oWebuser;
 
 	// get design
-	$design = new class_contentdesign("page_projects_month_pl");
+	$design = new class_contentdesign("page_project_employee_totals");
 
 	// add header
 	$ret = $design->getHeader();
@@ -41,7 +44,7 @@ function createProjectContent() {
 
 	//
 	$oView->set_view( array(
-		'query' => "SELECT Workcodes.*, vw_Employees.FULLNAME  FROM Workcodes LEFT JOIN vw_Employees ON Workcodes.projectleader = vw_Employees.ID WHERE projectleader=" . $oWebuser->getTimecardId()
+		'query' => "SELECT Workcodes.*, vw_Employees.FULLNAME  FROM Workcodes LEFT JOIN vw_Employees ON Workcodes.projectleader = vw_Employees.ID WHERE 1=1 "
 		, 'count_source_type' => 'query'
 		, 'order_by' => 'Workcodes.Description, Workcodes.ID DESC '
 		, 'anchor_field' => 'ID'
@@ -53,7 +56,7 @@ function createProjectContent() {
 		'fieldname' => 'Description'
 		, 'fieldlabel' => 'Project'
 		, 'if_no_value' => '-no value-'
-		, 'href' => 'projects-month-totals.php?ID=[FLD:ID]&backurl=[BACKURL]'
+		, 'href' => 'project_totals.php?ID=[FLD:ID]&tab=' . $tab . '&backurl=[BACKURL]'
 		, 'viewfilter' => array(
 			'labelfilterseparator' => '<br>'
 			, 'filter' => array (
@@ -68,7 +71,7 @@ function createProjectContent() {
 
 	$oView->add_field( new class_field_string ( array(
 		'fieldname' => 'Projectnummer'
-		, 'fieldlabel' => 'Project number'
+		, 'fieldlabel' => 'Project number&nbsp;'
 		, 'viewfilter' => array(
 			'labelfilterseparator' => '<br>'
 			, 'filter' => array (
@@ -84,7 +87,7 @@ function createProjectContent() {
 	$oView->add_field( new class_field_string ( array(
 		'fieldname' => 'lastdate'
 		, 'fieldlabel' => 'End date'
-		, 'viewfilter' => array(
+		, 'XXXviewfilter' => array(
 			'labelfilterseparator' => '<br>'
 			, 'filter' => array (
 					array (

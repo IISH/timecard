@@ -11,12 +11,18 @@ class class_project {
 	private $projectleader;
 	private $oProjectleader;
 	private $enable_weekly_report_mail;
+	private $year;
 
 	// TODOEXPLAIN
-	function class_project($id) {
+	function class_project($id, $year = '') {
 		global $databases;
 		$this->databases = $databases;
 
+		if ( $year == '' ) {
+			$this->year = date("Y");
+		} else {
+			$this->year = $year;
+		}
 		$this->id = $id;
 		$this->description = 0;
 		$this->projectnummer = '';
@@ -33,7 +39,9 @@ class class_project {
 			$oConn = new class_mysql($this->databases['default']);
 			$oConn->connect();
 
-			$query = "SELECT * FROM Workcodes WHERE ID=" . $this->getId();
+			$postfix = getTablePostfix( $this->year );
+
+			$query = "SELECT * FROM Workcodes$postfix WHERE ID=" . $this->getId();
 
 			$res = mysql_query($query, $oConn->getConnection());
 			if ($r = mysql_fetch_assoc($res)) {

@@ -2,6 +2,23 @@
 require_once dirname(__FILE__) . "/class_calendar.inc.php";
 
 // TODOEXPLAIN
+function getTablePostfix( $year ) {
+	$postfix = '';
+
+	switch ( $year ) {
+		case 2009:
+		case 2010:
+		case 2011:
+		case 2012:
+		case 2013:
+			$postfix = "_" . $year;
+			break;
+	}
+
+	return $postfix;
+}
+
+// TODOEXPLAIN
 function c( $c) {
 	return convertSpreadsheatColumnNumberToColumnCharacter($c);
 }
