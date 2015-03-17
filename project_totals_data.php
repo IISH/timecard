@@ -118,6 +118,11 @@ $objPHPExcel->getProperties()->setCreator("IISG")
 
 $objPHPExcel->setActiveSheetIndex(0);
 $sheet = $objPHPExcel->getActiveSheet();
+$sheet->getPageSetup()->setOrientation('landscape');
+$sheet->getPageSetup()->setPaperSize(9);
+$sheet->getPageSetup()->setFitToPage(true);
+$sheet->getPageSetup()->setFitToWidth(1);
+$sheet->getPageSetup()->setFitToHeight(0);
 
 //
 if ( $output == 'html' ) {
@@ -314,12 +319,14 @@ if ( count($oProjectTotals->getIds()) > 0 ) {
 
 }
 
+//
+$filename = $oProject->getDescription() . " (" . $year . ") project-employee totals.xlsx";
 
 // send output to browser
 switch ( $output ) {
 	case "xlsx":
 		header("Content-type: application/octet-stream");
-		header("Content-Disposition: attachment; filename=\"TESTTEST.xlsx\"");
+		header("Content-Disposition: attachment; filename=\"$filename\"");
 		$objWriter = PHPExcel_IOFactory::createWriter( $objPHPExcel, 'Excel2007' );
 		$objWriter->save('php://output');
 		break;

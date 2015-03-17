@@ -44,13 +44,13 @@ function createProjectContent() {
 	$downloadButtonTemplate = "<a href=\"#\" onClick=\"javascript:downloadHours();return false;\" title=\"{alt}\">{label}</a>";
 
 	// PREVIOS MONTH
-	$dataPrev['label'] = "&laquo;";
+	$dataPrev['label'] = "&laquo; previous";
 	$dataPrev['alt'] = 'go to previous year';
 	$dataPrev['direction'] = '-';
 	$prev = fillTemplate($templateUrl, $dataPrev);
 
 	// NEXT MONTH
-	$dataNext['label'] = "&raquo;";
+	$dataNext['label'] = "next &raquo;";
 	$dataNext['alt'] = 'go to next year';
 	$dataNext['direction'] = '+';
 	$next = fillTemplate($templateUrl, $dataNext);
@@ -130,7 +130,7 @@ function changeYear( direction ) {
 </script>
 <table width=100%>
 <tr>
-	<td>Year: <span id=\"spanYear\">" . $year . "</span> &nbsp; &nbsp; " . $prev . " " . $today . " " . $next . " &nbsp; &nbsp; " . $downloadButton . "</td>
+	<td>Year: " . $prev . " &nbsp; <span id=\"spanYear\">" . $year . "</span> " . $today . " &nbsp; " . $next . " &nbsp; &nbsp; " . $downloadButton . "</td>
 	<td align=right><a href=\"" . getBackUrl() . "\">Go back</a></td>
 </tr>
 </table>
