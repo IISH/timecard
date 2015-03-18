@@ -40,7 +40,7 @@ function createProjectContent() {
 
 	$year = date("Y");
 
-	$templateUrl = "<a href=\"#\" onClick=\"javascript:changeYear('{direction}');\" title=\"{alt}\">{label}</a>";
+	$templateUrl = "<a href=\"#\" onClick=\"javascript:changeYear('{direction}');return false;\" title=\"{alt}\">{label}</a>";
 	$downloadButtonTemplate = "<a href=\"#\" onClick=\"javascript:downloadHours();return false;\" title=\"{alt}\">{label}</a>";
 
 	// PREVIOS MONTH
@@ -111,6 +111,7 @@ function changeYear( direction ) {
 	// get old value
 	var spanYear = document.getElementById('spanYear');
 	var iYear = spanYear.innerHTML;
+	iYear = parseInt(iYear, 10);
 
 	// calculate new value
 	if ( direction == '-' ) {
@@ -123,20 +124,25 @@ function changeYear( direction ) {
 	}
 
 	// set new value
-	spanYear.textContent = iYear;
+	spanYear.innerHTML = iYear;
+
+	//
 	refreshProjectOutput();
 }
 // -->
 </script>
+
+<form name=\"frmForm\" id=\"frmForm\">
 <table width=100%>
 <tr>
-	<td>Year: " . $prev . " &nbsp; <span id=\"spanYear\">" . $year . "</span> " . $today . " &nbsp; " . $next . " &nbsp; &nbsp; " . $downloadButton . "</td>
+	<td>Year: " . $prev . " &nbsp; <span name=\"spanYear\" id=\"spanYear\">" . $year . "</span> " . $today . " &nbsp; " . $next . " &nbsp; &nbsp; " . $downloadButton . "</td>
 	<td align=right><a href=\"" . getBackUrl() . "\">Go back</a></td>
 </tr>
 </table>
 <br>
 
-<span id=\"spanData\">...</span><br>
+<span name=\"spanData\" id=\"spanData\">...</span><br>
+</form>
 
 <script language=\"JavaScript\">
 refreshProjectOutput();

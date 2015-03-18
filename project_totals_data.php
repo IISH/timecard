@@ -25,6 +25,9 @@ $oProject = new class_project( $projectId );
 
 $oProjectTotals = new class_project_totals( $oProject->getId(), $year );
 
+//
+$number_format = '#,##0.00';
+
 // + + + + + + + + +
 
 // STYLES
@@ -197,12 +200,14 @@ $sheet->SetCellValue( rc($r,1), 'Year:');
 $sheet->SetCellValue( rc($r,2), $year);
 $sheet->getStyle( rc($r,2) )->applyFromArray( $style_top );
 
+// empty line (IE9 compatbile)
+$r++;
+$sheet->SetCellValue( rc($r,1), ' ');
 
 if ( count($oProjectTotals->getIds()) > 0 ) {
 
 
 	// HEADER LINE
-	$r++;
 	$r++;
 	$sheet->SetCellValue( rc($r,1), 'Employee');
 	$sheet->SetCellValue( rc($r,2), 'Jan');
@@ -259,12 +264,12 @@ if ( count($oProjectTotals->getIds()) > 0 ) {
 				}
 				$sheet->SetCellValue( rc($r, $c), $value);
 				$sheet->getStyle( rc($r,$c) )->applyFromArray($style_highlight_background_month);
-				$sheet->getStyle( rc($r,$c) )->getNumberFormat()->setFormatCode('0.00');
+				$sheet->getStyle( rc($r,$c) )->getNumberFormat()->setFormatCode($number_format);
 			}
 			$c++;
 			$sheet->SetCellValue( rc($r, $c), '=SUM(' . rc($r, $c - 3) . ':' . rc($r, $c - 1) . ')');
 			$sheet->getStyle( rc($r,$c) )->applyFromArray($style_highlight_background_quarter);
-			$sheet->getStyle( rc($r,$c) )->getNumberFormat()->setFormatCode('0.00');
+			$sheet->getStyle( rc($r,$c) )->getNumberFormat()->setFormatCode($number_format);
 
 		}
 
@@ -272,7 +277,7 @@ if ( count($oProjectTotals->getIds()) > 0 ) {
 		$c++;
 		$sheet->SetCellValue( rc($r, $c), '='.rc($r, $c-1).'+'.rc($r, $c-5).'+'.rc($r, $c-9).'+'.rc($r, $c-13) );
 		$sheet->getStyle( rc($r,$c) )->applyFromArray($style_highlight_background_year);
-		$sheet->getStyle( rc($r,$c) )->getNumberFormat()->setFormatCode('0.00');
+		$sheet->getStyle( rc($r,$c) )->getNumberFormat()->setFormatCode($number_format);
 
 		//
 		$r++;
@@ -297,22 +302,21 @@ if ( count($oProjectTotals->getIds()) > 0 ) {
 			$c++;
 			$sheet->getStyle( rc($r,$c) )->applyFromArray($style_highlight_background_month);
 			$sheet->getStyle( rc($r,$c) )->getFont()->setBold(true);
-			$sheet->getStyle( rc($r,$c) )->getNumberFormat()->setFormatCode('0.00');
+			$sheet->getStyle( rc($r,$c) )->getNumberFormat()->setFormatCode($number_format);
 		}
 		$c++;
 		$sheet->getStyle( rc($r,$c) )->applyFromArray($style_highlight_background_quarter);
 		$sheet->getStyle( rc($r,$c) )->getFont()->setBold(true);
-		$sheet->getStyle( rc($r,$c) )->getNumberFormat()->setFormatCode('0.00');
+		$sheet->getStyle( rc($r,$c) )->getNumberFormat()->setFormatCode($number_format);
 	}
 	$c++;
 	$sheet->getStyle( rc($r,$c) )->applyFromArray($style_highlight_background_year);
 	$sheet->getStyle( rc($r,$c) )->getFont()->setBold(true);
-	$sheet->getStyle( rc($r,$c) )->getNumberFormat()->setFormatCode('0.00');
+	$sheet->getStyle( rc($r,$c) )->getNumberFormat()->setFormatCode($number_format);
 
 
 } else {
 
-	$r++;
 	$r++;
 	$sheet->SetCellValue( rc($r, 1), 'No data found for ' . $year );
 	$sheet->mergeCells('A'.$r.':R'.$r);
@@ -332,5 +336,7 @@ switch ( $output ) {
 		break;
 	default:
 		$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'HTML');
+		$objWriter->setUseInlineCss( true );
+//		ob_end_clean();
 		$objWriter->save('php://output');
 }
