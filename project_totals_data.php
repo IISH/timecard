@@ -165,8 +165,8 @@ if ( $output == 'html' ) {
 $sheet->mergeCells('B2:R2');
 $sheet->mergeCells('B3:R3');
 $sheet->mergeCells('B4:R4');
-$sheet->mergeCells('A5:R5');
 
+// PROJECT NAME
 $r = 1;
 $sheet->SetCellValue( rc($r,1), 'Project:');
 $value = $oProject->getDescription();
@@ -176,16 +176,19 @@ if ( $value == '0' ) {
 $sheet->SetCellValue( rc($r,2), $value );
 $sheet->getStyle( rc($r,2) )->applyFromArray( $style_top );
 
+// show 'print' only in excel
 if ( $output != 'html' ) {
 	$sheet->SetCellValue(rc($r, 15), 'Print: ' . date("d-m-Y H:i"));
 	$sheet->getStyle(rc($r, 15))->getAlignment()->setHorizontal('right');
 }
 
+// PROJECT NUMBER
 $r++;
 $sheet->SetCellValue( rc($r,1), 'Project #:');
 $sheet->SetCellValue( rc($r,2), $oProject->getProjectnumber());
 $sheet->getStyle( rc($r,2) )->applyFromArray( $style_top );
 
+// PROJECT LEADER
 $r++;
 $sheet->SetCellValue( rc($r,1), 'Project leader:');
 $value = '';
@@ -195,14 +198,26 @@ if ( !is_null( $oProject->getProjectleader() ) ) {
 $sheet->SetCellValue( rc($r,2), $value);
 $sheet->getStyle( rc($r,2) )->applyFromArray( $style_top );
 
+// END DATE
+if ( trim($oProject->getEnddate()) != '' ) {
+	$r++;
+	$sheet->SetCellValue( rc($r,1), 'End date:');
+	$sheet->SetCellValue( rc($r,2), $oProject->getEnddate());
+	$sheet->getStyle( rc($r,2) )->applyFromArray( $style_top );
+	$sheet->mergeCells('B'.$r.':R'.$r);
+}
+
+// YEAR
 $r++;
 $sheet->SetCellValue( rc($r,1), 'Year:');
 $sheet->SetCellValue( rc($r,2), $year);
 $sheet->getStyle( rc($r,2) )->applyFromArray( $style_top );
+$sheet->mergeCells('B'.$r.':R'.$r);
 
 // empty line (IE9 compatbile)
 $r++;
 $sheet->SetCellValue( rc($r,1), ' ');
+$sheet->mergeCells('A'.$r.':R'.$r);
 
 if ( count($oProjectTotals->getIds()) > 0 ) {
 

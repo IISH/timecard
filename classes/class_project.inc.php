@@ -9,6 +9,7 @@ class class_project {
 	private $description;
 	private $projectnummer;
 	private $projectleader;
+	private $enddate;
 	private $oProjectleader;
 	private $enable_weekly_report_mail;
 	private $year;
@@ -27,6 +28,7 @@ class class_project {
 		$this->description = 0;
 		$this->projectnummer = '';
 		$this->projectleader = '';
+		$this->enddate = '';
 		$this->oProjectleader = null;
 		$this->enable_weekly_report_mail = 0;
 
@@ -48,6 +50,7 @@ class class_project {
 				$this->description = $r["Description"];
 				$this->projectnummer = $r["Projectnummer"];
 				$this->projectleader = $r["projectleader"];
+				$this->enddate = $r["lastdate"];
 				$this->enable_weekly_report_mail = $r["enable_weekly_report_mail"];
 			}
 			mysql_free_result($res);
@@ -64,6 +67,10 @@ class class_project {
 
 	public function getProjectnumber() {
 		return $this->projectnummer;
+	}
+
+	public function getEnddate() {
+		return $this->enddate;
 	}
 
 	public function getEnableweeklyreportmail() {
