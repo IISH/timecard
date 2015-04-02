@@ -150,7 +150,7 @@ class class_datetime {
 	}
 
 	// TODOEXPLAIN
-	public static function is_legacy( $oDate, $max_age_in_months = 2 ) {
+	public static function is_legacy( $oDate, $max_age_in_months = 3 ) {
 		$isLegacy = false;
 
 		if ( $max_age_in_months < 0 ) {

@@ -51,9 +51,9 @@ function getUserDay( $date ) {
 
 	// hide add new button if ...
 	if ( class_datetime::is_legacy( $oDate ) ) {
-		$ret .= '<div class="youcannot">' . class_settings::getSetting('error_cannot_modify_legacy') . '</div>';
+		$ret .= '<div class="youcannot">' . class_settings::getSetting('error_cannot_modify_legacy') . ' (error: 847521)</div>';
 	} elseif ( $oDate->get("Y-m-d") < $oWebuser->getAllowAdditionsStartingDate() ) {
-		$ret .= '<div class="youcannot">' . class_settings::getSetting('error_cannot_modify_legacy_contact_fa') . '</div>';
+		$ret .= '<div class="youcannot">' . class_settings::getSetting('error_cannot_modify_legacy_contact_fa') . ' (error: 256985)</div>';
 	} elseif ( class_datetime::is_future( $oDate ) ) {
 		$ret .= '<div class="youcannot">' . class_settings::getSetting('error_cannot_add_in_the_future') . '</div>';
 	} else {

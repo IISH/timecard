@@ -24,9 +24,9 @@ $oPage->setTab($menuList->findTabNumber('timecard.day'));
 $oPage->setTitle('Timecard | Day (edit)');
 
 if ( class_datetime::is_legacy( $oDate ) ) {
-	$oPage->setContent( '<div class="youcannot">' . class_settings::getSetting('error_cannot_modify_legacy') . '</div>' );
+	$oPage->setContent( '<div class="youcannot">' . class_settings::getSetting('error_cannot_modify_legacy') . ' (error: 847521)</div>' );
 } elseif ( $oDate->get("Y-m-d") < $oWebuser->getAllowAdditionsStartingDate() ) {
-	$oPage->setContent( '<div class="youcannot">' . class_settings::getSetting('error_cannot_modify_legacy_contact_fa') . '</div>' );
+	$oPage->setContent( '<div class="youcannot">' . class_settings::getSetting('error_cannot_modify_legacy_contact_fa') . ' (error: 256985)</div>' );
 } elseif ( class_datetime::is_future( $oDate ) ) {
 	$oPage->setContent( '<div class="youcannot">' . class_settings::getSetting('error_cannot_add_in_the_future') . '</div>' );
 } else {
