@@ -92,7 +92,7 @@ ORDER BY Projectnummer, Description, TimeInMinutes DESC ";
 		$item["autosave"] = $row["onNewAutoSave"];
 		$item["description"] = $row["WorkDescription"];
 		$item["isvisible"] = $row["isvisible"];
-		$item["projectnummer"] = $row["Projectnummer"];
+		$item["projectnummer"] = ( isset($row["Projectnummer"]) ? $row["Projectnummer"] : '' );
 
 		return $item;
 	}

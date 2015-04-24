@@ -152,7 +152,7 @@ class class_page {
 
 	// TODOEXPLAIN
 	function getUrl() {
-		return 'https://' . ( $_SERVER["HTTP_X_FORWARDED_HOST"] != '' ? $_SERVER["HTTP_X_FORWARDED_HOST"] : $_SERVER["SERVER_NAME"] ) . $_SERVER["SCRIPT_NAME"];
+		return 'https://' . ( isset( $_SERVER["HTTP_X_FORWARDED_HOST"] ) && $_SERVER["HTTP_X_FORWARDED_HOST"] != '' ? $_SERVER["HTTP_X_FORWARDED_HOST"] : $_SERVER["SERVER_NAME"] ) . $_SERVER["SCRIPT_NAME"];
 	}
 
 	// TODOEXPLAIN
