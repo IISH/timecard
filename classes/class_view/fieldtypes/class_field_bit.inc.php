@@ -35,18 +35,14 @@ class class_field_bit extends class_field {
 	}
 
 	// TODOEXPLAIN
-	function view_field($row, $criteriumResult = 0) {
-		$retval = parent::view_field($row, $criteriumResult);
+	function view_field($row) {
+		$retval = parent::view_field($row);
 
-		if ( $criteriumResult["fieldname"] == "-novalue-" ) {
-			$retval = '';
-		} else {
-			if ( $this->get_show_different_values() == true || $this->get_show_different_values() == 1 ) {
-				if ( $retval == "1" || $retval == true || $retval == "on" ) {
-					$retval = $this->get_different_true_value();
-				} else {
-					$retval = $this->get_different_false_value();
-				}
+		if ( $this->get_show_different_values() == true || $this->get_show_different_values() == 1 ) {
+			if ( $retval == "1" || $retval == true || $retval == "on" ) {
+				$retval = $this->get_different_true_value();
+			} else {
+				$retval = $this->get_different_false_value();
 			}
 		}
 

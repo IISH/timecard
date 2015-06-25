@@ -44,10 +44,6 @@ GROUP BY PROTIME_LNK_CURRIC_PROFILE.DATEFROM, MOD(CAST(PROTIME_CYC_DP.DAYNR AS U
 ORDER BY PROTIME_LNK_CURRIC_PROFILE.DATEFROM DESC, MOD(CAST(PROTIME_CYC_DP.DAYNR AS UNSIGNED),7) ASC
 ";
 
-//echo "<pre>";
-//echo $query . ' ---<br>';
-//echo "</pre>";
-
 			$res = mysql_query($query, $oConn->getConnection());
 			while ($r = mysql_fetch_assoc($res)) {
 				//$dayOfWeek = $r["DAYNR"];

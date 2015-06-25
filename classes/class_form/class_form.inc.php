@@ -224,7 +224,7 @@ class class_form {
 		$this->oDb->connect();
 
 		// if form submitted try to save document
-		if ( $_POST["issubmitted"] == "1" ) {
+		if ( isset($_POST["issubmitted"]) && $_POST["issubmitted"] == "1" ) {
 			// check first if all required fields are filled in
 			// and also check if the values are of the correct type
 			$required_typecheck_result = $this->form_check_required_and_fieldtype();
@@ -239,11 +239,11 @@ class class_form {
 		// en als save resultaat okay is
 		// en als button close is aangeklikt
 		// ga dan naar backurl
-		if ( $_POST["issubmitted"] == "1" ) {
+		if ( isset($_POST["issubmitted"]) && $_POST["issubmitted"] == "1" ) {
 
 			if ( $required_typecheck_result == 1 ) {
 
-				if ( $_POST["pressedbutton"] == "saveclose" ) {
+				if ( isset($_POST["pressedbutton"]) && $_POST["pressedbutton"] == "saveclose" ) {
 
 					$this->postSave();
 
@@ -256,7 +256,7 @@ class class_form {
 					}
 
 					header("Location: " . $backurl);
-				} elseif ( $_POST["pressedbutton"] == "delete" ) {
+				} elseif ( isset($_POST["pressedbutton"]) && $_POST["pressedbutton"] == "delete" ) {
 
 					$backurl = getBackUrl();
 
@@ -402,6 +402,9 @@ class class_form {
 	</td>
 </tr>
 ";
+		if ( !isset($this->m_form["disallow_delete"]) ) {
+			$this->m_form["disallow_delete"] = 0;
+		}
 
 		if ( $this->m_doc_id == "0" || $this->m_form["disallow_delete"] === 1 ) {
 			$searchstr = '@<!-- ' . 'deletebutton' . ' -->.*?<!-- /' . 'deletebutton' . ' -->@si';

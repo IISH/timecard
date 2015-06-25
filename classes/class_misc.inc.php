@@ -37,7 +37,7 @@ class class_misc {
 		$pattern = '/\[FLD\:[a-zA-Z0-9_]*\]/';
 		preg_match($pattern, $return_value, $matches);
 		while ( count($matches) > 0 ) {
-			if ( "[FLD:" . $this->m_form["primarykey"] . "]" == $matches[0] ) {
+			if ( isset($this->m_form["primarykey"]) && "[FLD:" . $this->m_form["primarykey"] . "]" == $matches[0] ) {
 				$return_value = str_replace($matches[0], $this->m_doc_id, $return_value);
 			} else {
 				$return_value = str_replace($matches[0], addslashes($_GET[str_replace("]", '', str_replace("[FLD:", '', $matches[0]))]), $return_value);

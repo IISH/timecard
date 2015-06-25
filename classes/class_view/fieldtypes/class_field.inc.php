@@ -187,39 +187,15 @@ class class_field {
 	}
 
 	// TODOEXPLAIN
-	function get_value($row, $criteriumResult = 0) {
-
-		if ( is_array($criteriumResult) ) {
-			// 
-			if ( $criteriumResult["fieldname"] == "-novalue-" ) {
-				$retval = '';
-			} elseif ( $criteriumResult["fieldname"] <> "" ) {
-				$retval = stripslashes($row[$criteriumResult["fieldname"]]);
-			} else {
-				$retval = stripslashes($row[$this->get_fieldname()]);
-			}
-		} else {
-			$retval = stripslashes($row[$this->get_fieldname()]);
-		}
-
+	function get_value($row) {
+		$retval = stripslashes($row[$this->get_fieldname()]);
 		return $retval;
 	}
 
 	// TODOEXPLAIN
-	function view_field($row, $criteriumResult = 0) {
+	function view_field($row) {
 
-		if ( is_array($criteriumResult) ) {
-			// 
-			if ( $criteriumResult["fieldname"] == "-novalue-" ) {
-				$retval = '';
-			} elseif ( $criteriumResult["fieldname"] <> "" ) {
-				$retval = stripslashes($row[$criteriumResult["fieldname"]]);
-			} else {
-				$retval = stripslashes($row[$this->get_fieldname()]);
-			}
-		} else {
-			$retval = stripslashes($row[$this->get_fieldname()]);
-		}
+		$retval = stripslashes($row[$this->get_fieldname()]);
 
 		// toon andere waarde
 		if ( is_array($this->m_show_different_value) ) {
@@ -255,6 +231,9 @@ class class_field {
 					$tmp_retval .= $this->m_view_max_length_extension;
 				}
 
+				if ( !isset( $_GET["vf_" . $this->m_fieldname ] ) ) {
+					$_GET["vf_" . $this->m_fieldname ] = '';
+				}
 				$tmp_searchstring = strtolower(trim($_GET["vf_" . $this->m_fieldname ]));
 				if ( $tmp_searchstring != '' ) {
 					$all_search_found_in_max_length_value = 1;

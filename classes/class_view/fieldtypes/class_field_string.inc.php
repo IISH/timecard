@@ -18,16 +18,11 @@ class class_field_string extends class_field {
 	}
 
 	// TODOEXPLAIN
-	function view_field($row, $criteriumResult = 0) {
-		$retval = parent::view_field($row, $criteriumResult);
+	function view_field($row) {
+		$retval = parent::view_field($row);
 
-		if ( is_array($criteriumResult) ) {
-			$href2otherpage = $criteriumResult["href"];
-			$url_onclick = $criteriumResult["onclick"];
-		} else {
-			$href2otherpage = $this->get_href();
-			$url_onclick = $this->get_onclick();
-		}
+		$href2otherpage = $this->get_href();
+		$url_onclick = $this->get_onclick();
 
 		if ( $_POST["form_fld_pressed_button"] != '-delete-' && $_POST["form_fld_pressed_button"] != '-delete-now-' ) {
 
@@ -35,43 +30,46 @@ class class_field_string extends class_field {
 				$retval = $this->get_if_no_value($retval);
 
 				$no_href = 0;
-
 				$noHrefIf = $this->get_no_href_if();
-				if ( is_array($noHrefIf) ) {
+
+				if ( is_array($noHrefIf)
+					&& isset($noHrefIf["field"]) && isset($noHrefIf["value"]) && isset($noHrefIf["operator"])
+					&& isset($row[$noHrefIf["field"]] )
+				) {
 					//
 					switch ( $noHrefIf["operator"] ) {
 						case "<>":
-							if ( $row[$noHrefIf["field"]] <> $row[$noHrefIf["value"]] ) {
+							if ( $row[$noHrefIf["field"]] <> $noHrefIf["value"] ) {
 								$no_href = 1;
 							}
 							break;
 						case "==":
-							if ( $row[$noHrefIf["field"]] == $row[$noHrefIf["value"]] ) {
+							if ( $row[$noHrefIf["field"]] == $noHrefIf["value"] ) {
 								$no_href = 1;
 							}
 							break;
 						case "=":
-							if ( $row[$noHrefIf["field"]] == $row[$noHrefIf["value"]] ) {
+							if ( $row[$noHrefIf["field"]] == $noHrefIf["value"] ) {
 								$no_href = 1;
 							}
 							break;
 						case ">":
-							if ( $row[$noHrefIf["field"]] > $row[$noHrefIf["value"]] ) {
+							if ( $row[$noHrefIf["field"]] > $noHrefIf["value"] ) {
 								$no_href = 1;
 							}
 							break;
 						case ">=":
-							if ( $row[$noHrefIf["field"]] >= $row[$noHrefIf["value"]] ) {
+							if ( $row[$noHrefIf["field"]] >= $noHrefIf["value"] ) {
 								$no_href = 1;
 							}
 							break;
 						case "<":
-							if ( $row[$noHrefIf["field"]] < $row[$noHrefIf["value"]] ) {
+							if ( $row[$noHrefIf["field"]] < $noHrefIf["value"] ) {
 								$no_href = 1;
 							}
 							break;
 						case "<=":
-							if ( $row[$noHrefIf["field"]] <= $row[$noHrefIf["value"]] ) {
+							if ( $row[$noHrefIf["field"]] <= $noHrefIf["value"] ) {
 								$no_href = 1;
 							}
 							break;
@@ -108,13 +106,8 @@ class class_field_string extends class_field {
 				$retval = "<nobr>" . $retval . "</nobr>";
 			}
 
-			if ( is_array($criteriumResult ) ) {
-				$fieldname = $criteriumResult["fieldname"];
-				$fieldname_pointer = $criteriumResult["fieldname_pointer"];
-			} else {
-				$fieldname = $this->get_fieldname();
-				$fieldname_pointer = $this->get_fieldname_pointer();
-			}
+			$fieldname = $this->get_fieldname();
+			$fieldname_pointer = $this->get_fieldname_pointer();
 
 			if ( $fieldname_pointer <> "" ) {
 				$fieldname_pointer = $this->oClassMisc->ReplaceSpecialFieldsWithDatabaseValues($fieldname_pointer, $row);

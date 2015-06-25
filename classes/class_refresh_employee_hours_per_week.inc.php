@@ -213,14 +213,6 @@ ORDER BY PROTIME_LNK_CURRIC_PROFILE.DATEFROM DESC, MOD(CAST(PROTIME_CYC_DP.DAYNR
 			$this->startDayTotals[] = array( 'date' => $lastDate, 'minutes' => $total );
 		}
 
-//echo '<pre>';
-//print_r( $this->arr );
-//echo '</pre>';
-//echo '<hr>';
-//echo '<pre>';
-//print_r( $this->startDayTotals );
-//echo '</pre>';
-
 		mysql_free_result($result);
 	}
 

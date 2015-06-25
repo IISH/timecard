@@ -10,7 +10,7 @@ $oDate = new class_date( $date["y"], $date["m"], $date["d"] );
 $autoSave = $protect->request_positive_number_or_empty('get', 'autoSave');
 
 // remove everything after the first < >, it is not allowed to have html tags in description
-$desc = trim($_GET["desc"]);
+$desc = trim( isset($_GET["desc"]) ? $_GET["desc"] : '' );
 $desc = $protect->get_left_part($desc, '<');
 $desc = $protect->get_left_part($desc, '>');
 

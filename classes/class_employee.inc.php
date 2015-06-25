@@ -207,11 +207,17 @@ class class_employee {
 
 		if ( $this->getProtimeId() != '0' ) {
 
+			// TODO: onduidelijk wat LIM_PERIODE en YEARCOUNTER doen in PROTIME_P_LIMIT
+			// moet de query uitgebreid worden?
+			// met LIM_PERIODE?
+			// met YEARCOUNTER?
+			// ... alleen END_VAL > 0 ?
+
 			$vakantie = advancedSingleRecordSelectMysql(
 						'default'
 						, "PROTIME_P_LIMIT"
 						, array("BEGIN_VAL", "END_VAL", "BOOKDATE")
-						, "PERSNR=" . $this->getProtimeId() . " AND EXEC_ORDER=2 "
+						, "PERSNR=" . $this->getProtimeId() . " AND EXEC_ORDER=2 AND LIM_PERIODE = 6 "
 						, '*'
 						, "BOOKDATE DESC"
 					);
@@ -222,7 +228,7 @@ class class_employee {
 				$bookdate = substr($bookdate, 0, 4) . "-" . substr($bookdate, 4, 2) . "-" . substr($bookdate, 6, 2);
 				$retval .= number_format( $end_val/60, 2, ',', '.' ) . " hours <i>(processed until: " . $bookdate . "*)</i>";
 			} else {
-				$retval .= "<i>(no days off found)</i><br>";
+				$retval .= "<i>(no vacation days found)</i><br>";
 			}
 
 		}

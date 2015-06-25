@@ -24,21 +24,16 @@ class class_field_time extends class_field {
 	}
 
 	// TODOEXPLAIN
-	function view_field($row, $criteriumResult = 0) {
-		$retval = parent::view_field($row, $criteriumResult);
+	function view_field($row) {
+		$retval = parent::view_field($row);
 
 		if ( $this->m_if_zero_hide == 1 && $retval == 0 ) {
 			$retval = '';
 		} else {
 			$retval = class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes($retval);
 
-			if ( is_array($criteriumResult) ) {
-				$href2otherpage = $criteriumResult["href"];
-				$url_onclick = $criteriumResult["onclick"];
-			} else {
-				$href2otherpage = $this->get_href();
-				$url_onclick = $this->get_onclick();
-			}
+			$href2otherpage = $this->get_href();
+			$url_onclick = $this->get_onclick();
 
 			if ( $href2otherpage <> "" ) {
 				$retval = $this->get_if_no_value($retval);

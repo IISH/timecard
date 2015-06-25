@@ -40,9 +40,9 @@ class class_view {
 	function add_filters_to_query($query) {
 		$filter = '';
 
-		if ( is_array($this->m_view["filter"]) ) {
+		if ( isset($this->m_view["filter"]) && is_array($this->m_view["filter"]) ) {
 
-			$filtervalue = $_GET["filter"];
+			$filtervalue = ( isset($_GET["filter"]) ? $_GET["filter"] : '' );
 			if ( $filtervalue <> "" ) {
 
 				if ( $this->m_view["filter"]["command"] == 'L_LIKE' ) {
@@ -79,10 +79,10 @@ class class_view {
 					} else {
 
 						// special query?
-						if ( $this->m_view["filter"]["command_special_criterium"] != '' ) {
-							// yes, special query
-							$filter .= $this->m_view["filter"]["command_special_criterium"];
-						} else {
+//						if ( $this->m_view["filter"]["command_special_criterium"] != '' ) {
+//							// yes, special query
+//							$filter .= $this->m_view["filter"]["command_special_criterium"];
+//						} else {
 							// no, normal query
 
 							// zoeken we niet naar -NULL- (lege veld) dan moeten we de opgegeven criteria gebruiken
@@ -101,7 +101,7 @@ class class_view {
 								$filter .= " LIKE ";
 							}
 							$filter .= $filtervalue;
-						}
+//						}
 
 					}
 
@@ -128,7 +128,14 @@ class class_view {
 
 				foreach ( $one_field_in_array_of_fields->m_viewfilter["filter"] as $field => $value) {
 
-					$tmp_filter = $this->CreateSpecialCriterium($value["fieldname"], $value["type"], $value["fieldname_pointer"], $value["different_query_fieldname"], $value["extra_left_criterium"], $value["extra_right_criterium"]);
+					$fieldname = ( isset($value["fieldname"]) ? $value["fieldname"] : '' );
+					$type = ( isset($value["type"]) ? $value["type"] : '' );
+					$fieldname_pointer = ( isset($value["fieldname_pointer"]) ? $value["fieldname_pointer"] : '' );
+					$different_query_fieldname = ( isset($value["different_query_fieldname"]) ? $value["different_query_fieldname"] : '' );
+					$extra_left_criterium = ( isset($value["extra_left_criterium"]) ? $value["extra_left_criterium"] : '' );
+					$extra_right_criterium = ( isset($value["extra_right_criterium"]) ? $value["extra_right_criterium"] : '' );
+
+					$tmp_filter = $this->CreateSpecialCriterium($fieldname, $type, $fieldname_pointer, $different_query_fieldname, $extra_left_criterium, $extra_right_criterium);
 
 					if ( $tmp_filter <> "" ) {
 						$filter .= " AND " . $tmp_filter . " ";
@@ -147,8 +154,16 @@ class class_view {
 		$retval = '';
 
 		if ( $fieldname_pointer <> "" ) {
+			if ( !isset($_GET["vf_" . $field . "__" . $fieldname_pointer . "__"]) ) {
+				$_GET["vf_" . $field . "__" . $fieldname_pointer . "__"] = '';
+			}
+
 			$value = trim($_GET["vf_" . $field . "__" . $fieldname_pointer . "__"]);
 		} else {
+			if ( !isset($_GET["vf_" . $field]) ) {
+				$_GET["vf_" . $field] = '';
+			}
+
 			$value = trim($_GET["vf_" . $field]);
 		}
 
@@ -239,11 +254,8 @@ class class_view {
 				if ( is_array( $one_field_in_array_of_fields->m_viewfilter ) ) {
 					$filter = $one_field_in_array_of_fields->m_viewfilter["labelfilterseparator"];
 
-					$separator = '';
-
 					foreach ( $one_field_in_array_of_fields->m_viewfilter["filter"] as $filterfield => $filtervalue ) {
-						$filter .= $separator . $this->CreateViewFilterInputField($filtervalue);
-						$separator = $one_field_in_array_of_fields->m_viewfilter["multiplefilterseparator"];
+						$filter .= $this->CreateViewFilterInputField($filtervalue);
 					}
 
 					$tmp_header = str_replace("::FILTER::", $filter, $tmp_header);
@@ -348,8 +360,14 @@ function onchange_change_filter_doc_submit(obj) {
 				}
 			}
 
-			$hiddenfields .= $this->m_view["extra_hidden_viewfilter_fields"];
+			if ( isset($this->m_view["extra_hidden_viewfilter_fields"]) ) {
+				$hiddenfields .= $this->m_view["extra_hidden_viewfilter_fields"];
+			}
+
+			//
 			$viewfilter = str_replace("::HIDDENFIELDS::", $hiddenfields, $viewfilter);
+
+			//
 			$return_value = str_replace("::HEADER::", $return_value, $viewfilter);
 		}
 
@@ -360,9 +378,10 @@ function onchange_change_filter_doc_submit(obj) {
 	function CreateViewFilterInputField($field) {
 		$retval = '';
 
-		$label = $field["fieldlabel"];
-		$name = $field["fieldname"];
-		if ( $field["fieldname_pointer"] <> "" ) {
+		$label = ( isset($field["fieldlabel"]) ? $field["fieldlabel"] : '' );
+		$name = ( isset($field["fieldname"]) ? $field["fieldname"] : '' );
+
+		if ( isset($field["fieldname_pointer"]) && $field["fieldname_pointer"] <> "" ) {
 			$name .= "__" . $field["fieldname_pointer"] . "__";
 		}
 
@@ -372,6 +391,9 @@ function onchange_change_filter_doc_submit(obj) {
 				$size = "20";
 			}
 
+			if ( !isset($_GET["vf_" . $name]) ) {
+				$_GET["vf_" . $name] = '';
+			}
 			$value = $_GET["vf_" . $name];
 			$value = str_replace("\\\"", "&quot;", $value);
 			$value = str_replace("\'", "'", $value);
@@ -412,6 +434,12 @@ function onchange_change_filter_doc_submit(obj) {
 
 	// generate_view
 	function generate_view() {
+		if ( !isset( $_POST["form_fld_pressed_button"] ) ) {
+			$_POST["form_fld_pressed_button"] = '';
+		}
+
+//		$extra_left_criterium = ( isset($value["extra_left_criterium"]) ? $value["extra_left_criterium"] : '' );
+
 		$return_value = '';
 
 		// connect to server
@@ -541,7 +569,7 @@ function onchange_change_filter_doc_submit(obj) {
 			}
 
 			// show calculate_total
-			if ( is_array($this->m_view["calculate_total"]) ) {
+			if ( isset($this->m_view["calculate_total"]) && is_array($this->m_view["calculate_total"]) ) {
 				$calculate_total[$this->m_view["calculate_total"]["field"]] = 0;
 			}
 
@@ -582,10 +610,10 @@ function onchange_change_filter_doc_submit(obj) {
 							$tmp_data = $this->Get_PreloadedTemplateDesign($preloaded_templates, "default");
 
 							// get veld waarde
-							$veldwaarde = $one_field_in_array_of_fields->view_field($row, $criteriumResult);
-							$dbwaarde = $one_field_in_array_of_fields->get_value($row, $criteriumResult);
+							$veldwaarde = $one_field_in_array_of_fields->view_field($row);
+							$dbwaarde = $one_field_in_array_of_fields->get_value($row);
 							// add calculate_total
-							if ( is_array($this->m_view["calculate_total"]) ) {
+							if ( isset($this->m_view["calculate_total"]) && is_array($this->m_view["calculate_total"]) ) {
 								if ( strtolower( $one_field_in_array_of_fields->get_fieldname() ) == strtolower($this->m_view["calculate_total"]["field"]) ) {
 									$calculate_total[$this->m_view["calculate_total"]["field"]] += $dbwaarde;
 								}
@@ -603,7 +631,7 @@ function onchange_change_filter_doc_submit(obj) {
 				$return_value .= $total_row;
 
 				// show calculate_total
-				if ( is_array($this->m_view["calculate_total"]) ) {
+				if ( isset($this->m_view["calculate_total"]) && is_array($this->m_view["calculate_total"]) ) {
 					$return_value .= "<tr><td colspan=\"" . $this->m_view["calculate_total"]["nrofcols"] . "\"><hr></td></tr>";
 					$return_value .= "<tr><td colspan=\"" . ($this->m_view["calculate_total"]["totalcol"]-1) . "\"><b>Total:</b></td>";
 
