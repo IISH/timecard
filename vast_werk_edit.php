@@ -111,10 +111,10 @@ function createVastWerkContent() {
 		, 'style' => 'width:350px;height:60px;'
 		)));
 
-	$oForm->add_field( new class_field_bit ( array(
+	$oForm->add_field( new class_field_hidden ( array(
 		'fieldname' => 'isdeleted'
 		, 'fieldlabel' => 'Is deleted?'
-		, 'onNew' => '0'
+		, 'XXXonNew' => '0'
 		)));
 
 	// generate form

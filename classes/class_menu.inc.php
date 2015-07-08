@@ -30,7 +30,7 @@ if ( $oWebuser->hasAdminAuthorisation() ) {
 $menu->addMenuGroup( new class_menugroup('Projects') );
 $menu->addMenuItem( new class_menuitem('projects.project_hour_totals', 'Project-employee totals', 'project_employee_totals.php') );
 if ( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasDepartmentAuthorisation() ) {
-	$menu->addMenuItem( new class_menuitem('projects.hoursleft', 'Hours for planning', 'admin_hoursleft.php') );
+	$menu->addMenuItem( new class_menuitem('projects.hoursleft', 'Hours for planning', 'hoursleft.php') );
 	$menu->addMenuItem( new class_menuitem('projects.vastwerk', 'Vast werk', 'vast_werk.php') );
 }
 

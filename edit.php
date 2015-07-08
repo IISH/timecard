@@ -181,7 +181,7 @@ doc_submit('saveclose')
 			$oForm->add_field( new class_field_time_double_field ( array(
 				'fieldname' => 'TimeInMinutes'
 				, 'fieldlabel' => 'Time (hh:mm)'
-				, 'required' => 1
+				, 'required' => 0
 				, 'possible_hour_values' => array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")
 				, 'possible_minute_values' => $possible_minute_values
 				, 'onNew' => $onNew["time"]
@@ -192,7 +192,7 @@ doc_submit('saveclose')
 			$oForm->add_field( new class_field_time_single_field ( array(
 				'fieldname' => 'TimeInMinutes'
 				, 'fieldlabel' => 'Time (hh:mm)'
-				, 'required' => 1
+				, 'required' => 0
 				, 'possible_hour_values' => array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")
 				, 'possible_minute_values' => array("00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55")
 				, 'onNew' => $onNew["time"]

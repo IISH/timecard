@@ -653,12 +653,15 @@ function getAddEmployeeToTimecard($longcode) {
 	} else {
 		//
 		$a = new TCDateTime();
-		$a->subMonth(); // one month back
+		// disabled one month back
+		//$a->subMonth(); // one month back
 		$allow_additions_starting_date = $a->getFirstDate()->format("Y-m-d");
 		$year = date("Y");
 
+		$created_on = date("Y-m-d H:i:s");
+
 		// insert new record in Employees database
-		$queryInsert = "INSERT INTO Employees (LongCode, firstyear, lastyear, allow_additions_starting_date) VALUES ('" . addslashes($longcode) . "', $year, $year, '$allow_additions_starting_date') ";
+		$queryInsert = "INSERT INTO Employees (LongCode, firstyear, lastyear, allow_additions_starting_date, created_on) VALUES ('" . addslashes($longcode) . "', $year, $year, '$allow_additions_starting_date', '$created_on') ";
 		$resultInsert = mysql_query($queryInsert, $oConn->getConnection());
 
 		// get the id of the last created document

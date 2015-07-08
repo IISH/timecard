@@ -77,9 +77,9 @@ function createShortcutsContent() {
 
 	$oForm->add_field( new class_field_integer ( array(
 		'fieldname' => 'ratio'
-		, 'fieldlabel' => 'Minutes'
+		, 'fieldlabel' => 'Weight'
 		, 'required' => 1
-		, 'onNew' => 456
+		, 'onNew' => 1
 		, 'style' => 'width:425px;'
 		)));
 

@@ -34,7 +34,7 @@ WHERE UserCreatedQuickAdds.Employee = ::USER:: AND UserCreatedQuickAdds.isvisibl
 AND (
 ( Workcodes.isdisabled = 0 AND (Workcodes.lastdate IS NULL OR Workcodes.lastdate = '' OR Workcodes.lastdate >= '" . $this->oDate->get("Y-m-d") . "') )
 )
-ORDER BY Workcodes.Description, UserCreatedQuickAdds.TimeInMinutes DESC ";
+ORDER BY Workcodes.Description, UserCreatedQuickAdds.TimeInMinutes DESC, UserCreatedQuickAdds.WorkDescription ";
 //AND Workcodes.show_in_selectlist = 1
 		$query = str_replace('::USER::', $this->user, $query);
 
@@ -65,7 +65,7 @@ WHERE vw_UserCreatedQuickAdds.Employee=::USER::
 AND (
 ( Workcodes.isdisabled = 0 AND (Workcodes.lastdate IS NULL OR Workcodes.lastdate = '' OR Workcodes.lastdate >= '" . $this->oDate->get("Y-m-d") . "') )
 )
-ORDER BY Projectnummer, Description, TimeInMinutes DESC ";
+ORDER BY Projectnummer, Description, TimeInMinutes DESC, WorkDescription ";
 //AND Workcodes.show_in_selectlist = 1
 		$query = str_replace('::USER::', $this->user, $query);
 
