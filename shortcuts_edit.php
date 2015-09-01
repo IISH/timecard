@@ -101,7 +101,7 @@ function createShortcutsContent() {
 		'fieldname' => 'WorkDescription'
 		, 'fieldlabel' => 'Description'
 		, 'class' => 'resizable'
-		, 'style' => 'width:425px;height:70px;'
+		, 'style' => 'width:425px;height:50px;'
 		)));
 
 	$oForm->add_field( new class_field_bit ( array(
@@ -114,6 +114,13 @@ function createShortcutsContent() {
 		'fieldname' => 'onNewAutoSave'
 		, 'fieldlabel' => 'Auto save new entries?'
 		, 'onNew' => '0'
+		)));
+
+	$oForm->add_field( new class_field_textarea ( array(
+		'fieldname' => 'extra_explanation'
+		, 'fieldlabel' => 'Extra explanation'
+		, 'class' => 'resizable'
+		, 'style' => 'width:425px;height:50px;'
 		)));
 
 	$oForm->add_field( new class_field_hidden ( array(

@@ -76,7 +76,14 @@ doc_submit('saveclose')
 function getAdminDayEdit( $date, $oShortcutTemplate ) {
 	global $settings, $oEmployee, $oWebuser, $oDate, $protect, $databases;
 
+	// get 'on new' project id from shortcut template
 	$onNew["project"] = $oShortcutTemplate->getWorkCode();
+	// if no 'on new' project id, try to get it from url
+	if ( $onNew["project"] == 0 ) {
+		$onNew["project"] = $protect->request_positive_number_or_empty('get', "p");
+	}
+
+	// get 'on new' time from shortcut template
 	$onNew["time"] = $oShortcutTemplate->getTimeInMinutes();
 
 	$ret = '';
@@ -244,7 +251,6 @@ function getAdminDayEdit( $date, $oShortcutTemplate ) {
 			, 'fieldlabel' => 'Explanation'
 			)));
 	}
-
 
 	// generate form
 	$ret .= $oForm->generate_form();
