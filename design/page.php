@@ -43,6 +43,7 @@
 
 					<div class="sidebar {extrasidebarclass}">
 						<div class="shortcuts {extrashortcutsclass}">{shortcuts}</div>
+						<div class="shortcuts {extrashortcutsclass}">{departmentshortcuts}</div>
 						<div class="recentlyused {extrarecentlyusedclass}">{recentlyused}</div>
 					</div>
 
@@ -52,7 +53,7 @@
 
 	</div>
 
-	<div id="footer" class="footer footerwidth{cssextension}">{url} - 8 July 2015</div>
+	<div id="footer" class="footer footerwidth{cssextension}">{url}</div>
 </div>
 
 <script language="Javascript">

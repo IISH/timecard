@@ -64,7 +64,7 @@ foreach ( $projects as $one_project ) {
 	}
 
 	$c = 1;
-	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(fixCol($c), $r, $one_project[0] . getProjectName( $one_project[1], $oConn->getConnection() ) );
+	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(fixCol($c), $r, $one_project[0] . getProjectName( $one_project[1], $oConn->getConnection(), $year ) );
 	if ( $one_project[3] >= 0 ) {
 		$objPHPExcel->getActiveSheet()->getStyle(convertSpreadsheatColumnNumberToColumnCharacter($c) . $r)->applyFromArray($boldLeftStyle);
 	}
@@ -79,7 +79,11 @@ foreach ( $projects as $one_project ) {
 			if ( $one_project[3] > 0 ) {
 				$uren = "=sum(" . convertSpreadsheatColumnNumberToColumnCharacter($c+$i) . ($r+1) . ":" . convertSpreadsheatColumnNumberToColumnCharacter($c+$i) . ($r+$one_project[3]) . ")";
 			} else {
-				$uren = $arrUren[$year . '-' . str_pad($month, 2, '0', STR_PAD_LEFT) . '-' . str_pad($i, 2, '0', STR_PAD_LEFT)];
+				if ( isset( $arrUren[$year . '-' . str_pad($month, 2, '0', STR_PAD_LEFT) . '-' . str_pad($i, 2, '0', STR_PAD_LEFT)] ) ) {
+					$uren = $arrUren[$year . '-' . str_pad($month, 2, '0', STR_PAD_LEFT) . '-' . str_pad($i, 2, '0', STR_PAD_LEFT)];
+				} else {
+					$uren = 0;
+				}
 
 				//
 				$uren = convertMinutesToHours($uren);
@@ -181,7 +185,11 @@ foreach ($arrAfwezigheden as $a => $b ) {
 		if ( $lastDayOfMonth < $i ) {
 			$objPHPExcel->getActiveSheet()->getStyle(convertSpreadsheatColumnNumberToColumnCharacter($c+$i) . $r)->applyFromArray($greyBackgroundStyle);
 		} else {
-			$uren = $arrUren[$year . '-' . str_pad($month, 2, '0', STR_PAD_LEFT) . '-' . str_pad($i, 2, '0', STR_PAD_LEFT)];
+			if ( isset( $arrUren[$year . '-' . str_pad($month, 2, '0', STR_PAD_LEFT) . '-' . str_pad($i, 2, '0', STR_PAD_LEFT)] ) ) {
+				$uren = $arrUren[$year . '-' . str_pad($month, 2, '0', STR_PAD_LEFT) . '-' . str_pad($i, 2, '0', STR_PAD_LEFT)];
+			} else {
+				$uren = 0;
+			}
 			$uren = convertMinutesToHours($uren);
 			$objPHPExcel->getActiveSheet()->getStyle(convertSpreadsheatColumnNumberToColumnCharacter($c+$i) . $r)->getNumberFormat()->setFormatCode('###0.00');
 			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(fixCol($c+$i), $r, $uren);
@@ -217,7 +225,11 @@ for ( $i = 1; $i <= 31; $i++ ) {
 		$t_date["m"] = substr('0'.$month,-2);
 		$t_date["d"] = substr('0'.$i,-2);
 
-		$uren = $arrUren[$t_date["y"] . $t_date["m"] . $t_date["d"]];
+		if ( isset( $arrUren[ $t_date["y"] . $t_date["m"] . $t_date["d"] ] ) ) {
+			$uren = $arrUren[ $t_date["y"] . $t_date["m"] . $t_date["d"] ];
+		} else {
+			$uren = 0;
+		}
 
 		$uren = convertMinutesToHours($uren);
 		if ( $uren == '' ) {

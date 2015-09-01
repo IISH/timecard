@@ -22,6 +22,7 @@ echo "Start time: " . date("Y-m-d H:i:s") . "<br>\n";
 $sync = new class_syncProtimeMysql();
 $sync->setSourceTable("BOOKINGS");
 $sync->setSourceCriterium(" BOOKDATE>='" . date("Ymd", mktime(0, 0, 0, date("m")-3, 1, date("Y"))) . "' ");
+//$sync->setSourceCriterium(" BOOKDATE>='20130101' ");
 $sync->setTargetTable("PROTIME_BOOKINGS");
 $sync->setPrimaryKey("REC_NR");
 $sync->addFields( array("REC_NR", "PERSNR", "BOOKDATE", "BOOK_ORIG", "BOOKTIME", "BOOKTYPE", "CCABS", "TERMINAL", "USER_ID", "COMMENTS", "REQUEST", "CALCBOOKTIME") );

@@ -49,26 +49,32 @@ class class_department {
 		}
 	}
 
+	// TODOEXPLAIN
 	public function getId() {
 		return $this->id;
 	}
 
+	// TODOEXPLAIN
 	public function getName() {
 		return $this->name;
 	}
 
+	// TODOEXPLAIN
 	public function getEnableweeklyreportmail() {
 		return ( $this->enable_weekly_report_mail == 1 ? true : false);
 	}
 
+	// TODOEXPLAIN
 	public function isEnabled() {
 		return ( $this->isenabled == 1 ? true : false);
 	}
 
+	// TODOEXPLAIN
 	public function isDeleted() {
 		return ( $this->isdeleted == 1 ? true : false);
 	}
 
+	// TODOEXPLAIN
 	public function getHead() {
 		if ( $this->head == '' || $this->head == '0' ) {
 			return null;
@@ -77,6 +83,7 @@ class class_department {
 		}
 	}
 
+	// TODOEXPLAIN
 	public function getEmployees() {
 		$ret = array();
 
@@ -93,6 +100,7 @@ class class_department {
 		return $ret;
 	}
 
+	// TODOEXPLAIN
 	public function getEmployeesAndHours($startdate, $enddate) {
 		$ret = array();
 

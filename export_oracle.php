@@ -44,7 +44,7 @@ function createExportOracleContent() {
 	}
 
 	// show years
-	for ($i = (date("Y")-1); $i <= date("Y"); $i++) {
+	for ($i = (date("Y")-2); $i <= date("Y"); $i++) {
 		$ret .= "\n\t\t<input type=\"radio\" name=\"year\" id=\"year\" value=\"" . $i . "\" " . (($i == $checkedyear) ? 'CHECKED' : '') . " > " . $i . ' &nbsp; ';
 	}
 

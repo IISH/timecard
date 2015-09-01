@@ -43,13 +43,13 @@ while ( $row = mssql_fetch_array($result) ) {
 	$order = '';
 
 	if ( in_array("PERSNR", $arrFields) ) {
-		$top = ' TOP 50 ';
+		$top = ' TOP 200 ';
 
 		if ( $where != '' ) {
 			$where .= ' AND ';
 		}
-//		$where .= ' PERSNR=37 '; // gcu
-		$where .= ' PERSNR=131 '; // mmi
+		$where .= ' PERSNR=37 '; // gcu
+//		$where .= ' PERSNR=131 '; // mmi
 //		$where .= ' PERSNR=106 ';  // ed kool
 //		$where .= ' PERSNR=130 ';  // gerben
 //		$where .= ' PERSNR=480 ';  // bas van leeuwen

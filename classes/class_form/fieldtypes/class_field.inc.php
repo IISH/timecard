@@ -156,6 +156,7 @@ class class_field {
 		return $retval;
 	}
 
+	// TODOEXPLAIN
 	function cleanUpLabels($text) {
 		$text = str_replace('::REQUIRED::', '', $text);
 		$text = str_replace('::STYLE::', '', $text);

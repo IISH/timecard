@@ -35,14 +35,17 @@ class class_protime_user {
 		mysql_free_result($resultReset);
 	}
 
+	// TODOEXPLAIN
 	function getId() {
 		return $this->protime_id;
 	}
 
+	// TODOEXPLAIN
 	function getFirstname() {
 		return $this->firstname;
 	}
 
+	// TODOEXPLAIN
 	function getLastname() {
 		return $this->lastname;
 	}

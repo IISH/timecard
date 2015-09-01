@@ -52,7 +52,8 @@ ORDER BY Workcodes.Description ";
 		return $arr;
 	}
 
-	function createItem( $row ) {
+	// TODOEXPLAIN
+	private function createItem( $row ) {
 		$item = array();
 
 		$item["id"] = $row["ID"];

@@ -6,26 +6,13 @@ $oWebuser->checkLoggedIn();
 $date = class_datetime::get_date($protect);
 $oDate = new class_date( $date["y"], $date["m"], $date["d"] );
 
-//
-$autoSave = $protect->request_positive_number_or_empty('get', 'autoSave');
-
-// remove everything after the first < >, it is not allowed to have html tags in description
-$desc = trim( isset($_GET["desc"]) ? $_GET["desc"] : '' );
-$desc = $protect->get_left_part($desc, '<');
-$desc = $protect->get_left_part($desc, '>');
-
-$onNew["project"] = $protect->request_positive_number_or_empty('get', "p");
-$onNew["time"] = $protect->request_positive_number_or_empty('get', "t");
-
 // create webpage
 $oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
 $oPage->setTab($menuList->findTabNumber('timecard.day'));
 $oPage->setTitle('Timecard | Day (edit)');
 
-if ( class_datetime::is_legacy( $oDate ) ) {
-	$oPage->setContent( '<div class="youcannot">' . class_settings::getSetting('error_cannot_modify_legacy') . ' (error: 847521)</div>' );
-} elseif ( $oDate->get("Y-m-d") < $oWebuser->getAllowAdditionsStartingDate() ) {
+if ( $oDate->get("Y-m-d") < $oWebuser->getAllowAdditionsStartingDate() ) {
 	$oPage->setContent( '<div class="youcannot">' . class_settings::getSetting('error_cannot_modify_legacy_contact_fa') . ' (error: 256985)</div>' );
 } elseif ( class_datetime::is_future( $oDate ) ) {
 	$oPage->setContent( '<div class="youcannot">' . class_settings::getSetting('error_cannot_add_in_the_future') . '</div>' );
@@ -40,7 +27,11 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createDayEditContent( $date ) {
-	global $autoSave, $protect;
+	global $protect;
+
+	//
+	$shortcutTemplate = $protect->request_positive_number_or_empty('get', 'template');
+	$oShortcutTemplate = new class_shortcut( $shortcutTemplate );
 
 	// get design
 	$design = new class_contentdesign("page_edit");
@@ -49,12 +40,12 @@ function createDayEditContent( $date ) {
 	$ret = $design->getHeader();
 
 	//
-	$ret .= getUserDayEdit( $date );
+	$ret .= getUserDayEdit( $date, $oShortcutTemplate );
 
 	// TODOTODO niet als old data, dan dit stuk overslaan
 	// AUTO SAVE
 	if ( $_SERVER['REQUEST_METHOD'] != 'POST' ) {
-		if ( $autoSave == '1' ) {
+		if ( $oShortcutTemplate->getOnNewAutoSave() == '1' ) {
 			if ( $protect->request_positive_number_or_empty('get', "ID") == '' || $protect->request_positive_number_or_empty('get', "ID") == '0' ) {
 				$ret .= "
 <script type=\"text/javascript\">
@@ -74,8 +65,11 @@ doc_submit('saveclose')
 }
 
 	// TODOEXPLAIN
-	function getUserDayEdit( $date ) {
-		global $settings, $desc, $onNew, $oWebuser, $oDate, $protect, $databases;
+	function getUserDayEdit( $date, $oShortcutTemplate ) {
+		global $settings, $oWebuser, $oDate, $protect, $databases;
+
+		$onNew["project"] = $oShortcutTemplate->getWorkCode();
+		$onNew["time"] = $oShortcutTemplate->getTimeInMinutes();
 
 		// achterhaal hoeveel op de betreffende dag is gewerkt
 		// bereken hoeveel minuten er nog 'over' zijn
@@ -117,6 +111,7 @@ doc_submit('saveclose')
 		require_once("./classes/class_form/fieldtypes/class_field_list.inc.php");
 		require_once("./classes/class_form/fieldtypes/class_field_string.inc.php");
 		require_once("./classes/class_form/fieldtypes/class_field_readonly.inc.php");
+		require_once("./classes/class_form/fieldtypes/class_field_remark.inc.php");
 		require_once("./classes/class_form/fieldtypes/class_field_time_double_field.inc.php");
 		require_once("./classes/class_form/fieldtypes/class_field_time_single_field.inc.php");
 
@@ -221,7 +216,7 @@ doc_submit('saveclose')
 			, 'fieldlabel' => 'Description'
 			, 'class' => 'resizable'
 			, 'style' => 'width:425px;height:70px;'
-			, 'onNew' => $desc
+			, 'onNew' => $oShortcutTemplate->getWorkDescription()
 			)));
 
 		$oForm->add_field( new class_field_hidden ( array(
@@ -229,6 +224,13 @@ doc_submit('saveclose')
 			, 'fieldlabel' => 'Delete?'
 			, 'onNew' => '0'
 			)));
+
+		if ( $id == 0 && $oShortcutTemplate->getId() > 0 && $oShortcutTemplate->getExtraExplanation() != '' ) {
+			$oForm->add_field( new class_field_remark ( array(
+				'onNew' => '<i>' . $oShortcutTemplate->getExtraExplanation() . '</i>'
+				, 'fieldlabel' => 'Explanation'
+				)));
+		}
 
 		// generate form
 		$retval = $oForm->generate_form();

@@ -7,7 +7,7 @@ class class_authentication {
 
 	// TODOEXPLAIN
 	function authenticate( $login, $password ) {
-		return class_authentication::check_ldap('iisgnet\\' . $login, $password, array("apollo3.iisg.net", "apollo2.iisg.net"));
+		return class_authentication::check_ldap('iisgnet\\' . $login, $password, array("apollo3.iisg.net"));
 	}
 
 	// TODOEXPLAIN
@@ -21,12 +21,11 @@ class class_authentication {
 			if ( $login_correct == 0 ) {
 
 				// connect
-				$ad = ldap_connect($server);
+				$ad = ldap_connect($server) or die ("Could not connect to $server. Please contact IT Servicedesk");
 
 				// set some variables
 				ldap_set_option($ad, LDAP_OPT_PROTOCOL_VERSION, 3);
 				ldap_set_option($ad, LDAP_OPT_REFERRALS, 0);
-
 				// bind to the ldap directory
 				$bd = @ldap_bind($ad, $user, $pw);
 

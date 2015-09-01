@@ -22,6 +22,7 @@ echo "Start time: " . date("Y-m-d H:i:s") . "<br>\n";
 $sync = new class_syncProtimeMysql();
 $sync->setSourceTable("P_ABSENCE");
 $sync->setSourceCriterium(" BOOKDATE>='" . date("Ymd", mktime(0, 0, 0, date("m")-3, 1, date("Y"))) . "' ");
+//$sync->setSourceCriterium(" BOOKDATE>='20130101' ");
 $sync->setTargetTable("PROTIME_P_ABSENCE");
 $sync->setPrimaryKey("REC_NR");
 $sync->addFields( array("REC_NR", "PERSNR", "BOOKDATE", "PERIODETYPE", "ABSENCE", "ABSENCE_VALUE", "ABSENCE_STATUS", "SHIFT", "PAINTABSENCE", "PAINTTIME", "AUTHORISED", "COMMENTS", "REQUEST", "CALCTIME", "FROMTIME") );

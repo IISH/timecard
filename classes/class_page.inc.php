@@ -8,6 +8,7 @@ class class_page {
 	private $remove_sidebar;
 	private $content;
 	private $shortcuts;
+	private $departmentShortcuts;
 	private $recentlyused;
 	private $tab;
 	private $title;
@@ -22,6 +23,7 @@ class class_page {
 		$this->remove_sidebar = 0;
 		$this->content = '';
 		$this->shortcuts = '';
+		$this->departmentShortcuts = '';
 		$this->recentlyused = '';
 		$this->tab = 0;
 		$this->title = '';
@@ -40,6 +42,7 @@ class class_page {
 
 		$page = str_replace('{content}', $this->getContent(), $page);
 		$page = str_replace('{shortcuts}', $this->getShortcuts(), $page);
+		$page = str_replace('{departmentshortcuts}', $this->getDepartmentShortcuts(), $page);
 		$page = str_replace('{recentlyused}', $this->getRecentlyUsed(), $page);
 
 		$page = str_replace('{opentab}', $this->getTab(), $page);
@@ -95,6 +98,7 @@ class class_page {
 		return $page;
 	}
 
+	// TODOEXPLAIN
 	function createMenu() {
 		global $menuList;
 
@@ -141,6 +145,7 @@ class class_page {
 		return $sMenu;
 	}
 
+	// TODOEXPLAIN
 	function removeUnusedTags($page) {
 		$page = str_replace('{extrasidebarclass}', '', $page);
 		$page = str_replace('{extracontentclass}', '', $page);
@@ -186,13 +191,23 @@ class class_page {
 	}
 
 	// TODOEXPLAIN
-	function setShortcuts( $shortcuts ) {
+	function setUserShortcuts( $shortcuts ) {
 		$this->shortcuts = $shortcuts;
+	}
+
+	// TODOEXPLAIN
+	function setDepartmentShortcuts( $shortcuts ) {
+		$this->departmentShortcuts = $shortcuts;
 	}
 
 	// TODOEXPLAIN
 	function getShortcuts() {
 		return $this->shortcuts;
+	}
+
+	// TODOEXPLAIN
+	function getDepartmentShortcuts() {
+		return $this->departmentShortcuts;
 	}
 
 	// TODOEXPLAIN

@@ -48,6 +48,7 @@ class class_settings {
 		return $value;
 	}
 
+	// TODOEXPLAIN
 	public static function saveSetting( $setting_name, $value, $settingsTable = '' ) {
 		global $settings, $databases;
 		$setting_name = trim($setting_name);

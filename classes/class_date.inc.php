@@ -26,6 +26,7 @@ class class_date {
 		return $this->get('L');
 	}
 
+	// TODOEXPLAIN
 	function getFirstMonthInQuarter() {
 		$firstMonthInQuarter = false;
 
@@ -58,6 +59,7 @@ class class_date {
 		return $firstMonthInQuarter;
 	}
 
+	// TODOEXPLAIN
 	function getLastMonthInQuarter() {
 		$lastMonthInQuarter = false;
 

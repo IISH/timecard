@@ -51,7 +51,7 @@ function createEuProjectsContent() {
 
 	// make html list of years (current and previous)
 	$list_of_years = '';
-	for ($i = (date("Y")-1); $i <= date("Y"); $i++) {
+	for ($i = (date("Y")-2); $i <= date("Y"); $i++) {
 		if ( $i == $selyear ) {
 			$list_of_years .= "<a href=\"?selyear=" . $i . "\"><b>" . $i . "</b></a>";
 		} else {

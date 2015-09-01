@@ -107,6 +107,7 @@ class class_protime_worklocation {
 		return "Class: " . get_class($this) . "\n#: " . $this->locationId . "\nShort_1: " . $this->short_1 . "\n";
 	}
 
+	// TODOEXPLAIN
 	public static function getProtimeWorklocations() {
 		global $databases;
 

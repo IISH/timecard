@@ -56,6 +56,7 @@ class class_workhours {
 		}
 	}
 
+	// TODOEXPLAIN
 	function save() {
 		if ( $this->id == 0 ) {
 			$this->insert();
@@ -64,6 +65,7 @@ class class_workhours {
 		}
 	}
 
+	// TODOEXPLAIN
 	private function update() {
 		// update record
 		$query = "UPDATE Workhours
@@ -93,6 +95,7 @@ class class_workhours {
 		mysql_query($query, $oConn->getConnection());
 	}
 
+	// TODOEXPLAIN
 	function delete() {
 		if ( $this->getId() > 0 ) {
 			$query = "DELETE FROM Workhours WHERE ID=::ID:: ";
@@ -106,6 +109,7 @@ class class_workhours {
 		}
 	}
 
+	// TODOEXPLAIN
 	private function insert() {
 		// insert new record
 		$query = "INSERT INTO Workhours (Employee, DateWorked, WorkCode, WorkDescription, isdeleted, TimeInMinutes, daily_automatic_addition_id, fixed_time) VALUES (::EID::, '::DATE::', ::WORKID::, '::WORKDESCRIPTION::', ::ISDELETED::, ::TIMEINMINUTES::, ::DAAID::, ::ISTIMEFIXED:: ) ";
@@ -129,74 +133,92 @@ class class_workhours {
 		$this->setId( $id );
 	}
 
+	// TODOEXPLAIN
 	public function getId() {
 		return $this->id;
 	}
 
+	// TODOEXPLAIN
 	public function setId( $id ) {
 		$this->id = $id;
 	}
 
+	// TODOEXPLAIN
 	public function getEmployeeId() {
 		return $this->employeeId;
 	}
 
+	// TODOEXPLAIN
 	public function setEmployeeId( $id ) {
 		$this->employeeId = $id;
 	}
 
+	// TODOEXPLAIN
 	public function getDateWorked() {
 		return $this->dateWorked;
 	}
 
+	// TODOEXPLAIN
 	public function setDateWorked( $date ) {
 		$this->dateWorked = $date;
 	}
 
+	// TODOEXPLAIN
 	public function getWorkCode() {
 		return $this->workCode;
 	}
 
+	// TODOEXPLAIN
 	public function setWorkCode( $code ) {
 		$this->workCode = $code;
 	}
 
+	// TODOEXPLAIN
 	public function getWorkDescription() {
 		return $this->workDescription;
 	}
 
+	// TODOEXPLAIN
 	public function setWorkDescription( $description ) {
 		$this->workDescription = $description;
 	}
 
+	// TODOEXPLAIN
 	public function getIsDeleted() {
 		return $this->isDeleted;
 	}
 
+	// TODOEXPLAIN
 	public function setIsDeleted( $code ) {
 		$this->isDeleted = $code;
 	}
 
+	// TODOEXPLAIN
 	public function getTimeInMinutes() {
 		return $this->timeInMinutes;
 	}
 
+	// TODOEXPLAIN
 	public function setTimeInMinutes( $minutes ) {
 		$this->timeInMinutes = $minutes;
 	}
 
+	// TODOEXPLAIN
 	public function getDailyAutomaticAdditionId() {
 		return $this->daily_automatic_addition_id;
 	}
 
+	// TODOEXPLAIN
 	public function setDailyAutomaticAdditionId( $id ) {
 		$this->daily_automatic_addition_id = $id;
 	}
 
+	// TODOEXPLAIN
 	public function getIsTimeFixed() {
 		return $this->is_time_fixed;
 	}
 
+	// TODOEXPLAIN
 	public function setIsTimeFixed( $value ) {
 		$this->is_time_fixed = $value;
 	}

@@ -13,30 +13,18 @@ $oDate = new class_date( $date["y"], $date["m"], $date["d"] );
 
 $oEmployee = new class_employee($protect->request('get', 'eid'), $settings);
 
-$autoSave = $protect->request_positive_number_or_empty('get', 'autoSave');
-
-// remove everything after the first < >, it is not allowed to have html tags in description
-$desc = trim($_GET["desc"]);
-$desc = $protect->get_left_part($desc, '<');
-$desc = $protect->get_left_part($desc, '>');
-
-$onNew["project"] = $protect->request_positive_number_or_empty('get', "p");
-$onNew["time"] = $protect->request_positive_number_or_empty('get', "t");
-
 // create webpage
 $oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
 $oPage->setTab($menuList->findTabNumber('administrator.day'));
 $oPage->setTitle('Timecard | Admin Day (edit)');
 
-if ( class_datetime::is_legacy( $oDate ) ) {
-	$oPage->setContent( '<div class="youcannot">' . class_settings::getSetting('error_cannot_modify_legacy') . ' (error: 847521)</div>' );
-} elseif ( $oDate->get("Y-m-d") < $oEmployee->getAllowAdditionsStartingDate() ) {
+if ( $oDate->get("Y-m-d") < $oEmployee->getAllowAdditionsStartingDate() ) {
 	$ret .= '<div class="youcannot">' . class_settings::getSetting('error_cannot_modify_legacy_contact_fa') . ' (error: 256985)</div>';
 } elseif ( class_datetime::is_future( $oDate ) ) {
 	$oPage->setContent( '<div class="youcannot">' . class_settings::getSetting('error_cannot_add_in_the_future') . '</div>' );
 } else {
-	$oPage->setContent(createAdminDayEditContent( $date ));
+	$oPage->setContent(createAdminDayEditContent( $date  ));
 }
 
 // show page
@@ -45,8 +33,12 @@ echo $oPage->getPage();
 require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
-function createAdminDayEditContent( $date ) {
-	global $autoSave, $protect;
+function createAdminDayEditContent( $date  ) {
+	global $protect;
+
+	//
+	$shortcutTemplate = $protect->request_positive_number_or_empty('get', 'template');
+	$oShortcutTemplate = new class_shortcut( $shortcutTemplate );
 
 	// get design
 	$design = new class_contentdesign("page_admin_day_edit");
@@ -55,11 +47,11 @@ function createAdminDayEditContent( $date ) {
 	$ret = $design->getHeader();
 
 	// 
-	$ret .= getAdminDayEdit( $date );
+	$ret .= getAdminDayEdit( $date, $oShortcutTemplate );
 
 	// AUTO SAVE
 	if ( $_SERVER['REQUEST_METHOD'] != 'POST' ) {
-		if ( $autoSave == '1' ) {
+		if ( $oShortcutTemplate->getOnNewAutoSave() == '1' ) {
 			if ( $protect->request_positive_number_or_empty('get', "ID") == '' || $protect->request_positive_number_or_empty('get', "ID") == '0' ) {
 
 				$ret .= "
@@ -81,8 +73,11 @@ doc_submit('saveclose')
 }
 
 // TODOEXPLAIN
-function getAdminDayEdit( $date ) {
-	global $settings, $desc, $onNew, $oEmployee, $oWebuser, $oDate, $protect, $databases;
+function getAdminDayEdit( $date, $oShortcutTemplate ) {
+	global $settings, $oEmployee, $oWebuser, $oDate, $protect, $databases;
+
+	$onNew["project"] = $oShortcutTemplate->getWorkCode();
+	$onNew["time"] = $oShortcutTemplate->getTimeInMinutes();
 
 	$ret = '';
 
@@ -234,7 +229,7 @@ function getAdminDayEdit( $date ) {
 		, 'fieldlabel' => 'Description'
 		, 'class' => 'resizable'
 		, 'style' => 'width:425px;height:80px;'
-		, 'onNew' => $desc
+		, 'onNew' => $oShortcutTemplate->getWorkDescription()
 		)));
 
 	$oForm->add_field( new class_field_hidden ( array(
@@ -242,6 +237,14 @@ function getAdminDayEdit( $date ) {
 		, 'fieldlabel' => 'Delete?'
 		, 'onNew' => '0'
 		)));
+
+	if ( $id == 0 && $oShortcutTemplate->getId() > 0 && $oShortcutTemplate->getExtraExplanation() != '' ) {
+		$oForm->add_field( new class_field_remark ( array(
+			'onNew' => '<i>' . $oShortcutTemplate->getExtraExplanation() . '</i>'
+			, 'fieldlabel' => 'Explanation'
+			)));
+	}
+
 
 	// generate form
 	$ret .= $oForm->generate_form();

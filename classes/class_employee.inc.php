@@ -16,6 +16,7 @@ class class_employee {
 	private $show_jira_field = false;
 	private $allow_additions_starting_date = '';
 	private $projects = array();
+	private $department = '';
 
 	// TODOEXPLAIN
 	function class_employee($timecard_id, $settings) {
@@ -51,6 +52,7 @@ class class_employee {
 			$this->hoursperweek = $row_project["hoursperweek"];
 			$this->daysperweek = $row_project["daysperweek"];
 			$this->allow_additions_starting_date = $row_project["allow_additions_starting_date"];
+			$this->department = $row_project["Department"];
 
 			if ( $row_project["show_jira_field"] == 1 ) {
 				$this->show_jira_field = true;
@@ -128,6 +130,11 @@ class class_employee {
 	// TODOEXPLAIN
 	public function getTimecardId() {
 		return $this->timecard_id;
+	}
+
+	// TODOEXPLAIN
+	public function getDepartmentId() {
+		return $this->department;
 	}
 
 	// TODOEXPLAIN
@@ -365,24 +372,7 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 		return $retval;
 	}
 
-//	function getHoursPerWeek2($year) {
-//		$oConn = new class_mysql($this->databases['default']);
-//		$oConn->connect();
-//
-//		$arr = array();
-//
-//		// reset values
-//		$query = "SELECT ID FROM HoursPerWeek WHERE year=" . $year . " AND Employee=" . $this->getTimecardId() . " AND isdeleted=0 ORDER BY startmonth ";
-//		$result = mysql_query($query, $oConn->getConnection());
-//		while ($row = mysql_fetch_assoc($result)) {
-//			$oHoursPerWeek = new class_hoursperweek($row["ID"], $this->settings);
-//			$arr[] = $oHoursPerWeek;
-//		}
-//		mysql_free_result($result);
-//
-//		return $arr;
-//	}
-
+	// TODOEXPLAIN
 	function getHoursPerWeek3($year) {
 		$oHoursPerWeek = new class_employee_hours_per_week($this, $year);
 		if ( date(class_settings::getSetting("timeStampRefreshLowPriority")) > $oHoursPerWeek->getLastRefresh() ) {
@@ -392,6 +382,7 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 		return $oHoursPerWeek;
 	}
 
+	// TODOEXPLAIN
 	function getAmountOfNotPlannedVacationInMinutes( $year ) {
 		$ret = 0;
 
@@ -426,10 +417,12 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 		return $ret;
 	}
 
+	// TODOEXPLAIN
 	public function getAmountOfNotPlannedVacationInHours( $year ) {
 		return $this->getAmountOfNotPlannedVacationInMinutes( $year )/60.0;
 	}
 
+	// TODOEXPLAIN
 	function getVacationHours() {
 		$ret = array();
 
@@ -458,6 +451,7 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 		return $ret;
 	}
 
+	// TODOEXPLAIN
 	function getFavourites( $type ) {
 		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
@@ -476,6 +470,7 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 		return $ids;
 	}
 
+	// TODOEXPLAIN
 	function getTimecardDayTotals( $year, $month ) {
 		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
@@ -819,6 +814,7 @@ ORDER BY Workcodes.Description
 		}
 	}
 
+	// TODOEXPLAIN
 	function getTimecardDayTotal( $oDate ) {
 		$hoursTotal = 0;
 
@@ -836,6 +832,7 @@ ORDER BY Workcodes.Description
 		return $hoursTotal+$eerderNaarHuisTotal;
 	}
 
+	// TODOEXPLAIN
 	function setZeroNoneFixedDaa( $oDate ) {
 		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
@@ -846,6 +843,7 @@ ORDER BY Workcodes.Description
 		return;
 	}
 
+	// TODOEXPLAIN
 	public static function getListOfDaaEmployees() {
 		global $settings, $databases;
 
@@ -876,6 +874,7 @@ AND `ProtimePersNr`>0
 		return $ret;
 	}
 
+	// TODOEXPLAIN
 	public static function getListOfEnabledAndLinkedEmployees() {
 		global $settings, $databases;
 
@@ -901,6 +900,7 @@ AND `ProtimePersNr`>0
 		return $ret;
 	}
 
+	// TODOEXPLAIN
 	public static function getListOfAllHoursLeftEmployees() {
 		global $settings, $databases;
 

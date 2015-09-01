@@ -4,6 +4,7 @@ require_once "class_mysql.inc.php";
 
 class class_workhours_static {
 
+	// TODOEXPLAIN
 	public static function getWorkhoursPerEmployeeGroupedFromTill($projectid, $startdate, $enddate) {
 		global $settings, $databases;
 
@@ -24,6 +25,7 @@ class class_workhours_static {
 		return $arr;
 	}
 
+	// TODOEXPLAIN
 	public static function getWorkhoursPerEmployeeGroupedMonth($projectid, $year_month) {
 		global $settings, $databases;
 

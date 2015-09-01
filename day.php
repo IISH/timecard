@@ -17,7 +17,8 @@ $oPage->setContent(createDayContent( $date ) . getCheckedInCheckedOut( $oWebuser
 
 // add shortcuts and recently used
 if ( $date["y"] >= "2013" ) {
-	$oPage->setShortcuts(getUserShortcuts( $oWebuser->getTimecardId(), $oDate, $settings ) );
+	$oPage->setUserShortcuts(getUserShortcuts( $oWebuser, $oDate, $settings, 'user' ) );
+	$oPage->setDepartmentShortcuts(getUserShortcuts( $oWebuser, $oDate, $settings, 'department' ) );
 	$oPage->setRecentlyUsed(getUserRecentlyUsed( $oWebuser->getTimecardId(), $oDate, $settings ) );
 }
 
@@ -50,9 +51,7 @@ function getUserDay( $date ) {
 	$ret = '';
 
 	// hide add new button if ...
-	if ( class_datetime::is_legacy( $oDate ) ) {
-		$ret .= '<div class="youcannot">' . class_settings::getSetting('error_cannot_modify_legacy') . ' (error: 847521)</div>';
-	} elseif ( $oDate->get("Y-m-d") < $oWebuser->getAllowAdditionsStartingDate() ) {
+	if ( $oDate->get("Y-m-d") < $oWebuser->getAllowAdditionsStartingDate() ) {
 		$ret .= '<div class="youcannot">' . class_settings::getSetting('error_cannot_modify_legacy_contact_fa') . ' (error: 256985)</div>';
 	} elseif ( class_datetime::is_future( $oDate ) ) {
 		$ret .= '<div class="youcannot">' . class_settings::getSetting('error_cannot_add_in_the_future') . '</div>';
@@ -187,29 +186,39 @@ function getUserDay( $date ) {
 }
 
 // TODOEXPLAIN
-function getUserShortcuts($userid, $oDate, $settings) {
+function getUserShortcuts($oUser, $oDate, $settings, $type) {
+	$userid = $oUser->getTimecardId();
+//	$departmentId = $oUser->getDepartmentId();
+
 	if ( $userid == '' || $userid == '0' || $userid == '-1' ) {
 		return;
 	}
 
 	// get design
-	$design = new class_contentdesign("page_div_shortcuts");
+	if ( $type == 'department' ) {
+
+		$design = new class_contentdesign("page_div_department_shortcuts");
+	} else {
+		$design = new class_contentdesign("page_div_shortcuts");
+	}
 
 	// add header
 	$ret = $design->getHeader();
 
-	$oShortcuts = new class_shortcuts($userid, $settings, $oDate);
+	$oShortcuts = new class_shortcuts($oUser, $settings, $oDate);
 
 	// record
 	$records = '';
-	foreach ( $oShortcuts->getEnabledShortcuts() as $shortcut) {
-		$url = "edit.php?ID=0&d=" . $oDate->get("Ymd") . "&p=" . $shortcut["projectnr"] . "&t=" . $shortcut["minutes"];
-		if ( trim($shortcut["autosave"]) == '1' ) {
-			$url .= "&autoSave=" . trim($shortcut["autosave"]);
-		}
-		if ( trim($shortcut["description"]) != '' ) {
-			$url .= "&desc=" . urlencode(htmlspecialchars($shortcut["description"]));
-		}
+
+	foreach ( $oShortcuts->getEnabledShortcuts( $type ) as $shortcut) {
+//		$url = "edit.php?ID=0&d=" . $oDate->get("Ymd") . "&template=" . $shortcut["id"] . "&p=" . $shortcut["projectnr"] . "&t=" . $shortcut["minutes"];
+		$url = "edit.php?ID=0&d=" . $oDate->get("Ymd") . "&template=" . $shortcut["id"];
+//		if ( trim($shortcut["autosave"]) == '1' ) {
+//			$url .= "&autoSave=" . trim($shortcut["autosave"]);
+//		}
+//		if ( trim($shortcut["description"]) != '' ) {
+//			$url .= "&desc=" . urlencode(htmlspecialchars($shortcut["description"]));
+//		}
 		$url .= "&backurl=" . urlencode(get_current_url());
 		$shortcut["url"] = $url;
 
@@ -220,12 +229,18 @@ function getUserShortcuts($userid, $oDate, $settings) {
 		}
 
 		if ( trim($shortcut["description"]) != '' ) {
-			$shortcut["description"] = "<br><i>" . htmlspecialchars(trim($shortcut["description"])) . "</i>";
+			$shortcut["description"] = htmlspecialchars(trim($shortcut["description"]));
 		} else {
 			$shortcut["description"] = '';
 		}
 
 		$shortcut["hourminutes"] = class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes($shortcut["minutes"]);
+
+		if ( $shortcut["extra_explanation"] != '' ) {
+			$shortcut["extra_explanation_mark"] = '?';
+		} else {
+			$shortcut["extra_explanation_mark"] = '';
+		}
 
 		$records .= fillTemplate($design->getRecords(), $shortcut);
 	}

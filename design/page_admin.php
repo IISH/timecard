@@ -49,6 +49,7 @@
 
 						<div class="sidebar_admin {extrasidebarclass}">
 							<div class="shortcuts shortcuts_admin {extrashortcutsclass}">{shortcuts}</div>
+							<div class="shortcuts shortcuts_admin {extrashortcutsclass}">{departmentshortcuts}</div>
 							<div class="recentlyused recentlyused_admin {extrarecentlyusedclass}">{recentlyused}</div>
 						</div>
 
@@ -58,7 +59,7 @@
 
 	</div>
 
-	<div id="footer" class="footer footerwidth{cssextension}">{url} - 8 July 2015</div>
+	<div id="footer" class="footer footerwidth{cssextension}">{url}</div>
 </div>
 
 <script language="Javascript">

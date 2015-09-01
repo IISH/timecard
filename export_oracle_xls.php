@@ -25,7 +25,7 @@ if ( !in_array( $output, array('xls', 'xlsx', 'json') ) ) {
 //
 $year = substr($protect->request_positive_number_or_empty('get', "year"), 0, 4);
 $month = substr($protect->request_positive_number_or_empty('get', "month"), 0, 2);
-if ( $year == '' || $month == '' || $year < (date("Y")-1) || $month < 1 || $month > 12 ) {
+if ( $year == '' || $month == '' || $year < (date("Y")-2) || $month < 1 || $month > 12 ) {
 	die('Error 54289654. Go back to <a href="export_oracle.php">view</a>');
 }
 

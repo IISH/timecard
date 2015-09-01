@@ -57,26 +57,32 @@ class class_project {
 		}
 	}
 
+	// TODOEXPLAIN
 	public function getId() {
 		return $this->id;
 	}
 
+	// TODOEXPLAIN
 	public function getDescription() {
 		return $this->description;
 	}
 
+	// TODOEXPLAIN
 	public function getProjectnumber() {
 		return $this->projectnummer;
 	}
 
+	// TODOEXPLAIN
 	public function getEnddate() {
 		return $this->enddate;
 	}
 
+	// TODOEXPLAIN
 	public function getEnableweeklyreportmail() {
 		return ( $this->enable_weekly_report_mail == 1 ? true : false);
 	}
 
+	// TODOEXPLAIN
 	public function getProjectleader() {
 		if ( $this->projectleader == '' || $this->projectleader == '0' ) {
 			return null;

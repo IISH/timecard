@@ -273,7 +273,7 @@ class class_form {
 		// default template for form
 		array_push($preloaded_templates, array('default' => "
 <tr>
-	<TD valign=\"top\"><span class=\"form_field_label\">::LABEL::: </span><span class=\"errormessage\">::REQUIRED::</span>&nbsp;</td>
+	<TD valign=\"top\"><span class=\"form_field_label\">::LABEL:: </span><span class=\"errormessage\">::REQUIRED::</span>&nbsp;</td>
 	<td>::FIELD::</td>
 </tr>
 "));
