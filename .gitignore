@@ -6,6 +6,5 @@ settings.php
 .idea
 *.ipr
 *.iml
-PHPExcel
 phpinfo.php
 test.php
