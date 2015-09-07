@@ -15,7 +15,7 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createLoginPage() {
-	global $protect, $settings, $settings_from_database;
+	global $protect, $settings;
 
 	$fldLogin = '';
 	$error = '';
@@ -55,10 +55,7 @@ function createLoginPage() {
 				$oWebuser = new class_employee($persinfo["id"], $settings);
 
 				// update wanneer gebruiker voor het laatst is ingelogd op timecard
-				updateLastUserLogin($oWebuser->getTimecardId());
-
-				//
-				syncProtimeAndTimecardEmployeeData($oWebuser->getTimecardId(), $oWebuser->getProtimeId());
+				updateLastUserLogin( $oWebuser->getTimecardId() );
 
 				// redirect to prev page
 				if ( $burl == '' ) {
@@ -77,9 +74,11 @@ function createLoginPage() {
 		}
 	}
 
-	$ret = "
-<h2>Please log in...</h2>
-";
+	// get design
+	$design = new class_contentdesign("page_login");
+
+	// add header
+	$ret = $design->getHeader();
 
 	if ( $error != '' ) {
 		$ret .= "<span class=\"error\">" . $error . "</span><br>";
@@ -101,14 +100,14 @@ function createLoginPage() {
 	<td></td>
 </tr>
 <tr>
-	<td align=\"right\"><input class=\"button_login\" type=\"reset\" name=\"btnReset\" value=\"Clear\">&nbsp;</td>
-	<td>&nbsp;<input class=\"button_login\" type=\"submit\" name=\"btnSubmit\" value=\"Submit\"></td>
+	<td align=\"right\"><input class=\"button\" type=\"reset\" name=\"btnReset\" value=\"Clear\">&nbsp;</td>
+	<td>&nbsp;<input class=\"button\" type=\"submit\" name=\"btnSubmit\" value=\"Submit\"></td>
 </tr>
 </form>
 </table>
 
 <br>
-" . $settings_from_database["text_functional_maintainer"] . "
+" . class_settings::getSetting("text_functional_maintainer") . "
 <script language=\"javascript\">
 <!--
 document.frmA.fldLogin.focus();
@@ -116,6 +115,8 @@ document.frmA.fldLogin.focus();
 </script>
 ";
 
+	// add footer
+	$ret .= $design->getFooter();
+
 	return $ret;
 }
-?>

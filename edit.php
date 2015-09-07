@@ -6,30 +6,16 @@ $oWebuser->checkLoggedIn();
 $date = class_datetime::get_date($protect);
 $oDate = new class_date( $date["y"], $date["m"], $date["d"] );
 
-//
-$autoSave = $protect->request_positive_number_or_empty('get', 'autoSave');
-
-// remove everything after the first < >, it is not allowed to have html tags in description
-$desc = trim($_GET["desc"]);
-$desc = $protect->get_left_part($desc, '<');
-$desc = $protect->get_left_part($desc, '>');
-
-$onNew["project"] = $protect->request_positive_number_or_empty('get', "p");
-$onNew["time"] = $protect->request_positive_number_or_empty('get', "t");
-
-// sync Timecard Protime
-syncTimecardProtimeDay($oWebuser->getTimecardId(), $oWebuser->getProtimeId(), $oDate);
-
 // create webpage
 $oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
 $oPage->setTab($menuList->findTabNumber('timecard.day'));
 $oPage->setTitle('Timecard | Day (edit)');
 
-if ( class_datetime::is_legacy( $oDate ) ) {
-	$oPage->setContent( '<span class="youcannot">You cannot enter legacy data.</span><br><br>' );
-} elseif ( class_datetime::is_future( $oDate ) && $oWebuser->getTimecardId() != 1 ) {
-	$oPage->setContent( '<span class="youcannot">You cannot enter hours in the future.</span><br><br>' );
+if ( $oDate->get("Y-m-d") < $oWebuser->getAllowAdditionsStartingDate() ) {
+	$oPage->setContent( '<div class="youcannot">' . class_settings::getSetting('error_cannot_modify_legacy_contact_fa') . ' (error: 256985)</div>' );
+} elseif ( class_datetime::is_future( $oDate ) ) {
+	$oPage->setContent( '<div class="youcannot">' . class_settings::getSetting('error_cannot_add_in_the_future') . '</div>' );
 } else {
 	$oPage->setContent(createDayEditContent( $date ));
 }
@@ -41,17 +27,25 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createDayEditContent( $date ) {
-	global $autoSave, $protect, $oDate;
+	global $protect;
 
-	$ret = "<h2>Day (edit)</h2>";
+	//
+	$shortcutTemplate = $protect->request_positive_number_or_empty('get', 'template');
+	$oShortcutTemplate = new class_shortcut( $shortcutTemplate );
 
-	// 
-	$ret .= getUserDayEdit( $date );
+	// get design
+	$design = new class_contentdesign("page_edit");
+
+	// add header
+	$ret = $design->getHeader();
+
+	//
+	$ret .= getUserDayEdit( $date, $oShortcutTemplate );
 
 	// TODOTODO niet als old data, dan dit stuk overslaan
 	// AUTO SAVE
 	if ( $_SERVER['REQUEST_METHOD'] != 'POST' ) {
-		if ( $autoSave == '1' ) {
+		if ( $oShortcutTemplate->getOnNewAutoSave() == '1' ) {
 			if ( $protect->request_positive_number_or_empty('get', "ID") == '' || $protect->request_positive_number_or_empty('get', "ID") == '0' ) {
 				$ret .= "
 <script type=\"text/javascript\">
@@ -64,12 +58,25 @@ doc_submit('saveclose')
 		}
 	}
 
+	// add footer
+	$ret .= $design->getFooter();
+
 	return $ret;
 }
 
 	// TODOEXPLAIN
-	function getUserDayEdit( $date ) {
-		global $settings, $dbhandleTimecard, $desc, $onNew, $oWebuser, $oDate, $protect;
+	function getUserDayEdit( $date, $oShortcutTemplate ) {
+		global $settings, $oWebuser, $oDate, $protect, $databases;
+
+		// get 'on new' project id from shortcut template
+		$onNew["project"] = $oShortcutTemplate->getWorkCode();
+		// if no 'on new' project id, try to get it from url
+		if ( $onNew["project"] == 0 ) {
+			$onNew["project"] = $protect->request_positive_number_or_empty('get', "p");
+		}
+
+		// get 'on new' time from shortcut template
+		$onNew["time"] = $oShortcutTemplate->getTimeInMinutes();
 
 		// achterhaal hoeveel op de betreffende dag is gewerkt
 		// bereken hoeveel minuten er nog 'over' zijn
@@ -78,7 +85,7 @@ doc_submit('saveclose')
 		$protime_day_total = $oEmployee->getProtimeDayTotal($date);
 
 		if ( $protime_day_total > 0 ) {
-			$vandaagGewerkt = advancedSingleRecordSelectMysql($dbhandleTimecard, "Workhours", "AANTAL", "Employee=" . $oWebuser->getTimecardId() . " AND DateWorked LIKE '" . $oDate->get("Y-m-d") . "%'" , "SUM(TimeInMinutes) AS AANTAL");
+			$vandaagGewerkt = advancedSingleRecordSelectMysql('default', "Workhours", "AANTAL", "Employee=" . $oWebuser->getTimecardId() . " AND DateWorked LIKE '" . $oDate->get("Y-m-d") . "%'" , "SUM(TimeInMinutes) AS AANTAL");
 			if ( $vandaagGewerkt["aantal"] == '' ) {
 				$vandaagGewerkt["aantal"] = 0;
 			}
@@ -96,9 +103,14 @@ doc_submit('saveclose')
 			}
 		}
 
-		require_once("./classes/class_db.inc.php");
-		require_once("./classes/class_form/workhours_class_form.inc.php");
+		$id = $protect->request_positive_number_or_empty('get', "ID");
+		if ( $id == '' ) {
+			$id = 0;
+		}
+		$oWh = new class_workhours( $id );
 
+		require_once("./classes/class_form/workhours_class_form.inc.php");
+		require_once("./classes/class_form/fieldtypes/class_field_bit.inc.php");
 		require_once("./classes/class_form/fieldtypes/class_field_date.inc.php");
 		require_once("./classes/class_form/fieldtypes/class_field_integer.inc.php");
 		require_once("./classes/class_form/fieldtypes/class_field_hidden.inc.php");
@@ -106,17 +118,17 @@ doc_submit('saveclose')
 		require_once("./classes/class_form/fieldtypes/class_field_list.inc.php");
 		require_once("./classes/class_form/fieldtypes/class_field_string.inc.php");
 		require_once("./classes/class_form/fieldtypes/class_field_readonly.inc.php");
+		require_once("./classes/class_form/fieldtypes/class_field_remark.inc.php");
 		require_once("./classes/class_form/fieldtypes/class_field_time_double_field.inc.php");
 		require_once("./classes/class_form/fieldtypes/class_field_time_single_field.inc.php");
 
 		// TODOTODO DIRTY
-		$oDb = new class_db($settings, 'timecard');
+		$oDb = new class_mysql($databases['default']);
 		$oForm = new workhours_class_form($settings, $oDb);
 
 		$oForm->set_form( array(
-			'query' => 'SELECT ID, Employee, DateWorked, WorkCode, Beheertype, WorkDescription, isdeleted, TimeInMinutes FROM Workhours WHERE ID=[FLD:ID] AND Employee=' . $oWebuser->getTimecardId() . ' AND isdeleted=0 AND protime_absence_recnr=0 '
+			'query' => 'SELECT * FROM Workhours WHERE ID=[FLD:ID] AND Employee=' . $oWebuser->getTimecardId() . ' AND protime_absence_recnr=0 '
 			, 'table' => 'Workhours'
-			, 'inserttable' => 'Workhours'
 			, 'primarykey' => 'ID'
 			));
 
@@ -150,7 +162,7 @@ doc_submit('saveclose')
 		$oForm->add_field( new class_field_list ( $settings, array(
 			'fieldname' => 'WorkCode'
 			, 'fieldlabel' => 'Project'
-			, 'query' => 'SELECT ID, Concat(Projectnummer, \' \', Description) AS ProjectNumberName FROM Workcodes2011 WHERE ( isdisabled = 0 AND show_in_selectlist = 1 AND (enddate IS NULL OR enddate = \'\' OR enddate >= \'' . $oDate->get("Y-m-d") . '\') ) ' . $currentValueOnNew . ' ORDER BY Projectnummer, Description '
+			, 'query' => 'SELECT ID, Concat(Projectnummer, \' \', Description) AS ProjectNumberName FROM Workcodes WHERE ( isdisabled = 0 AND (lastdate IS NULL OR lastdate = \'\' OR lastdate >= \'' . $oDate->get("Y-m-d") . '\') ) ' . $currentValueOnNew . ' ORDER BY Projectnummer, Description '
 			, 'id_field' => 'ID'
 			, 'description_field' => 'ProjectNumberName'
 			, 'empty_value' => '0'
@@ -171,7 +183,7 @@ doc_submit('saveclose')
 			$oForm->add_field( new class_field_time_double_field ( array(
 				'fieldname' => 'TimeInMinutes'
 				, 'fieldlabel' => 'Time (hh:mm)'
-				, 'required' => 1
+				, 'required' => 0
 				, 'possible_hour_values' => array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")
 				, 'possible_minute_values' => $possible_minute_values
 				, 'onNew' => $onNew["time"]
@@ -182,7 +194,7 @@ doc_submit('saveclose')
 			$oForm->add_field( new class_field_time_single_field ( array(
 				'fieldname' => 'TimeInMinutes'
 				, 'fieldlabel' => 'Time (hh:mm)'
-				, 'required' => 1
+				, 'required' => 0
 				, 'possible_hour_values' => array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")
 				, 'possible_minute_values' => array("00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55")
 				, 'onNew' => $onNew["time"]
@@ -190,12 +202,28 @@ doc_submit('saveclose')
 
 		}
 
+		if ( $oWh->getDailyAutomaticAdditionId() > 0 ) {
+			$oForm->add_field( new class_field_bit ( array(
+				'fieldname' => 'fixed_time'
+				, 'fieldlabel' => 'Fixed time?'
+				, 'onNew' => '0'
+				)));
+		}
+
+		if ( $oWebuser->getShowJiraField() ) {
+			$oForm->add_field( new class_field_string ( array(
+				'fieldname' => 'jira_issue_nr'
+				, 'fieldlabel' => 'JIRA issue #'
+				, 'style' => 'width:425px;'
+				)));
+		}
+
 		$oForm->add_field( new class_field_textarea ( array(
 			'fieldname' => 'WorkDescription'
 			, 'fieldlabel' => 'Description'
 			, 'class' => 'resizable'
 			, 'style' => 'width:425px;height:70px;'
-			, 'onNew' => $desc
+			, 'onNew' => $oShortcutTemplate->getWorkDescription()
 			)));
 
 		$oForm->add_field( new class_field_hidden ( array(
@@ -204,9 +232,15 @@ doc_submit('saveclose')
 			, 'onNew' => '0'
 			)));
 
-		// calculate form
+		if ( $id == 0 && $oShortcutTemplate->getId() > 0 && $oShortcutTemplate->getExtraExplanation() != '' ) {
+			$oForm->add_field( new class_field_remark ( array(
+				'onNew' => '<i>' . $oShortcutTemplate->getExtraExplanation() . '</i>'
+				, 'fieldlabel' => 'Explanation'
+				)));
+		}
+
+		// generate form
 		$retval = $oForm->generate_form();
 
 		return $retval;
 	}
-?>

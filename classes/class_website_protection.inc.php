@@ -1,6 +1,4 @@
 <?php
-// modified: 2012-11-29
-
 class class_website_protection {
 	// construct
 	function class_website_protection() {
@@ -8,11 +6,9 @@ class class_website_protection {
 
 	// TODOEXPLAIN
 	function send_warning_mail($tekst) {
-		global $settings_from_database;
-
 		$message = '';
 
-		$recipients = trim($settings_from_database["admin_email"]);
+		$recipients = trim(class_settings::getSetting("admin_email"));
 
 		$recipients = str_replace(array(';', ':', ' '), ',', $recipients);
 
@@ -22,11 +18,8 @@ class class_website_protection {
 		}
 
 		if ( $recipients != '' ) {
-
-			// gebruik geen info@, is een alias, het werkt door een of andere reden niet (zegt IT)
-			// gebruik infomail@, is een account, en werkt wel
 			$fromname = 'IISG Web protectie';
-			$fromaddress = 'infomail@iisg.nl';
+			$fromaddress = 'noreply@iisg.nl';
 			$eol = "\n";
 
 			$headers = "From: " . $fromname . " <" . $fromaddress . ">";
@@ -76,9 +69,7 @@ class class_website_protection {
 
 	// Send error message to browser
 	function send_error_to_browser($text) {
-		global $settings_from_database;
-
-		echo fillTemplate($settings_from_database["error_to_browser"], array('text' => $text));
+		echo fillTemplate(class_settings::getSetting("error_to_browser"), array('text' => $text));
 	}
 
 	// TODOEXPLAIN
@@ -403,11 +394,8 @@ class class_website_protection {
 		}
 
 		if ( $recipients != '' ) {
-
-			// gebruik geen info@, is een alias, het werkt door een of andere reden niet (zegt IT)
-			// gebruik infomail@, is een account, en werkt wel
 			$fromname = 'IISG Timecard';
-			$fromaddress = 'infomail@iisg.nl';
+			$fromaddress = 'noreply@iisg.nl';
 
 			$headers = "From: " . $fromname . " <" . $fromaddress . ">";
 
@@ -416,5 +404,9 @@ class class_website_protection {
 
 		}
 	}
+
+	// TODOEXPLAIN
+	public function __toString() {
+		return "Class: " . get_class($this) . "\n";
+	}
 }
-?>

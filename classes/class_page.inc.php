@@ -1,19 +1,20 @@
 <?php 
-// modified: 2012-12-02
-
-require_once "classes/class_file.inc.php";
-require_once "classes/class_misc.inc.php";
+require_once dirname(__FILE__) . "/class_file.inc.php";
+require_once dirname(__FILE__) . "/class_misc.inc.php";
 
 class class_page {
-    private $page_template;
-    private $settings;
-    private $remove_sidebar;
-    private $content;
-    private $shortcuts;
-    private $recentlyused;
-    private $tab;
-    private $title;
-    private $color;
+	private $page_template;
+	private $settings;
+	private $remove_sidebar;
+	private $content;
+	private $shortcuts;
+	private $departmentShortcuts;
+	private $recentlyused;
+	private $tab;
+	private $title;
+	private $color;
+	private $left_menu;
+	private $cssextension;
 
 	// TODOEXPLAIN
 	function class_page($page_template, $settings) {
@@ -22,33 +23,47 @@ class class_page {
 		$this->remove_sidebar = 0;
 		$this->content = '';
 		$this->shortcuts = '';
+		$this->departmentShortcuts = '';
 		$this->recentlyused = '';
 		$this->tab = 0;
 		$this->title = '';
 		$this->color = '73A0C9';
+		$this->left_menu = '';
+		$this->cssextension = '';
 	}
 
 	// TODOEXPLAIN
 	function getPage() {
-		global $oWebuser;
+		global $oWebuser, $protect;
 
 		$oFile = new class_file();
 		$page = $oFile->getFileSource($this->page_template);
 		$page = str_replace('{url}', $this->getUrl(), $page);
-		$page = str_replace('{lastmodified}', $this->getLastModified(), $page);
 
 		$page = str_replace('{content}', $this->getContent(), $page);
 		$page = str_replace('{shortcuts}', $this->getShortcuts(), $page);
+		$page = str_replace('{departmentshortcuts}', $this->getDepartmentShortcuts(), $page);
 		$page = str_replace('{recentlyused}', $this->getRecentlyUsed(), $page);
 
 		$page = str_replace('{opentab}', $this->getTab(), $page);
 
 		$page = str_replace('{title}', $this->getTitle(), $page);
 		$page = str_replace('{color}', $this->getColor(), $page);
+		$page = str_replace('{cssextension}', $this->cssextension, $page);
+
+		if ( $this->left_menu == '' ) {
+			$page = str_replace('{extraleftmenuclass}', ' hidden', $page);
+		} else {
+			$page = str_replace('{leftmenu}', $this->left_menu, $page);
+		}
 
 		if ( $this->remove_sidebar == 1 || ( $this->getShortcuts() == '' && $this->getRecentlyUsed() == '' ) ) {
 			$page = str_replace('{extrasidebarclass}', ' hidden', $page);
-			$page = str_replace('{extracontentclass}', 'contentfullwidth', $page);
+			if ( $this->left_menu != '' ) {
+				$page = str_replace('{extracontentclass}', 'contentfullwidth_admin', $page);
+			} else {
+				$page = str_replace('{extracontentclass}', 'contentfullwidth', $page);
+			}
 		}
 
 		if ( $this->getShortcuts() == '' ) {
@@ -66,8 +81,8 @@ class class_page {
 		$welcome = 'Welcome';
 		$logout = '';
 		if ( $oWebuser->isLoggedIn() ) {
-			if ( trim($oWebuser->getFirstLastname()) != '' ) {
-				$welcome .= ', ' . trim($oWebuser->getFirstLastname());
+			if ( trim( $oWebuser->getFirstLastname() ) != '' ) {
+				$welcome .= ', ' . trim( $oWebuser->getFirstLastname() );
 			}
 			$logout = '<a href="logout.php" onclick="if (!confirm(\'Please confirm logout\')) return false;">(logout)</a>';
 		}
@@ -76,12 +91,14 @@ class class_page {
 
 		// als laatste
 		$page = str_replace('{date}', class_datetime::getQueryDate(), $page);
+		$page = str_replace('{eid}', $protect->request('get', 'eid'), $page);
 
 		$page = $this->removeUnusedTags($page);
 
 		return $page;
 	}
 
+	// TODOEXPLAIN
 	function createMenu() {
 		global $menuList;
 
@@ -128,6 +145,7 @@ class class_page {
 		return $sMenu;
 	}
 
+	// TODOEXPLAIN
 	function removeUnusedTags($page) {
 		$page = str_replace('{extrasidebarclass}', '', $page);
 		$page = str_replace('{extracontentclass}', '', $page);
@@ -139,14 +157,7 @@ class class_page {
 
 	// TODOEXPLAIN
 	function getUrl() {
-		return 'https://' . ( $_SERVER["HTTP_X_FORWARDED_HOST"] != '' ? $_SERVER["HTTP_X_FORWARDED_HOST"] : $_SERVER["SERVER_NAME"] ) . $_SERVER["SCRIPT_NAME"];
-	}
-
-	// TODOEXPLAIN
-	function getLastModified() {
-		global $settings_from_database;
-
-		return 'Last modified: ' . $settings_from_database["last_modified"];
+		return 'https://' . ( isset( $_SERVER["HTTP_X_FORWARDED_HOST"] ) && $_SERVER["HTTP_X_FORWARDED_HOST"] != '' ? $_SERVER["HTTP_X_FORWARDED_HOST"] : $_SERVER["SERVER_NAME"] ) . $_SERVER["SCRIPT_NAME"];
 	}
 
 	// TODOEXPLAIN
@@ -160,18 +171,43 @@ class class_page {
 	}
 
 	// TODOEXPLAIN
+	function setCssExtension( $css ) {
+		$this->cssextension = $css;
+	}
+
+	// TODOEXPLAIN
 	function getContent() {
 		return $this->content;
 	}
 
 	// TODOEXPLAIN
-	function setShortcuts( $shortcuts ) {
+	function setLeftMenu( $left_menu ) {
+		$this->left_menu = $left_menu;
+	}
+
+	// TODOEXPLAIN
+	function getLeftMenu() {
+		return $this->left_menu;
+	}
+
+	// TODOEXPLAIN
+	function setUserShortcuts( $shortcuts ) {
 		$this->shortcuts = $shortcuts;
+	}
+
+	// TODOEXPLAIN
+	function setDepartmentShortcuts( $shortcuts ) {
+		$this->departmentShortcuts = $shortcuts;
 	}
 
 	// TODOEXPLAIN
 	function getShortcuts() {
 		return $this->shortcuts;
+	}
+
+	// TODOEXPLAIN
+	function getDepartmentShortcuts() {
+		return $this->departmentShortcuts;
 	}
 
 	// TODOEXPLAIN
@@ -214,5 +250,9 @@ class class_page {
 	function getColor() {
 		return $this->color;
 	}
+
+	// TODOEXPLAIN
+	public function __toString() {
+		return "Class: " . get_class($this) . "\ntemplate: " . $this->page_template . "\n";
+	}
 }
-?>

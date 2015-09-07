@@ -3,9 +3,9 @@ require_once "classes/start.inc.php";
 
 $oWebuser->checkLoggedIn();
 
-if ( !( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasFaAuthorisation() ) ) {
+if ( !( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasReportsAuthorisation() ) ) {
 	echo "You are not authorized to access this page.<br>";
-	die('Go to <a href="index.php">time card home</a>');
+	die('Go to <a href="index.php">timecard home</a>');
 }
 
 // create webpage
@@ -22,17 +22,18 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createExportOracleContent() {
-	$ret = "<h2>Exports - Oracle</h2>";
+	// get design
+	$design = new class_contentdesign("page_export_oracle");
 
-	require_once("./classes/class_db.inc.php");
+	// add header
+	$ret = $design->getHeader();
 
 	$ret .= "
 <form name=\"frmOverzicht\" action=\"export_oracle_xls.php\" method=\"get\">
 <table>
 <tr>
 	<td>Year: </td>
-	<td>
-";
+	<td>";
 
 	// checked year/month
 	$checkedyear = date("Y");
@@ -43,29 +44,29 @@ function createExportOracleContent() {
 	}
 
 	// show years
-	for ($i = (date("Y")-1); $i <= date("Y"); $i++) {
-		$ret .= "<input type=\"radio\" name=\"year\" id=\"year\" value=\"" . $i . "\" " . (($i == $checkedyear) ? 'CHECKED' : '') . " > " . $i . ' &nbsp; ';
+	for ($i = (date("Y")-2); $i <= date("Y"); $i++) {
+		$ret .= "\n\t\t<input type=\"radio\" name=\"year\" id=\"year\" value=\"" . $i . "\" " . (($i == $checkedyear) ? 'CHECKED' : '') . " > " . $i . ' &nbsp; ';
 	}
 
-	$ret .= "</td>
+	$ret .= "
+	</td>
 </tr>";
 
 	// show months
 	$ret .= "
 <tr>
 	<td valign=\"top\">Month: </td>
-	<td>
-";
+	<td>";
 
 	for ( $i=1; $i<=12; $i++) {
 		if ( $i>1 ) {
 			$ret .= ' &nbsp; ';
 		}
-		$ret .= "<input type=\"radio\" name=\"month\" id=\"month\" value=\"" . $i . "\" " . (($i == $checkedMonth) ? 'CHECKED' : '') . " > " . date("M", mktime(0,0,0,$i,1,date("Y")));
+		$ret .= "\n\t\t<input type=\"radio\" name=\"month\" id=\"month\" value=\"" . $i . "\" " . (($i == $checkedMonth) ? 'CHECKED' : '') . " > " . date("M", mktime(0,0,0,$i,1,date("Y")));
 	}
 
-	$ret .= "</td>
-</tr>
+	$ret .= "
+	</td>
 </tr>";
 
 	// show submit button
@@ -77,6 +78,8 @@ function createExportOracleContent() {
 </form>
 ";
 
+	// add footer
+	$ret .= $design->getFooter();
+
 	return $ret;
 }
-?>

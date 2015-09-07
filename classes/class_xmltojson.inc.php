@@ -3,14 +3,13 @@
 
 class XmlToJson {
 
-	public function Parse ($tekst) {
+	public function Parse ($text) {
 
-		$tekst = str_replace(array("\n", "\r", "\t"), '', $tekst);
-		$tekst = trim(str_replace('"', "'", $tekst));
-		$simpleXml = simplexml_load_string($tekst);
-		$json = json_encode($simpleXml);
+		$text = str_replace(array("\n", "\r", "\t"), '', $text);
+		$text = trim(str_replace('"', "'", $text));
 
-		return $json;
+		$simpleXml = simplexml_load_string($text);
+
+		return json_encode($simpleXml);
 	}
-
 }

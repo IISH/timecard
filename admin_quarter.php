@@ -5,7 +5,7 @@ $oWebuser->checkLoggedIn();
 
 if ( !$oWebuser->hasAdminAuthorisation() ) {
 	echo "You are not authorized to access this page.<br>";
-	die('Go to <a href="index.php">time card home</a>');
+	die('Go to <a href="index.php">timecard home</a>');
 }
 
 $date = class_datetime::get_date($protect);
@@ -14,11 +14,12 @@ $oDate = new class_date( $date["y"], $date["m"], $date["d"] );
 $oEmployee = new class_employee($protect->request('get', 'eid'), $settings);
 
 // create webpage
-$oPage = new class_page('design/page.php', $settings);
+$oPage = new class_page('design/page_admin.php', $settings);
 $oPage->removeSidebar();
 $oPage->setTab($menuList->findTabNumber('administrator.quarter'));
 $oPage->setTitle('Timecard | Admin Quarter');
 $oPage->setContent(createAdminQuarterContent( $date ));
+$oPage->setLeftMenu( getEmployeesRibbon( $oEmployee, $date["y"] ) );
 
 // show page
 echo $oPage->getPage();
@@ -27,48 +28,40 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createAdminQuarterContent( $date ) {
-	global $settings;
-
 	//
 	$oPrevNext = new class_prevnext($date);
 	$ret = $oPrevNext->getQuarterRibbon();
-
-	//
-	$ret .= getEmployeesRibbon($date["y"], 1);
 
 	//
 	$ret .= getAdminQuarter( $date );
 
 	return $ret;
 }
-
 	// TODOEXPLAIN
 	function getAdminQuarter( $date ) {
-		global $settings, $oEmployee, $oDate;
+		global $settings, $oEmployee, $oDate, $databases;
 
 		if ( $oEmployee->getTimecardId() != '' ) {
-			require_once("./classes/class_db.inc.php");
 			require_once("./classes/class_view/class_view.inc.php");
-
 			require_once("./classes/class_view/fieldtypes/class_field_string.inc.php");
 			require_once("./classes/class_view/fieldtypes/class_field_time.inc.php");
 			require_once("./classes/class_view/fieldtypes/class_field_date.inc.php");
 
-			$oDb = new class_db($settings, 'timecard');
+			$oDb = new class_mysql($databases['default']);
 			$oView = new class_view($settings, $oDb);
 
 			$oPrevNext = new class_prevnext($date);
 			$extra_month_criterium = $oPrevNext->getExtraMonthCriterium();
 
 			if ( $oEmployee->getTimecardId() == -1 ) {
-				$tmp_query = 'SELECT * FROM vw_hours2011_admin WHERE DateWorked LIKE \'' . $oDate->get("Y") . '-%\' ' . $extra_month_criterium . ' AND isdeleted=0 ';
+				$tmp_query = 'SELECT * FROM vw_hours_admin WHERE DateWorked LIKE \'' . $oDate->get("Y") . '-%\' ' . $extra_month_criterium . ' ';
 			} else {
-				$tmp_query = 'SELECT * FROM vw_hours2011_admin WHERE Employee=' . $oEmployee->getTimecardId() . ' AND DateWorked LIKE \'' . $oDate->get("Y") . '-%\' ' . $extra_month_criterium . ' AND isdeleted=0 ';
+				$tmp_query = 'SELECT * FROM vw_hours_admin WHERE Employee=' . $oEmployee->getTimecardId() . ' AND DateWorked LIKE \'' . $oDate->get("Y") . '-%\' ' . $extra_month_criterium . ' ';
 			}
 
 			// if legacy, then no edit link
 			$add_new_url = '';
-			if ( !class_datetime::is_legacy( $oDate ) ) {
+			if ( !class_datetime::is_legacy( $oDate ) && !( $oDate->get("Y-m-d") < $oEmployee->getAllowAdditionsStartingDate() ) ) {
 				$add_new_url = "admin_edit.php?ID=0&d=" . $oDate->get("Ymd") . "&eid=" . $oEmployee->getTimecardId() . "&backurl=[BACKURL]";
 			}
 
@@ -90,7 +83,6 @@ function createAdminQuarterContent( $date ) {
 				, 'format' => 'D j F'
 				, 'nobr' => true
 				, 'href' => 'admin_day.php?eid=[FLD:Employee]&d=[FLD:yyyymmdd]&backurl=[BACKURL]&backurllabel=Quarter+(all empl.)'
-				, 'href_alttitle' => 'Go to day'
 				)));
 
 			if ( $oEmployee->getTimecardId() == -1 ) {
@@ -118,7 +110,7 @@ function createAdminQuarterContent( $date ) {
 
 			// if legacy, then no edit link
 			$href = '';
-			if ( !class_datetime::is_legacy( $oDate ) ) {
+			if ( !class_datetime::is_legacy( $oDate ) && !( $oDate->get("Y-m-d") < $oEmployee->getAllowAdditionsStartingDate() ) ) {
 				$href = 'admin_edit.php?ID=[FLD:ID]&d=' . $oDate->get("Ymd") . '&backurl=[BACKURL]';
 			}
 
@@ -126,7 +118,6 @@ function createAdminQuarterContent( $date ) {
 				'fieldname' => 'Description'
 				, 'fieldlabel' => 'Project'
 				, 'href' => $href
-				, 'href_alttitle' => 'Edit hours'
 				, 'no_href_if' => array(
 						"field" => "protime_absence_recnr"
 						, "operator" => "<>"
@@ -173,12 +164,22 @@ function createAdminQuarterContent( $date ) {
 				, 'show_different_value' => array(
 						"value" => "0"
 						, "showvalue" => ""
-						, "showelsevalue" => "<a alt=\"Imported from Protime\" title=\"Imported from Protime\" class=\"PT\">(PT)</a>"
+						, "showelsevalue" => "<a title=\"Imported from Protime\" class=\"PT\">(PT)</a>"
 					)
 				)));
 
-			// calculate and show view
-			$ret .= $oView->generate_view();
+			$oView->add_field( new class_field_string ( array(
+				'fieldname' => 'daily_automatic_addition_id'
+				, 'fieldlabel' => ''
+				, 'show_different_value' => array(
+					"value" => ""
+					, "showvalue" => ""
+					, "showelsevalue" => "<a title=\"Daily automatic addition\" class=\"PT\">(DAA)</a>"
+					)
+				)));
+
+			// generate view
+			$ret = $oView->generate_view();
 		}
 
 		return $ret;

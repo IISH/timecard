@@ -1,26 +1,25 @@
 <?php 
-// modified: 2012-11-07
-
 require_once("./classes/class_form/fieldtypes/class_field.inc.php");
-require_once("./classes/class_db.inc.php");
+require_once "./classes/class_mysql.inc.php";
 require_once("./classes/class_misc.inc.php");
 
 class class_field_list extends class_field {
-    protected $oDb;
-    protected $oMisc;
+	protected $oDb;
+	protected $oMisc;
 
-    private $m_query;
-    private $m_id_field;
-    private $m_description_field;
-    private $m_select_style;
-    private $m_empty_value;
-    private $m_show_empty_row;
-    private $m_onchange;
-    private $m_javascriptcode;
-    private $m_rdbms;
+	private $m_query;
+	private $m_id_field;
+	private $m_description_field;
+	private $m_select_style;
+	private $m_empty_value;
+	private $m_show_empty_row;
+	private $m_onchange;
+	private $m_javascriptcode;
 
 	// TODOEXPLAIN
 	function class_field_list($settings, $fieldsettings) {
+		global $databases;
+
 		parent::class_field($fieldsettings);
 
 		$this->m_query = '';
@@ -32,9 +31,8 @@ class class_field_list extends class_field {
 		$this->m_onchange = '';
 		$this->m_javascriptcode = '';
 		$this->m_dbhandle = null;
-		$this->m_rdbms = 'mysql';
 
-		$this->oDb = new class_db($settings);
+		$this->oDb = new class_mysql($databases['default']);
 		$this->oMisc = new class_misc();
 
 		if ( is_array( $fieldsettings ) ) {
@@ -77,16 +75,8 @@ class class_field_list extends class_field {
 					case "dbhandle":
 						$this->m_dbhandle = $fieldsettings["dbhandle"];
 						break;
-
-					case "rdbms":
-						$this->m_rdbms = strtolower($fieldsettings["rdbms"]);
-						break;
 				}
 			}
-		}
-
-		if ( !in_array( $this->m_rdbms, array('mysql', 'mssql') ) ) {
-			$this->m_rdbms = 'mysql';
 		}
 	}
 
@@ -141,10 +131,10 @@ class class_field_list extends class_field {
 
 		if ( $this->m_dbhandle == null ) {
 			// TODOTODO
-			$res2 = mysql_query($this->oMisc->PlaceURLParametersInQuery($this->m_query, "no"), $this->oDb->connection()) or die(mysql_error());
+			$res2 = mysql_query($this->oMisc->PlaceURLParametersInQuery($this->m_query), $this->oDb->getConnection()) or die(mysql_error());
 		} else {
 			// TODOTODO
-			$res2 = mysql_query($this->oMisc->PlaceURLParametersInQuery($this->m_query, "no"), $this->m_dbhandle) or die(mysql_error());
+			$res2 = mysql_query($this->oMisc->PlaceURLParametersInQuery($this->m_query), $this->m_dbhandle) or die(mysql_error());
 		}
 
 		$selectedOption = (string)$row[$this->get_fieldname()];
@@ -163,8 +153,7 @@ class class_field_list extends class_field {
 			if ( $optionvalue == $veldwaarde ) {
 				$inputfield .= " SELECTED";
 			}
-			$inputfield .= ">" . stripslashes(trim($row2[$this->m_description_field])) . "</option>\n";
-
+			$inputfield .= ">" . fixCharErrors(stripslashes(trim($row2[$this->m_description_field]))) . "</option>\n";
 		}
 
 		$inputfield .= "</select>\n";
@@ -189,9 +178,6 @@ class class_field_list extends class_field {
 		// place if necessary required sign in row template
 		$tmp_data = str_replace("::REQUIRED::", $this->get_required_sign(), $tmp_data);
 
-		$tmp_data = str_replace("::REFRESH::", '', $tmp_data);
-		$tmp_data = str_replace("::ADDNEW::", '', $tmp_data);
-
 		return $tmp_data;
 	}
 
@@ -209,4 +195,3 @@ class class_field_list extends class_field {
 		return $retval;
 	}
 }
-?>

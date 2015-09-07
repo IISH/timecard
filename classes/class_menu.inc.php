@@ -13,31 +13,34 @@ $menu->addMenuItem( new class_menuitem('timecard.quartertotals', 'Quarter Totals
 // + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
 
 // TAB: TIMECARD (ADMIN)
-$menu->addMenuGroup( new class_menugroup('Timecard (admin)') );
+$menu->addMenuGroup( new class_menugroup('Administrator') );
 if ( $oWebuser->hasAdminAuthorisation() ) {
-	$menu->addMenuItem( new class_menuitem('administrator.day', 'Day', 'admin_day.php?d={date}') );
-	$menu->addMenuItem( new class_menuitem('administrator.month', 'Month', 'admin_month.php?d={date}') );
-	$menu->addMenuItem( new class_menuitem('administrator.quarter', 'Quarter', 'admin_quarter.php?d={date}') );
-	$menu->addMenuItem( new class_menuitem('administrator.quartertotals', 'Quarter Totals', 'admin_quartertotals.php?d={date}') );
+	$menu->addMenuItem( new class_menuitem('administrator.day', 'Day', 'admin_day.php?d={date}&eid={eid}') );
+	$menu->addMenuItem( new class_menuitem('administrator.month', 'Month', 'admin_month.php?d={date}&eid={eid}') );
+	$menu->addMenuItem( new class_menuitem('administrator.quarter', 'Quarter', 'admin_quarter.php?d={date}&eid={eid}') );
+	$menu->addMenuItem( new class_menuitem('administrator.quartertotals', 'Quarter Totals', 'admin_quartertotals.php?d={date}&eid={eid}') );
+	$menu->addMenuItem( new class_menuitem('administrator.protimeabsenties', 'Protime Absences', 'admin_protime_absences.php') );
+	$menu->addMenuItem( new class_menuitem('administrator.crontab', 'Crontab', 'crontab.php') );
+	$menu->addMenuItem( new class_menuitem('administrator.change_user', 'Switch user', 'switch_user.php') );
 }
 
 // + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
 
-// TAB: MISC
-$menu->addMenuGroup( new class_menugroup('Miscellaneous') );
-if ( $oWebuser->hasAdminAuthorisation() ) {
-	$menu->addMenuItem( new class_menuitem('misc.protimeabsenties', 'Protime Absences', 'admin_protime_absences.php') );
-	$menu->addMenuItem( new class_menuitem('misc.urenperweek', 'Hours per week', 'admin_hoursperweek.php') );
-	$menu->addMenuItem( new class_menuitem('reports.hoursleft', 'Hours left', 'admin_hoursleft.php') );
-	$menu->addMenuItem( new class_menuitem('misc.not_linked_employees', 'Not Linked Employees', 'admin_not_linked_employees.php') );
+// TAB: PROJECTS
+$menu->addMenuGroup( new class_menugroup('Projects') );
+$menu->addMenuItem( new class_menuitem('projects.project_hour_totals', 'Project-employee totals', 'project_employee_totals.php') );
+if ( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasDepartmentAuthorisation() ) {
+	$menu->addMenuItem( new class_menuitem('projects.hoursleft', 'Hours for planning', 'hoursleft.php') );
+	$menu->addMenuItem( new class_menuitem('projects.vastwerk', 'Vast werk', 'vast_werk.php') );
 }
 
 // + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
 
 // TAB: REPORTS
 $menu->addMenuGroup( new class_menugroup('Exports') );
-if ( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasExportsAuthorisation() ) {
-	$menu->addMenuItem( new class_menuitem('exports.euprojecten', 'Employee Project totals', 'admin_euprojecten_overzichten.php') );
+if ( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasFaAuthorisation() ) {
+	$menu->addMenuItem( new class_menuitem('exports.projectemployeetotaals', 'Project-Employee totals', 'export_project_employee_totals.php') );
+	$menu->addMenuItem( new class_menuitem('exports.euprojects', 'Employee-Project totals', 'admin_euprojecten_overzichten.php') );
 	$menu->addMenuItem( new class_menuitem('exports.oracle', 'Oracle', 'export_oracle.php') );
 }
 
@@ -46,8 +49,11 @@ if ( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasExportsAuthorisation() 
 // TAB: FINANCIELE ADMINISTRATIE
 $menu->addMenuGroup( new class_menugroup('Financial Administration') );
 if ( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasFaAuthorisation() ) {
-	$menu->addMenuItem( new class_menuitem('finad.employees', 'Employees', 'fa_employees.php') );
-	$menu->addMenuItem( new class_menuitem('finad.projecten', 'Projects', 'fa_projects.php') );
+	$menu->addMenuItem( new class_menuitem('finad.employees', 'Employees', 'employees.php') );
+	$menu->addMenuItem( new class_menuitem('finad.projects', 'Projects', 'projects.php') );
+	$menu->addMenuItem( new class_menuitem('finad.worklocations', 'Work locations', 'worklocations.php') );
+	$menu->addMenuItem( new class_menuitem('finad.not_linked_employees', 'Not Linked Employees', 'admin_not_linked_employees.php') );
+	$menu->addMenuItem( new class_menuitem('finad.feestdagen', 'National holidays', 'finad_nationalholidays.php') );
 }
 
 // + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
@@ -58,10 +64,11 @@ if ( $oWebuser->isLoggedIn() ) {
 	$menu->addMenuItem( new class_menuitem('pp.personalinfo', 'About me', 'aboutme.php') );
 }
 if ( $oWebuser->isLoggedIn() ) {
-	$menu->addMenuItem( new class_menuitem('pp.myshortcuts', 'My shortcuts', 'shortcuts.php') );
+	$menu->addMenuItem( new class_menuitem('pp.shortcuts', 'Shortcuts', 'shortcuts.php') );
+	$menu->addMenuItem( new class_menuitem('pp.dailyautomaticadditions', 'Daily automatic additions', 'dailyautomaticadditions.php') );
 }
 if ( $oWebuser->isLoggedIn() ) {
-	$menu->addMenuItem( new class_menuitem('pp.feestdagen', 'National holidays', 'feestdagen.php') );
+	$menu->addMenuItem( new class_menuitem('pp.feestdagen', 'National holidays', 'nationalholidays.php') );
 }
 if ( !$oWebuser->isLoggedIn() ) {
 	$menu->addMenuItem( new class_menuitem('pp.login', 'Login', 'login.php') );
@@ -71,66 +78,82 @@ $menu->addMenuItem( new class_menuitem('pp.contact', 'Contact', 'contact.php') )
 // + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
 
 class class_menuitem {
-    // TODOTODO private
+	// TODOTODO private
 
-    public $code = '';
-    public $label = '';
-    public $url = '';
+	public $code = '';
+	public $label = '';
+	public $url = '';
 
+	// TODOEXPLAIN
 	function class_menuitem($code, $label, $url ) {
 		$this->code = $code;
 		$this->label = $label;
 		$this->url = $url;
 	}
 
+	// TODOEXPLAIN
 	function getCode() {
 		return $this->code;
 	}
 
+	// TODOEXPLAIN
 	function getLabel() {
 		return $this->label;
 	}
 
+	// TODOEXPLAIN
 	function getUrl() {
 		return $this->url;
+	}
+
+	// TODOEXPLAIN
+	public function __toString() {
+		return "Class: " . get_class($this) . "\ncode: " . $this->code . "\n";
 	}
 }
 
 class class_menugroup {
-    // TODOTODO private
+	// TODOTODO private
 
-    public $code = '';
-    public $label = '';
-    public $menuitems = array();
-    public $counter = 0;
+	public $code = '';
+	public $label = '';
+	public $menuitems = array();
+	public $counter = 0;
 
+	// TODOEXPLAIN
 	function class_menugroup($label, $code = '') {
 		$this->code = $code;
 		$this->label = $label;
 	}
 
+	// TODOEXPLAIN
 	function getCode() {
 		return $this->code;
 	}
 
+	// TODOEXPLAIN
 	function getLabel() {
 		return $this->label;
 	}
 
+	// TODOEXPLAIN
 	function addMenuItem( $menuitem ) {
 		$this->menuitems[] = $menuitem;
 	}
 
+	// TODOEXPLAIN
 	function getMenuItems() {
 		return $this->menuitems;
 	}
 
+	// TODOEXPLAIN
 	function showMenuItems() {
 		for ( $i = 0; $i < count($this->menuitems); $i++ ) {
 			echo '- ' . $this->menuitems[$i]->getLabel() . '<br>';
 		}
 	}
 
+	// TODOEXPLAIN
 	function getMenuItemsSubset() {
 		$menuitemssubset = array();
 
@@ -141,20 +164,28 @@ class class_menugroup {
 		}
 		return $menuitemssubset;
 	}
+
+	// TODOEXPLAIN
+	public function __toString() {
+		return "Class: " . get_class($this) . "\ncode: " . $this->code . "\n";
+	}
 }
 
 class class_menu {
-    // TODOTODO private
-    public $menu = array();
+	// TODOTODO private
+	public $menu = array();
 
+	// TODOEXPLAIN
 	function addMenuGroup( $menugroup ) {
 		$this->menu[] = $menugroup;
 	}
 
+	// TODOEXPLAIN
 	function addMenuItem( $menuitem ) {
 		$this->menu[count($this->menu)-1]->addMenuItem($menuitem);
 	}
 
+	// TODOEXPLAIN
 	function show() {
 		for ( $i = 0; $i < count($this->menu); $i++ ) {
 			echo $this->menu[$i]->getLabel() . '<br>';
@@ -162,6 +193,7 @@ class class_menu {
 		}
 	}
 
+	// TODOEXPLAIN
 	function getMenuSubset() {
 		$menusubset = new class_menu();
 
@@ -182,12 +214,12 @@ class class_menu {
 		return $menusubset;
 	}
 
+	// TODOEXPLAIN
 	function findTabNumber( $code ) {
 		$nr = 0;
 
 		$counter = 0;
 
-		// TODOTODO MODIFY???
 		foreach ( $this as $a=>$b ) {
 			foreach ( $b as $c ) {
 
@@ -203,5 +235,9 @@ class class_menu {
 
 		return $nr;
 	}
+
+	// TODOEXPLAIN
+	public function __toString() {
+		return "Class: " . get_class($this) . "\n";
+	}
 }
-?>

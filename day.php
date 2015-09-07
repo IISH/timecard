@@ -7,18 +7,19 @@ $date = class_datetime::get_date($protect);
 $oDate = new class_date( $date["y"], $date["m"], $date["d"] );
 
 // sync Timecard Protime
-syncTimecardProtimeDay($oWebuser->getTimecardId(), $oWebuser->getProtimeId(), $oDate);
+$oWebuser->syncTimecardProtimeDayInformation( $oDate );
 
 // create webpage
 $oPage = new class_page('design/page.php', $settings);
 $oPage->setTab($menuList->findTabNumber('timecard.day'));
 $oPage->setTitle('Timecard | Day');
-$oPage->setContent(createDayContent( $date ) . getCheckedInCheckedOut($oWebuser->getProtimeId(), $date["Ymd"]) );
+$oPage->setContent(createDayContent( $date ) . getCheckedInCheckedOut( $oWebuser->getProtimeId(), $date["Ymd"] ) );
 
 // add shortcuts and recently used
 if ( $date["y"] >= "2013" ) {
-	$oPage->setShortcuts(getUserShortcuts($oWebuser->getTimecardId(), $oDate, $settings));
-	$oPage->setRecentlyUsed(getUserRecentlyUsed($oWebuser->getTimecardId(), $oDate, $settings));
+	$oPage->setUserShortcuts(getUserShortcuts( $oWebuser, $oDate, $settings, 'user' ) );
+	$oPage->setDepartmentShortcuts(getUserShortcuts( $oWebuser, $oDate, $settings, 'department' ) );
+	$oPage->setRecentlyUsed(getUserRecentlyUsed( $oWebuser->getTimecardId(), $oDate, $settings ) );
 }
 
 // show page
@@ -42,22 +43,26 @@ function createDayContent( $date ) {
 
 // TODOEXPLAIN
 function getUserDay( $date ) {
-	global $settings, $dbhandleTimecard, $oWebuser, $oDate;
+	global $settings, $oWebuser, $oDate, $databases;
+
+	$oConn = new class_mysql($databases['default']);
+	$oConn->connect();
 
 	$ret = '';
 
-	// hide add new button
-	if ( class_datetime::is_legacy( $oDate ) ) {
-		$ret .= '<span class="youcannot">You cannot enter legacy data.</span><br><br>';
-	} elseif ( class_datetime::is_future( $oDate ) && $oWebuser->getTimecardId() != 1 ) {
-		$ret .= '<span class="youcannot">(You cannot enter hours in the future.)</span><br><br>';
+	// hide add new button if ...
+	if ( $oDate->get("Y-m-d") < $oWebuser->getAllowAdditionsStartingDate() ) {
+		$ret .= '<div class="youcannot">' . class_settings::getSetting('error_cannot_modify_legacy_contact_fa') . ' (error: 256985)</div>';
+	} elseif ( class_datetime::is_future( $oDate ) ) {
+		$ret .= '<div class="youcannot">' . class_settings::getSetting('error_cannot_add_in_the_future') . '</div>';
 	} else {
 		$ret .= "
 <table>
 <tr>
 	<td colspan=\"2\">
- 		&nbsp; &nbsp; &nbsp;
-		<input type=\"button\" class=\"button\" name=\"addNewButton\" value=\"Add new\" onClick=\"javascript:open_page('edit.php?ID=0&d=" . $date["Ymd"] . "&backurl=" . urlencode(get_current_url()) . "');\">
+		<div class='add_new_button'>
+ 	    	<a href=\"edit.php?ID=0&d=" . $date["Ymd"] . "&backurl=" . urlencode(get_current_url()) . "\" class=\"button\">Add new</a>
+		</div>
  	</td>
 </tr>
 </table>
@@ -71,19 +76,25 @@ function getUserDay( $date ) {
 <input type=\"hidden\" name=\"filter\" value=\"\">
 <input type=\"hidden\" name=\"\" value=\"\">
 	<tr>
-		<TH align=\"left\"><b>Project</b>&nbsp;</TH>
-		<TH align=\"left\"><b>Description</b>&nbsp;</TH>
-		<TH align=\"left\"><b>Time</b>&nbsp;</TH>
+		<TH align=\"left\"><a class=\"nolink\">Project</a>&nbsp;</TH>
+		<TH align=\"left\"><a class=\"nolink\">Description</a>&nbsp;</TH>
+		<TH align=\"left\"><a class=\"nolink\">Time</a>&nbsp;</TH>
 		<TH align=\"left\">&nbsp;</TH>
+";
+
+	if ( $oWebuser->getShowJiraField() ) {
+		$ret .= "		<TH align=\"left\"><a class=\"nolink\">Jira</a>&nbsp;</TH>
+";
+	}
+	$ret .= "
 	</tr>
 </form>
 ";
 
 	$timecard_deeltotaal = 0;
 
-	$query = 'SELECT * FROM vw_hours2011_user WHERE Employee=' . $oWebuser->getTimecardId() . ' AND DateWorked LIKE "' . $oDate->get("Y-m-d") . '%" AND protime_absence_recnr>=0 ORDER BY Description, TimeInMinutes DESC ';
-
-	$result = mysql_query($query, $dbhandleTimecard);
+	$query = 'SELECT * FROM vw_hours_user WHERE Employee=' . $oWebuser->getTimecardId() . ' AND DateWorked="' . $oDate->get("Y-m-d") . '" AND protime_absence_recnr>=0 ORDER BY Description, TimeInMinutes DESC ';
+	$result = mysql_query($query, $oConn->getConnection());
 	while ($row = mysql_fetch_assoc($result)) {
 		$timecard_deeltotaal += $row["TimeInMinutes"];
 		$description = $row["WorkDescription"];
@@ -92,29 +103,39 @@ function getUserDay( $date ) {
 		}
 		$description = htmlspecialchars($description);
 		$protime_absence_recnr = $row["protime_absence_recnr"];
+		$daily_automatic_addition_id = $row["daily_automatic_addition_id"];
+		$jira_issue_nr = $row["jira_issue_nr"];
+
 		$protime_label = '';
 
 	$ret .= "
 	<tr><A NAME=\"" . $row["ID"] . "\"></A>
 ";
 		if ( $protime_absence_recnr != 0 ) {
-			$protime_label = '<a alt="Imported from Protime" title="Imported from Protime" class=\"PT\">(PT)</a>';
-	$ret .= "
+			$protime_label = '<a alt="Imported from Protime" title="Imported from Protime" class="PT">(PT)</a>';
+			$ret .= "
 		<TD class=\"recorditem\"><nobr>" . $row["Description"] . "</nobr></td>
 ";
 		} else {
+			if ( $daily_automatic_addition_id != '' && $daily_automatic_addition_id != '0') {
+				$protime_label = '<a alt="Daily automatic addition" title="Daily automatic addition" class="PT">(DAA)</a>';
+			} elseif ( true ) {
+
+			}
+
 			// if legacy, then no edit link
-			if ( class_datetime::is_legacy( $oDate ) ) {
+			if ( class_datetime::is_legacy( $oDate ) || $oDate->get("Y-m-d") < $oWebuser->getAllowAdditionsStartingDate() ) {
 				$ret .= "
 		<TD class=\"recorditem\"><nobr>" . $row["Description"] . "</nobr></td>
 ";
 			} else {
 				$ret .= "
-		<TD class=\"recorditem\"><nobr><A HREF=\"edit.php?ID=" . $row["ID"] . "&d=" . $date["Ymd"] . "&backurl=" . urlencode(get_current_url()) . "\" alt=\"Edit hours\" title=\"Edit hours\">" . $row["Description"] . "</a></nobr></td>
+		<TD class=\"recorditem\"><nobr><A HREF=\"edit.php?ID=" . $row["ID"] . "&d=" . $date["Ymd"] . "&backurl=" . urlencode(get_current_url()) . "\" title=\"Edit hours\">" . $row["Description"] . "</a></nobr></td>
 ";
 			}
 
 		}
+
 	$ret .= "
 		<TD class=\"recorditem\">" . $description . "</td>
 		<TD class=\"recorditem\">" . class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes($row["TimeInMinutes"]) . "</td>
@@ -122,12 +143,19 @@ function getUserDay( $date ) {
 
 	$ret .= "
 		<TD class=\"recorditem\">" . $protime_label . "</td>
-	</tr>
+";
+
+	if ( $oWebuser->getShowJiraField() ) {
+		$ret .= "		<TD class=\"recorditem\">" . convertToJiraUrl($jira_issue_nr) . "</td>
+";
+	}
+
+	$ret .= "	</tr>
 ";
 	}
 	mysql_free_result($result);
 
-	$dagvakantie = getEerderNaarHuisDayTotal($oWebuser->getTimecardId(), $oDate);
+	$dagvakantie = getEerderNaarHuisDayTotal( $oWebuser->getTimecardId(), $oDate );
 	if ( $dagvakantie > 0 ) {
 		$ret .= "
 	<tr><td colspan=\"5\"><hr></td></tr>
@@ -135,7 +163,7 @@ function getUserDay( $date ) {
 		<td colspan=\"2\"><i>Subtotal:</i></td>
 		<td><i>" . class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes( $timecard_deeltotaal ) . "</i></td>
 	</tr>
-	<tr><td colspan=\"2\"><i>Department - Leave (eerder weg):</i></td><td><i>" . class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes( $dagvakantie ) . "</i></td><td></td><td><a alt=\"Imported from Protime\" title=\"Imported from Protime\" class=\"PT\">(PT)</a></td></tr>
+	<tr><td colspan=\"2\"><i>Department - Leave (eerder weg):</i></td><td><i>" . class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes( $dagvakantie ) . "</i></td><td><a title=\"Imported from Protime\" class=\"PT\">(PT)</a></td></tr>
 ";
 	}
 
@@ -158,79 +186,102 @@ function getUserDay( $date ) {
 }
 
 // TODOEXPLAIN
-function getUserShortcuts($userid, $oDate, $settings) {
-	global $settings_from_database;
+function getUserShortcuts($oUser, $oDate, $settings, $type) {
+	$userid = $oUser->getTimecardId();
+//	$departmentId = $oUser->getDepartmentId();
 
 	if ( $userid == '' || $userid == '0' || $userid == '-1' ) {
-		return '';
+		return;
 	}
 
-	$ret = '';
-	$records = '';
+	// get design
+	if ( $type == 'department' ) {
 
-	$oShortcuts = new class_shortcuts($userid, $settings, $oDate);
+		$design = new class_contentdesign("page_div_department_shortcuts");
+	} else {
+		$design = new class_contentdesign("page_div_shortcuts");
+	}
+
+	// add header
+	$ret = $design->getHeader();
+
+	$oShortcuts = new class_shortcuts($oUser, $settings, $oDate);
 
 	// record
-	foreach ( $oShortcuts->getEnabledShortcuts() as $shortcut) {
-		$url = "edit.php?ID=0&d=" . $oDate->get("Ymd") . "&p=" . $shortcut["projectnr"] . "&t=" . $shortcut["minutes"];
-		if ( trim($shortcut["autosave"]) == '1' ) {
-			$url .= "&autoSave=" . trim($shortcut["autosave"]);
-		}
-		if ( trim($shortcut["description"]) != '' ) {
-			$url .= "&desc=" . urlencode(htmlspecialchars($shortcut["description"]));
-		}
+	$records = '';
+
+	foreach ( $oShortcuts->getEnabledShortcuts( $type ) as $shortcut) {
+//		$url = "edit.php?ID=0&d=" . $oDate->get("Ymd") . "&template=" . $shortcut["id"] . "&p=" . $shortcut["projectnr"] . "&t=" . $shortcut["minutes"];
+		$url = "edit.php?ID=0&d=" . $oDate->get("Ymd") . "&template=" . $shortcut["id"];
+//		if ( trim($shortcut["autosave"]) == '1' ) {
+//			$url .= "&autoSave=" . trim($shortcut["autosave"]);
+//		}
+//		if ( trim($shortcut["description"]) != '' ) {
+//			$url .= "&desc=" . urlencode(htmlspecialchars($shortcut["description"]));
+//		}
 		$url .= "&backurl=" . urlencode(get_current_url());
 		$shortcut["url"] = $url;
 
 		if ( trim($shortcut["autosave"]) == '1' ) {
-			$shortcut["autosave"] = "<a alt=\"auto save on new\" title=\"auto save on new\"><img src=\"images/save.gif\" border=\"0\"></a>";
+			$shortcut["autosave"] = "<a title=\"auto save on new\"><img src=\"images/save.gif\" border=\"0\"></a>";
 		} else {
 			$shortcut["autosave"] = '';
 		}
 
 		if ( trim($shortcut["description"]) != '' ) {
-			$shortcut["description"] = "<br><i>" . htmlspecialchars(trim($shortcut["description"])) . "</i>";
+			$shortcut["description"] = htmlspecialchars(trim($shortcut["description"]));
 		} else {
 			$shortcut["description"] = '';
 		}
 
 		$shortcut["hourminutes"] = class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes($shortcut["minutes"]);
 
-		$records .= fillTemplate($settings_from_database["page_div_shortcuts_records"], $shortcut);
+		if ( $shortcut["extra_explanation"] != '' ) {
+			$shortcut["extra_explanation_mark"] = '?';
+		} else {
+			$shortcut["extra_explanation_mark"] = '';
+		}
+
+		$records .= fillTemplate($design->getRecords(), $shortcut);
 	}
 
-	// add header
 	if ( $records != '' ) {
-		$ret = fillTemplate( $settings_from_database["page_div_shortcuts_table"], array("records" => $records) );
+		$ret .= fillTemplate( $design->getContent(), array("records" => $records) );
 	}
+
+	// add footer
+	$ret .= $design->getFooter();
 
 	return $ret;
 }
 
 // TODOEXPLAIN
 function getUserRecentlyUsed($userid, $oDate, $settings) {
-	global $settings_from_database;
-
 	if ( $userid == '' || $userid == '0' || $userid == '-1' ) {
 		return '';
 	}
 
-	$records = '';
-	$ret = '';
+	// get design
+	$design = new class_contentdesign("div_recentlyused");
+
+	// add header
+	$ret = $design->getHeader();
 
 	$oRecentlyUsed = new class_recentlyused($userid, $settings, $oDate);
 
-	// record
+	// records
+	$records = '';
 	foreach ( $oRecentlyUsed->getRecentlyUsed() as $recentlyUsed) {
 		$recentlyUsed["url"] = "edit.php?ID=0&d=" . $oDate->get("Ymd") . "&p=" . $recentlyUsed["id"] . "&backurl=" . urlencode(get_current_url());
-		$records .= fillTemplate($settings_from_database["div_recentlyused_records"], $recentlyUsed);
+		$records .= fillTemplate($design->getRecords(), $recentlyUsed);
 	}
 
-	// add header
 	if ( $records != '' ) {
-		$ret = fillTemplate( $settings_from_database["div_recentlyused_table"], array("records" => $records) );
+		$ret .= fillTemplate( $design->getContent(), array("records" => $records) );
 	}
+
+	// add footer
+	$ret .= $design->getFooter();
 
 	return $ret;
 }
-?>

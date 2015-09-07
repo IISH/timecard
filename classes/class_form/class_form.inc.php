@@ -3,17 +3,17 @@ require_once("./classes/class_file.inc.php");
 require_once("./classes/class_misc.inc.php");
 
 class class_form {
-    private $m_form;
-    protected $settings;
-    private $m_array_of_fields = array();
+	private $m_form;
+	protected $settings;
+	private $m_array_of_fields = array();
 
-    protected $oDb;
-    protected $oClassFile;
-    protected $oClassMisc;
+	protected $oDb;
+	protected $oClassFile;
+	protected $oClassMisc;
 
-    private $m_errors = array();
-    protected $m_doc_id;
-    private $m_old_doc_id;
+	private $m_errors = array();
+	protected $m_doc_id;
+	private $m_old_doc_id;
 
 	// TODOEXPLAIN
 	function class_form($settings, $oDb) {
@@ -88,13 +88,13 @@ class class_form {
 		}
 
 		// execute query
-		$res = mysql_query($query, $this->oDb->connection()) or die(mysql_error());
+		$res = mysql_query($query, $this->oDb->getConnection()) or die(mysql_error());
 
 		// if current id = 0
 		// get the last id
 		if ( $this->m_doc_id == "0" || $this->m_doc_id == '' ) {
 			// tabelnaam moet als variable
-			$this->m_doc_id = $this->timecard_mssql_insert_id($this->m_form["inserttable"]);
+			$this->m_doc_id = $this->timecard_mysql_insert_id($this->m_form["table"]);
 		}
 
 		// 
@@ -109,22 +109,22 @@ class class_form {
 		// get the last id
 		if ( $this->m_doc_id == "0" || $this->m_doc_id == '' ) {
 			// todo: tabelnaam moet als variable
-			$this->m_doc_id = $this->timecard_mssql_insert_id($table);
+			$this->m_doc_id = $this->timecard_mysql_insert_id($table);
 		}
 
 		return $this->m_doc_id;
 	}
 
 	// TODOEXPLAIN
-	function timecard_mssql_insert_id($table) {
+	function timecard_mysql_insert_id($table) {
 		$retval = '0';
 
 		$query = "SELECT TOP 1 ID FROM $table ORDER BY ID DESC ";
-		$result = mssql_query($query, $this->oDb->connection());
-		if ( $row = mssql_fetch_assoc($result) ) {
+		$result = mysql_query($query, $this->oDb->getConnection());
+		if ( $row = mysql_fetch_assoc($result) ) {
 			$retval = $row["ID"];
 		}
-		mssql_free_result($result);
+		mysql_free_result($result);
 
 		return $retval;
 	}
@@ -141,7 +141,7 @@ class class_form {
 
 			if ( is_array($query_fields) ) {
 				foreach ($query_fields as $one_item_from_array) {
-					foreach ($one_item_from_array as $fieldname => $fieldvalue) {
+					foreach ( $one_item_from_array as $fieldname => $fieldvalue ) {
 						if ( $fieldname != 'ID' ) {
 							$fields .= $separator . $fieldname;
 							$values .= $separator . $fieldvalue;
@@ -153,7 +153,7 @@ class class_form {
 
 			if ( is_array($extra_query_fields) ) {
 				foreach ($extra_query_fields as $one_item_from_array) {
-					foreach ($one_item_from_array as $fieldname => $fieldvalue) {
+					foreach ( $one_item_from_array as $fieldname => $fieldvalue ) {
 						$fields .= $separator . $fieldname;
 						$values .= $separator . $fieldvalue;
 						$separator = ", ";
@@ -169,7 +169,7 @@ class class_form {
 
 			if ( is_array($query_fields) ) {
 				foreach ($query_fields as $one_item_from_array) {
-					foreach ($one_item_from_array as $fieldname => $fieldvalue) {
+					foreach ( $one_item_from_array as $fieldname => $fieldvalue ) {
 
 						if ( $fieldname != 'ID' ) {
 							$query .= $separator . $fieldname . "=" . $fieldvalue;
@@ -182,7 +182,7 @@ class class_form {
 
 			if ( is_array($extra_query_fields) ) {
 				foreach ($extra_query_fields as $one_item_from_array) {
-					foreach ($one_item_from_array as $fieldname => $fieldvalue) {
+					foreach ( $one_item_from_array as $fieldname => $fieldvalue ) {
 						$query .= $separator . $fieldname . "=" . $fieldvalue;
 						$separator = ", ";
 					}
@@ -224,7 +224,7 @@ class class_form {
 		$this->oDb->connect();
 
 		// if form submitted try to save document
-		if ( $_POST["issubmitted"] == "1" ) {
+		if ( isset($_POST["issubmitted"]) && $_POST["issubmitted"] == "1" ) {
 			// check first if all required fields are filled in
 			// and also check if the values are of the correct type
 			$required_typecheck_result = $this->form_check_required_and_fieldtype();
@@ -239,11 +239,11 @@ class class_form {
 		// en als save resultaat okay is
 		// en als button close is aangeklikt
 		// ga dan naar backurl
-		if ( $_POST["issubmitted"] == "1" ) {
+		if ( isset($_POST["issubmitted"]) && $_POST["issubmitted"] == "1" ) {
 
 			if ( $required_typecheck_result == 1 ) {
 
-				if ( $_POST["pressedbutton"] == "saveclose" ) {
+				if ( isset($_POST["pressedbutton"]) && $_POST["pressedbutton"] == "saveclose" ) {
 
 					$this->postSave();
 
@@ -256,7 +256,7 @@ class class_form {
 					}
 
 					header("Location: " . $backurl);
-				} elseif ( $_POST["pressedbutton"] == "delete" ) {
+				} elseif ( isset($_POST["pressedbutton"]) && $_POST["pressedbutton"] == "delete" ) {
 
 					$backurl = getBackUrl();
 
@@ -273,7 +273,7 @@ class class_form {
 		// default template for form
 		array_push($preloaded_templates, array('default' => "
 <tr>
-	<TD valign=\"top\"><span class=\"form_field_label\">::LABEL::: </span><span class=\"errormessage\">::REQUIRED::</span> ::REFRESH:: ::ADDNEW::&nbsp;</td>
+	<TD valign=\"top\"><span class=\"form_field_label\">::LABEL:: </span><span class=\"errormessage\">::REQUIRED::</span>&nbsp;</td>
 	<td>::FIELD::</td>
 </tr>
 "));
@@ -301,10 +301,10 @@ class class_form {
 		}
 
 		// plaats url parameters in query
-		$this->m_form["query"] = $this->oClassMisc->PlaceURLParametersInQuery($this->m_form["query"], "no");
+		$this->m_form["query"] = $this->oClassMisc->PlaceURLParametersInQuery($this->m_form["query"]);
 
 		// execute query
-		$res = mysql_query($this->m_form["query"], $this->oDb->connection()) or die(mysql_error());
+		$res = mysql_query($this->m_form["query"], $this->oDb->getConnection()) or die(mysql_error());
 
 		if ($res){
 
@@ -350,9 +350,6 @@ class class_form {
 		// free result set
 		mysql_free_result($res);
 
-		// disconnect from database
-		$this->oDb->disconnect();
-
 		// get form_start
 		$form_start = $this->Get_PreloadedTemplateDesign($preloaded_templates, "form_start");
 		$form_action = $_SERVER["SCRIPT_NAME"];
@@ -381,24 +378,33 @@ class class_form {
 
 	// TODOEXPLAIN
 	function get_form_edit_buttons() {
+//		<input type=\"button\" class=\"button\" name=\"cancelButton\" value=\"Cancel\" onClick=\"open_page('::CANCELURL::');\">
+
 		// place submit buttons
 		$submitbuttons = "
 <tr>
 	<td colspan=\"2\" align=\"center\">
 
-		<input type=\"button\" class=\"button\" name=\"cancelButton\" value=\"Cancel\" onClick=\"open_page('::CANCELURL::');\">
-		&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+		<!-- cancelbutton -->
+		<a href=\"::CANCELURL::\" class=\"button\">Cancel</a>
+		&nbsp; &nbsp; &nbsp; &nbsp;
+		<!-- /cancelbutton -->
 
 		<!-- deletebutton -->
 		<input type=\"button\" class=\"button\" name=\"deleteButton\" value=\"Delete\" onClick=\"doc_delete('delete');\">
-		&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+		&nbsp; &nbsp; &nbsp; &nbsp;
 		<!-- /deletebutton -->
 
+		<!-- savebutton -->
 		<input type=\"button\" class=\"button\" name=\"saveButtonGoBack\" value=\"Save\" onClick=\"doc_submit('saveclose');\">
+		<!-- /savebutton -->
 
 	</td>
 </tr>
 ";
+		if ( !isset($this->m_form["disallow_delete"]) ) {
+			$this->m_form["disallow_delete"] = 0;
+		}
 
 		if ( $this->m_doc_id == "0" || $this->m_form["disallow_delete"] === 1 ) {
 			$searchstr = '@<!-- ' . 'deletebutton' . ' -->.*?<!-- /' . 'deletebutton' . ' -->@si';
@@ -464,4 +470,3 @@ class class_form {
 	}
 
 }
-?>

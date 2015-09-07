@@ -1,15 +1,13 @@
 <?php
-// modified: 2009-02-19
-
 require_once("./classes/class_misc.inc.php");
 
 class class_field {
-    protected $oClassMisc;
-    private $m_fieldname;
-    private $m_fieldlabel;
-    private $m_required;
-    private $m_onNew;
-    private $m_addquotes;
+	protected $oClassMisc;
+	private $m_fieldname;
+	private $m_fieldlabel;
+	private $m_required;
+	private $m_onNew;
+	private $m_addquotes;
 
 	// TODOEXPLAIN
 	function class_field($fieldsettings) {
@@ -115,7 +113,7 @@ class class_field {
 	// TODOEXPLAIN
 	function get_required_sign() {
 		if ( $this->is_field_required() == 1 ) {
-			$required = "<font color=\"red\" size=\"-2\" alt=\"Required\" title=\"Required\"><sup>*</sup></font>";
+			$required = "<font color=\"red\" size=\"-2\" title=\"Required\"><sup>*</sup></font>";
 		} else {
 			$required = '';
 		}
@@ -158,14 +156,12 @@ class class_field {
 		return $retval;
 	}
 
+	// TODOEXPLAIN
 	function cleanUpLabels($text) {
 		$text = str_replace('::REQUIRED::', '', $text);
-		$text = str_replace('::REFRESH::', '', $text);
-		$text = str_replace('::ADDNEW::', '', $text);
 		$text = str_replace('::STYLE::', '', $text);
 		$text = str_replace('::CLASS::', '', $text);
 
 		return $text;
 	}
 }
-?>

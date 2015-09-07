@@ -1,29 +1,27 @@
 <?php 
-// modified: 2009-02-19
-
 require_once("./classes/class_misc.inc.php");
 
 class class_field {
 	protected $oClassMisc;
-    private $m_fieldname;
-    private $m_fieldname_pointer;
-    private $m_fieldlabel;
-    private $m_fieldlabel_alttitle;
-    private $m_href;
-    private $m_nobr;
-    private $m_onclick;
-    private $m_view_max_length;
-    private $m_view_max_length_extension;
-    private $m_if_no_value_value;
-    private $m_target;
-    private $m_viewfilter;
-    private $m_table_cell_width;
-    private $m_show_different_value = '';
-    private $m_no_href_if = '';
-    private $m_alttitle = '';
-    private $m_class = '';
-    private $m_style = '';
-    private $m_noheader;
+	private $m_fieldname;
+	private $m_fieldname_pointer;
+	private $m_fieldlabel;
+	private $m_fieldlabel_alttitle;
+	private $m_href;
+	private $m_nobr;
+	private $m_onclick;
+	private $m_view_max_length;
+	private $m_view_max_length_extension;
+	private $m_if_no_value;
+	private $m_target;
+	public $m_viewfilter;
+	private $m_table_cell_width;
+	private $m_show_different_value = '';
+	private $m_no_href_if = '';
+	private $m_alttitle = '';
+	private $m_class = '';
+	private $m_style = '';
+	private $m_noheader;
 
 	// TODOEXPLAIN
 	function class_field($fieldsettings) {
@@ -37,7 +35,7 @@ class class_field {
 		$this->m_onclick = '';
 		$this->m_view_max_length = 0;
 		$this->m_view_max_length_extension = '..';
-		$this->m_if_no_value_value = '';
+		$this->m_if_no_value = '';
 		$this->m_target = '';
 		$this->m_viewfilter = '';
 		$this->m_table_cell_width = '';
@@ -82,8 +80,8 @@ class class_field {
 					case "view_max_length_extension":
 						$this->m_view_max_length_extension = $fieldsettings["view_max_length_extension"];
 						break;
-					case "if_no_value_value":
-						$this->m_if_no_value_value = $fieldsettings["if_no_value_value"];
+					case "if_no_value":
+						$this->m_if_no_value = $fieldsettings["if_no_value"];
 						break;
 					case "target":
 						$this->m_target = $fieldsettings["target"];
@@ -96,9 +94,6 @@ class class_field {
 						break;
 					case "no_href_if":
 						$this->m_no_href_if = $fieldsettings["no_href_if"];
-						break;
-					case "href_alttitle":
-						$this->m_alttitle = $fieldsettings["href_alttitle"];
 						break;
 					case "class":
 						$this->m_class = $fieldsettings["class"];
@@ -115,10 +110,10 @@ class class_field {
 	}
 
 	// TODOEXPLAIN
-	function get_if_no_value_value($retval) {
+	function get_if_no_value($retval) {
 		$retval = trim($retval);
 		if ( strlen($retval) == 0 ) {
-			$retval = trim($this->m_if_no_value_value);
+			$retval = trim($this->m_if_no_value);
 			if ( strlen($retval) == 0 ) {
 				$retval = "..no value..";
 			}
@@ -126,27 +121,27 @@ class class_field {
 		return $retval;
 	}
 
-    // TODOEXPLAIN
-    function get_fieldname() {
-        return $this->m_fieldname;
-    }
+	// TODOEXPLAIN
+	function get_fieldname() {
+		return $this->m_fieldname;
+	}
 
-    // TODOEXPLAIN
-    function get_target() {
-        return $this->m_target;
-    }
+	// TODOEXPLAIN
+	function get_target() {
+		return $this->m_target;
+	}
 
-    // TODOEXPLAIN
-    function get_alttitle() {
-        return $this->m_alttitle;
-    }
+	// TODOEXPLAIN
+	function get_alttitle() {
+		return $this->m_alttitle;
+	}
 
-    // TODOEXPLAIN
-    function get_nobr() {
-        return $this->m_nobr;
-    }
+	// TODOEXPLAIN
+	function get_nobr() {
+		return $this->m_nobr;
+	}
 
-    // TODOEXPLAIN
+	// TODOEXPLAIN
 	function get_fieldname_pointer() {
 		return $this->m_fieldname_pointer;
 	}
@@ -182,39 +177,25 @@ class class_field {
 	}
 
 	// TODOEXPLAIN
-	function get_value($row, $criteriumResult = 0) {
+	function get_no_href_if() {
+		return $this->m_no_href_if;
+	}
 
-		if ( is_array($criteriumResult) ) {
-			// 
-			if ( $criteriumResult["fieldname"] == "-novalue-" ) {
-				$retval = '';
-			} elseif ( $criteriumResult["fieldname"] <> "" ) {
-				$retval = stripslashes($row[$criteriumResult["fieldname"]]);
-			} else {
-				$retval = stripslashes($row[$this->get_fieldname()]);
-			}
-		} else {
-			$retval = stripslashes($row[$this->get_fieldname()]);
-		}
+	// TODOEXPLAIN
+	function get_viewfilter() {
+		return $this->m_viewfilter;
+	}
 
+	// TODOEXPLAIN
+	function get_value($row) {
+		$retval = stripslashes($row[$this->get_fieldname()]);
 		return $retval;
 	}
 
 	// TODOEXPLAIN
-	function view_field($row, $criteriumResult = 0) {
+	function view_field($row) {
 
-		if ( is_array($criteriumResult) ) {
-			// 
-			if ( $criteriumResult["fieldname"] == "-novalue-" ) {
-				$retval = '';
-			} elseif ( $criteriumResult["fieldname"] <> "" ) {
-				$retval = stripslashes($row[$criteriumResult["fieldname"]]);
-			} else {
-				$retval = stripslashes($row[$this->get_fieldname()]);
-			}
-		} else {
-			$retval = stripslashes($row[$this->get_fieldname()]);
-		}
+		$retval = stripslashes($row[$this->get_fieldname()]);
 
 		// toon andere waarde
 		if ( is_array($this->m_show_different_value) ) {
@@ -250,6 +231,9 @@ class class_field {
 					$tmp_retval .= $this->m_view_max_length_extension;
 				}
 
+				if ( !isset( $_GET["vf_" . $this->m_fieldname ] ) ) {
+					$_GET["vf_" . $this->m_fieldname ] = '';
+				}
 				$tmp_searchstring = strtolower(trim($_GET["vf_" . $this->m_fieldname ]));
 				if ( $tmp_searchstring != '' ) {
 					$all_search_found_in_max_length_value = 1;
@@ -293,12 +277,11 @@ class class_field {
 
 		// als veld geen waarde heeft, toon dan de -empty- waarde
 		if ( $retval == '' ) {
-			if ( $this->m_if_no_value_value != '' ) {
-				$retval = $this->m_if_no_value_value;
+			if ( $this->m_if_no_value != '' ) {
+				$retval = $this->m_if_no_value;
 			}
 		}
 
 		return $retval;
 	}
 }
-?>

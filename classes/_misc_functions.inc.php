@@ -1,73 +1,93 @@
-<?php 
-require_once "classes/class_calendar.inc.php";
-
-// modified: 2012-12-27
+<?php
+require_once dirname(__FILE__) . "/class_calendar.inc.php";
 
 // TODOEXPLAIN
-function getStatusColor( $persnr, $date ) {
-	global $dbhandleProtime;
-	$retval = array();
+function getTablePostfix( $year ) {
+	$postfix = '';
 
-	//
-	$status_color = 'background-color:#C62431;color:white;';
-	$status_text = '';
-	$status_alt = '';
-
-	// achterhaal 'present' status
-	$query = "SELECT REC_NR, PERSNR, BOOKDATE, BOOKTIME FROM BOOKINGS WHERE PERSNR=" . $persnr . " AND BOOKDATE='" . $date . "' AND BOOKTIME<>9999 ORDER BY REC_NR ";
-	$result = mssql_query($query, $dbhandleProtime);
-	$status = 0;
-	$found = 0;
-	$aanwezig = 0;
-	while ( $row = mssql_fetch_array($result) ) {
-		$found = 1;
-		$status++;
-
-		if ( $status == 1 ) {
-			// green cell
-			$status_color = 'background-color:green;color:white;';
-			$status_alt .= 'In: ' . class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes($row["BOOKTIME"]);
-			$aanwezig = 1;
-		} else {
-			// red cell
-			$status_color = 'background-color:#C62431;color:white;';
-			$status_alt .= ' - Out: ' . class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes($row["BOOKTIME"]) . "\n";
-			$aanwezig = 0;
-		}
-		$status_text = class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes($row["BOOKTIME"]);
-
-		$status = $status % 2;
-	}
-	mssql_free_result($result);
-
-	$status_alt = trim($status_alt);
-
-	// als status nog leeg
-	// dan betekent dat dat de persoon vandaag nog niet ingeklokt heeft
-	// misschien omdat de persoon op vakantie is
-	if ( $status_text == '' && $found == 0 ) {
-		$query = "SELECT ABSENCE.SHORT_1 FROM P_ABSENCE INNER JOIN ABSENCE ON P_ABSENCE.ABSENCE = ABSENCE.ABSENCE WHERE (P_ABSENCE.PERSNR = " . $persnr . ") AND (P_ABSENCE.BOOKDATE = '" . $date . "') ";
-		$result = mssql_query($query, $dbhandleProtime);
-		$status_separator = '';
-		while ( $row = mssql_fetch_array($result) ) {
-			$status_text .= $status_separator . $row["SHORT_1"];
-			$status_separator = ', ';
-		}
-		mssql_free_result($result);
+	switch ( $year ) {
+		case 2009:
+		case 2010:
+		case 2011:
+		case 2012:
+		case 2013:
+			$postfix = "_" . $year;
+			break;
 	}
 
-	$retval["aanwezig"] = $aanwezig;
-	$retval["status_text"] = $status_text;
-	$retval["status_color"] = $status_color;
-	$retval["status_alt"] = $status_alt;
+	return $postfix;
+}
+
+// TODOEXPLAIN
+function c( $c) {
+	return convertSpreadsheatColumnNumberToColumnCharacter($c);
+}
+
+// TODOEXPLAIN
+function rc( $r, $c) {
+	return convertSpreadsheatColumnNumberToColumnCharacter($c) . $r;
+}
+
+// TODOEXPLAIN
+function convertSpreadsheatColumnNumberToColumnCharacter($i, $choices = "ABCDEFGHIJKLMNOPQRSTUVWXYZ") {
+	$len = strlen($choices);
+
+	$mod = ($i-1) % $len;
+	if ( $i - ($mod+1) > 0 ) {
+		$rest = ($i - ($mod+1))/$len;
+		$retval = convertSpreadsheatColumnNumberToColumnCharacter($rest, $choices) . substr($choices, $mod, 1);
+	} else {
+		$retval = substr($choices, $mod, 1);
+	}
 
 	return $retval;
 }
 
 // TODOEXPLAIN
-function goBackTo() {
+function hoursLeft_formatNumber($value, $decimal = 1, $show_zero = false) {
 	$ret = '';
 
+	if ( $value == '' ) {
+		$value = 0;
+	}
+
+	if ( $value != 0 || $show_zero ) {
+		$ret = number_format($value, $decimal, ',', '.');
+	}
+
+	return $ret;
+}
+
+// TODOEXPLAIN
+function fixCharErrors( $text ) {
+	$text = str_replace("Ã«", "&euml;", $text);
+	$text = str_replace("ë", "&euml;", $text);
+
+	return $text;
+}
+
+// TODOEXPLAIN
+function convertToJiraUrl( $jira_issue_nr ) {
+	$ret = '';
+	$separator = '';
+
+	$jira_url_browse = class_settings::getSetting('jira_url_browse');
+
+	$jira_issue_nr = trim($jira_issue_nr);
+
+	$arr = explode(' ', $jira_issue_nr);
+	foreach ( $arr as $url ) {
+		$ret .= $separator . "<a href=\"$jira_url_browse$url\" target=\"_blank\">$url</a>";
+		$separator = ' ';
+	}
+
+	return $ret;
+}
+
+// TODOEXPLAIN
+function goBackTo() {
+	$ret = '';
+/*
 	$backurl = getBackUrl();
 	if ( $backurl != '' ) {
 		$backurllabel = getAndProtectBackurlLabel();
@@ -78,83 +98,106 @@ function goBackTo() {
 		}
 		$ret = "<div class=\"goBackTo\"><a href=\"$backurl\">$backurllabel</a></div>";
 	}
-
+*/
 	return $ret;
 }
 
 // TODOEXPLAIN
-function getEmployeesRibbon($year, $all = 0) {
-	global $date, $oEmployee, $protect, $oPage, $dbhandleTimecard, $settings;
+function getEmployeesRibbon($currentlySelectedEmployee, $year, $hide_all_employees_choice = 0) {
+	//global $oEmployee;
+
+	$selected_employee = "Select an employee";
+
+	$prev = '';
+	$next = '';
 
 	$ret = "
-<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width=\"100%\">
+<b>Selected employee:</b><br>
+<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
 <tr>
-	<td><b>Employee: </b> ";
-
- 	$selected_employee = "Please select an employee...";
-
-	$separator = ' &nbsp; ';
-
-	// if all (employees) show also link for 'all'
-	if ( $all == 1 ) {
-		$ret .= $separator . "<a href=\"" . GetModifyReturnQueryString("?", "eid", "-1") . "\">all employees</a>";
-	}
-
-	foreach ( getListOfUsersActiveInSpecificYear($date["y"]) as $user ) {
-
-		$ret .= $separator;
-
-		if ( $oEmployee->getTimecardId() == $user["id"] ) {
-			$ret .= "<b>";
-			$selected_employee = trim($user["lastname"] . ', ' . $user["firstname"]);
-		}
-
-		$current_employee = trim($user["lastname"] . ', ' . $user["firstname"]);
-
-		$ret .= "<a href=\"" . GetModifyReturnQueryString("?", "eid", $user["id"]) . "\" alt=\"" . $current_employee . "\" title=\"" . $current_employee . "\">" . $current_employee . "</a>";
-
-		if ( $oEmployee->getTimecardId() == $user["id"] ) {
-			$ret .= "</b>";
-		}
-	}
-
-	if ( $oEmployee->getTimecardId() == -1 ) {
-		$selected_employee = 'all employees';
-	}
-
-	$ret .= "
-	</td>
+	<td colspan=2 align=\"center\">::SELECTEDEMPLOYEE::</td>
 </tr>
 <tr>
-	<td><b>Selected employee:</b> &nbsp; &nbsp; " . $selected_employee . "
-";
-
-	$ret .= "
-	</td>
+	<td style=\"text-align:left;padding-left:20px;\">::PREV::</td>
+	<td style=\"text-align:right;padding-right:20px;\" align=\"right\">::NEXT::</td>
 </tr>
 </table>
 <br>
-";
+<b>Employees: </b><br>";
+
+	// if all (employees) show also link for 'all'
+	if ( !$hide_all_employees_choice ) {
+		$ret .= "<a href=\"" . GetModifyReturnQueryString("?", "eid", "-1") . "\">all employees</a><br>";
+	}
+
+	foreach ( getListOfUsersActiveInSpecificYear($year) as $user ) {
+		if ( $currentlySelectedEmployee->getTimecardId() == $user["id"] ) {
+			$ret .= "<b>";
+			$selected_employee = trim($user["firstname"] . ' ' . verplaatsTussenvoegselNaarBegin($user["lastname"]));
+			$prev = $user['prev'];
+			$next = $user['next'];
+		}
+
+		$current_employee = trim($user["firstname"] . ' ' . verplaatsTussenvoegselNaarBegin($user["lastname"]));
+
+		$ret .= "<a href=\"" . GetModifyReturnQueryString("?", "eid", $user["id"]) . "\" title=\"" . $current_employee . "\">" . $current_employee . "</a>";
+
+		if ( $currentlySelectedEmployee->getTimecardId() == $user["id"] ) {
+			$ret .= "</b>";
+		}
+
+		$ret .= "<br>";
+	}
+
+	if ( $currentlySelectedEmployee->getTimecardId() == -1 ) {
+		$selected_employee = 'all employees';
+	}
+
+	$ret = str_replace("::SELECTEDEMPLOYEE::", $selected_employee, $ret);
+
+	// prev
+	if ( $prev != '' ) {
+		$ret = str_replace('::PREV::', '<a href="' . GetModifyReturnQueryString("?", "eid", $prev) . '">&laquo; prev</a>', $ret);
+	} else {
+		$ret = str_replace('::PREV::', '&laquo; prev', $ret);
+	}
+
+	// next
+	if ( $next != '' ) {
+		$ret = str_replace('::NEXT::', '<a href="' . GetModifyReturnQueryString("?", "eid", $next) . '">next &raquo;</a>', $ret);
+	} else {
+		$ret = str_replace('::NEXT::', 'next &raquo;', $ret);
+	}
 
 	return $ret;
 }
 
 // TODOEXPLAIN
 function getListOfUsersActiveInSpecificYear($year) {
-	global $dbhandleTimecard;
+	global $databases;
+
+	$oConn = new class_mysql($databases['default']);
+	$oConn->connect();
 
 	$ret = array();
-
-	$query_users = "SELECT * FROM Employees WHERE firstyear<=" . $year . " AND lastyear>=" . $year . " AND is_test_account=0 ORDER BY lastname, firstname ";
-	$result_users = mysql_query($query_users, $dbhandleTimecard);
+	$last_id = '';
+	$query_users = "SELECT * FROM vw_Employees WHERE ( ( firstyear<=" . $year . " AND lastyear>=" . $year . ") OR isdisabled=0 ) AND is_test_account=0 ORDER BY FIRSTNAME, NAME ";
+	$result_users = mysql_query($query_users, $oConn->getConnection());
+	$item = array();
 	while ($row_users = mysql_fetch_assoc($result_users)) {
-		$item = array();
-		$item ["id"] = $row_users["ID"];
-		$item ["firstname"] = $row_users["FirstName"];
-		$item ["lastname"] = $row_users["LastName"];
-		$item ["longcode"] = $row_users["LongCode"];
-		$ret[] = $item;
+		if ( $last_id != '' ) {
+			$item["next"] = $row_users["ID"];
+			$ret[] = $item;
+			$item = array();
+		}
+		$item["id"] = $row_users["ID"];
+		$item["firstname"] = $row_users["FIRSTNAME"];
+		$item["lastname"] = $row_users["NAME"];
+		$item["longcode"] = $row_users["LongCode"];
+		$item["prev"] = $last_id;
+		$last_id = $row_users["ID"];
 	}
+	$ret[] = $item;
 	mysql_free_result($result_users);
 
 	return $ret;
@@ -217,58 +260,16 @@ function getAndProtectBackurlLabel() {
 }
 
 // TODOEXPLAIN
-function createTelephoneArray($arrTel, $tel, $explode = 1) {
-	if ( $explode == 1 ) {
-		$tel = cleanUpTelephone($tel);
-	} else {
-		if ( strlen($tel) >= 3 ) {
-			if ( substr($tel, 0, 3) == '06 ' ) {
-				$tel = '06-' . substr($tel, -strlen($tel)+3);
-			}
-		}
-	}
-
-	if ( $tel != '' ) {
-		$arr = explode(',', $tel);
-
-		foreach ( $arr as $a ) {
-			if ( trim($a) != '' ) {
-				array_push($arrTel, trim($a));
-			}
-		}
-	}
-
-	return $arrTel;
-}
-
-// TODOEXPLAIN
-function cleanUpTelephone($telephone) {
-	$retval = $telephone;
-
-	// remove some dirty data from telephone
-	$retval = str_replace(array('.', ',', '/', "(", ")", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"), ' ', $retval);
-
-	// 
-	while ( strpos($retval, '  ') !== false ) {
-		$retval = str_replace('  ',' ', $retval);
-	}
-	$retval = trim($retval);
-
-	// ad comma between the telephones
-	$retval = str_replace(' ', ', ', $retval);
-
-	return $retval;
-}
-
-// TODOEXPLAIN
-function debug($text = "") {
+function debug($text = "", $extra = '') {
+    echo "<font color=red>";
 	if ( is_array($text) ) {
-		echo "<font color=red>+";
+		echo "<pre>" . date("H:i:s ") . " (" . microtime(true) . ") " . $extra;
 		print_r($text);
-		echo "+</font><br>";
+		echo " +</pre><br>";
 	} else {
-		echo "<font color=red>+" . $text . "+</font><br>";
+		echo date("H:i:s ") . " (" . microtime(true) . ") " . $extra . $text . " +<br>";
 	}
+    echo "</font>";
 }
 
 // TODOEXPLAIN: OUD VERHUISD NAAR CLASS_WEB_PROTECTION
@@ -304,7 +305,6 @@ function RemoveFromQueryString($tekst, $field) {
 	$querystring_argument_array = explode('&', $qstring);
 
 	$separator = '';
-	$found_new_field = 0;
 
 	foreach ( $querystring_argument_array as $querystring_argument_field => $querystring_argument_value ) {
 
@@ -318,9 +318,7 @@ function RemoveFromQueryString($tekst, $field) {
 
 				$value1 = str_replace("__amp;", "&amp;", $value1);
 
-				if ( $field == $value0 ) {
-					$found_new_field = 1;
-				} else {
+				if ( $field != $value0 ) {
 					$retval .= $separator . $value0 . "=" . urldecode($value1);
 					$separator = '&';
 				}
@@ -388,7 +386,6 @@ function GetModifyReturnQueryString($pre_character, $field, $value) {
 
 // TODOEXPLAIN
 function vorigeVolgendeJaar($date, $richting, $urlDescription = '') {
-	$retval = '';
 	$original_date = $date;
 
 	if ( $richting == '-' ) {
@@ -401,7 +398,8 @@ function vorigeVolgendeJaar($date, $richting, $urlDescription = '') {
 		$date["y"] = date("Y");
 		$date["m"] = date("m");
 		$date["d"] = date("d");
-		$label = $date["y"];
+//		$label = $date["y"];
+		$label = 'current year';
 	}
 
 	// 
@@ -461,7 +459,9 @@ function achterhaalQuarter($date) {
 }
 
 // TODOEXPLAIN
-function advancedRecordDelete($handle, $table, $criterium, $test = 0 ) {
+function advancedRecordDelete($db, $table, $criterium, $test = 0 ) {
+	global $databases;
+
 	$advQuery = "DELETE FROM " . $table;
 
 	if ( $criterium != '' ) {
@@ -474,13 +474,19 @@ function advancedRecordDelete($handle, $table, $criterium, $test = 0 ) {
 		// test
 		//debug($advQuery);
 	} else {
+		$oConn = new class_mysql($databases[$db]);
+		$oConn->connect();
+
 		// run
-		$resultAdvUpdate = mysql_query($advQuery, $handle);
+		//debug($advQuery, "advancedRecordDelete: ");
+		$resultAdvUpdate = mysql_query($advQuery, $oConn->getConnection());
 	}
 }
 
 // TODOEXPLAIN
-function advancedRecordInsert($handle, $table, $fields, $test = 0 ) {
+function advancedRecordInsert($db, $table, $fields, $test = 0 ) {
+	global $databases;
+
 	$advQuery = "INSERT INTO " . $table . " ";
 
 	$tot_fields = '';
@@ -498,8 +504,8 @@ function advancedRecordInsert($handle, $table, $fields, $test = 0 ) {
 					$separator = ", ";
 				}
 			} else {
-				$tot_fields .= $separator . $c;
-				$tot_values .= $separator . $d;
+				$tot_fields .= $separator . $a;
+				$tot_values .= $separator . $b;
 			}
 		}
 	}
@@ -510,13 +516,20 @@ function advancedRecordInsert($handle, $table, $fields, $test = 0 ) {
 		// test
 		//debug($advQuery);
 	} else {
+		$oConn = new class_mysql($databases[$db]);
+		$oConn->connect();
+
 		// run
-		$resultAdvUpdate = mysql_query($advQuery, $handle);
+		//debug($advQuery, "advancedRecordInsert: ");
+		$resultAdvUpdate = mysql_query($advQuery, $oConn->getConnection());
+
 	}
 }
 
 // TODOEXPLAIN
-function advancedRecordUpdate($handle, $table, $fields, $criterium, $test = 0 ) {
+function advancedRecordUpdate($db, $table, $fields, $criterium, $test = 0 ) {
+	global $databases;
+
 	$advQuery = "UPDATE " . $table . " SET ";
 
 	if ( is_array($fields) ) {
@@ -541,14 +554,27 @@ function advancedRecordUpdate($handle, $table, $fields, $criterium, $test = 0 ) 
 		// test
 		echo $advQuery . "+<br>";
 	} else {
+		$oConn = new class_mysql($databases[$db]);
+		$oConn->connect();
+
+//debug($advQuery, "advancedRecordUpdate: ");
 		// run
-		$resultAdvUpdate = mysql_query($advQuery, $handle);
+		$resultAdvUpdate = mysql_query($advQuery, $oConn->getConnection());
 	}
 }
 
 // TODOEXPLAIN
-function advancedSingleRecordSelectMysql($handle, $table, $fields, $criterium, $fieldselect = '*', $order_by = '' ) {
+function advancedSingleRecordSelectMysql($db, $table, $fields, $criterium, $fieldselect = '', $order_by = '' ) {
+	global $databases;
+
 	$retval = array();
+
+	$oConn = new class_mysql($databases[$db]);
+	$oConn->connect();
+
+	if ( $fieldselect == '' || $fieldselect == '*' ) {
+		$fieldselect = implode(', ', $fields);
+	}
 
 	$advSelect = "SELECT " . $fieldselect . " FROM " . $table;
 	$retval["__is_record_found"] = '0';
@@ -561,7 +587,9 @@ function advancedSingleRecordSelectMysql($handle, $table, $fields, $criterium, $
 		$advSelect .= " ORDER BY " . $order_by . " ";
 	}
 
-	$resultAdvSelect = mysql_query($advSelect, $handle);
+//debug($advSelect, 'advancedSingleRecordSelectMysql: ');
+
+	$resultAdvSelect = mysql_query($advSelect, $oConn->getConnection());
 	if ($rowSelect = mysql_fetch_assoc($resultAdvSelect)) {
 		$retval["__is_record_found"] = '1';
 		if ( is_array($fields) ) {
@@ -578,67 +606,66 @@ function advancedSingleRecordSelectMysql($handle, $table, $fields, $criterium, $
 }
 
 // TODOEXPLAIN
-function advancedSingleRecordSelectMssql($handle, $table, $fields, $criterium, $fieldselect = '*', $order_by = '' ) {
-	$retval = array();
-
-	$advSelect = "SELECT " . $fieldselect . " FROM " . $table;
-	$retval["__is_record_found"] = '0';
-
-	if ( $criterium != '' ) {
-		$advSelect .= " WHERE " . $criterium . " ";
-	}
-
-	if ( $order_by != '' ) {
-		$advSelect .= " ORDER BY " . $order_by . " ";
-	}
-
-	$resultAdvSelect = mssql_query($advSelect, $handle);
-	if ($rowSelect = mssql_fetch_assoc($resultAdvSelect)) {
-		$retval["__is_record_found"] = '1';
-		if ( is_array($fields) ) {
-			foreach ($fields as $a) {
-				$retval[strtolower($a)] = $rowSelect[$a];
-			}
-		} else {
-			$retval[strtolower($fields)] = $rowSelect[$fields];
-		}
-	}
-	mssql_free_result($resultAdvSelect);
-
-	return $retval;
-}
-
-// TODOEXPLAIN
 function updateLastUserLogin($userid) {
-	global $dbhandleTimecard;
-
 	advancedRecordUpdate(
-			$dbhandleTimecard
+			'default'
 			, "Employees"
-			, array("last_user_login" => "'" . date("Y-m-d H:i:s") . "'")
+			, array("last_user_login" => "'" . date("Y-m-d H:i:s") . "'", 'isdisabled' => '0')
 			, "ID=" . $userid
 		);
 }
 
 // TODOEXPLAIN
-function getAddEmployeeToTimecard($longcode) {
-	global $dbhandleTimecard, $settings, $protect, $settings_from_database;
+function getEmployeeIdByLongCode($longcode) {
+	global $databases;
+
+	$oConn = new class_mysql($databases['default']);
+	$oConn->connect();
 
 	$retval["id"] = '0';
 
 	$query = "SELECT ID, LongCode FROM Employees WHERE LongCode='" . addslashes($longcode) . "' ORDER BY ID DESC ";
-	$result = mysql_query($query, $dbhandleTimecard);
+	$result = mysql_query($query, $oConn->getConnection());
+
+	// get ID of employee
+	if ( $row = mysql_fetch_array($result) ) {
+		$retval["id"] = $row["ID"];
+	}
+
+	return $retval;
+}
+
+// TODOEXPLAIN
+function getAddEmployeeToTimecard($longcode) {
+	global $protect, $databases;
+
+	$oConn = new class_mysql($databases['default']);
+	$oConn->connect();
+
+	$retval["id"] = '0';
+
+	$query = "SELECT ID, LongCode FROM Employees WHERE LongCode='" . addslashes($longcode) . "' ORDER BY ID DESC ";
+	$result = mysql_query($query, $oConn->getConnection());
 
 	// get ID of employee
 	if ( $row = mysql_fetch_array($result) ) {
 		$retval["id"] = $row["ID"];
 	} else {
+		//
+		$a = new TCDateTime();
+		// disabled one month back
+		//$a->subMonth(); // one month back
+		$allow_additions_starting_date = $a->getFirstDate()->format("Y-m-d");
+		$year = date("Y");
+
+		$created_on = date("Y-m-d H:i:s");
+
 		// insert new record in Employees database
-		$queryInsert = "INSERT INTO Employees (LongCode) VALUES ('" . addslashes($longcode) . "') ";
-		$resultInsert = mysql_query($queryInsert, $dbhandleTimecard);
+		$queryInsert = "INSERT INTO Employees (LongCode, firstyear, lastyear, allow_additions_starting_date, created_on) VALUES ('" . addslashes($longcode) . "', $year, $year, '$allow_additions_starting_date', '$created_on') ";
+		$resultInsert = mysql_query($queryInsert, $oConn->getConnection());
 
 		// get the id of the last created document
-		$result2 = mysql_query($query, $dbhandleTimecard);
+		$result2 = mysql_query($query, $oConn->getConnection());
 		if ( $row2 = mysql_fetch_array($result2) ) {
 			$retval["id"] = $row2["ID"];
 		}
@@ -646,51 +673,22 @@ function getAddEmployeeToTimecard($longcode) {
 		// send mail to admin to check the data
 		$newUserBody = "This message is for the IISG IT Department.
 A new timecard user has registered.
-Go to website and check the users data.
-https://timecard.socialhistoryservices.org/fa_employees_edit.php?ID=" . $retval["id"];
-		$protect->send_email( $settings_from_database["email_new_employees_to"], "IISG Timecard - new user added", $newUserBody );
+Go to website and check users data.
+https://timecard.socialhistoryservices.org/employees_edit.php?ID=" . $retval["id"] . "
+- se(lec)t user's name in the Protime field
+- and save the record
+(that's all.)
+After that you can close the Jira call.";
+		$protect->send_email( class_settings::getSetting("email_new_employees_to"), "IISG Timecard - new user added", $newUserBody );
 	}
 
 	return $retval;
 }
 
 // TODOEXPLAIN
-function syncProtimeAndTimecardEmployeeData($timecard_id, $protime_id) {
-	global $dbhandleTimecard, $dbhandleProtime;
-
-	// 
-	$recordProtime = advancedSingleRecordSelectMssql(
-			$dbhandleProtime
-			, "CURRIC"
-			, array("PERSNR", "NAME", "FIRSTNAME", "REGISTERNR", "RREGISTER")
-			, "PERSNR=" . $protime_id . " ORDER BY PERSNR DESC "
-		);
-
-	// + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
-
-	// is er wel wat gevonden in protime?
-	// zo niet, skip next part (en laat dus alles zoals in timecard)
-	if ( $recordProtime["persnr"] != '' && $recordProtime["persnr"] != '0' ) {
-
-		// synchronize data
-		advancedRecordUpdate(
-				$dbhandleTimecard
-				, "Employees"
-				, array(
-					array("LastName" => "'" . addslashes(trim($recordProtime["name"])) . "'")
-					, array("FirstName" => "'" . addslashes(trim($recordProtime["firstname"])) . "'")
-					, array("KnawPersNr" => "'" . addslashes(trim($recordProtime["registernr"])) . "'")
-					, array("AfdelingsNummer" => "'" . addslashes(trim($recordProtime["rregister"])) . "'")
-				)
-				, "ID=" . $timecard_id
-				, 0
-			);
-	}
-}
-
-// TODOEXPLAIN
 function getCheckedInCheckedOut($protimeid, $date = '') {
-	global $dbhandleProtime;
+	global $databases;
+
 	if ( $date == '' ) {
 		$date = date("Ymd");
 	}
@@ -708,14 +706,17 @@ function getCheckedInCheckedOut($protimeid, $date = '') {
 </tr>
 ";
 
-	$query = "SELECT REC_NR, PERSNR, BOOKDATE, BOOKTIME FROM BOOKINGS WHERE PERSNR=" . $protimeid . " AND BOOKDATE='" . $date . "' AND BOOKTIME<>9999 ORDER BY BOOKTIME ";
+	$query = "SELECT REC_NR, PERSNR, BOOKDATE, BOOKTIME FROM PROTIME_BOOKINGS WHERE PERSNR=" . $protimeid . " AND BOOKDATE='" . $date . "' AND BOOKTIME<>9999 ORDER BY BOOKTIME ";
 
-	$result = mssql_query($query, $dbhandleProtime);
+	$oTc = new class_mysql($databases['default']);
+	$oTc->connect();
+
+	$result = mysql_query($query, $oTc->getConnection());
 	$status = 0;
 	$found = 0;
 	$template = "<tr><td>::IN::</td><td>::OUT::</td></tr>";
 	$inout = $template;
-	while ( $row = mssql_fetch_array($result) ) {
+	while ( $row = mysql_fetch_array($result) ) {
 		$status++;
 		$found++;
 
@@ -730,7 +731,7 @@ function getCheckedInCheckedOut($protimeid, $date = '') {
 
 		$status = $status % 2;
 	}
-	mssql_free_result($result);
+	mysql_free_result($result);
 
 	if ( $inout != '' ) {
 		$inout = str_replace('::IN::', '-', $inout);
@@ -748,36 +749,47 @@ function getCheckedInCheckedOut($protimeid, $date = '') {
 	return $retval;
 }
 
-// TODO
+// TODOEXPLAIN
 function addAndRemoveAbsentiesInTimecard($timecard_id, $protime_id, $oDate) {
-	global $dbhandleTimecard, $dbhandleProtime;
+	global $databases;
 
-	// achterhaal 
+	if ( $oDate->get("Y") < class_settings::getSetting("oldest_modifiable_year") ) {
+		return;
+	}
+
+	$oConn = new class_mysql($databases['default']);
+	$oConn->connect();
+
+	// create a semicolon separated string of all absences used in this current day
+	// string will be used in later stadium to remove all 'leftover' absences
 	$timecard_absenties = ';';
 	$query = "SELECT * FROM Workhours WHERE Employee=" . $timecard_id . " AND DateWorked LIKE '" . $oDate->get("Y-m-d") . "%' AND protime_absence_recnr>0 ";
-	$result = mysql_query($query, $dbhandleTimecard);
+//debug($query);
+	$result = mysql_query($query, $oConn->getConnection());
 	while ( $row = mysql_fetch_array($result) ) {
 		$timecard_absenties .= $row["protime_absence_recnr"] . ";";
 	}
 	mysql_free_result($result);
 
 	// doorloop Protime absenties en voeg/update toe aan Timecard
-	$query2 = "SELECT * FROM P_ABSENCE WHERE PERSNR = " . $protime_id . " AND BOOKDATE = '" . $oDate->get("Ymd") . "' ";
+	$query2 = "
+SELECT PROTIME_P_ABSENCE.REC_NR, PROTIME_P_ABSENCE.ABSENCE_VALUE, vw_ProtimeAbsences.workcode_id
+FROM PROTIME_P_ABSENCE
+	INNER JOIN vw_ProtimeAbsences ON PROTIME_P_ABSENCE.ABSENCE = vw_ProtimeAbsences.protime_absence_id
+WHERE PROTIME_P_ABSENCE.PERSNR = " . $protime_id . "
+	AND PROTIME_P_ABSENCE.BOOKDATE = '" . $oDate->get("Ymd") . "'
+";
 
-	$result2 = mssql_query($query2, $dbhandleProtime);
-	while ( $row2 = mssql_fetch_array($result2) ) {
-		$protime_absence_id = $row2["ABSENCE"];
-		// 
-		$timecard_absence_id = advancedSingleRecordSelectMysql($dbhandleTimecard, "ProtimeAbsences", "workcode_id", "ID=" . $protime_absence_id );
-
-		if ( $timecard_absence_id["workcode_id"] != '' && $timecard_absence_id["workcode_id"] != '0' && $timecard_absence_id["workcode_id"] != '-1' ) {
+	$result2 = mysql_query($query2, $oConn->getConnection());
+	while ( $row2 = mysql_fetch_array($result2) ) {
+		if ( $row2["workcode_id"] != '' && $row2["workcode_id"] != '0' && $row2["workcode_id"] != '-1' ) {
 			if ( strpos($timecard_absenties, ";" . $row2["REC_NR"] . ";") !== false ) {
 				// update
 				advancedRecordUpdate(
-						$dbhandleTimecard
+						'default'
 						, "Workhours"
 						, array(
-								array("WorkCode" => $timecard_absence_id["workcode_id"])
+								array("WorkCode" => $row2["workcode_id"])
 								, array("WorkDescription" => "''")
 								, array("TimeInMinutes" => $row2["ABSENCE_VALUE"])
 							)
@@ -790,12 +802,12 @@ function addAndRemoveAbsentiesInTimecard($timecard_id, $protime_id, $oDate) {
 			} else {
 				// insert
 				advancedRecordInsert(
-					$dbhandleTimecard
+					'default'
 					, "Workhours"
 					, array(
 							array("Employee" => $timecard_id)
 							, array("DateWorked" => "'" . $oDate->get("Y") . "-" . $oDate->get("m") . "-" . $oDate->get("d") . "'")
-							, array("WorkCode" => $timecard_absence_id["workcode_id"])
+							, array("WorkCode" => $row2["workcode_id"])
 							, array("WorkDescription" => "''")
 							, array("TimeInMinutes" => $row2["ABSENCE_VALUE"])
 							, array("protime_absence_recnr" => $row2["REC_NR"])
@@ -806,27 +818,52 @@ function addAndRemoveAbsentiesInTimecard($timecard_id, $protime_id, $oDate) {
 			}
 		}
 	}
-	mssql_free_result($result2);
+	mysql_free_result($result2);
 
-	// delete overgebleven 'oude' absenties
+	$oConn->connect();
+
+	// delete 'leftover' absences in specified day
 	$timecard_absenties = str_replace(";", " ", $timecard_absenties);
 	$timecard_absenties = trim($timecard_absenties);
 	$timecard_absenties = str_replace(" ", ",", $timecard_absenties);
 	if ( $timecard_absenties != '' ) {
 		$queryDelete = "DELETE FROM Workhours WHERE Employee=" . $timecard_id . " AND DateWorked LIKE '" . $oDate->get("Y-m-d") . "%' AND protime_absence_recnr IN (" . $timecard_absenties . ") ";
-		mysql_query($queryDelete, $dbhandleTimecard);
+		mysql_query($queryDelete, $oConn->getConnection());
 	}
 }
 
 // TODOEXPLAIN
 function getEerderNaarHuisMonthTotal($timecard_id, $oDate) {
-	global $dbhandleTimecard;
+	global $databases;
+
+	$oConn = new class_mysql($databases['default']);
+	$oConn->connect();
 
 	$eerderWeg = 0;
 	$query = "SELECT SUM(TimeInMinutes) AS TOTMINUTES FROM Workhours WHERE Employee=" . $timecard_id . " AND DateWorked LIKE '" . $oDate->get("Y-m") . "-%' AND protime_absence_recnr=-1 ";
-	$result = mysql_query($query, $dbhandleTimecard);
-	if ( $row = mysql_fetch_array($result) ) {
-		$eerderWeg = $row["TOTMINUTES"];
+	$result = mysql_query($query, $oConn->getConnection());
+	while ( $row = mysql_fetch_array($result) ) {
+		$eerderWeg += $row["TOTMINUTES"];
+	}
+	mysql_free_result($result);
+
+	return $eerderWeg;
+}
+
+// TODOEXPLAIN
+function getEerderNaarHuisGroupedByDay($timecard_id, $oDate) {
+	global $databases;
+
+	$oConn = new class_mysql($databases['default']);
+	$oConn->connect();
+
+	$eerderWeg = array();
+
+	// achterhaal
+	$query = "SELECT SUBSTR(DateWorked, 1, 10) AS WORKDATE, SUM(TimeInMinutes) AS TOTMINUTES FROM Workhours WHERE Employee=" . $timecard_id . " AND DateWorked LIKE '" . $oDate->get("Y-m-") . "%' AND protime_absence_recnr=-1 GROUP BY SUBSTR(DateWorked, 1, 10) ";
+	$result = mysql_query($query, $oConn->getConnection());
+	while ( $row = mysql_fetch_array($result) ) {
+		$eerderWeg[$row["WORKDATE"]] = $row["TOTMINUTES"];
 	}
 	mysql_free_result($result);
 
@@ -835,15 +872,18 @@ function getEerderNaarHuisMonthTotal($timecard_id, $oDate) {
 
 // TODOEXPLAIN
 function getEerderNaarHuisDayTotal($timecard_id, $oDate) {
-	global $dbhandleTimecard;
+	global $databases;
+
+	$oConn = new class_mysql($databases['default']);
+	$oConn->connect();
 
 	$eerderWeg = 0;
 
 	// achterhaal 
 	$query = "SELECT SUM(TimeInMinutes) AS TOTMINUTES FROM Workhours WHERE Employee=" . $timecard_id . " AND DateWorked LIKE '" . $oDate->get("Y-m-d") . "%' AND protime_absence_recnr=-1 ";
-	$result = mysql_query($query, $dbhandleTimecard);
-	if ( $row = mysql_fetch_array($result) ) {
-		$eerderWeg = $row["TOTMINUTES"];
+	$result = mysql_query($query, $oConn->getConnection());
+	while ( $row = mysql_fetch_array($result) ) {
+		$eerderWeg += $row["TOTMINUTES"];
 	}
 	mysql_free_result($result);
 
@@ -851,14 +891,99 @@ function getEerderNaarHuisDayTotal($timecard_id, $oDate) {
 }
 
 // TODOEXPLAIN
-function addEerderNaarHuisInTimecard($timecard_id, $protime_id, $oDate) {
-	global $dbhandleTimecard, $dbhandleProtime;
+function addEerderNaarHuisInTimecardMonth($timecard_id, $protime_id, $oDate) {
+	global $databases;
 
-	// 
-	$hours = advancedSingleRecordSelectMssql(
-			$dbhandleProtime
-			, "PR_MONTH"
-			, array("PREST", "RPREST", "WEEKPRES1", "EXTRA")
+	$oConn = new class_mysql($databases['default']);
+	$oConn->connect();
+
+	$advSelect = "SELECT BOOKDATE, EXTRA FROM PROTIME_PR_MONTH WHERE PERSNR=" . $protime_id . " AND BOOKDATE LIKE '" . $oDate->get("Ym") . "%' GROUP BY BOOKDATE ";
+	//debug($advSelect, 'addEerderNaarHuisInTimecardMonth: ');
+	$arrExtras = array();
+	$resultAdvSelect = mysql_query($advSelect, $oConn->getConnection());
+	while ($rowSelect = mysql_fetch_assoc($resultAdvSelect)) {
+		$arrExtras[ $rowSelect["BOOKDATE"] ] = $rowSelect["EXTRA"];
+	}
+	mysql_free_result($resultAdvSelect);
+
+	// eerder naar huis
+	for ( $i = 1; $i <= date("t", mktime(0, 0, 0, (int)( $oDate->get("m") ), (int)( $oDate->get("d") ), (int)( $oDate->get("Y") ) )); $i++ ) {
+		$oDate2 = new class_date( $oDate->get("y"), $oDate->get("m"), $i );
+		if ( $oDate->get("Y") < class_settings::getSetting("oldest_modifiable_year") || $oDate2->get("Ymd") >= date("Ymd") ) {
+			// break from for loop
+			break;
+		}
+
+		$eerderWeg = (int)($arrExtras[$oDate2->get("Ymd")]);
+
+		if ( $eerderWeg < 0 ) {
+			$eerderWeg *= -1;
+
+			$zoek = advancedSingleRecordSelectMysql(
+				'default'
+				, "Workhours"
+				, array("ID", "TimeInMinutes")
+				, "Employee=" . $timecard_id . " AND DateWorked LIKE '" . $oDate2->get("Y-m-d") . "%' AND protime_absence_recnr=-1 "
+			);
+
+			if ( $zoek["id"] != '' && $zoek["id"] != '0' ) {
+				// update
+				advancedRecordUpdate(
+					'default'
+					, "Workhours"
+					, array(
+						array("WorkCode" => 7)
+					, array("WorkDescription" => "''")
+					, array("TimeInMinutes" => $eerderWeg)
+					)
+					, "ID=" . $zoek["id"]
+					, 0
+				);
+			} else {
+				// insert
+				advancedRecordInsert(
+					'default'
+					, "Workhours"
+					, array(
+						array("Employee" => $timecard_id)
+					, array("DateWorked" => "'" . $oDate2->get("Y") . "-" . $oDate2->get("m") . "-" . $oDate2->get("d") . "'")
+					, array("WorkCode" => 7)
+					, array("WorkDescription" => "''")
+					, array("TimeInMinutes" => $eerderWeg)
+					, array("protime_absence_recnr" => "-1")
+					)
+					, 0
+				);
+			}
+		} else {
+			// verwijder (indien nodig) de 'oude' eerder weg
+			advancedRecordDelete(
+				'default'
+				, "Workhours"
+				, "Employee=" . $timecard_id . " AND DateWorked LIKE '" . $oDate2->get("Y-m-d") . "%' AND protime_absence_recnr=-1 "
+			);
+		}
+
+	}
+}
+
+// TODOEXPLAIN
+function addEerderNaarHuisInTimecard($timecard_id, $protime_id, $oDate) {
+	global $databases;
+
+	// add 'eerder naar huis' for dates until (excluding) today
+	if ( $oDate->get("Y") < class_settings::getSetting("oldest_modifiable_year") || $oDate->get("Ymd") >= date("Ymd") ) {
+		return;
+	}
+
+	$oConn = new class_mysql($databases['default']);
+	$oConn->connect();
+
+	//
+	$hours = advancedSingleRecordSelectMysql(
+			'default'
+			, "PROTIME_PR_MONTH"
+			, array("EXTRA")
 			, "PERSNR=" . $protime_id . " AND BOOKDATE='" . $oDate->get("Ymd") . "' "
 		);
 
@@ -867,7 +992,7 @@ function addEerderNaarHuisInTimecard($timecard_id, $protime_id, $oDate) {
 		$eerderWeg *= -1;
 
 		$zoek = advancedSingleRecordSelectMysql(
-				$dbhandleTimecard
+				'default'
 				, "Workhours"
 				, array("ID", "TimeInMinutes")
 				, "Employee=" . $timecard_id . " AND DateWorked LIKE '" . $oDate->get("Y-m-d") . "%' AND protime_absence_recnr=-1 "
@@ -876,7 +1001,7 @@ function addEerderNaarHuisInTimecard($timecard_id, $protime_id, $oDate) {
 		if ( $zoek["id"] != '' && $zoek["id"] != '0' ) {
 			// update
 			advancedRecordUpdate(
-					$dbhandleTimecard
+					'default'
 					, "Workhours"
 					, array(
 							array("WorkCode" => 7)
@@ -889,7 +1014,7 @@ function addEerderNaarHuisInTimecard($timecard_id, $protime_id, $oDate) {
 		} else {
 			// insert
 			advancedRecordInsert(
-					$dbhandleTimecard
+					'default'
 					, "Workhours"
 					, array(
 							array("Employee" => $timecard_id)
@@ -906,7 +1031,7 @@ function addEerderNaarHuisInTimecard($timecard_id, $protime_id, $oDate) {
 	} else {
 		// verwijder (indien nodig) de 'oude' eerder weg
 		advancedRecordDelete(
-			$dbhandleTimecard
+			'default'
 			, "Workhours"
 			, "Employee=" . $timecard_id . " AND DateWorked LIKE '" . $oDate->get("Y-m-d") . "%' AND protime_absence_recnr=-1 "
 		);
@@ -914,50 +1039,19 @@ function addEerderNaarHuisInTimecard($timecard_id, $protime_id, $oDate) {
 }
 
 // TODOEXPLAIN
-function syncTimecardProtimeYear($timecard_id, $protime_id, $oDate) {
-	for ( $i = 1; $i <= 12; $i++ ) {
-		$oDate2 = new class_date($oDate->get("Y"), $i, 1);
-		syncTimecardProtimeMonth($timecard_id, $protime_id, $oDate2);
-	}
-}
-
-// TODOEXPLAIN
-function syncTimecardProtimeMonth($timecard_id, $protime_id, $oDate) {
-	for ( $i = 1; $i <= date("t", mktime(0, 0, 0, (int)( $oDate->get("m") ), (int)( $oDate->get("d") ), (int)( $oDate->get("Y") ) )); $i++ ) {
-		$oDate2 = new class_date( $oDate->get("y"), $oDate->get("m"), $i );
-		syncTimecardProtimeDay($timecard_id, $protime_id, $oDate2);
-	}
-}
-
-// TODOEXPLAIN
-function syncTimecardProtimeDay($timecard_id, $protime_id, $oDate) {
-
-	if ( $timecard_id != '' && $timecard_id != '0' && $timecard_id != '-1' ) {
-		if ( $protime_id != '' && $protime_id != '0' && $protime_id != '-1' ) {
-
-			// inclusief vandaag
-			if ( $oDate->get("Y") >= "2011" ) {
-				//
-				addAndRemoveAbsentiesInTimecard($timecard_id, $protime_id, $oDate);
-			}
-
-			// pas vanaf morgen (dus exclusief vandaag)
-			if ( $oDate->get("Y") >= "2011" && $oDate->get("Ymd") < date("Ymd") ) {
-				//
-				addEerderNaarHuisInTimecard($timecard_id, $protime_id, $oDate);
-			}
-		}
-	}
-}
-
-// TODOEXPLAIN
 function getAbsences($eid) {
-	global $dbhandleProtime;
-	$ret = '';
+	global $databases;
 
-	$query = "SELECT TOP 2000 P_ABSENCE.REC_NR, P_ABSENCE.PERSNR, P_ABSENCE.BOOKDATE, P_ABSENCE.ABSENCE_VALUE, P_ABSENCE.ABSENCE_STATUS, ABSENCE.SHORT_1, ABSENCE.ABSENCE FROM P_ABSENCE LEFT OUTER JOIN ABSENCE ON P_ABSENCE.ABSENCE = ABSENCE.ABSENCE WHERE P_ABSENCE.PERSNR=" . $eid . " AND P_ABSENCE.BOOKDATE>='" . date("Ymd") . "' AND ( ABSENCE_VALUE>0 OR SHORT_1 <> 'Vakantie' ) AND P_ABSENCE.ABSENCE NOT IN (6) ORDER BY P_ABSENCE.BOOKDATE, P_ABSENCE.REC_NR ";
-	$result = mssql_query($query, $dbhandleProtime);
-	$num = mssql_num_rows($result);
+	$ret = '';
+	$oTc = new class_mysql($databases['default']);
+	$oTc->connect();
+
+	$query = "SELECT TOP 2000 PROTIME_P_ABSENCE.REC_NR, PROTIME_P_ABSENCE.PERSNR, PROTIME_P_ABSENCE.BOOKDATE, PROTIME_P_ABSENCE.ABSENCE_VALUE, PROTIME_P_ABSENCE.ABSENCE_STATUS, PROTIME_ABSENCE.SHORT_1, PROTIME_ABSENCE.ABSENCE
+FROM PROTIME_P_ABSENCE
+	LEFT OUTER JOIN PROTIME_ABSENCE ON PROTIME_P_ABSENCE.ABSENCE = PROTIME_ABSENCE.ABSENCE
+WHERE PROTIME_P_ABSENCE.PERSNR=" . $eid . " AND PROTIME_P_ABSENCE.BOOKDATE>='" . date("Ymd") . "' AND ( ABSENCE_VALUE>0 OR SHORT_1 <> 'Vakantie' ) AND PROTIME_P_ABSENCE.ABSENCE NOT IN (6) ORDER BY PROTIME_P_ABSENCE.BOOKDATE, PROTIME_P_ABSENCE.REC_NR ";
+	$result = mysql_query($query, $oTc->getConnection());
+	$num = mysql_num_rows($result);
 	if ( $num ) {
 		$ret .= "
 <table>
@@ -972,7 +1066,7 @@ function getAbsences($eid) {
 </tr>
 ";
 
-		while ( $row = mssql_fetch_array($result) ) {
+		while ( $row = mysql_fetch_array($result) ) {
 
 			$ret .= "
 <tr>
@@ -987,7 +1081,7 @@ function getAbsences($eid) {
 		$ret .= "</table>";
 	}
 
-	mssql_free_result($result);
+	mysql_free_result($result);
 
 	return $ret;
 }
@@ -1016,25 +1110,28 @@ function removeLeftChar( $haystack, $needle ) {
 
 // TODOEXPLAIN
 function getAbsencesAndHolidays($eid, $year, $month, $min_minutes = 0) {
-	global $dbhandleProtime;
+	global $databases;
 
 	$ret = array();
 
 	$yearMonth = createDateAsString($year, $month);
 
 	$query = "
-SELECT P_ABSENCE.REC_NR, P_ABSENCE.PERSNR, P_ABSENCE.BOOKDATE, P_ABSENCE.ABSENCE_VALUE, P_ABSENCE.ABSENCE_STATUS, ABSENCE.SHORT_1, P_ABSENCE.ABSENCE 
-FROM P_ABSENCE 
-	LEFT OUTER JOIN ABSENCE ON P_ABSENCE.ABSENCE = ABSENCE.ABSENCE 
-WHERE P_ABSENCE.PERSNR=" . $eid . " AND P_ABSENCE.BOOKDATE LIKE '" . $yearMonth . "%' AND P_ABSENCE.ABSENCE NOT IN (5, 19) 
-AND ( P_ABSENCE.ABSENCE_VALUE>=" . $min_minutes . " OR P_ABSENCE.ABSENCE_VALUE=0 ) 
-ORDER BY P_ABSENCE.BOOKDATE, P_ABSENCE.REC_NR 
+SELECT PROTIME_P_ABSENCE.REC_NR, PROTIME_P_ABSENCE.PERSNR, PROTIME_P_ABSENCE.BOOKDATE, PROTIME_P_ABSENCE.ABSENCE_VALUE, PROTIME_P_ABSENCE.ABSENCE_STATUS, PROTIME_ABSENCE.SHORT_1, PROTIME_P_ABSENCE.ABSENCE
+FROM PROTIME_P_ABSENCE
+	LEFT OUTER JOIN PROTIME_ABSENCE ON PROTIME_P_ABSENCE.ABSENCE = PROTIME_ABSENCE.ABSENCE
+WHERE PROTIME_P_ABSENCE.PERSNR=" . $eid . " AND PROTIME_P_ABSENCE.BOOKDATE LIKE '" . $yearMonth . "%' AND PROTIME_P_ABSENCE.ABSENCE NOT IN (5, 19)
+AND ( PROTIME_P_ABSENCE.ABSENCE_VALUE>=" . $min_minutes . " OR PROTIME_P_ABSENCE.ABSENCE_VALUE=0 )
+ORDER BY PROTIME_P_ABSENCE.BOOKDATE, PROTIME_P_ABSENCE.REC_NR
 ";
 
-	$result = mssql_query($query, $dbhandleProtime);
-	$num = mssql_num_rows($result);
+	$oTc = new class_mysql($databases['default']);
+	$oTc->connect();
+
+	$result = mysql_query($query, $oTc->getConnection());
+	$num = mysql_num_rows($result);
 	if ( $num ) {
-		while ( $row = mssql_fetch_array($result) ) {
+		while ( $row = mysql_fetch_array($result) ) {
 // 1 Bijzonder verlof
 // 2 Calamiteitenverlof
 // 3 Cursus
@@ -1052,7 +1149,7 @@ ORDER BY P_ABSENCE.BOOKDATE, P_ABSENCE.REC_NR
 		}
 	}
 
-	mssql_free_result($result);
+	mysql_free_result($result);
 
 	return $ret;
 }
@@ -1084,10 +1181,10 @@ function Generate_Query($arrField, $arrSearch) {
 function createDateAsString($year, $month, $day = '') {
 	$ret = $year;
 
-	$ret .= substr('0' . $month, -2);
+	$ret .= str_pad( $month, 2, '0', STR_PAD_LEFT);
 
 	if ( $day != '' ) {
-		$ret .= substr('0' . $day, -2);
+		$ret .= str_pad( $day, 2, '0', STR_PAD_LEFT);
 	}
 
 	return $ret;
@@ -1130,17 +1227,22 @@ function getBackUrl() {
 
 // TODOEXPLAIN
 function getQuarterTotals( $date, $userTimecardId, $urlprefix ) {
-	global $settings, $dbhandleTimecard;
+	global $settings;
 
 	$oDateOriginal = new class_date( $date["y"], $date["m"], $date["d"] );
 
-	$ret = '<br><table border=0 width="100%"><tr>';
+	$ret = '<table border=0 width="100%"><tr>';
 	for ( $monthIterator = $oDateOriginal->getFirstMonthInQuarter(); $monthIterator <= $oDateOriginal->getLastMonthInQuarter(); $monthIterator++ ) {
 		$oDate = new class_date( $oDateOriginal->get('Y'), $monthIterator, 1 );
 
+		$syncUrl = $urlprefix . "sync_timecard_protime.php?d=" . $oDate->get("Ymd") . "&eid=" . $userTimecardId;
+		$syncLabel = '';
+		if ( $oDate->get("Y") >= class_settings::getSetting("oldest_modifiable_year") ) {
+			$syncLabel = " <font size=-2><em><a href=\"" . $syncUrl . "\">(sync)</a></em></font>";
+		}
 		$ret .= '<td valign=top><table border=1 cellspacing=0 cellpadding=3>';
-		$ret .= "<tr><td colspan=3 align=center><strong>" . $oDate->get("F Y") . "</strong></td></tr>";
-		$ret .= "<tr><td><strong>Day</strong></td><td><strong>Timecard</strong></td><td><strong>Protime</strong></td></tr>";
+		$ret .= "<tr><td colspan=4 align=center><strong>" . $oDate->get("F Y") . "</strong>$syncLabel</td></tr>";
+		$ret .= "<tr><td><strong><font size=\"-2\">Day</font></strong></td><td><strong><font size=\"-2\">Timecard</font></strong></td><td><strong><font size=\"-2\">Protime</font></strong></td><td><font size=\"-2\"><strong>Overtime</strong></font></td></tr>";
 
 		$number_of_days_in_current_month = $oDate->get('t');
 
@@ -1150,9 +1252,12 @@ function getQuarterTotals( $date, $userTimecardId, $urlprefix ) {
 		$date2["m"] = $oDate->get('n');
 		$date2["d"] = 1;
 		$timecard_day_totals = $oEmployee->getTimecardDayTotals( $oDate->get('Y'), $oDate->get('n') );
-		$dagvakantie2 = $oEmployee->getEerderNaarHuisDayTotals( $oDate->get('Y'), $oDate->get('n') );
-		$protime_day_totals = $oEmployee->getProtimeDayTotals(  $oDate->get('Ym') );
 
+		$dagvakantie2 = $oEmployee->getEerderNaarHuisDayTotals( $oDate->get('Y'), $oDate->get('n') );
+		$protime_day_totals = $oEmployee->getProtimeDayTotals( $oDate->get('Ym') );
+		$protime_day_overtimes = $oEmployee->getProtimeDayOvertimes( $oDate->get('Ym') );
+
+		$total_overtime = 0;
 		for ( $i = 1; $i <= $number_of_days_in_current_month; $i++ ) {
 			$date2["d"] = $i;
 
@@ -1173,6 +1278,25 @@ function getQuarterTotals( $date, $userTimecardId, $urlprefix ) {
 				$protime_day_total_nice = class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes( $protime_day_total );
 			}
 
+			// OVERTIME +/-
+			$sign = '';
+			if ( $oDate->get('Ym') . substr('0'.$i,-2) < date("Ymd")) {
+				$extra = $protime_day_overtimes[$i];
+			} else {
+				$extra = 0;
+			}
+			$total_overtime += $extra;
+
+			if ( $extra > 0 ) {
+				$sign = '+';
+			}
+
+			if ( $extra == 0 ) {
+				$extra_nice = '&nbsp;';
+			} else {
+				$extra_nice =  $sign . class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes( $extra );
+			}
+
 			// color if difference more then x minutes
 			$color_start = "<span class=\"" . ( ( (int)$timecard_day_total - (int)$protime_day_total ) >= 3 || ( (int)$timecard_day_total - (int)$protime_day_total ) <= -3 ? "boldRed" : "" ) . "\">";
 			$color_end = '</span>';
@@ -1180,8 +1304,12 @@ function getQuarterTotals( $date, $userTimecardId, $urlprefix ) {
 			$oCurrentDay = new class_date( $date2["y"], $date2["m"], $i );
 			$weekday = $oCurrentDay->get('D j');
 			$url = $urlprefix . "day.php?d=" . $oCurrentDay->get('Ymd') . '&eid=' . $userTimecardId . '&backurl=' . urlencode(get_current_url());
-			$ret .= "<tr><td><a href=\"$url\">$weekday</a></td><td>$color_start$timecard_day_total_nice$color_end</td><td>$protime_day_total_nice</td></tr>";
+			$ret .= "<tr><td><a href=\"$url\">$weekday</a></td><td>$color_start$timecard_day_total_nice$color_end</td><td>$protime_day_total_nice</td><td><FONT SIZE=-2>$extra_nice</FONT></td></tr>";
 		}
+
+			$ret .= "
+		<tr><td colspan=\"3\"><FONT SIZE=-2>Total overtime</font></td><td><FONT SIZE=-2>" . ($total_overtime > 0 ? '+': '' ) . class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes( $total_overtime ) . "</FONT></td></tr>
+";
 
 		$ret .= "
 		</table>
@@ -1194,4 +1322,48 @@ function getQuarterTotals( $date, $userTimecardId, $urlprefix ) {
 
 	return $ret;
 }
-?>
+
+// TODOEXPLAIN
+function fixBrokenChars($text) {
+	return htmlentities($text, ENT_COMPAT | ENT_XHTML, 'ISO-8859-1', true);
+}
+
+// TODOEXPLAIN
+function verplaatsTussenvoegselNaarBegin( $text ) {
+	$text = trim($text);
+
+	$array = array( ' van den', ' van der', ' van', ' de', ' el' );
+
+	foreach ( $array as $t ) {
+		if ( strtolower(substr($text, -strlen($t))) == strtolower($t) ) {
+			$text = trim($t . ' ' . substr($text, 0, strlen($text)-strlen($t)));
+		}
+	}
+
+	return $text;
+}
+
+// TODOEXPLAIN
+function closeDataEntry($year, $month, $id = 0 ) {
+	global $databases;
+
+	// calculate new allow_date
+	$a = new TCDateTime();
+	$a->setFromString($year . '-' . $month . '-01', 'Y-m-d');
+	$a->addMonth(); // add one month
+	$allow_date = $a->get()->format("Y-m-d");
+
+	// don't change the allow date if it is in the future (months)
+	if ( $allow_date <= date("Y-m-01") ) {
+		//
+		$oConn = new class_mysql($databases['default']);
+		$oConn->connect();
+
+		// update records
+		$query = "UPDATE Employees SET allow_additions_starting_date = '$allow_date' WHERE allow_additions_starting_date < '$allow_date' ";
+		if ( $id > 0 ) {
+			$query .= ' AND ID=' . $id;
+		}
+		$result = mysql_query($query, $oConn->getConnection());
+	}
+}

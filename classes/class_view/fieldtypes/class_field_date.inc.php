@@ -1,10 +1,8 @@
 <?php 
-// modified: 2012-11-07
-
 require_once("./classes/class_view/fieldtypes/class_field.inc.php");
 
 class class_field_date extends class_field {
-    private $m_format;
+	private $m_format;
 
 	// TODOEXPLAIN
 	function class_field_date($fieldsettings) {
@@ -28,9 +26,8 @@ class class_field_date extends class_field {
 	}
 
 	// TODOEXPLAIN
-	function view_field($row, $criteriumResult = 0) {
-		$retval = parent::view_field($row, $criteriumResult);
-		$retval_org = $retval;
+	function view_field($row) {
+		$retval = parent::view_field($row);
 
 		if ( $retval != '' ) {
 			// verwijder tijd uit datum
@@ -42,18 +39,13 @@ class class_field_date extends class_field {
 			}
 		}
 
-		if ( is_array($criteriumResult) ) {
-			$href2otherpage = $criteriumResult["href"];
-			$url_onclick = $criteriumResult["onclick"];
-		} else {
-			$href2otherpage = $this->get_href();
-			$url_onclick = $this->get_onclick();
-		}
+		$href2otherpage = $this->get_href();
+		$url_onclick = $this->get_onclick();
 
 		if ( $_POST["form_fld_pressed_button"] != '-delete-' && $_POST["form_fld_pressed_button"] != '-delete-now-' ) {
 
 			if ( $href2otherpage <> "" ) {
-				$retval = $this->get_if_no_value_value($retval);
+				$retval = $this->get_if_no_value($retval);
 
 				$href2otherpage = $this->oClassMisc->ReplaceSpecialFieldsWithDatabaseValues($href2otherpage, $row);
 				$href2otherpage = $this->oClassMisc->ReplaceSpecialFieldsWithQuerystringValues($href2otherpage);
@@ -71,7 +63,7 @@ class class_field_date extends class_field {
 
 				$alttitle = $this->get_alttitle();
 				if ( $alttitle != '' ) {
-					$alttitle = " alt=\"" . $alttitle . "\" title=\"" . $alttitle . "\" ";
+					$alttitle = " title=\"" . $alttitle . "\" ";
 				}
 
 				$retval = "<A HREF=\"" . $href2otherpage . "\" " . $url_onclick . " " . $target . " " . $alttitle . ">" . $retval . "</a>";
@@ -83,13 +75,8 @@ class class_field_date extends class_field {
 				$retval = "<nobr>" . $retval . "</nobr>";
 			}
 
-			if ( is_array($criteriumResult ) ) {
-				$fieldname = $criteriumResult["fieldname"];
-				$fieldname_pointer = $criteriumResult["fieldname_pointer"];
-			} else {
-				$fieldname = $this->get_fieldname();
-				$fieldname_pointer = $this->get_fieldname_pointer();
-			}
+			$fieldname = $this->get_fieldname();
+			$fieldname_pointer = $this->get_fieldname_pointer();
 
 			if ( $fieldname_pointer <> "" ) {
 				$fieldname_pointer = $this->oClassMisc->ReplaceSpecialFieldsWithDatabaseValues($fieldname_pointer, $row);
@@ -98,7 +85,7 @@ class class_field_date extends class_field {
 
 		} else {
 			if ( $href2otherpage <> "" ) {
-				$retval = $this->get_if_no_value_value($retval);
+				$retval = $this->get_if_no_value($retval);
 			}
 
 			// no break - keep together
@@ -111,4 +98,3 @@ class class_field_date extends class_field {
 	}
 
 }
-?>

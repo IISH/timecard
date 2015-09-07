@@ -5,13 +5,13 @@ $oWebuser->checkLoggedIn();
 
 if ( !$oWebuser->hasAdminAuthorisation() ) {
 	echo "You are not authorized to access this page.<br>";
-	die('Go to <a href="index.php">time card home</a>');
+	die('Go to <a href="index.php">timecard home</a>');
 }
 
 // create webpage
 $oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
-$oPage->setTab($menuList->findTabNumber('misc.protimeabsenties'));
+$oPage->setTab($menuList->findTabNumber('administrator.protimeabsenties'));
 $oPage->setTitle('Timecard | Absences (edit)');
 $oPage->setContent(createAbsencesContent());
 
@@ -22,48 +22,49 @@ require_once "classes/_db_disconnect.inc.php";
 
 // TODOEXPLAIN
 function createAbsencesContent() {
-	global $settings;
+	global $settings, $databases;
 
-	$ret = "<h2>Absences (edit)</h2>";
+	// get design
+	$design = new class_contentdesign("page_admin_protime_absences_edit");
 
-	require_once("./classes/class_db.inc.php");
+	// add header
+	$ret = $design->getHeader();
+
 	require_once("./classes/class_form/class_form.inc.php");
-
 	require_once("./classes/class_form/fieldtypes/class_field_hidden.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_readonly.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_list.inc.php");
 
-	$oDb = new class_db($settings, 'timecard');
+	$oDb = new class_mysql($databases['default']);
 	$oForm = new class_form($settings, $oDb);
 
 	$oForm->set_form( array(
-		'query' => 'SELECT ID, description_nl, description_en, workcode_id FROM ProtimeAbsences WHERE ID=[FLD:ID] '
-		, 'table' => 'ProtimeAbsences'
-		, 'inserttable' => 'ProtimeAbsences'
-		, 'primarykey' => 'ID'
+		'query' => 'SELECT * FROM vw_ProtimeAbsences WHERE protime_absence_id=[FLD:protime_absence_id] '
+		, 'table' => 'ProtimeAbsenceWorkcode'
+		, 'primarykey' => 'protime_absence_id'
 		, 'disallow_delete' => 1
 		));
 
 	// required !!!
 	$oForm->add_field( new class_field_hidden ( array(
-		'fieldname' => 'ID'
+		'fieldname' => 'protime_absence_id'
 		, 'fieldlabel' => 'ID'
 		)));
 
 	$oForm->add_field( new class_field_readonly ( array(
-		'fieldname' => 'description_nl'
+		'fieldname' => 'SHORT_1'
 		, 'fieldlabel' => 'Protime description (Dutch)'
 		)));
 
 	$oForm->add_field( new class_field_readonly ( array(
-		'fieldname' => 'description_en'
+		'fieldname' => 'SHORT_2'
 		, 'fieldlabel' => 'Protime description (English)'
 		)));
 
 	$oForm->add_field( new class_field_list ( $settings, array(
 		'fieldname' => 'workcode_id'
 		, 'fieldlabel' => 'Timecard workcode'
-		, 'query' => 'SELECT ID, Description FROM Workcodes2011 ORDER BY Description '
+		, 'query' => 'SELECT ID, Description FROM Workcodes ORDER BY Description '
 		, 'id_field' => 'ID'
 		, 'description_field' => 'Description'
 		, 'empty_value' => '0'
@@ -72,11 +73,11 @@ function createAbsencesContent() {
 		, 'onNew' => 0
 		)));
 
-	// calculate form
+	// generate form
 	$ret .= $oForm->generate_form();
 
-	$ret .= "<span class=\"comment\"><br>Protime absenties die niet gekoppeld zijn aan een Timecard absentie worden niet automatisch geimporteerd en dus ook niet meegeteld.<br>De gebruiker moet voor deze absenties zelf de uren invoeren.</span>";
+	// add footer
+	$ret .= $design->getFooter();
 
 	return $ret;
 }
-?>

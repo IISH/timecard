@@ -1,11 +1,9 @@
 <?php 
-// modified: 2009-02-19
-
 require_once("./classes/class_form/fieldtypes/class_field.inc.php");
 
 class class_field_time_double_field extends class_field {
-    private $m_possible_hour_values;
-    private $m_possible_minute_values;
+	private $m_possible_hour_values;
+	private $m_possible_minute_values;
 
 	// TODOEXPLAIN
 	function class_field_time_double_field($fieldsettings) {
@@ -43,9 +41,6 @@ class class_field_time_double_field extends class_field {
 		// place if necessary required sign in row template
 		$tmp_data = str_replace("::REQUIRED::", $this->get_required_sign(), $tmp_data);
 
-		$tmp_data = str_replace("::REFRESH::", '', $tmp_data);
-		$tmp_data = str_replace("::ADDNEW::", '', $tmp_data);
-
 		return $tmp_data;
 	}
 
@@ -75,7 +70,7 @@ class class_field_time_double_field extends class_field {
 			$veldwaarde_minutes = $veldwaarde - ( $veldwaarde_hours * 60 );
 		}
 
-		$veldwaarde_minutes = substr('0' . $veldwaarde_minutes, -2);
+		$veldwaarde_minutes = str_pad( $veldwaarde_minutes, 2, '0', STR_PAD_LEFT);
 
 		$inputfield = '';
 
@@ -181,4 +176,3 @@ class class_field_time_double_field extends class_field {
 		return $query_fields;
 	}
 }
-?>

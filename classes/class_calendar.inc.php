@@ -1,6 +1,4 @@
 <?php 
-// modified: 2013-02-08
-
 class class_calendar {
 
 	// TODOEXPLAIN
@@ -36,13 +34,13 @@ class class_calendar {
 	<td align=\"center\" colspan=\"7\"><nobr><a class=\"nolink\" href=\"#\" onClick=\"::PREVIOUS::\">&laquo;</a>&nbsp;::MAAND::&nbsp;<a class=\"nolink\" href=\"#\" onClick=\"::NEXT::\">&raquo;</a></nobr></td>
 </tr>
 <tr>
-	<td class=\"calendar_header\"><a class=\"nolink calendar_weekday\" alt=\"Monday\" title=\"Monday\">M</a></td>
-	<td class=\"calendar_header\"><a class=\"nolink calendar_weekday\" alt=\"Tuesday\" title=\"Tuesday\">T</a></td>
-	<td class=\"calendar_header\"><a class=\"nolink calendar_weekday\" alt=\"Wednesday\" title=\"Wednesday\">W</a></td>
-	<td class=\"calendar_header\"><a class=\"nolink calendar_weekday\" alt=\"Thursday\" title=\"Thursday\">T</a></td>
-	<td class=\"calendar_header\"><a class=\"nolink calendar_weekday\" alt=\"Friday\" title=\"Friday\">F</a></td>
-	<td class=\"calendar_header\"><a class=\"nolink calendar_weekend\" alt=\"Saturday\" title=\"Saturday\">S</a></td>
-	<td class=\"calendar_header\"><a class=\"nolink calendar_weekend\" alt=\"Sunday\" title=\"Sunday\">S</a></td>
+	<td class=\"calendar_header\"><a class=\"nolink calendar_weekday\" title=\"Monday\">M</a></td>
+	<td class=\"calendar_header\"><a class=\"nolink calendar_weekday\" title=\"Tuesday\">T</a></td>
+	<td class=\"calendar_header\"><a class=\"nolink calendar_weekday\" title=\"Wednesday\">W</a></td>
+	<td class=\"calendar_header\"><a class=\"nolink calendar_weekday\" title=\"Thursday\">T</a></td>
+	<td class=\"calendar_header\"><a class=\"nolink calendar_weekday\" title=\"Friday\">F</a></td>
+	<td class=\"calendar_header\"><a class=\"nolink calendar_weekend\" title=\"Saturday\">S</a></td>
+	<td class=\"calendar_header\"><a class=\"nolink calendar_weekend\" title=\"Sunday\">S</a></td>
 </tr>
 ::DAYS::
 </table>
@@ -71,7 +69,7 @@ class class_calendar {
 		// + + + + + + + + + + + + + + + + +
 
 		// select year
-		$select = "<select name=\"selectYear\" onchange=\"tcRefreshCalendar(" . "this.value" . "+'" . $date["m"] . $date["d"] . "', '" . class_datetime::formatDateAsString($originalDate) . "'); return false;\">\n";
+		$select = "<select name=\"selectYear\" onchange=\"tcRefreshCalendar(" . "this.value" . "+'" . $date["m"] . $date["d"] . "', '" . class_datetime::formatDateAsString( $originalDate ) . "'); return false;\">\n";
 		// q&d fix
 		$select = str_replace('?&d=', '?d=', $select);
 		$begin_jaar = 2009;
@@ -84,7 +82,7 @@ class class_calendar {
 		}
 
 		for ( $i=$begin_jaar; $i<=$eind_jaar; $i++) {
-			$go2month = substr("0" . $i, -2);
+			$go2month = str_pad( $i, 2, '0', STR_PAD_LEFT);
 			$tmpSelect = "<option value=\"$i\" ::SELECTED::>" . $i . "</option>\n";
 			if ( $i == $date["y"] ) {
 				$tmpSelect = str_replace("::SELECTED::", "SELECTED", $tmpSelect);
@@ -99,11 +97,11 @@ class class_calendar {
 // + + + + + + + + + + + + + + + + +
 
 		// select month
-		$select = "<select name=\"selectMonth\" onchange=\"tcRefreshCalendar('" . $date["y"] . "'+" . "this.value" . "+'" . $date["d"] . "', '" . class_datetime::formatDateAsString($originalDate) . "'); return false;\">\n";
+		$select = "<select name=\"selectMonth\" onchange=\"tcRefreshCalendar('" . $date["y"] . "'+" . "this.value" . "+'" . $date["d"] . "', '" . class_datetime::formatDateAsString( $originalDate ) . "'); return false;\">\n";
 		// q&d fix
 		$select = str_replace('?&d=', '?d=', $select);
 		for ( $i=1; $i<=12; $i++) {
-			$go2month = substr("0" . $i, -2);
+			$go2month = str_pad( $i, 2, '0', STR_PAD_LEFT);
 			$tmpSelect = "<option value=\"$go2month\" ::SELECTED::>" . $t_month["$i"] . "</option>\n";
 			if ( $i == $date["m"] ) {
 				$tmpSelect = str_replace("::SELECTED::", "SELECTED", $tmpSelect);
@@ -124,6 +122,7 @@ class class_calendar {
 		$currentDayInMonth = date("w", mktime(0, 0, 0, $date["m"], 1, $date["y"]));
 
 		$tmpDays = $templateDays;
+		$days = '';
 
 		for ( $i=1; $i<=$maxdays; $i++) {
 
@@ -159,7 +158,7 @@ class class_calendar {
 			$prev = 12;
 			$prev_year--;
 		}
-		$prevScript = "tcRefreshCalendar('" . $prev_year . substr("0" . $prev, -2) . substr("0" . $date["d"], -2) . "', '" . class_datetime::formatDateAsString($originalDate) . "');return false;";
+		$prevScript = "tcRefreshCalendar('" . $prev_year . substr("0" . $prev, -2) . substr("0" . $date["d"], -2) . "', '" . class_datetime::formatDateAsString( $originalDate ) . "');return false;";
 		$retval = str_replace("::PREVIOUS::", $prevScript, $retval);
 
 		// next
@@ -169,7 +168,7 @@ class class_calendar {
 			$next = 1;
 			$next_year++;
 		}
-		$nextScript = "tcRefreshCalendar('" . $next_year . substr("0" . $next, -2) . substr("0" . $date["d"], -2) . "', '" . class_datetime::formatDateAsString($originalDate) . "');return false;";
+		$nextScript = "tcRefreshCalendar('" . $next_year . substr("0" . $next, -2) . substr("0" . $date["d"], -2) . "', '" . class_datetime::formatDateAsString( $originalDate ) . "');return false;";
 		$retval = str_replace("::NEXT::", $nextScript, $retval);
 
 		// + + + + + + + + + + + + + + + + +
@@ -177,7 +176,7 @@ class class_calendar {
 		// go home
 		// alleen als niet huidige dag een sterretje tonen
 		if ( date("Ymd") != $date["Ymd"] ) {
-			$retval = str_replace("::GOTOTODAY::", "<a class=\"nolink\" href=\"::SCRIPT_NAME::\" alt=\"Go to today\" title=\"Go to today\">*</a>", $retval);
+			$retval = str_replace("::GOTOTODAY::", "<a class=\"nolink\" href=\"::SCRIPT_NAME::\" title=\"Go to today\">*</a>", $retval);
 		} else {
 			$retval = str_replace("::GOTOTODAY::", '', $retval);
 		}
@@ -219,5 +218,9 @@ class class_calendar {
 
 		return $retval;
 	}
+
+	// TODOEXPLAIN
+	public function __toString() {
+		return "Class: " . get_class($this) . "\n";
+	}
 }
-?>

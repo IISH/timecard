@@ -20,6 +20,11 @@ html, body, input, textarea, select {
 	font-size: 95%;
 }
 
+table {
+	border-spacing: 0px;
+	border-collapse: separate;
+}
+
 .bold {
 	font-weight: bold;
 }
@@ -85,28 +90,45 @@ a.add, a.add:visited, a.add:active, a.add:hover {
 	font-style:italic;
 }
 
-a.viewbutton, a.viewbutton:visited, a.viewbutton:active, a.viewbutton:hover {
-	font-size: 90%;
-}
-
 input, select, textarea {
 	border-width: 1px;
 	border-style: solid;
 	border-color: <?php echo $c; ?>;
 }
 
-.button, .button_login {
+.button {
 	color: <?php echo $c; ?>;
 	background-color: white;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
-	padding: 3px;
 	width: 75px;
 	border: 1px solid <?php echo $c; ?>;
+	padding-left: 15px;
+	padding-right: 15px;
+	padding-top: 3px;
+	padding-bottom: 3px;
 }
 
-h2, h3 {
+.extrabuttonmargin {
+	line-height: 2;
+}
+
+h2 {
+	color: <?php echo $c; ?>;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	font-size: 15px;
+}
+
+h3 {
+	color: <?php echo $c; ?>;
+	margin-top: 0px;
+	margin-bottom: 10px;
+	font-size: 15px;
+}
+
+h4 {
 	color: <?php echo $c; ?>;
 	margin-top: 0px;
 	margin-bottom: 0px;
@@ -130,6 +152,12 @@ div {
 
 div.main {
 	width: 960px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+div.main_full {
+	width: 100%;
 	margin-left: auto;
 	margin-right: auto;
 }
@@ -185,11 +213,12 @@ span.logout {
 	text-align: right;
 }
 
-div.contentplussidebar {
-	position: relative;
+td.content_admin {
+	padding-right: 5px;
 }
 
 div.content {
+	top:0;
 	width: 690px;
 	border: 1px solid #AAAAAA;
 	margin-top: 5px;
@@ -203,12 +232,17 @@ div.content {
 	border-radius: 5px;
 }
 
-div.contentiframe {
+div.content_admin {
+	width: 520px;
+}
+
+div.leftmenu {
+	width: 170px;
 	border: 1px solid #AAAAAA;
 	margin-top: 5px;
 	margin-bottom: 5px;
 	padding-top: 5px;
-	padding-bottom: 15px;
+	padding-bottom: 10px;
 	padding-left: 5px;
 	padding-right: 5px;
 	-moz-border-radius: 5px;
@@ -216,15 +250,39 @@ div.contentiframe {
 	border-radius: 5px;
 }
 
+div.contentiframe {
+	border: 0px solid #AAAAAA;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	padding-top: 0px;
+	padding-bottom: 2px;
+	padding-left: 2px;
+	padding-right: 2px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+}
+
 div.contentfullwidth {
-	width: 950px;
+	width: 945px;
+}
+
+div.contentfullwidth_full {
+	width: 100%;
+}
+
+div.contentfullwidth_admin {
+	width: 760px;
 }
 
 div.sidebar {
 	width:250px;
-	position:absolute;
-	right:0;
-	top:0;
+	padding-top: 5px;
+}
+
+div.sidebar_admin {
+	width:230px;
+	padding-top: 5px;
 }
 
 div.shortcuts {
@@ -242,6 +300,10 @@ div.shortcuts {
 	border-radius: 5px;
 }
 
+div.shortcuts_admin {
+	width:220px;
+}
+
 div.recentlyused {
 	background-color: white;
 	float: right;
@@ -256,11 +318,29 @@ div.recentlyused {
 	border-radius: 5px;
 }
 
+div.recentlyused_admin {
+	width: 220px;
+}
+
 div.footer {
 	color: white;
 	background-color: <?php echo $c; ?>;
 	text-align: right;
 	border: 1px solid #AAAAAA;
+}
+
+div.footerwidth {
+	width: 960px;
+}
+
+div.footerwidth {
+	width: 100%;
+}
+
+#footer {
+	position: relative;
+	bottom: 0;
+	margin-top: 10px;
 }
 
 div.hidden {
@@ -366,8 +446,25 @@ ul {
 .youcannot {
 	font-style: italic;
 	color: red;
+	margin-bottom: 20px;
+	margin-top: 20px;
 }
 
 .recorditem {
 	padding-right: 15px;
+}
+
+a.favourites_on:link, a.favourites_on:visited {
+	color: #FFD700;
+	font-size: 120%;
+}
+
+a.favourites_off:link, a.favourites_off:visited {
+	color: lightgrey;
+	font-size: 120%;
+}
+
+div.add_new_button {
+	margin-bottom: 20px;
+	margin-top: 20px;
 }

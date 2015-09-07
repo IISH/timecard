@@ -3,8 +3,6 @@ var browser_NS6 = (document.getElementById&&!document.all) ? 1 : 0;
 var browser_OPERA = (navigator.userAgent.indexOf('Opera')>-1) ? 1 : 0;
 var browser_SAFARI = (navigator.userAgent.indexOf('Safari')>-1) ? 1 : 0;
 
-// var newwindow = '';
-
 // TODOEXPLAIN
 function open_page(url) {
 	window.open(url, '_top');

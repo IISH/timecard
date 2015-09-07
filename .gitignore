@@ -1,6 +1,11 @@
 composer.lock
 vendor
+timecard.settings.inc.php
 settings.inc.php
+settings.php
 .idea
 *.ipr
 *.iml
+PHPExcel
+phpinfo.php
+test.php

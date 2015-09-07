@@ -1,6 +1,4 @@
 <?php 
-// modified: 2012-11-07
-
 require_once("./classes/class_form/fieldtypes/class_field.inc.php");
 
 class class_field_hidden extends class_field {
@@ -54,4 +52,3 @@ class class_field_hidden extends class_field {
 	}
 
 }
-?>

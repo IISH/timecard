@@ -30,4 +30,3 @@ function createQuarterContent( $date ) {
 
 	return $ret;
 }
-?>

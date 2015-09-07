@@ -1,8 +1,6 @@
 <?php 
-// modified: 2014-03-19
-
 class class_prevnext {
-    private $date;
+	private $date;
 
 	// TODOEXPLAIN
 	function class_prevnext( $date ) {
@@ -34,7 +32,8 @@ class class_prevnext {
 			$date["y"] = date("Y");
 			$date["m"] = date("m");
 			$date["d"] = date("d");
-			$label = date("F") . ' ' . $date["y"];
+//			$label = date("F") . ' ' . $date["y"];
+			$label = 'current month';
 		}
 
 		// 
@@ -96,7 +95,7 @@ class class_prevnext {
 		if ( $only_lable == 1 ) {
 			$retval = $label;
 		} else {
-			$alt = 'go to ' . date("l F j, Y", mktime(0, 0, 0, $date["m"], $date["d"], $date["y"]));
+			$alt = 'go to ' . date("D F j, Y", mktime(0, 0, 0, $date["m"], $date["d"], $date["y"]));
 			$retval = '<a href="' . GetModifyReturnQueryString('?', 'd', $date["Ymd"]) . '" alt="' . $alt . '" title="' . $alt . '">' . $label . '</a>';
 		}
 
@@ -105,50 +104,46 @@ class class_prevnext {
 
 	// TODOEXPLAIN
 	function calculatePrevNextMonth($date) {
-		$separator = ' &nbsp; &nbsp;';
-		$separator2 = ' &nbsp; &nbsp;or &nbsp; &nbsp;';
+		$separator = '&nbsp; ';
 
 		$prev = $this->vorigeVolgendeMaand($date, "-", "prev");
 		$current = $this->vorigeVolgendeMaand($date, "");
 		$next = $this->vorigeVolgendeMaand($date, "+", "next");
 
-		$retval = 'go to' . $separator . $current . $separator2 . $prev . $separator . $next;
+		$retval = 'go to' . $separator . $current . ' or' . $separator . $prev . $separator . $next;
 
 		return $retval;
 	}
 
 	// TODOEXPLAIN
 	function calculatePrevNextQuarter($date) {
-		$separator = ' &nbsp; &nbsp;';
-		$separator2 = ' &nbsp; &nbsp;or &nbsp; &nbsp;';
+		$separator = '&nbsp; ';
 
 		$prev = $this->vorigeVolgendeQuarter($date, "-", "prev");
 		$current = $this->vorigeVolgendeQuarter($date, "");
 		$next = $this->vorigeVolgendeQuarter($date, "+", "next");
 
-		$retval = 'go to' . $separator . $current . $separator2 . $prev . $separator . $next;
+		$retval = 'go to' . $separator . $current . ' or' . $separator . $prev . $separator . $next;
 
 		return $retval;
 	}
 
 	// TODOEXPLAIN
 	function calculatePrevNextYear($date) {
-		$separator = ' &nbsp; &nbsp;';
-		$separator2 = ' &nbsp; &nbsp;or &nbsp; &nbsp;';
+		$separator = '&nbsp; ';
 
 		$prev = vorigeVolgendeJaar($date, "-", "prev");
 		$current = vorigeVolgendeJaar($date, "");
 		$next = vorigeVolgendeJaar($date, "+", "next");
 
-		$retval = 'go to' . $separator . $current . $separator2 . $prev . $separator . $next;
+		$retval = 'go to' . $separator . $current . ' or' . $separator . $prev . $separator . $next;
 
 		return $retval;
 	}
 
 	// TODOEXPLAIN
 	function calculatePrevNextDay($date) {
-		$separator = ' &nbsp; &nbsp;';
-		$separator2 = ' &nbsp; &nbsp; or &nbsp; &nbsp;';
+		$separator = '&nbsp; ';
 
 		$prev = $this->vorigeVolgendeDag($date, "-", "prev");
 		$current = $this->vorigeVolgendeDag($date, "");
@@ -204,12 +199,11 @@ function tcRefreshCalendar( sDate, sOriginalDate ) {
 // -->
 </script>
 
-<a href=\"javascript:toggleCalendar();\" id=\"displayTextCalendar\" class=\"nolink\" alt=\"Show/hide calendar\" title=\"Show/hide calendar\"><img src=\"images/expand2-down.gif\" border=0></a>
+<a href=\"javascript:toggleCalendar();\" id=\"displayTextCalendar\" class=\"nolink\" title=\"Show/hide calendar\"><img src=\"images/expand2-down.gif\" border=0></a>
 <div id=\"toggleTextCalendar\" class=\"calendarPositioning\"></div>
 
 <script type=\"text/javascript\">
 <!--
-//var sDate = '" . $date["y"] . substr('0' . $date["m"], -2) . substr('0'.$date["d"],-2) . "';
 var sDate = '" . $date["Ymd"] . "';
 tcRefreshCalendar(sDate, sDate);
 // -->
@@ -218,29 +212,27 @@ tcRefreshCalendar(sDate, sDate);
 </div>
 ";
 
-		$retval = 'go to' . $separator . $current . $calendarDiv . $separator2 . $prev . $separator . $next;
+		$retval = 'go to' . $separator . $current . $calendarDiv . ' or' . $separator . $prev . $separator . $next;
 
 		return $retval;
 	}
 
 	// TODOEXPLAIN
-	function getMonthRibbon() {
-		global $settings_from_database;
-
-		$fields["label"] = date("F Y", mktime(0, 0, 0, $this->date["m"], $this->date["d"], $this->date["y"]));
+	function getMonthRibbon( $format = "F Y" ) {
+		$fields["label"] = date($format, mktime(0, 0, 0, $this->date["m"], $this->date["d"], $this->date["y"]));
 		$fields["buttons"] = $this->calculatePrevNextMonth($this->date);
 
-		return fillTemplate($settings_from_database["div_prevnextribbon"], $fields);
+		$design = new class_contentdesign("div_prevnextribbon");
+		return fillTemplate($design->getContent(), $fields);
 	}
 
 	// TODOEXPLAIN
-	function getDayRibbon() {
-		global $settings_from_database;
-
-		$fields["label"] = date("l F j, Y", mktime(0, 0, 0, $this->date["m"], $this->date["d"], $this->date["y"]));
+	function getDayRibbon( $format = "l F j, Y" ) {
+		$fields["label"] = date($format, mktime(0, 0, 0, $this->date["m"], $this->date["d"], $this->date["y"]));
 		$fields["buttons"] = $this->calculatePrevNextDay($this->date);
 
-		return fillTemplate($settings_from_database["div_prevnextribbon"], $fields);
+		$design = new class_contentdesign("div_prevnextribbon");
+		return fillTemplate($design->getContent(), $fields);
 	}
 
 	// TODOEXPLAIN
@@ -268,25 +260,23 @@ tcRefreshCalendar(sDate, sDate);
 
 	// TODOEXPLAIN
 	function getQuarterRibbon( $pretext = '' ) {
-		global $settings_from_database;
-
 		$quarter = achterhaalQuarter($this->date);
 		$quarter_label = achterhaalQuarterLabel($quarter, 'F');
 
 		$fields["label"] = $pretext . $quarter_label . date("Y", mktime(0, 0, 0, $this->date["m"], $this->date["d"], $this->date["y"]));
 		$fields["buttons"] = $this->calculatePrevNextQuarter($this->date);
 
-		return fillTemplate($settings_from_database["div_prevnextribbon"], $fields);
+		$design = new class_contentdesign("div_prevnextribbon");
+		return fillTemplate($design->getContent(), $fields);
 	}
 
 	// TODOEXPLAIN
 	function getYearRibbon() {
-		global $settings_from_database;
-
 		$fields["label"] = date("Y", mktime(0, 0, 0, $this->date["m"], $this->date["d"], $this->date["y"]));
 		$fields["buttons"] = $this->calculatePrevNextYear($this->date);
 
-		return fillTemplate($settings_from_database["div_prevnextribbon"], $fields);
+		$design = new class_contentdesign("div_prevnextribbon");
+		return fillTemplate($design->getContent(), $fields);
 	}
 
 	// TODOEXPLAIN
@@ -313,8 +303,9 @@ tcRefreshCalendar(sDate, sDate);
 			$date["m"] = date("m");
 			$date["d"] = date("d");
 
-			$quarter_label = achterhaalQuarterLabel( achterhaalQuarter($date) , 'F');
-			$label = $quarter_label . ' ' . date("Y"); // . " Q" . achterhaalQuarter($date);
+//			$quarter_label = achterhaalQuarterLabel( achterhaalQuarter($date) , 'F');
+//			$label = $quarter_label . ' ' . date("Y");
+			$label = 'current quarter';
 		}
 
 		// 
@@ -347,5 +338,9 @@ tcRefreshCalendar(sDate, sDate);
 
 		return $retval;
 	}
+
+	// TODOEXPLAIN
+	public function __toString() {
+		return "Class: " . get_class($this) . "\ndate: " . $this->date . "\n";
+	}
 }
-?>

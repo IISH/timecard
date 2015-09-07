@@ -18,7 +18,7 @@
 </head>
 <body>
 
-<div class="main">
+<div class="main{cssextension}">
 
 	<div class="header">
 		<div class="welcome"><span><span class="name">{welcome}</span><span class="logout">{logout}</span></span></div>
@@ -28,17 +28,32 @@
 
 	{menu}
 
-	<div class="contentplussidebar">
-		<div class="content {extracontentclass}">{content}</div>
+	<div>
 
-		<div class="sidebar {extrasidebarclass}">
-			<div class="shortcuts {extrashortcutsclass}">{shortcuts}</div>
-			<div class="recentlyused {extrarecentlyusedclass}">{recentlyused}</div>
-		</div>
+		<table border="0" width="100%" cellspacing="0 cellpadding=0">
+			<tr>
+				<td valign="top">
+
+					<div class="content content {extracontentclass}{cssextension}">
+						{content}
+					</div>
+
+				</td>
+				<td valign="top">
+
+					<div class="sidebar {extrasidebarclass}">
+						<div class="shortcuts {extrashortcutsclass}">{shortcuts}</div>
+						<div class="shortcuts {extrashortcutsclass}">{departmentshortcuts}</div>
+						<div class="recentlyused {extrarecentlyusedclass}">{recentlyused}</div>
+					</div>
+
+				</td>
+			</tr>
+		</table>
+
 	</div>
 
-	<div class="footer">{url} - {lastmodified}</div>
-
+	<div id="footer" class="footer footerwidth{cssextension}">{url}</div>
 </div>
 
 <script language="Javascript">

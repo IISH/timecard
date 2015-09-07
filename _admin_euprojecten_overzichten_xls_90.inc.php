@@ -18,7 +18,6 @@ $fnaam = protectFilename($periode . '-' . $employee_name) . ".xlsx";
 
 header("Content-type: application/octet-stream");
 header("Content-Disposition: attachment; filename=\"" . $fnaam . "\"");
-$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+$objWriter = PHPExcel_IOFactory::createWriter( $objPHPExcel, 'Excel2007' );
 $objWriter->save('php://output');
 exit;
-?>
