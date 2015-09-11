@@ -14,7 +14,6 @@ class class_employee_hours_for_planning {
 	private $number_of_nationalholidays = array();
 	private $number_of_brugdagen = array();
 
-	// TODOEXPLAIN
 	function class_employee_hours_for_planning( $oEmployee, $year ) {
 		global $databases;
 		$this->databases = $databases;
@@ -25,7 +24,6 @@ class class_employee_hours_for_planning {
 		$this->initValues( true );
 	}
 
-	// TODOEXPLAIN
 	public function getWorkValue($yyyy_mm) {
 		if ( isset($this->workMonthTotals[$yyyy_mm]) ) {
 			return $this->workMonthTotals[$yyyy_mm];
@@ -34,7 +32,6 @@ class class_employee_hours_for_planning {
 		return 0;
 	}
 
-	// TODOEXPLAIN
 	public function getNationalHolidayValue($yyyy_mm) {
 		if ( isset($this->nationalHolidayMonthTotals[$yyyy_mm]) ) {
 			return $this->nationalHolidayMonthTotals[$yyyy_mm];
@@ -43,7 +40,6 @@ class class_employee_hours_for_planning {
 		return 0;
 	}
 
-	// TODOEXPLAIN
 	public function getBrugdagValue($yyyy_mm) {
 		if ( isset($this->brugdagMonthTotals[$yyyy_mm]) ) {
 			return $this->brugdagMonthTotals[$yyyy_mm];
@@ -52,7 +48,6 @@ class class_employee_hours_for_planning {
 		return 0;
 	}
 
-	// TODOEXPLAIN
 	private function initValues( $recursive = false ) {
 		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
@@ -100,17 +95,14 @@ class class_employee_hours_for_planning {
 		}
 	}
 
-	// TODOEXPLAIN
 	public function getTimecardId() {
 		return $this->timecard_id;
 	}
 
-	// TODOEXPLAIN
 	public function __toString() {
 		return "Class: " . get_class($this) . "\ntimecard #: " . $this->oEmployee->getTimecardId() . "\n";
 	}
 
-	// TODOEXPLAIN
 	public function getNumberOfNationalHolidays( $yyyy_mm ) {
 		if ( isset($this->number_of_nationalholidays[$yyyy_mm]) ) {
 			return $this->number_of_nationalholidays[$yyyy_mm];
@@ -119,7 +111,6 @@ class class_employee_hours_for_planning {
 		return 0;
 	}
 
-	// TODOEXPLAIN
 	public function getNumberOfBrugdagen( $yyyy_mm ) {
 		if ( isset($this->number_of_brugdagen[$yyyy_mm]) ) {
 			return $this->number_of_brugdagen[$yyyy_mm];

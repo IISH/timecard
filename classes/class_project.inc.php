@@ -14,7 +14,6 @@ class class_project {
 	private $enable_weekly_report_mail;
 	private $year;
 
-	// TODOEXPLAIN
 	function class_project($id, $year = '') {
 		global $databases;
 		$this->databases = $databases;
@@ -35,7 +34,6 @@ class class_project {
 		$this->initValues();
 	}
 
-	// TODOEXPLAIN
 	private function initValues() {
 		if ( $this->getId() > 0 ) {
 			$oConn = new class_mysql($this->databases['default']);
@@ -57,32 +55,26 @@ class class_project {
 		}
 	}
 
-	// TODOEXPLAIN
 	public function getId() {
 		return $this->id;
 	}
 
-	// TODOEXPLAIN
 	public function getDescription() {
 		return $this->description;
 	}
 
-	// TODOEXPLAIN
 	public function getProjectnumber() {
 		return $this->projectnummer;
 	}
 
-	// TODOEXPLAIN
 	public function getEnddate() {
 		return $this->enddate;
 	}
 
-	// TODOEXPLAIN
 	public function getEnableweeklyreportmail() {
 		return ( $this->enable_weekly_report_mail == 1 ? true : false);
 	}
 
-	// TODOEXPLAIN
 	public function getProjectleader() {
 		if ( $this->projectleader == '' || $this->projectleader == '0' ) {
 			return null;
@@ -91,7 +83,6 @@ class class_project {
 		}
 	}
 
-	// TODOEXPLAIN
 	public function __toString() {
 		return "Class: " . get_class($this) . "\n#: " . $this->id . "\nProject: " . $this->getDescription() . "\nProject number: " . $this->getProjectnumber() . "\n";
 	}

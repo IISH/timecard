@@ -22,7 +22,6 @@ echo $oPage->getPage();
 
 require_once "classes/_db_disconnect.inc.php";
 
-// TODOEXPLAIN
 function createProjectContent() {
 	global $protect, $oWebuser;
 
@@ -89,13 +88,11 @@ if (!xmlhttpSearch && window.createRequest) {
 	}
 }
 
-// TODOEXPLAIN
 function downloadHours() {
 	var url = \"project_totals_data.php?o=xlsx&y=\" + escape(document.getElementById('spanYear').innerHTML) + \"&ID=" . $oProject->getId() . "\";
 	window.open(url);
 }
 
-// TODOEXPLAIN
 function refreshProjectOutput() {
 	xmlhttpSearch.open(\"GET\", \"project_totals_data.php?y=\" + escape(document.getElementById('spanYear').innerHTML) + \"&ID=" . $oProject->getId() . "\", true);
 	xmlhttpSearch.onreadystatechange=function() {
@@ -106,7 +103,6 @@ function refreshProjectOutput() {
 	xmlhttpSearch.send(null);
 }
 
-// TODOEXPLAIN
 function changeYear( direction ) {
 	// get old value
 	var spanYear = document.getElementById('spanYear');

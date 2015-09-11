@@ -8,7 +8,6 @@ class class_recentlyused {
 	private $databases;
 	private $oDate;
 
-	// TODOEXPLAIN
 	function class_recentlyused($user, $settings, $oDate) {
 		global $databases;
 
@@ -20,7 +19,6 @@ class class_recentlyused {
 		$this->oDate = $oDate;
 	}
 
-	// TODOEXPLAIN
 	function getRecentlyUsed() {
 		$arr = array();
 
@@ -52,7 +50,6 @@ ORDER BY Workcodes.Description ";
 		return $arr;
 	}
 
-	// TODOEXPLAIN
 	private function createItem( $row ) {
 		$item = array();
 
@@ -62,7 +59,6 @@ ORDER BY Workcodes.Description ";
 		return $item;
 	}
 
-	// TODOEXPLAIN
 	public function __toString() {
 		return "Class: " . get_class($this) . "\nuser: " . $this->user . "\ndate: " . $this->oDate->get("Y-m-d") . "\n";
 	}

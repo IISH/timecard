@@ -20,7 +20,6 @@ echo $oPage->getPage();
 
 require_once "classes/_db_disconnect.inc.php";
 
-// TODOEXPLAIN
 function createExportOracleContent() {
 	// get design
 	$design = new class_contentdesign("page_export_oracle");

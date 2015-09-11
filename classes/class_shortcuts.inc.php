@@ -8,7 +8,6 @@ class class_shortcuts {
 	private $databases;
 	private $oDate;
 
-	// TODOEXPLAIN
 	function class_shortcuts($oUser, $settings, $oDate) {
 		global $databases;
 
@@ -17,12 +16,11 @@ class class_shortcuts {
 		$this->oDate = $oDate;
 	}
 
-	// TODOEXPLAIN
 	function getEnabledShortcuts( $type ) {
 		$arr = array();
 
 		$oConn = new class_mysql($this->databases['default']);
-		$oConn->connect();
+		$success = $oConn->connect();
 
 		// TODOTODO
 		$query = "SELECT Workcodes.Description, UserCreatedQuickAdds.ID, UserCreatedQuickAdds.Employee, UserCreatedQuickAdds.WorkCode, UserCreatedQuickAdds.WorkDescription, UserCreatedQuickAdds.isvisible, UserCreatedQuickAdds.isdeleted, UserCreatedQuickAdds.TimeInMinutes, UserCreatedQuickAdds.onNewAutoSave, UserCreatedQuickAdds.extra_explanation
@@ -44,7 +42,11 @@ ORDER BY Workcodes.Description, UserCreatedQuickAdds.WorkDescription, UserCreate
 
 		$query = str_replace('::CRITERIUM::', $criterium, $query);
 		$query = str_replace('::USER::', $this->oUser->getTimecardId(), $query);
-		$query = str_replace('::DEPARTMENT::', $this->oUser->getDepartmentId(), $query);
+		$department = $this->oUser->getDepartmentId();
+		if ( $department == '' ) {
+			$department = 0;
+		}
+		$query = str_replace('::DEPARTMENT::', $department, $query);
 
 		$result = mysql_query($query, $oConn->getConnection());
 		if ( mysql_num_rows($result) > 0 ) {
@@ -59,7 +61,6 @@ ORDER BY Workcodes.Description, UserCreatedQuickAdds.WorkDescription, UserCreate
 		return $arr;
 	}
 
-	// TODOEXPLAIN
 	function getAllShortcuts() {
 		$arr = array();
 
@@ -91,7 +92,6 @@ ORDER BY Projectnummer, Description, TimeInMinutes DESC, WorkDescription ";
 		return $arr;
 	}
 
-	// TODOEXPLAIN
 	private function createItem( $row ) {
 		$item = array();
 
@@ -108,7 +108,6 @@ ORDER BY Projectnummer, Description, TimeInMinutes DESC, WorkDescription ";
 		return $item;
 	}
 
-	// TODOEXPLAIN
 	public function __toString() {
 		return "Class: " . get_class($this) . "\nuser id: " . $this->oUser->getTimecardId() . "\ndate: " . $this->oDate->get("Y-m-d") . "\n";
 	}

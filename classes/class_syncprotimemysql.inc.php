@@ -13,75 +13,61 @@ class class_syncProtimeMysql {
 	protected $sourceCriterium = '';
 	protected $counter = 0;
 
-	// TODOEXPLAIN
 	function __construct() {
 		global $databases;
 		$this->databases = $databases;
 	}
 
-	// TODOEXPLAIN
 	public function setSourceTable( $sourceTable ) {
 		$this->sourceTable = $sourceTable;
 	}
 
-	// TODOEXPLAIN
 	public function getSourceTable() {
 		return $this->sourceTable;
 	}
 
-	// TODOEXPLAIN
 	public function setTargetTable( $targetTable ) {
 		$this->targetTable = $targetTable;
 	}
 
-	// TODOEXPLAIN
 	public function getTargetTable() {
 		return $this->targetTable;
 	}
 
-	// TODOEXPLAIN
 	public function setPrimaryKey( $primaryKeyField ) {
 		$this->primaryKeyField = $primaryKeyField;
 	}
 
-	// TODOEXPLAIN
 	public function getPrimaryKey() {
 		return $this->primaryKeyField;
 	}
 
-	// TODOEXPLAIN
 	public function addField( $field ) {
 		$this->fields[] = $field;
 	}
 
-	// TODOEXPLAIN
 	public function addFields( $fields ) {
 		foreach ( $fields as $field ) {
 			$this->fields[] = $field;
 		}
 	}
 
-	// TODOEXPLAIN
 	public function getLastInsertId() {
 		return $this->lastInsertId;
 	}
 
-	// TODOEXPLAIN
 	public function setSourceCriterium( $sourceCriterium ) {
 		$this->sourceCriterium = $sourceCriterium;
 	}
 
-	// TODOEXPLAIN
 	public function getSourceCriterium() {
 		return $this->sourceCriterium;
 	}
 
-	// TODOEXPLAIN
 	public function getCounter() {
 		return $this->counter;
 	}
 
-	// TODOEXPLAIN
 	public function doSync() {
 		echo "Sync " . $this->sourceTable . " (KNAW) -> " . $this->targetTable . " (IISG)<br>";
 
@@ -125,12 +111,10 @@ class class_syncProtimeMysql {
 		$resultData = mysql_query($query, $oConn->getConnection());
 	}
 
-	// TODOEXPLAIN
 	public function __toString() {
 		return "Class: " . get_class($this) . "\nsource: " . $this->sourceTable . "\ntarget: " . $this->targetTable . "\n";
 	}
 
-	// TODOEXPLAIN
 	protected function insertUpdateMysqlRecord($protimeRowData, $oConn) {
 
 		$result = mysql_query("SELECT * FROM " . $this->getTargetTable() . " WHERE " . $this->getPrimaryKey() . "='" . $protimeRowData[$this->getPrimaryKey()] . "' ", $oConn->getConnection());

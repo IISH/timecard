@@ -4,7 +4,6 @@ require_once("./classes/class_view/fieldtypes/class_field.inc.php");
 class class_field_button extends class_field {
 	private $m_buttonlabel;
 
-	// TODOEXPLAIN
 	function class_field_button($fieldsettings) {
 		parent::class_field($fieldsettings);
 
@@ -24,7 +23,6 @@ class class_field_button extends class_field {
 		}
 	}
 
-	// TODOEXPLAIN
 	function view_field($row) {
 		$retval = $this->m_buttonlabel;
 

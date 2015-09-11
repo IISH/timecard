@@ -16,7 +16,6 @@ class class_page {
 	private $left_menu;
 	private $cssextension;
 
-	// TODOEXPLAIN
 	function class_page($page_template, $settings) {
 		$this->page_template = $page_template;
 		$this->settings = $settings;
@@ -32,7 +31,6 @@ class class_page {
 		$this->cssextension = '';
 	}
 
-	// TODOEXPLAIN
 	function getPage() {
 		global $oWebuser, $protect;
 
@@ -98,7 +96,6 @@ class class_page {
 		return $page;
 	}
 
-	// TODOEXPLAIN
 	function createMenu() {
 		global $menuList;
 
@@ -145,7 +142,6 @@ class class_page {
 		return $sMenu;
 	}
 
-	// TODOEXPLAIN
 	function removeUnusedTags($page) {
 		$page = str_replace('{extrasidebarclass}', '', $page);
 		$page = str_replace('{extracontentclass}', '', $page);
@@ -155,103 +151,83 @@ class class_page {
 		return $page;
 	}
 
-	// TODOEXPLAIN
 	function getUrl() {
 		return 'https://' . ( isset( $_SERVER["HTTP_X_FORWARDED_HOST"] ) && $_SERVER["HTTP_X_FORWARDED_HOST"] != '' ? $_SERVER["HTTP_X_FORWARDED_HOST"] : $_SERVER["SERVER_NAME"] ) . $_SERVER["SCRIPT_NAME"];
 	}
 
-	// TODOEXPLAIN
 	function removeSidebar() {
 		$this->remove_sidebar = 1;
 	}
 
-	// TODOEXPLAIN
 	function setContent( $content ) {
 		$this->content = $content;
 	}
 
-	// TODOEXPLAIN
 	function setCssExtension( $css ) {
 		$this->cssextension = $css;
 	}
 
-	// TODOEXPLAIN
 	function getContent() {
 		return $this->content;
 	}
 
-	// TODOEXPLAIN
 	function setLeftMenu( $left_menu ) {
 		$this->left_menu = $left_menu;
 	}
 
-	// TODOEXPLAIN
 	function getLeftMenu() {
 		return $this->left_menu;
 	}
 
-	// TODOEXPLAIN
 	function setUserShortcuts( $shortcuts ) {
 		$this->shortcuts = $shortcuts;
 	}
 
-	// TODOEXPLAIN
 	function setDepartmentShortcuts( $shortcuts ) {
 		$this->departmentShortcuts = $shortcuts;
 	}
 
-	// TODOEXPLAIN
 	function getShortcuts() {
 		return $this->shortcuts;
 	}
 
-	// TODOEXPLAIN
 	function getDepartmentShortcuts() {
 		return $this->departmentShortcuts;
 	}
 
-	// TODOEXPLAIN
 	function setRecentlyUsed( $recentlyused ) {
 		$this->recentlyused = $recentlyused;
 	}
 
-	// TODOEXPLAIN
 	function getRecentlyUsed() {
 		return $this->recentlyused;
 	}
 
-	// TODOEXPLAIN
 	function setTab( $tab ) {
 		$this->tab = $tab;
 	}
 
-	// TODOEXPLAIN
 	function getTab() {
 		$tab = $this->tab;
 		return $tab;
 	}
 
-	// TODOEXPLAIN
 	function setTitle( $title ) {
 		$this->title = $title;
 	}
 
-	// TODOEXPLAIN
 	function getTitle() {
 		return $this->title;
 	}
 
-	// TODOEXPLAIN
 	function setColor( $color ) {
 		$this->color = $color;
 	}
 
-	// TODOEXPLAIN
 	function getColor() {
 		return $this->color;
 	}
 
-	// TODOEXPLAIN
 	public function __toString() {
 		return "Class: " . get_class($this) . "\ntemplate: " . $this->page_template . "\n";
 	}

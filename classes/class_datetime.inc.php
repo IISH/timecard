@@ -1,7 +1,6 @@
 <?php 
 class class_datetime {
 
-	// TODOEXPLAIN
 	// todoprotectie
 	public static function getQueryDate() {
 		$d = ( isset($_GET["d"]) ? $_GET["d"] : '' );
@@ -12,7 +11,6 @@ class class_datetime {
 		return $d;
 	}
 
-	// TODOEXPLAIN
 	public static function ConvertTimeInMinutesToTimeInHoursAndMinutes($time) {
 		if ( $time == '' ) {
 			$time = 0;
@@ -34,7 +32,6 @@ class class_datetime {
 		return $time;
 	}
 
-	// TODOEXPLAIN
 	public static function check_date($date) {
 
 		// snelle controle of maand/dag niet te hoog/laag zijn
@@ -61,7 +58,6 @@ class class_datetime {
 		return $date;
 	}
 
-	// TODOEXPLAIN
 	public static function get_date($protect, $field = 'd') {
 		if ( $field == '' ) {
 			$field = 'd';
@@ -125,7 +121,6 @@ class class_datetime {
 		return $date;
 	}
 
-	// TODOEXPLAIN
 	public static function formatDatePresentOrNot($date) {
 		$retval = trim($date);
 
@@ -149,7 +144,6 @@ class class_datetime {
 		return $retval;
 	}
 
-	// TODOEXPLAIN
 	public static function is_legacy( $oDate, $max_age_in_months = 3 ) {
 		$isLegacy = false;
 
@@ -170,7 +164,6 @@ class class_datetime {
 		return $isLegacy;
 	}
 
-	// TODOEXPLAIN
 	public static function is_future( $oDate ) {
 		$isFuture = false;
 
@@ -181,7 +174,6 @@ class class_datetime {
 		return $isFuture;
 	}
 
-	// TODOEXPLAIN
 	public static function formatDateAsString($datum) {
 		$retval = $datum["y"];
 		$retval .= str_pad( $datum["m"], 2, '0', STR_PAD_LEFT);

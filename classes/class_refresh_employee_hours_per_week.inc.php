@@ -11,7 +11,6 @@ class class_refresh_employee_hours_per_week {
 	private $totalHoursPerWeekText;
 	private $isNew;
 
-	// TODOEXPLAIN
 	function class_refresh_employee_hours_per_week( $oEmployee, $year ) {
 		global $databases;
 		$this->databases = $databases;
@@ -22,7 +21,6 @@ class class_refresh_employee_hours_per_week {
 		$this->isNew = true;
 	}
 
-	// TODOEXPLAIN
 	public function refresh( $force_refresh = false ) {
 
 		// get last refresh time
@@ -55,7 +53,6 @@ class class_refresh_employee_hours_per_week {
 		}
 	}
 
-	// TODOEXPLAIN
 	private function saveRecord() {
 		if ( $this->isNew ) {
 			$this->newRecord();
@@ -64,7 +61,6 @@ class class_refresh_employee_hours_per_week {
 		}
 	}
 
-	// TODOEXPLAIN
 	private function newRecord() {
 		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
@@ -90,7 +86,6 @@ INSERT INTO Employee_Cache_Hours_Per_Week (
 		$result = mysql_query($query, $oConn->getConnection());
 	}
 
-	// TODOEXPLAIN
 	private function updateRecord() {
 		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
@@ -109,12 +104,10 @@ WHERE EmployeeID = {$this->oEmployee->getTimecardId()} AND year = {$this->year}"
 		$result = mysql_query($query, $oConn->getConnection());
 	}
 
-	// TODOEXPLAIN
 	public function __toString() {
 		return "Class: " . get_class($this) . "\Employee Timecard #: " . $this->oEmployee->getTimecardId() . "\n";
 	}
 
-	// TODOEXPLAIN
 	public function getLastRefreshTime() {
 		$lastRefreshTime = '';
 
@@ -139,7 +132,6 @@ class class_employee_hours_per_day_starting {
 	private $arr = array();
 	private $startDayTotals = array();
 
-	// TODOEXPLAIN
 	function class_employee_hours_per_day_starting( $oEmployee, $last_year ) {
 		global $databases;
 		$this->databases = $databases;
@@ -150,7 +142,6 @@ class class_employee_hours_per_day_starting {
 		$this->initValues();
 	}
 
-	// TODOEXPLAIN
 	private function initValues() {
 		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
@@ -205,7 +196,6 @@ ORDER BY PROTIME_LNK_CURRIC_PROFILE.DATEFROM DESC, MOD(CAST(PROTIME_CYC_DP.DAYNR
 		mysql_free_result($result);
 	}
 
-	// TODOEXPLAIN
 	public function getCurrentTotalMinutesPerWeek() {
 		$lastDate = '';
 		$total = 0;
@@ -220,12 +210,10 @@ ORDER BY PROTIME_LNK_CURRIC_PROFILE.DATEFROM DESC, MOD(CAST(PROTIME_CYC_DP.DAYNR
 		return $total;
 	}
 
-	// TODOEXPLAIN
 	public function getCurrentTotalHoursPerWeek() {
 		return $this->getCurrentTotalMinutesPerWeek()/60.0;
 	}
 
-	// TODOEXPLAIN
 	public function getStartDayTotals( $only_recent = false ) {
 		$arr = array();
 

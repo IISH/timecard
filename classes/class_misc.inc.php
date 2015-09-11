@@ -4,7 +4,6 @@ class class_misc {
 	function class_misc() {
 	}
 
-	// TODOEXPLAIN
 	public static function convertMinutesToHours($value, $zero_value = '0') {
 		if ( $value == 0 || $value == '' ) {
 			$retval = $zero_value = '0';
@@ -16,7 +15,6 @@ class class_misc {
 		return $retval;
 	}
 
-	// TODOEXPLAIN
 	function multiplyTag($tag, $code, $start, $end) {
 		$ret = '';
 		$separator = '';
@@ -29,7 +27,6 @@ class class_misc {
 		return $ret;
 	}
 
-	// TODOEXPLAIN
 	function PlaceURLParametersInQuery($query) {
 		$return_value = $query;
 
@@ -52,7 +49,6 @@ class class_misc {
 		return $return_value;
 	}
 
-	// TODOEXPLAIN
 	function ReplaceSpecialFieldsWithDatabaseValues($url, $row) {
 		$return_value = $url;
 
@@ -75,7 +71,6 @@ class class_misc {
 		return $return_value;
 	}
 
-	// TODOEXPLAIN
 	function ReplaceSpecialFieldsWithQuerystringValues($url) {
 		$return_value = $url;
 
@@ -101,7 +96,6 @@ class class_misc {
 		return $return_value;
 	}
 
-	// TODOEXPLAIN
 	public function __toString() {
 		return "Class: " . get_class($this) . "\n";
 	}

@@ -13,7 +13,6 @@ class class_view {
 
 	private $m_order_by;
 
-	// TODOEXPLAIN
 	function class_view($settings, $oDb) {
 		$this->settings = $settings;
 
@@ -22,7 +21,6 @@ class class_view {
 		$this->oClassMisc = new class_misc();
 	}
 
-	// TODOEXPLAIN
 	function calculate_order_by() {
 		$order_by = ( isset($_GET["order_by"]) ? $_GET["order_by"] : '' );
 		if ( $order_by == '' ) {
@@ -36,7 +34,6 @@ class class_view {
 		return 1;
 	}
 
-	// TODOEXPLAIN
 	function add_filters_to_query($query) {
 		$filter = '';
 
@@ -118,7 +115,6 @@ class class_view {
 		return $query;
 	}
 
-	// TODOEXPLAIN
 	function add_viewfilters_to_query($query) {
 		$filter = '';
 
@@ -149,7 +145,6 @@ class class_view {
 		return $query;
 	}
 
-	// TODOEXPLAIN
 	function CreateSpecialCriterium($field, $type, $fieldname_pointer, $different_query_fieldname, $extra_left_criterium="", $extra_right_criterium="") {
 		$retval = '';
 
@@ -214,7 +209,6 @@ class class_view {
 		return $retval;
 	}
 
-	// TODOEXPLAIN
 	function generate_view_header() {
 		$return_value = '';
 		$total_header = '';
@@ -279,7 +273,6 @@ document.onkeyup = onKeyUp;
 
 var anyChanges = 0;
 
-// TODOEXPLAIN
 function onKeyUp(e) {
 	var code = (window.event) ? event.keyCode : e.keyCode;
 
@@ -288,12 +281,10 @@ function onKeyUp(e) {
 	}
 }
 
-// TODOEXPLAIN
 function onSelectChange() {
 	anyChanges = 1;
 }
 
-// TODOEXPLAIN
 function onKeyDown(e) {
 	var code = (window.event) ? event.keyCode : e.keyCode;
 	if (code == 13) {
@@ -303,7 +294,6 @@ function onKeyDown(e) {
 	}
 }
 
-// TODOEXPLAIN
 function onchange_change_filter_doc_submit(obj) {
 	document.forms['filterform'].elements['filter'].value=obj.value;
 	anyChanges = 1;
@@ -378,7 +368,6 @@ function onchange_change_filter_doc_submit(obj) {
 		return $return_value;
 	}
 
-	// TODOEXPLAIN
 	function CreateViewFilterInputField($field) {
 		$retval = '';
 
@@ -678,7 +667,6 @@ function onchange_change_filter_doc_submit(obj) {
 		return 1;
 	}
 
-	// TODOEXPLAIN
 	function Get_PreloadedTemplateDesign($preloaded_templates, $template) {
 		$retval = '';
 
@@ -693,7 +681,6 @@ function onchange_change_filter_doc_submit(obj) {
 		return $retval;
 	}
 
-	// TODOEXPLAIN
 	function get_view_buttons() {
 		// show add new button?
 		$add_new_url = ( isset($this->m_view["add_new_url"]) ? $this->m_view["add_new_url"] : '' );;
@@ -717,7 +704,6 @@ function onchange_change_filter_doc_submit(obj) {
 		return $submitbuttons;
 	}
 
-	// TODOEXPLAIN
 	function get_filter_buttons() {
 		$submitbuttons = '';
 

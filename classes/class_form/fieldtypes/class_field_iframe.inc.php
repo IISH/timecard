@@ -4,7 +4,6 @@ require_once("./classes/class_form/fieldtypes/class_field.inc.php");
 class class_field_iframe extends class_field {
 	private $m_src;
 
-	// TODOEXPLAIN
 	function class_field_iframe($fieldsettings) {
 		parent::class_field($fieldsettings);
 
@@ -24,7 +23,6 @@ class class_field_iframe extends class_field {
 		}
 	}
 
-	// TODOEXPLAIN
 	function form_row($row, $tmp_data, $m_form, $required_typecheck_result = 0) {
 		// place input field in row template
 		$tmp_data = str_replace("::FIELD::", $this->form_field($row, $m_form, $required_typecheck_result), $tmp_data);
@@ -38,7 +36,6 @@ class class_field_iframe extends class_field {
 		return $tmp_data;
 	}
 
-	// TODOEXPLAIN
 	function form_field($row, $m_form, $required_typecheck_result = 0 ) {
 		$inputfield = "<a name=\"anchor_::NAME::\"></a><iframe id=\"::NAME::\" name=\"::NAME::\" src=\"::SRC::\" width=\"::WIDTH::\" height=\"::HEIGHT::\" ::STYLE::></iframe>";
 
@@ -55,7 +52,6 @@ class class_field_iframe extends class_field {
 	}
 
 	/**
-	 * TODOEXPLAIN
 	 */
 	function push_field_into_query_array($query_fields) {
 		return $query_fields;

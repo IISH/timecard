@@ -8,7 +8,6 @@ class class_employee_vast_werk {
 	private $year;
 	private $vastwerk = array();
 
-	// TODOEXPLAIN
 	function class_employee_vast_werk( $oEmployee, $year ) {
 		global $databases;
 
@@ -19,7 +18,6 @@ class class_employee_vast_werk {
 		$this->initValues();
 	}
 
-	// TODOEXPLAIN
 	private function initValues() {
 		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
@@ -41,7 +39,6 @@ WHERE EmployeeID = {$this->oEmployee->getTimecardId()}
 		mysql_free_result($result);
 	}
 
-	// TODOEXPLAIN
 	public function getMonthTotal( $month ) {
 		$total = 0;
 		$month += 0;
@@ -59,7 +56,6 @@ WHERE EmployeeID = {$this->oEmployee->getTimecardId()}
 		return $total;
 	}
 
-	// TODOEXPLAIN
 	private function getQuarterOfMonth( $month ) {
 		return (int)(($month+2)/3);
 	}

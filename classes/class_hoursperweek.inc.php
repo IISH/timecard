@@ -7,7 +7,6 @@ class class_hoursperweek {
 	private $startmonth;
 	private $endmonth;
 
-	// TODOEXPLAIN
 	function class_hoursperweek($id, $settings) {
 		global $databases;
 		$this->databases = $databases;
@@ -26,22 +25,18 @@ class class_hoursperweek {
 		mysql_free_result($result);
 	}
 
-	// TODOEXPLAIN
 	function getHours() {
 		return $this->hours;
 	}
 
-	// TODOEXPLAIN
 	function getStartmonth() {
 		return $this->startmonth;
 	}
 
-	// TODOEXPLAIN
 	function getEndmonth() {
 		return $this->endmonth;
 	}
 
-	// TODOEXPLAIN
 	public function __toString() {
 		return "Class: " . get_class($this) . "\n#: " . $this->id . "\n";
 	}

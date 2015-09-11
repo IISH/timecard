@@ -2,7 +2,6 @@
 require_once("./classes/class_form/fieldtypes/class_field.inc.php");
 
 class class_field_date extends class_field {
-	// TODOEXPLAIN
 	function class_field_date($fieldsettings) {
 		parent::class_field($fieldsettings);
 
@@ -16,7 +15,6 @@ class class_field_date extends class_field {
 		}
 	}
 
-	// TODOEXPLAIN
 	function form_field($row, $m_form, $required_typecheck_result = 0 ) {
 		// welke waarde moeten we gebruiken, uit de db? of uit de form?
 		// indien niet goed bewaard gebruik dan de form waarde
@@ -59,7 +57,6 @@ class class_field_date extends class_field {
 		return $inputfield;
 	}
 
-	// TODOEXPLAIN
 	function form_row($row, $tmp_data, $m_form, $required_typecheck_result = 0) {
 		// place input field in row template
 		$field = $this->form_field($row, $m_form, $required_typecheck_result);

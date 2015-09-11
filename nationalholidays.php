@@ -15,7 +15,6 @@ echo $oPage->getPage();
 
 require_once "classes/_db_disconnect.inc.php";
 
-// TODOEXPLAIN
 function createFeestdagenContent() {
 	global $settings, $oWebuser, $databases;
 

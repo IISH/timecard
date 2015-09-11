@@ -21,7 +21,6 @@ echo $oPage->getPage();
 
 require_once "classes/_db_disconnect.inc.php";
 
-// TODOEXPLAIN
 function createQuarterContent( $date ) {
 	//
 	$oPrevNext = new class_prevnext($date);
@@ -33,7 +32,6 @@ function createQuarterContent( $date ) {
 	return $ret;
 }
 
-	// TODOEXPLAIN
 	function getUserQuarter( $date ) {
 		global $settings, $oWebuser, $oDate, $databases;
 

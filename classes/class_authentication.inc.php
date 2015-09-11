@@ -1,16 +1,13 @@
 <?php 
 class class_authentication {
 
-	// TODOEXPLAIN
 	function class_authentication() {
 	}
 
-	// TODOEXPLAIN
 	function authenticate( $login, $password ) {
 		return class_authentication::check_ldap('iisgnet\\' . $login, $password, array("apollo3.iisg.net"));
 	}
 
-	// TODOEXPLAIN
 	function check_ldap($user, $pw, $servers) {
 		$login_correct = 0;
 
@@ -42,7 +39,6 @@ class class_authentication {
 		return $login_correct;
 	}
 
-	// TODOEXPLAIN
 	public function __toString() {
 		return "Class: " . get_class($this) . "\n";
 	}

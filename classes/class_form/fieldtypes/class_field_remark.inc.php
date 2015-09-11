@@ -4,7 +4,6 @@ require_once("./classes/class_form/fieldtypes/class_field.inc.php");
 class class_field_remark extends class_field {
 
 	/**
-	 * TODOEXPLAIN
 	 */
 	function class_field_dummy($settings) {
 		parent::class_field($settings);
@@ -21,14 +20,12 @@ class class_field_remark extends class_field {
 
 
 	/**
-	 * TODOEXPLAIN
 	 */
 	function form_field($row, $m_form, $required_typecheck_result = 0 ) {
 		return $this->get_onNew($m_form["primarykey"]);
 	}
 
 	/**
-	 * TODOEXPLAIN
 	 */
 	function form_row($row, $tmp_data, $m_form, $required_typecheck_result = 0) {
 		// place fieldname in row template
@@ -44,7 +41,6 @@ class class_field_remark extends class_field {
 	}
 
 	/**
-	 * TODOEXPLAIN
 	 */
 	function push_field_into_query_array($query_fields) {
 		return $query_fields;

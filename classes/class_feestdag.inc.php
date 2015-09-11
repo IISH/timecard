@@ -9,7 +9,6 @@ class class_feestdag {
 	private $vooreigenrekening;
 	private $isdeleted;
 
-	// TODOEXPLAIN
 	function class_feestdag($id) {
 		$this->id = $id;
 		$this->date = '';
@@ -20,7 +19,6 @@ class class_feestdag {
 		$this->initValues();
 	}
 
-	// TODOEXPLAIN
 	private function initValues() {
 		global $databases;
 
@@ -39,32 +37,26 @@ class class_feestdag {
 		mysql_free_result($res);
 	}
 
-	// TODOEXPLAIN
 	public function getId() {
 		return $this->id;
 	}
 
-	// TODOEXPLAIN
 	public function getDate() {
 		return $this->date;
 	}
 
-	// TODOEXPLAIN
 	public function getDescription() {
 		return $this->description;
 	}
 
-	// TODOEXPLAIN
 	public function getVooreigenrekening() {
 		return $this->vooreigenrekening;
 	}
 
-	// TODOEXPLAIN
 	public function getIsdeleted() {
 		return $this->isdeleted;
 	}
 
-	// TODOEXPLAIN
 	public function __toString() {
 		return "Class: " . get_class($this) . "\n#: " . $this->id . "\n";
 	}

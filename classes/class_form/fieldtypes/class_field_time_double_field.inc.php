@@ -5,7 +5,6 @@ class class_field_time_double_field extends class_field {
 	private $m_possible_hour_values;
 	private $m_possible_minute_values;
 
-	// TODOEXPLAIN
 	function class_field_time_double_field($fieldsettings) {
 		parent::class_field($fieldsettings);
 
@@ -30,7 +29,6 @@ class class_field_time_double_field extends class_field {
 		}
 	}
 
-	// TODOEXPLAIN
 	function form_row($row, $tmp_data, $m_form, $required_typecheck_result = 0) {
 		// place input field in row template
 		$tmp_data = str_replace("::FIELD::", $this->form_field($row, $m_form, $required_typecheck_result), $tmp_data);
@@ -44,7 +42,6 @@ class class_field_time_double_field extends class_field {
 		return $tmp_data;
 	}
 
-	// TODOEXPLAIN
 	function form_field($row, $m_form, $required_typecheck_result = 0 ) {
 		$veldwaarde_hours = "0";
 		$veldwaarde_minutes = "0";
@@ -133,7 +130,6 @@ class class_field_time_double_field extends class_field {
 		return $inputfield;
 	}
 
-	// TODOEXPLAIN
 	function is_field_value_correct($veldwaarde = "") {
 		$retval = 1; // default = okay
 
@@ -146,7 +142,6 @@ class class_field_time_double_field extends class_field {
 		return $retval;
 	}
 
-	// TODOEXPLAIN
 	function get_form_value($field = '') {
 		if ( $field == '' ) {
 			$hours = $_POST["FORM_" . $this->get_fieldname() . "_HOURS"];
@@ -168,7 +163,6 @@ class class_field_time_double_field extends class_field {
 		return $retval;
 	}
 
-	// TODOEXPLAIN
 	function push_field_into_query_array($query_fields) {
 		$value = $this->get_form_value();
 		array_push($query_fields, array($this->get_fieldname() => $value));

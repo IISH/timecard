@@ -26,7 +26,6 @@ echo $oPage->getPage();
 
 require_once "classes/_db_disconnect.inc.php";
 
-// TODOEXPLAIN
 function createAdminQuarterContent( $date ) {
 	//
 	$oPrevNext = new class_prevnext($date);
@@ -37,7 +36,6 @@ function createAdminQuarterContent( $date ) {
 
 	return $ret;
 }
-	// TODOEXPLAIN
 	function getAdminQuarter( $date ) {
 		global $settings, $oEmployee, $oDate, $databases;
 

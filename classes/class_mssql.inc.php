@@ -7,7 +7,6 @@ class class_mssql {
 	private $database;
 	private $conn;
 
-	// TODOEXPLAIN
 	function __construct($database) {
 		$this->server = $database["host"];
 		$this->user = $database["username"];
@@ -15,7 +14,6 @@ class class_mssql {
 		$this->database = $database["database"];
 	}
 
-	// TODOEXPLAIN
 	function connect() {
 		$this->conn = mssql_connect($this->server, $this->user, $this->password);
 		if ( !$this->conn ) {
@@ -28,17 +26,14 @@ class class_mssql {
 		return 1;
 	}
 
-	// TODOEXPLAIN
 	function close() {
 		@mssql_close($this->conn);
 	}
 
-	// TODOEXPLAIN
 	function getConnection() {
 		return $this->conn;
 	}
 
-	// TODOEXPLAIN
 	public function __toString() {
 		return "Class: " . get_class($this) . "\nserver: " . $this->server . "\nuser: " . $this->user . "\ndatabase: " . $this->database . "\n";
 	}

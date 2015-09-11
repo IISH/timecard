@@ -119,12 +119,10 @@ $objPHPExcel->getActiveSheet()->getStyle('C1')->getFont()->setSize(18);
 
 // + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
 
-// TODOEXPLAIN
 function fixCol($value) {
 	return $value-1;
 }
 
-// TODOEXPLAIN
 function getTimecardUrenGroupedByMonth($id, $year, $pid) {
 	global $databases;
 
@@ -156,7 +154,6 @@ function getTimecardUrenGroupedByMonth($id, $year, $pid) {
 	return $retval;
 }
 
-// TODOEXPLAIN
 function getTimecardUrenGroupedByDay($id, $year, $month, $pid) {
 	global $databases;
 
@@ -194,7 +191,6 @@ GROUP BY SUBSTR(DateWorked,1,10)
 }
 
 /*
-// TODOEXPLAIN
 function getTimecardUren($id, $year, $month, $day, $pid) {
 	global $databases;
 
@@ -231,7 +227,6 @@ function getTimecardUren($id, $year, $month, $day, $pid) {
 }
 */
 
-// TODOEXPLAIN
 function getProtimeUrenGroupedByDay($protimeId, $year, $month, $view, $timecardid) {
 	global $databases;
 
@@ -313,7 +308,6 @@ function getProtimeUrenGroupedByDay($protimeId, $year, $month, $view, $timecardi
 	return $retval;
 }
 
-// TODOEXPLAIN
 function getProtimeUren($id, $year, $month, $view, $timecardid) {
 	global $databases;
 
@@ -381,7 +375,6 @@ function getProtimeUren($id, $year, $month, $view, $timecardid) {
 	return $retval;
 }
 
-// TODOEXPLAIN
 function getProjectName( $id, $handle, $year ) {
 	global $databases;
 
@@ -413,7 +406,6 @@ function getProjectName( $id, $handle, $year ) {
 	return $retval;
 }
 
-// TODOEXPLAIN
 function convertMinutesToHours($value) {
 	if ( $value == 0 || $value == '' ) {
 		$retval = '';
@@ -425,7 +417,6 @@ function convertMinutesToHours($value) {
 	return $retval;
 }
 
-// TODOEXPLAIN
 function setBackgroundForSaturdayAndSunday($c, $r, $year, $month, $i) {
 	global $objPHPExcel, $greyBackgroundStyle;
 
@@ -434,7 +425,6 @@ function setBackgroundForSaturdayAndSunday($c, $r, $year, $month, $i) {
 	}
 }
 
-// TODOEXPLAIN
 function setNumberFormatForSaturdayAndSunday($c, $r, $year, $month, $i) {
 	global $objPHPExcel, $greyBackgroundStyle;
 
@@ -443,7 +433,6 @@ function setNumberFormatForSaturdayAndSunday($c, $r, $year, $month, $i) {
 	}
 }
 
-// TODOEXPLAIN
 function getMonthNameInDutch( $m, $length = 3) {
 	$retval = '-error-';
 
@@ -456,7 +445,6 @@ function getMonthNameInDutch( $m, $length = 3) {
 	return $retval;
 }
 
-// TODOEXPLAIN
 function getListOfShowSeparatedProjectsOnReports( $retval, $year, $level, $parent_id = 0 ) {
 	global $databases;
 
@@ -510,7 +498,6 @@ function getListOfShowSeparatedProjectsOnReports( $retval, $year, $level, $paren
 	return $retval;
 }
 
-// TODOEXPLAIN
 function getNumberOfChildren( $projectId, $year ) {
 	global $databases;
 

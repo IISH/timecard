@@ -27,7 +27,6 @@ echo $oPage->getPage();
 
 require_once "classes/_db_disconnect.inc.php";
 
-// TODOEXPLAIN
 function createAdminMonthContent( $date ) {
 	//
 	$oPrevNext = new class_prevnext($date);
@@ -38,7 +37,6 @@ function createAdminMonthContent( $date ) {
 	return $ret;
 }
 
-	// TODOEXPLAIN
 	function getAdminMonth( $date ) {
 		global $settings, $oEmployee, $oDate, $databases;
 		$ret = '';

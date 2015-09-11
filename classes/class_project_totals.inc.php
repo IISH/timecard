@@ -10,7 +10,6 @@ class class_project_totals {
 	private $arr = array();
 	private $ids = array();
 
-	// TODOEXPLAIN
 	function class_project_totals($projectId, $year) {
 		global $databases;
 		$this->databases = $databases;
@@ -21,7 +20,6 @@ class class_project_totals {
 		$this->initValues();
 	}
 
-	// TODOEXPLAIN
 	private function initValues() {
 		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
@@ -65,12 +63,10 @@ ORDER BY FIRSTNAME, NAME, LEFT(DateWorked, 7)
 
 	}
 
-	// TODOEXPLAIN
 	public function getIds() {
 		return $this->ids;
 	}
 
-	// TODOEXPLAIN
 	function getHours($timecardId, $year, $month) {
 		$totHours = 0;
 
@@ -93,7 +89,6 @@ class class_project_totals_item {
 	private $timecardId;
 	private $protimePersNr;
 
-	// TODOEXPLAIN
 	function class_project_totals_item() {
 	}
 

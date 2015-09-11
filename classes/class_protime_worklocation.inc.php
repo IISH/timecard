@@ -9,7 +9,6 @@ class class_protime_worklocation {
 	private $short_2;
 	private $description;
 
-	// TODOEXPLAIN
 	function class_protime_worklocation($id) {
 		global $databases;
 		$this->databases = $databases;
@@ -22,7 +21,6 @@ class class_protime_worklocation {
 		$this->initValues();
 	}
 
-	// TODOEXPLAIN
 	private function initValues() {
 		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
@@ -102,12 +100,10 @@ class class_protime_worklocation {
 		$this->short_2 = $short_2;
 	}
 
-	// TODOEXPLAIN
 	public function __toString() {
 		return "Class: " . get_class($this) . "\n#: " . $this->locationId . "\nShort_1: " . $this->short_1 . "\n";
 	}
 
-	// TODOEXPLAIN
 	public static function getProtimeWorklocations() {
 		global $databases;
 

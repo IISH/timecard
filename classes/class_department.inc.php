@@ -13,7 +13,6 @@ class class_department {
 	private $isenabled;
 	private $isdeleted;
 
-	// TODOEXPLAIN
 	function class_department($id) {
 		global $databases;
 		$this->databases = $databases;
@@ -29,7 +28,6 @@ class class_department {
 		$this->initValues();
 	}
 
-	// TODOEXPLAIN
 	private function initValues() {
 		if ( $this->getId() > 0 ) {
 			$oConn = new class_mysql($this->databases['default']);
@@ -49,32 +47,26 @@ class class_department {
 		}
 	}
 
-	// TODOEXPLAIN
 	public function getId() {
 		return $this->id;
 	}
 
-	// TODOEXPLAIN
 	public function getName() {
 		return $this->name;
 	}
 
-	// TODOEXPLAIN
 	public function getEnableweeklyreportmail() {
 		return ( $this->enable_weekly_report_mail == 1 ? true : false);
 	}
 
-	// TODOEXPLAIN
 	public function isEnabled() {
 		return ( $this->isenabled == 1 ? true : false);
 	}
 
-	// TODOEXPLAIN
 	public function isDeleted() {
 		return ( $this->isdeleted == 1 ? true : false);
 	}
 
-	// TODOEXPLAIN
 	public function getHead() {
 		if ( $this->head == '' || $this->head == '0' ) {
 			return null;
@@ -83,7 +75,6 @@ class class_department {
 		}
 	}
 
-	// TODOEXPLAIN
 	public function getEmployees() {
 		$ret = array();
 
@@ -100,7 +91,6 @@ class class_department {
 		return $ret;
 	}
 
-	// TODOEXPLAIN
 	public function getEmployeesAndHours($startdate, $enddate) {
 		$ret = array();
 
@@ -130,7 +120,6 @@ ORDER BY vw_Employees.FIRSTNAME, vw_Employees.NAME
 		return $ret;
 	}
 
-	// TODOEXPLAIN
 	public function __toString() {
 		return "Class: " . get_class($this) . "\n#: " . $this->id . "\nDepartment: " . $this->getName() . "\n";
 	}
