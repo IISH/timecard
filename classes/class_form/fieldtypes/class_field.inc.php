@@ -89,7 +89,7 @@ class class_field {
 					switch (trim($this->m_onNew["source"])) {
 						case "query_string":
 							if ( $this->m_onNew["field"] != "" ) {
-								$veldwaarde = $_GET[trim($this->m_onNew["field"])];
+								$veldwaarde = ( isset($_GET[trim($this->m_onNew["field"])]) ? $_GET[trim($this->m_onNew["field"])] : '' );
 							}
 							break;
 						case "value":

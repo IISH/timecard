@@ -44,10 +44,11 @@ WHERE Workhours.DateWorked LIKE '" . $year . "-" . str_pad($month, 2, '0', STR_P
 AND Workhours.isdeleted = 0
 AND Workcodes.Projectnummer LIKE '320-%'
 AND vw_Employees.is_test_account = 0
-GROUP BY vw_Employees.REGISTERNR, vw_Employees.FIRSTNAME, vw_Employees.NAME, vw_Employees.WORKLOCATION, Workcodes.Projectnummer, Workcodes.Description
+GROUP BY vw_Employees.REGISTERNR, vw_Employees.FIRSTNAME, vw_Employees.NAME, vw_Employees.LongCode, vw_Employees.WORKLOCATION, Workcodes.Projectnummer, Workcodes.Description
 HAVING SUM(Workhours.TimeInMinutes) > 0
-ORDER BY vw_Employees.REGISTERNR, vw_Employees.WORKLOCATION, vw_Employees.NAME, vw_Employees.FIRSTNAME, Workcodes.Projectnummer, Projectname
+ORDER BY vw_Employees.REGISTERNR, vw_Employees.WORKLOCATION, vw_Employees.LongCode, Workcodes.Projectnummer, Projectname
 ";
+//ORDER BY vw_Employees.REGISTERNR, vw_Employees.WORKLOCATION, vw_Employees.NAME, vw_Employees.FIRSTNAME, Workcodes.Projectnummer, Projectname
 
 // calculate data
 $data = array();
@@ -101,6 +102,9 @@ while ($row = mysql_fetch_assoc($result)) {
 	}
 
 	$wname = trim($row["FULLNAME"]);
+	if ( $wname == '' ) {
+		$wname = trim($row["LongCode"]);
+	}
 	if ( $wname != '' ) {
 		$col_werknemernaam = $wname;
 	}
