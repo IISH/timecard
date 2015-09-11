@@ -53,7 +53,7 @@ $protect = new class_website_protection();
 //error_reporting(E_ALL);
 
 //
-$oWebuser = new class_employee($_SESSION["timecard"]["id"], $settings);
+$oWebuser = new class_employee( ( isset($_SESSION["timecard"]["id"]) ? $_SESSION["timecard"]["id"] : 0 ), $settings);
 
 //
 require_once dirname(__FILE__) . "/class_menu.inc.php";

@@ -84,29 +84,24 @@ class class_menuitem {
 	public $label = '';
 	public $url = '';
 
-	// TODOEXPLAIN
 	function class_menuitem($code, $label, $url ) {
 		$this->code = $code;
 		$this->label = $label;
 		$this->url = $url;
 	}
 
-	// TODOEXPLAIN
 	function getCode() {
 		return $this->code;
 	}
 
-	// TODOEXPLAIN
 	function getLabel() {
 		return $this->label;
 	}
 
-	// TODOEXPLAIN
 	function getUrl() {
 		return $this->url;
 	}
 
-	// TODOEXPLAIN
 	public function __toString() {
 		return "Class: " . get_class($this) . "\ncode: " . $this->code . "\n";
 	}
@@ -120,40 +115,33 @@ class class_menugroup {
 	public $menuitems = array();
 	public $counter = 0;
 
-	// TODOEXPLAIN
 	function class_menugroup($label, $code = '') {
 		$this->code = $code;
 		$this->label = $label;
 	}
 
-	// TODOEXPLAIN
 	function getCode() {
 		return $this->code;
 	}
 
-	// TODOEXPLAIN
 	function getLabel() {
 		return $this->label;
 	}
 
-	// TODOEXPLAIN
 	function addMenuItem( $menuitem ) {
 		$this->menuitems[] = $menuitem;
 	}
 
-	// TODOEXPLAIN
 	function getMenuItems() {
 		return $this->menuitems;
 	}
 
-	// TODOEXPLAIN
 	function showMenuItems() {
 		for ( $i = 0; $i < count($this->menuitems); $i++ ) {
 			echo '- ' . $this->menuitems[$i]->getLabel() . '<br>';
 		}
 	}
 
-	// TODOEXPLAIN
 	function getMenuItemsSubset() {
 		$menuitemssubset = array();
 
@@ -165,7 +153,6 @@ class class_menugroup {
 		return $menuitemssubset;
 	}
 
-	// TODOEXPLAIN
 	public function __toString() {
 		return "Class: " . get_class($this) . "\ncode: " . $this->code . "\n";
 	}
@@ -175,17 +162,14 @@ class class_menu {
 	// TODOTODO private
 	public $menu = array();
 
-	// TODOEXPLAIN
 	function addMenuGroup( $menugroup ) {
 		$this->menu[] = $menugroup;
 	}
 
-	// TODOEXPLAIN
 	function addMenuItem( $menuitem ) {
 		$this->menu[count($this->menu)-1]->addMenuItem($menuitem);
 	}
 
-	// TODOEXPLAIN
 	function show() {
 		for ( $i = 0; $i < count($this->menu); $i++ ) {
 			echo $this->menu[$i]->getLabel() . '<br>';
@@ -193,7 +177,6 @@ class class_menu {
 		}
 	}
 
-	// TODOEXPLAIN
 	function getMenuSubset() {
 		$menusubset = new class_menu();
 
@@ -214,7 +197,6 @@ class class_menu {
 		return $menusubset;
 	}
 
-	// TODOEXPLAIN
 	function findTabNumber( $code ) {
 		$nr = 0;
 
@@ -236,7 +218,6 @@ class class_menu {
 		return $nr;
 	}
 
-	// TODOEXPLAIN
 	public function __toString() {
 		return "Class: " . get_class($this) . "\n";
 	}

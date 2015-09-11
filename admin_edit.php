@@ -32,7 +32,6 @@ echo $oPage->getPage();
 
 require_once "classes/_db_disconnect.inc.php";
 
-// TODOEXPLAIN
 function createAdminDayEditContent( $date  ) {
 	global $protect;
 
@@ -72,7 +71,6 @@ doc_submit('saveclose')
 	return $ret;
 }
 
-// TODOEXPLAIN
 function getAdminDayEdit( $date, $oShortcutTemplate ) {
 	global $settings, $oEmployee, $oWebuser, $oDate, $protect, $databases;
 

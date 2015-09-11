@@ -7,7 +7,6 @@ class class_length_of_workday {
 	private $oEmployee;
 	private $low = array();
 
-	// TODOEXPLAIN
 	function class_length_of_workday( $oEmployee ) {
 		global $databases;
 		$this->databases = $databases;
@@ -17,7 +16,6 @@ class class_length_of_workday {
 		$this->initValues();
 	}
 
-	// TODOEXPLAIN
 	private function initValues() {
 		if ( $this->oEmployee->getProtimeId() > 0 ) {
 			$oConn = new class_mysql($this->databases['default']);
@@ -59,7 +57,6 @@ ORDER BY PROTIME_LNK_CURRIC_PROFILE.DATEFROM DESC, MOD(CAST(PROTIME_CYC_DP.DAYNR
 		}
 	}
 
-	// TODOEXPLAIN
 	public function getLengthOfWorkdayInMinutes( $date,  $weekday ) {
 		// $date - format yyyymmdd
 		// $weekday 0 - sunday, 1 - monday, ..., 6 - saturday
@@ -72,12 +69,10 @@ ORDER BY PROTIME_LNK_CURRIC_PROFILE.DATEFROM DESC, MOD(CAST(PROTIME_CYC_DP.DAYNR
 		return 0;
 	}
 
-	// TODOEXPLAIN
 	public function getLengthOfWorkdayInHours( $date,  $weekday ) {
 		return $this->getLengthOfWorkdayInMinutes( $date,  $weekday )/60.0;
 	}
 
-	// TODOEXPLAIN
 	public function __toString() {
 		return "Class: " . get_class($this) . "\nProtime #: " . $this->oEmployee->getProtimeId() . "\n";
 	}

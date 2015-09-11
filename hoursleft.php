@@ -24,7 +24,6 @@ echo $oPage->getPage();
 
 require_once "classes/_db_disconnect.inc.php";
 
-// TODOEXPLAIN
 function createHoursLeftContent( $curyear = '' ) {
 	//
 	$s = getAndProtectSearch();
@@ -70,7 +69,6 @@ if (!xmlhttpAddRemove && window.createRequest) {
 	}
 }
 
-// TODOEXPLAIN
 function setDate(iYear, iMonth) {
 	document.getElementById('fldYear').value = iYear;
 
@@ -78,7 +76,6 @@ function setDate(iYear, iMonth) {
 	tcRefreshSearch();
 }
 
-// TODOEXPLAIN
 function tcRefreshSearch() {
 	var strZoek = document.getElementById('fldZoek').value;
 	xmlhttpSearch.open(\"GET\", \"hoursleft_list.php?s=\" + escape(document.getElementById('fldZoek').value) + \"&y=\" + escape(document.getElementById('fldYear').value), true);
@@ -90,12 +87,10 @@ function tcRefreshSearch() {
 	xmlhttpSearch.send(null);
 }
 
-// TODOEXPLAIN
 function tcRefreshSearchStart() {
 	tcRefreshSearch();
 }
 
-// TODOEXPLAIN
 function addRemove(pid, dowhat) {
 	document.getElementById('divAddRemove'+pid).innerHTML = '';
 	xmlhttpAddRemove.open(\"GET\", \"addremove_favourite.php?id=\" + pid + \"&dowhat=\" + dowhat + \"&fav=hoursleft\", true);
@@ -107,7 +102,6 @@ function addRemove(pid, dowhat) {
 	xmlhttpAddRemove.send(null);
 }
 
-// TODOEXPLAIN
 function setSearchField(fldValue) {
 	document.getElementById('fldZoek').value = fldValue;
 	tcRefreshSearch();
@@ -225,7 +219,6 @@ tcRefreshSearchStart();
 	return $ret;
 }
 
-// TODOEXPLAIN
 function createHoursLeftRemarks() {
 	// REMARKS
 	$ret = "<br>Remarks

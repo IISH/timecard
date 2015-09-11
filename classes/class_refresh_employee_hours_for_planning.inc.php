@@ -18,7 +18,6 @@ class class_refresh_employee_hours_for_planning {
 	private $nationalHolidayPerDag = array();
 	private $brugdagPerDag = array();
 
-	// TODOEXPLAIN
 	function class_refresh_employee_hours_for_planning( $oEmployee, $year ) {
 		global $databases;
 		$this->databases = $databases;
@@ -35,7 +34,6 @@ class class_refresh_employee_hours_for_planning {
 		//$this->refresh( true );
 	}
 
-	// TODOEXPLAIN
 	public function refresh( $force_refresh = false ) {
 
 		for ( $i = 1; $i <= 12; $i++ ) {
@@ -123,7 +121,6 @@ class class_refresh_employee_hours_for_planning {
 		}
 	}
 
-	// TODOEXPLAIN
 	private function saveRecord( $month ) {
 		if ( $this->isNew ) {
 			$this->newRecord( $month );
@@ -132,7 +129,6 @@ class class_refresh_employee_hours_for_planning {
 		}
 	}
 
-	// TODOEXPLAIN
 	private function newRecord($month) {
 		$month2 = substr('0'.$month,-2);
 
@@ -160,7 +156,6 @@ INSERT INTO `Employee_Cache_Planning` (
 		//$this->updateRecordBrugdag( $month );
 	}
 
-	// TODOEXPLAIN
 	private function updateRecord($month) {
 		$month2 = substr('0'.$month,-2);
 
@@ -202,7 +197,6 @@ WHERE `EmployeeID` = {$this->oEmployee->getTimecardId()} AND `yearmonth` = '{$th
 		//$this->updateRecordBrugdag( $month );
 	}
 
-	// TODOEXPLAIN
 	private function updateRecordNationalHoliday( $month ) {
 		$month2 = substr('0'.$month,-2);
 		$aantalNationalHolidays = 0;
@@ -242,7 +236,6 @@ WHERE `EmployeeID` = {$this->oEmployee->getTimecardId()} AND `yearmonth` = '{$th
 		$result = mysql_query($query, $oConn->getConnection());
 	}
 
-	// TODOEXPLAIN
 	private function updateRecordBrugdag( $month ) {
 		$month2 = substr('0'.$month,-2);
 		$aantalBrugdagen = 0;
@@ -282,12 +275,10 @@ WHERE `EmployeeID` = {$this->oEmployee->getTimecardId()} AND `yearmonth` = '{$th
 		$result = mysql_query($query, $oConn->getConnection());
 	}
 
-	// TODOEXPLAIN
 	public function __toString() {
 		return "Class: " . get_class($this) . "\Employee Timecard #: " . $this->oEmployee->getTimecardId() . "\n";
 	}
 
-	// TODOEXPLAIN
 	public function getLastRefreshTime( $month ) {
 		$lastRefreshTime = '';
 

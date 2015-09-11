@@ -169,7 +169,6 @@ class TCDateTime {
 		return $d;
 	}
 
-	// TODOEXPLAIN
 	public function __toString() {
 		return "Class: " . get_class($this) . "\ndate time: " . $this->get()->format('Y-m-d H:i:s') . "\n";
 	}

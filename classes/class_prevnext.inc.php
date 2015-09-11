@@ -2,7 +2,6 @@
 class class_prevnext {
 	private $date;
 
-	// TODOEXPLAIN
 	function class_prevnext( $date ) {
 		global $settings;
 
@@ -10,7 +9,6 @@ class class_prevnext {
 		$this->settings = $settings;
 	}
 
-	// TODOEXPLAIN
 	function vorigeVolgendeMaand($date, $richting, $urlDescription = '') {
 		$original_date = $date;
 
@@ -64,7 +62,6 @@ class class_prevnext {
 		return $retval;
 	}
 
-	// TODOEXPLAIN
 	function vorigeVolgendeDag($date, $richting, $urlDescription = '') {
 		$original_date = $date;
 
@@ -102,7 +99,6 @@ class class_prevnext {
 		return $retval;
 	}
 
-	// TODOEXPLAIN
 	function calculatePrevNextMonth($date) {
 		$separator = '&nbsp; ';
 
@@ -115,7 +111,6 @@ class class_prevnext {
 		return $retval;
 	}
 
-	// TODOEXPLAIN
 	function calculatePrevNextQuarter($date) {
 		$separator = '&nbsp; ';
 
@@ -128,7 +123,6 @@ class class_prevnext {
 		return $retval;
 	}
 
-	// TODOEXPLAIN
 	function calculatePrevNextYear($date) {
 		$separator = '&nbsp; ';
 
@@ -141,7 +135,6 @@ class class_prevnext {
 		return $retval;
 	}
 
-	// TODOEXPLAIN
 	function calculatePrevNextDay($date) {
 		$separator = '&nbsp; ';
 
@@ -156,7 +149,6 @@ class class_prevnext {
 <script language=\"javascript\">
 <!--
 
-// TODOEXPLAIN
 function toggleCalendar() {
 	var ele = document.getElementById(\"toggleTextCalendar\");
 	var text = document.getElementById(\"displayTextCalendar\");
@@ -186,7 +178,6 @@ if (!xmlhttpCalendar && window.createRequest) {
 	}
 }
 
-// TODOEXPLAIN
 function tcRefreshCalendar( sDate, sOriginalDate ) {
 	xmlhttpCalendar.open(\"GET\", \"get_calendar.php?d=\" + sDate + \"&pd=\" + sOriginalDate + \"&s=" . urlencode($scriptname) . "&q=" . urlencode($querystring) . "\", true);
 	xmlhttpCalendar.onreadystatechange=function() {
@@ -217,7 +208,6 @@ tcRefreshCalendar(sDate, sDate);
 		return $retval;
 	}
 
-	// TODOEXPLAIN
 	function getMonthRibbon( $format = "F Y" ) {
 		$fields["label"] = date($format, mktime(0, 0, 0, $this->date["m"], $this->date["d"], $this->date["y"]));
 		$fields["buttons"] = $this->calculatePrevNextMonth($this->date);
@@ -226,8 +216,7 @@ tcRefreshCalendar(sDate, sDate);
 		return fillTemplate($design->getContent(), $fields);
 	}
 
-	// TODOEXPLAIN
-	function getDayRibbon( $format = "l F j, Y" ) {
+	function getDayRibbon( $format = "l j F Y" ) {
 		$fields["label"] = date($format, mktime(0, 0, 0, $this->date["m"], $this->date["d"], $this->date["y"]));
 		$fields["buttons"] = $this->calculatePrevNextDay($this->date);
 
@@ -235,7 +224,6 @@ tcRefreshCalendar(sDate, sDate);
 		return fillTemplate($design->getContent(), $fields);
 	}
 
-	// TODOEXPLAIN
 	function getExtraMonthCriterium() {
 		$quarter = achterhaalQuarter($this->date);
 		$extra_month_criterium = '';
@@ -258,7 +246,6 @@ tcRefreshCalendar(sDate, sDate);
 		return $extra_month_criterium;
 	}
 
-	// TODOEXPLAIN
 	function getQuarterRibbon( $pretext = '' ) {
 		$quarter = achterhaalQuarter($this->date);
 		$quarter_label = achterhaalQuarterLabel($quarter, 'F');
@@ -270,7 +257,6 @@ tcRefreshCalendar(sDate, sDate);
 		return fillTemplate($design->getContent(), $fields);
 	}
 
-	// TODOEXPLAIN
 	function getYearRibbon() {
 		$fields["label"] = date("Y", mktime(0, 0, 0, $this->date["m"], $this->date["d"], $this->date["y"]));
 		$fields["buttons"] = $this->calculatePrevNextYear($this->date);
@@ -279,7 +265,6 @@ tcRefreshCalendar(sDate, sDate);
 		return fillTemplate($design->getContent(), $fields);
 	}
 
-	// TODOEXPLAIN
 	function vorigeVolgendeQuarter($date, $richting, $urlDescription = '') {
 		$original_date = $date;
 		$original_quarter = achterhaalQuarter($date);
@@ -339,7 +324,6 @@ tcRefreshCalendar(sDate, sDate);
 		return $retval;
 	}
 
-	// TODOEXPLAIN
 	public function __toString() {
 		return "Class: " . get_class($this) . "\ndate: " . $this->date . "\n";
 	}

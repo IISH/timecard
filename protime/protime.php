@@ -47,7 +47,6 @@ foreach ( $arr as $pid) {
 }
 mssql_close($dbhandlePT);
 
-// TODOEXPLAIN
 function advancedSingleRecordSelectMssql($handle, $table, $fields, $criterium, $fieldselect = '', $order_by = '' ) {
 	$retval = array();
 

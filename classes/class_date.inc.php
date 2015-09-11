@@ -2,12 +2,10 @@
 class class_date {
 	private $date;
 
-	// TODOEXPLAIN
 	function __construct( $year, $month = 1, $day = 1, $hours = 1, $minutes = 1, $seconds = 1 ) {
 		$this->date = mktime((int)$hours, (int)$minutes, (int)$seconds, (int)$month, (int)$day, (int)$year);
 	}
 
-	// TODOEXPLAIN
 	function get( $format = 'Ymd' ) {
 		if ( $format == '' ) {
 			$format = 'Ymd';
@@ -16,17 +14,14 @@ class class_date {
 		return date($format, $this->date);
 	}
 
-	// TODOEXPLAIN
 	function getNumberOfDaysInMonth() {
 		return $this->get('t');
 	}
 
-	// TODOEXPLAIN
 	function isLeapYear() {
 		return $this->get('L');
 	}
 
-	// TODOEXPLAIN
 	function getFirstMonthInQuarter() {
 		$firstMonthInQuarter = false;
 
@@ -59,7 +54,6 @@ class class_date {
 		return $firstMonthInQuarter;
 	}
 
-	// TODOEXPLAIN
 	function getLastMonthInQuarter() {
 		$lastMonthInQuarter = false;
 
@@ -92,7 +86,6 @@ class class_date {
 		return $lastMonthInQuarter;
 	}
 
-	// TODOEXPLAIN
 	public function __toString() {
 		return "Class: " . get_class($this) . "\ndate: " . $this->date . "\n";
 	}

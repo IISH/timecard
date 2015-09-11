@@ -7,7 +7,6 @@ class class_national_holiday_brugdag {
 	private $year;
 	private $low = array();
 
-	// TODOEXPLAIN
 	function class_national_holiday_brugdag( $year ) {
 		global $databases;
 		$this->databases = $databases;
@@ -17,7 +16,6 @@ class class_national_holiday_brugdag {
 		$this->initValues();
 	}
 
-	// TODOEXPLAIN
 	private function initValues() {
 		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
@@ -37,12 +35,10 @@ class class_national_holiday_brugdag {
 		mysql_free_result($res);
 	}
 
-	// TODOEXPLAIN
 	public function getAll() {
 		return $this->low;
 	}
 
-	// TODOEXPLAIN
 	public function getBrugdagen() {
 		$arr = array();
 
@@ -55,7 +51,6 @@ class class_national_holiday_brugdag {
 		return $arr;
 	}
 
-	// TODOEXPLAIN
 	public function getNationalHolidays() {
 		$arr = array();
 
@@ -68,7 +63,6 @@ class class_national_holiday_brugdag {
 		return $arr;
 	}
 
-	// TODOEXPLAIN
 	public function __toString() {
 		return "Class: " . get_class($this) . "\nProtime #: " . $this->oEmployee->getProtimeId() . "\n";
 	}

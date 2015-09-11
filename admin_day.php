@@ -37,11 +37,10 @@ echo $oPage->getPage();
 
 require_once "classes/_db_disconnect.inc.php";
 
-// TODOEXPLAIN
 function createAdminDayContent( $date ) {
 	//
 	$oPrevNext = new class_prevnext($date);
-	$ret = $oPrevNext->getDayRibbon();
+	$ret = $oPrevNext->getDayRibbon("D j F Y");
 
 	//
 	$ret .= goBackTo();
@@ -52,7 +51,6 @@ function createAdminDayContent( $date ) {
 	return $ret;
 }
 
-// TODOEXPLAIN
 function getAdminDay( $date ) {
 	global $settings, $oEmployee, $oDate, $databases;
 
@@ -185,7 +183,7 @@ function getAdminDay( $date ) {
 <tr>
 	<td colspan=\"2\">
 		<div class='add_new_button'>
- 		    <a href=\"admin_edit.php?ID=0&d=" . $date["Ymd"] . "&eid=" . $oEmployee->getTimecardId() . "&backurl=" . urlencode(get_current_url()) . "\" class=\"button\">Add new</a>
+ 		    <a href=\"admin_edit.php?ID=0&d=" . $date["Ymd"] . "&eid=" . $oEmployee->getTimecardId() . "&backurl=" . urlencode(get_current_url()) . "\" class=\"button add_new_button\">Add new</a>
 		</div>
  	</td>
 </tr>
@@ -316,7 +314,6 @@ function getAdminDay( $date ) {
 	return $ret;
 }
 
-	// TODOEXPLAIN
 	function getAdminShortcuts($oUser, $oDate, $settings, $type) {
 		$pid = $oUser->getTimecardId();
 		if ( $pid == '' || $pid == '0' || $pid == '-1' ) {
@@ -383,7 +380,6 @@ function getAdminDay( $date ) {
 		return $ret;
 	}
 
-	// TODOEXPLAIN
 	function getAdminRecentlyUsed($pid, $oDate, $settings) {
 		if ( $pid == '' || $pid == '0' || $pid == '-1' ) {
 			return '';

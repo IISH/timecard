@@ -17,8 +17,8 @@ class class_employee {
 	private $allow_additions_starting_date = '';
 	private $projects = array();
 	private $department = '';
+	private $sortProjectsOnName = 0;
 
-	// TODOEXPLAIN
 	function class_employee($timecard_id, $settings) {
 		global $databases;
 
@@ -34,7 +34,6 @@ class class_employee {
 		}
 	}
 
-	// TODOEXPLAIN
 	function getTimecardValues() {
 		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
@@ -63,6 +62,11 @@ class class_employee {
 				$this->hoursdoublefield = 1;
 			}
 
+			$this->sortProjectsOnName = $row_project["sort_projects_on_name"];
+			if ( $this->sortProjectsOnName != 1 && $this->sortProjectsOnName != -1 ) {
+				$this->sortProjectsOnName = -1;
+			}
+
 			// AUTHORISATION
 			$queryAuthorisation = "SELECT * FROM Employee_Authorisation WHERE EmployeeID=" . $this->timecard_id;
 			$resultAuthorisation = mysql_query($queryAuthorisation, $oConn->getConnection());
@@ -82,67 +86,54 @@ class class_employee {
 		mysql_free_result($resultReset);
 	}
 
-	// TODOEXPLAIN
 	function getAuthorisation() {
 		return $this->authorisation ;
 	}
 
-	// TODOEXPLAIN
 	function getAllowAdditionsStartingDate() {
 		return $this->allow_additions_starting_date ;
 	}
 
-	// TODOEXPLAIN
 	function hasAdminAuthorisation() {
 		return ( in_array( 'admin', $this->getAuthorisation() ) ) ? true : false ;
 	}
 
-	// TODOEXPLAIN
 	function isProjectLeader() {
 		return ( count($this->projects) > 0 );
 	}
 
-	// TODOEXPLAIN
 	function hasFaAuthorisation() {
 		return ( in_array( 'fa', $this->getAuthorisation() ) ) ? true : false ;
 	}
 
-	// TODOEXPLAIN
 	function hasDepartmentAuthorisation() {
 		return ( in_array( 'department', $this->getAuthorisation() ) ) ? true : false ;
 	}
 
-	// TODOEXPLAIN
 	function hasReportsAuthorisation() {
 		return ( in_array( 'reports', $this->getAuthorisation() ) ) ? true : false ;
 	}
 
-	// TODOEXPLAIN
 	function isDisabled() {
 		return $this->isdisabled;
 	}
 
-	// TODOEXPLAIN
 	public function getId() {
 		return $this->getTimecardId();
 	}
 
-	// TODOEXPLAIN
 	public function getTimecardId() {
 		return $this->timecard_id;
 	}
 
-	// TODOEXPLAIN
 	public function getDepartmentId() {
 		return $this->department;
 	}
 
-	// TODOEXPLAIN
 	public function getProtimeId() {
 		return $this->protime_id;
 	}
 
-	// TODOEXPLAIN
 	function isLoggedIn() {
 		$ret = false;
 
@@ -153,12 +144,10 @@ class class_employee {
 		return $ret;
 	}
 
-	// TODOEXPLAIN
 	function getShowJiraField() {
 		return $this->show_jira_field;
 	}
 
-	// TODOEXPLAIN
 	function checkLoggedIn( $subdir = '' ) {
 		global $protect;
 
@@ -170,7 +159,6 @@ class class_employee {
 		}
 	}
 
-	// TODOEXPLAIN
 	function ifDisabledGoToLogout() {
 		if ( $this->isDisabled() ) {
 			Header("Location: logout.php?m=disabled");
@@ -178,37 +166,30 @@ class class_employee {
 		}
 	}
 
-	// TODOEXPLAIN
 	function getHoursdoublefield() {
 		return $this->hoursdoublefield;
 	}
 
-	// TODOEXPLAIN
+	function getSortProjectsOnName() {
+		return $this->sortProjectsOnName;
+	}
+
 	function getLastname() {
 		return trim($this->lastname);
 	}
 
-	// TODOEXPLAIN
 	function getLastFirstname() {
 		return trim($this->lastname) . ', ' . trim($this->firstname);
 	}
 
-	// TODOEXPLAIN
 	function getFirstLastname() {
 		return trim($this->firstname . ' ' . verplaatsTussenvoegselNaarBegin($this->lastname));
 	}
 
-	// TODOEXPLAIN
 	function getFirstname() {
 		return trim($this->firstname);
 	}
 
-//	// TODOEXPLAIN
-//	function getHoursperweek() {
-//		return $this->hoursperweek;
-//	}
-
-	// TODOEXPLAIN
 	function calculateVacationHours() {
 		$retval = '';
 
@@ -243,7 +224,6 @@ class class_employee {
 		return $retval;
 	}
 
-	// TODOEXPLAIN
 	function findTimecardIdUsingProtimeId($protime_id) {
 		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
@@ -277,7 +257,6 @@ class class_employee {
 		}
 	}
 
-	// TODOEXPLAIN
 	function getProtimeMonthTotal($date) {
 		$retval = 0;
 
@@ -289,7 +268,6 @@ class class_employee {
 		return $retval;
 	}
 
-	// TODOEXPLAIN
 	function getProtimeDayTotalGroupedByDay($date) {
 		$ret = array();
 
@@ -327,7 +305,6 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 		return $ret;
 	}
 
-	// TODOEXPLAIN
 	function getProtimeDayTotal($date) {
 		$protime_id = $this->getProtimeId();
 
@@ -347,7 +324,6 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 		return $protime_day_total;
 	}
 
-	// TODOEXPLAIN
 	function getProtimeDayTotalPart($protime_id, $date, $fields) {
 		$retval = array();
 
@@ -365,14 +341,13 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 
 			// returneer opgegeven velden
 			foreach ( $fields as $field ) {
-				$retval[$field] = $hours[$field];
+				$retval[$field] = ( isset($hours[$field]) ? $hours[$field] : '' );
 			}
 		}
 
 		return $retval;
 	}
 
-	// TODOEXPLAIN
 	function getHoursPerWeek3($year) {
 		$oHoursPerWeek = new class_employee_hours_per_week($this, $year);
 		if ( date(class_settings::getSetting("timeStampRefreshLowPriority")) > $oHoursPerWeek->getLastRefresh() ) {
@@ -382,7 +357,6 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 		return $oHoursPerWeek;
 	}
 
-	// TODOEXPLAIN
 	function getAmountOfNotPlannedVacationInMinutes( $year ) {
 		$ret = 0;
 
@@ -417,12 +391,10 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 		return $ret;
 	}
 
-	// TODOEXPLAIN
 	public function getAmountOfNotPlannedVacationInHours( $year ) {
 		return $this->getAmountOfNotPlannedVacationInMinutes( $year )/60.0;
 	}
 
-	// TODOEXPLAIN
 	function getVacationHours() {
 		$ret = array();
 
@@ -451,7 +423,6 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 		return $ret;
 	}
 
-	// TODOEXPLAIN
 	function getFavourites( $type ) {
 		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
@@ -470,7 +441,6 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 		return $ids;
 	}
 
-	// TODOEXPLAIN
 	function getTimecardDayTotals( $year, $month ) {
 		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
@@ -491,7 +461,6 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 	}
 
 
-	// TODOEXPLAIN
 	function getEerderNaarHuisDayTotals( $year, $month ) {
 		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
@@ -513,7 +482,6 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 		return $ret;
 	}
 
-	// TODOEXPLAIN
 	function getProtimeDayTotals($yyyymm) {
 		$protime_id = $this->getProtimeId();
 
@@ -529,7 +497,6 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 		return $protime_day_total;
 	}
 
-	// TODOEXPLAIN
 	function getProtimeDayOvertimes($yyyymm) {
 		$arrExtras = array();
 
@@ -544,7 +511,6 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 		return $arrExtras;
 	}
 
-	// TODOEXPLAIN
 	function getProtimeDayTotalsPart($protime_id, $yyyymm, $type) {
 		global $databases;
 
@@ -571,7 +537,6 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 		return $ret;
 	}
 
-	// TODOEXPLAIN
 	function getAllDailyAdditions() {
 		$arr = array();
 
@@ -603,7 +568,6 @@ ORDER BY Workcodes.Description
 		return $arr;
 	}
 
-	// TODOEXPLAIN
 	function getEnabledDailyAdditions( $oDate ) {
 		$arr = array();
 
@@ -639,7 +603,6 @@ ORDER BY Workcodes.Description
 		return $arr;
 	}
 
-	// TODOEXPLAIN
 	function getTotalWeightOfEnabledDailyAdditions() {
 		$total = 0;
 
@@ -674,7 +637,6 @@ ORDER BY Workcodes.Description
 		return $total;
 	}
 
-	// TODOEXPLAIN
 	function syncTimecardProtimeDayInformation( $oDate ) {
 		$timecard_id = $this->timecard_id;
 		$protime_id = $this->protime_id;
@@ -699,7 +661,6 @@ ORDER BY Workcodes.Description
 		$this->addDailyAutomaticAdditions( $oDate, $arrProtimeDayData );
 	}
 
-	// TODOEXPLAIN
 	function syncTimecardProtimeMonthInformation( $oDate ) {
 		$timecard_id = $this->timecard_id;
 		$protime_id = $this->protime_id;
@@ -729,7 +690,6 @@ ORDER BY Workcodes.Description
 		}
 	}
 
-	// TODOEXPLAIN
 	// add 'daily automatic additions'
 	function addDailyAutomaticAdditions( $oDate, $protimeMonthData ) {
 		// don't do if legacy, or date in the future
@@ -814,7 +774,6 @@ ORDER BY Workcodes.Description
 		}
 	}
 
-	// TODOEXPLAIN
 	function getTimecardDayTotal( $oDate ) {
 		$hoursTotal = 0;
 
@@ -832,7 +791,6 @@ ORDER BY Workcodes.Description
 		return $hoursTotal+$eerderNaarHuisTotal;
 	}
 
-	// TODOEXPLAIN
 	function setZeroNoneFixedDaa( $oDate ) {
 		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
@@ -843,7 +801,6 @@ ORDER BY Workcodes.Description
 		return;
 	}
 
-	// TODOEXPLAIN
 	public static function getListOfDaaEmployees() {
 		global $settings, $databases;
 
@@ -874,7 +831,6 @@ AND `ProtimePersNr`>0
 		return $ret;
 	}
 
-	// TODOEXPLAIN
 	public static function getListOfEnabledAndLinkedEmployees() {
 		global $settings, $databases;
 
@@ -900,7 +856,6 @@ AND `ProtimePersNr`>0
 		return $ret;
 	}
 
-	// TODOEXPLAIN
 	public static function getListOfAllHoursLeftEmployees() {
 		global $settings, $databases;
 
@@ -929,12 +884,10 @@ GROUP BY ProtimeID
 		return $ret;
 	}
 
-	// TODOEXPLAIN
 	public function __toString() {
 		return "Class: " . get_class($this) . "\n#: " . $this->timecard_id . "\n";
 	}
 
-	// TODOEXPLAIN
 	function getEmail() {
 		$retval = '';
 

@@ -23,7 +23,6 @@ echo $oPage->getPage();
 
 require_once "classes/_db_disconnect.inc.php";
 
-// TODOEXPLAIN
 function createProjectContent( $tab ) {
 	global $settings, $databases, $oWebuser;
 

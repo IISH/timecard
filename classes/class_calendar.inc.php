@@ -1,11 +1,9 @@
 <?php 
 class class_calendar {
 
-	// TODOEXPLAIN
 	function class_calendar() {
 	}
 
-	// TODOEXPLAIN
 	function getCalendar($date, $originalDate, $scriptname, $querystring) {
 		$querystring = RemoveFromQueryString($querystring, "d");
 		$querystring = RemoveFromQueryString($querystring, "s");
@@ -188,7 +186,6 @@ class class_calendar {
 		return $retval;
 	}
 
-	// TODOEXPLAIN
 	function Create_Dag($dag, $dayInWeek, $templates, $date, $scriptname, $querystring, $originalDate) {
 		$welke_template = '';
 
@@ -219,7 +216,6 @@ class class_calendar {
 		return $retval;
 	}
 
-	// TODOEXPLAIN
 	public function __toString() {
 		return "Class: " . get_class($this) . "\n";
 	}

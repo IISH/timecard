@@ -2,7 +2,6 @@
 require_once("./classes/class_view/fieldtypes/class_field.inc.php");
 
 class class_field_string extends class_field {
-	// TODOEXPLAIN
 	function class_field_string($fieldsettings) {
 		parent::class_field($fieldsettings);
 
@@ -17,7 +16,6 @@ class class_field_string extends class_field {
 
 	}
 
-	// TODOEXPLAIN
 	function view_field($row) {
 		$retval = parent::view_field($row);
 

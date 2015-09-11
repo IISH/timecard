@@ -5,7 +5,6 @@ require_once "class_feestdag.inc.php";
 
 class class_feestdagen {
 
-	// TODOEXPLAIN
 	public static function getNationalHolidays() {
 		global $databases;
 		$arr = array();

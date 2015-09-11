@@ -15,7 +15,6 @@ class class_form {
 	protected $m_doc_id;
 	private $m_old_doc_id;
 
-	// TODOEXPLAIN
 	function class_form($settings, $oDb) {
 		$this->settings = $settings;
 		$this->oDb = $oDb;
@@ -23,7 +22,6 @@ class class_form {
 		$this->oClassMisc = new class_misc();
 	}
 
-	// TODOEXPLAIN
 	// function calculate_document_id
 	function calculate_document_id() {
 		// document id
@@ -38,7 +36,6 @@ class class_form {
 		return true;
 	}
 
-	// TODOEXPLAIN
 	function form_check_required_and_fieldtype() {
 		$result = 1;
 
@@ -103,7 +100,6 @@ class class_form {
 		return $result;
 	}
 
-	// TODOEXPLAIN
 	function get_document_id($table) {
 		// if current id = 0
 		// get the last id
@@ -115,7 +111,6 @@ class class_form {
 		return $this->m_doc_id;
 	}
 
-	// TODOEXPLAIN
 	function timecard_mysql_insert_id($table) {
 		$retval = '0';
 
@@ -129,7 +124,6 @@ class class_form {
 		return $retval;
 	}
 
-	// TODOEXPLAIN
 	function MakeQuery($query_fields, $insert_or_update, $query_where, $extra_query_fields) {
 		$query = '';
 
@@ -202,7 +196,6 @@ class class_form {
 		return $query;
 	}
 
-	// TODOEXPLAIN
 	function MakeExtraQueryChanges() {
 		$extraqueryfields = array();
 
@@ -376,7 +369,6 @@ class class_form {
 		return $return_value;
 	}
 
-	// TODOEXPLAIN
 	function get_form_edit_buttons() {
 //		<input type=\"button\" class=\"button\" name=\"cancelButton\" value=\"Cancel\" onClick=\"open_page('::CANCELURL::');\">
 
@@ -436,7 +428,6 @@ class class_form {
 		return 1;
 	}
 
-	// TODOEXPLAIN
 	function Get_PreloadedTemplateDesign($preloaded_templates, $template) {
 		$retval = '';
 
@@ -451,7 +442,6 @@ class class_form {
 		return $retval;
 	}
 
-	// TODOEXPLAIN
 	function postSave() {
 		if ( $_GET[$this->m_form["primarykey"]] == "0" ) {
 			if ( $this->m_doc_id != 0 ) {

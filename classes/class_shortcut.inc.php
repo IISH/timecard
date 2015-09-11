@@ -18,7 +18,6 @@ class class_shortcut {
 	private $extraExplanation;
 	private $department;
 
-	// TODOEXPLAIN
 	function class_shortcut($id) {
 		global $databases, $settings;
 		$this->databases = $databases;
@@ -33,7 +32,6 @@ class class_shortcut {
 		$this->initValues();
 	}
 
-	// TODOEXPLAIN
 	private function initValues() {
 		if ( $this->getId() > 0 ) {
 			$oConn = new class_mysql($this->databases['default']);
@@ -58,57 +56,46 @@ class class_shortcut {
 		}
 	}
 
-	// TODOEXPLAIN
 	public function getId() {
 		return $this->id;
 	}
 
-	// TODOEXPLAIN
 	public function getWorkCode() {
 		return $this->workCode;
 	}
 
-	// TODOEXPLAIN
 	public function getWorkDescription() {
 		return $this->workDescription;
 	}
 
-	// TODOEXPLAIN
 	public function getTimeInMinutes() {
 		return $this->timeInMinutes;
 	}
 
-	// TODOEXPLAIN
 	public function getOnNewAutoSave() {
 		return $this->onNewAutoSave;
 	}
 
-	// TODOEXPLAIN
 	public function getExtraExplanation() {
 		return $this->extraExplanation;
 	}
 
-	// TODOEXPLAIN
 	public function getDepartment() {
 		return $this->department;
 	}
 
-	// TODOEXPLAIN
 	public function getEmployee() {
 		return $this->oEmployee;
 	}
 
-	// TODOEXPLAIN
 	public function getIsVisible() {
 		return $this->isVisible;
 	}
 
-	// TODOEXPLAIN
 	public function getIsDeleted() {
 		return $this->isDeleted;
 	}
 
-	// TODOEXPLAIN
 	public function __toString() {
 		return "Class: " . get_class($this) . "\n#: " . $this->id . "\nShortcut ID: " . $this->getId() . "\n";
 	}

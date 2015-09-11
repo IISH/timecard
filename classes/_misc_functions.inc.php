@@ -1,7 +1,6 @@
 <?php
 require_once dirname(__FILE__) . "/class_calendar.inc.php";
 
-// TODOEXPLAIN
 function getTablePostfix( $year ) {
 	$postfix = '';
 
@@ -18,17 +17,14 @@ function getTablePostfix( $year ) {
 	return $postfix;
 }
 
-// TODOEXPLAIN
 function c( $c) {
 	return convertSpreadsheatColumnNumberToColumnCharacter($c);
 }
 
-// TODOEXPLAIN
 function rc( $r, $c) {
 	return convertSpreadsheatColumnNumberToColumnCharacter($c) . $r;
 }
 
-// TODOEXPLAIN
 function convertSpreadsheatColumnNumberToColumnCharacter($i, $choices = "ABCDEFGHIJKLMNOPQRSTUVWXYZ") {
 	$len = strlen($choices);
 
@@ -43,7 +39,6 @@ function convertSpreadsheatColumnNumberToColumnCharacter($i, $choices = "ABCDEFG
 	return $retval;
 }
 
-// TODOEXPLAIN
 function hoursLeft_formatNumber($value, $decimal = 1, $show_zero = false) {
 	$ret = '';
 
@@ -58,7 +53,6 @@ function hoursLeft_formatNumber($value, $decimal = 1, $show_zero = false) {
 	return $ret;
 }
 
-// TODOEXPLAIN
 function fixCharErrors( $text ) {
 	$text = str_replace("Ã«", "&euml;", $text);
 	$text = str_replace("ë", "&euml;", $text);
@@ -66,7 +60,6 @@ function fixCharErrors( $text ) {
 	return $text;
 }
 
-// TODOEXPLAIN
 function convertToJiraUrl( $jira_issue_nr ) {
 	$ret = '';
 	$separator = '';
@@ -84,7 +77,6 @@ function convertToJiraUrl( $jira_issue_nr ) {
 	return $ret;
 }
 
-// TODOEXPLAIN
 function goBackTo() {
 	$ret = '';
 /*
@@ -102,7 +94,6 @@ function goBackTo() {
 	return $ret;
 }
 
-// TODOEXPLAIN
 function getEmployeesRibbon($currentlySelectedEmployee, $year, $hide_all_employees_choice = 0) {
 	//global $oEmployee;
 
@@ -175,7 +166,6 @@ function getEmployeesRibbon($currentlySelectedEmployee, $year, $hide_all_employe
 	return $ret;
 }
 
-// TODOEXPLAIN
 function getListOfUsersActiveInSpecificYear($year) {
 	global $databases;
 
@@ -207,7 +197,6 @@ function getListOfUsersActiveInSpecificYear($year) {
 	return $ret;
 }
 
-// TODOEXPLAIN
 function fillTemplate($template, $data) {
 	foreach ( $data as $a => $b ) {
 		$template = str_replace('{' . $a . '}', $b, $template);
@@ -216,7 +205,6 @@ function fillTemplate($template, $data) {
 	return $template;
 }
 
-// TODOEXPLAIN
 function protectFilename( $fname ) {
 	$dangerousChars = array(' ', ',', '?', '!');
 	$fname = str_replace($dangerousChars, '_', $fname);
@@ -228,7 +216,6 @@ function protectFilename( $fname ) {
 	return $fname;
 }
 
-// TODOEXPLAIN
 function getAndProtectSearch($field = 's') {
 	$s = ( isset( $_GET[$field] ) ? $_GET[$field] : '' );
 	$s = str_replace(array('?', "~", "`", "#", "$", "%", "^", "'", "\"", "(", ")", "<", ">", ":", ";", "*", "\n"), ' ', $s);
@@ -243,7 +230,6 @@ function getAndProtectSearch($field = 's') {
 	return $s;
 }
 
-// TODOEXPLAIN
 function getAndProtectBackurlLabel() {
 	global $protect;
 
@@ -263,7 +249,6 @@ function getAndProtectBackurlLabel() {
 	return $retval;
 }
 
-// TODOEXPLAIN
 function debug($text = "", $extra = '') {
     echo "<font color=red>";
 	if ( is_array($text) ) {
@@ -276,7 +261,6 @@ function debug($text = "", $extra = '') {
     echo "</font>";
 }
 
-// TODOEXPLAIN: OUD VERHUISD NAAR CLASS_WEB_PROTECTION
 function get_current_url() {
 	$backurl = $_SERVER["QUERY_STRING"];
 	if ( $backurl <> "" ) {
@@ -287,7 +271,6 @@ function get_current_url() {
 	return $backurl;
 }
 
-// TODOEXPLAIN
 function achterhaalQuarterLabel($quarter, $format = 'M') {
 	// format: M - 3 char month
 	// format: F - full month
@@ -298,7 +281,6 @@ function achterhaalQuarterLabel($quarter, $format = 'M') {
 	return date($format, mktime(0, 0, 0, ($quarter-1)*3+1, 1, 2010)) . " - " . date($format, mktime(0, 0, 0, (($quarter-1)*3)+3, 1, 2010)) . " ";
 }
 
-// TODOEXPLAIN
 function RemoveFromQueryString($tekst, $field) {
 	$retval = '';
 
@@ -334,7 +316,6 @@ function RemoveFromQueryString($tekst, $field) {
 	return $retval;
 }
 
-// TODOEXPLAIN
 function GetModifyReturnQueryString($pre_character, $field, $value) {
 	$retval = '';
 
@@ -392,7 +373,6 @@ function GetModifyReturnQueryString($pre_character, $field, $value) {
 	return $retval;
 }
 
-// TODOEXPLAIN
 function vorigeVolgendeJaar($date, $richting, $urlDescription = '') {
 	$original_date = $date;
 
@@ -436,7 +416,6 @@ function vorigeVolgendeJaar($date, $richting, $urlDescription = '') {
 	return $retval;
 }
 
-// TODOEXPLAIN
 function achterhaalQuarter($date) {
 	$retval = 0;
 
@@ -466,7 +445,6 @@ function achterhaalQuarter($date) {
 	return $retval;
 }
 
-// TODOEXPLAIN
 function advancedRecordDelete($db, $table, $criterium, $test = 0 ) {
 	global $databases;
 
@@ -491,7 +469,6 @@ function advancedRecordDelete($db, $table, $criterium, $test = 0 ) {
 	}
 }
 
-// TODOEXPLAIN
 function advancedRecordInsert($db, $table, $fields, $test = 0 ) {
 	global $databases;
 
@@ -534,7 +511,6 @@ function advancedRecordInsert($db, $table, $fields, $test = 0 ) {
 	}
 }
 
-// TODOEXPLAIN
 function advancedRecordUpdate($db, $table, $fields, $criterium, $test = 0 ) {
 	global $databases;
 
@@ -571,7 +547,6 @@ function advancedRecordUpdate($db, $table, $fields, $criterium, $test = 0 ) {
 	}
 }
 
-// TODOEXPLAIN
 function advancedSingleRecordSelectMysql($db, $table, $fields, $criterium, $fieldselect = '', $order_by = '' ) {
 	global $databases;
 
@@ -613,7 +588,6 @@ function advancedSingleRecordSelectMysql($db, $table, $fields, $criterium, $fiel
 	return $retval;
 }
 
-// TODOEXPLAIN
 function updateLastUserLogin($userid) {
 	advancedRecordUpdate(
 			'default'
@@ -623,7 +597,6 @@ function updateLastUserLogin($userid) {
 		);
 }
 
-// TODOEXPLAIN
 function getEmployeeIdByLongCode($longcode) {
 	global $databases;
 
@@ -643,7 +616,6 @@ function getEmployeeIdByLongCode($longcode) {
 	return $retval;
 }
 
-// TODOEXPLAIN
 function getAddEmployeeToTimecard($longcode) {
 	global $protect, $databases;
 
@@ -693,7 +665,6 @@ After that you can close the Jira call.";
 	return $retval;
 }
 
-// TODOEXPLAIN
 function getCheckedInCheckedOut($protimeid, $date = '') {
 	global $databases;
 
@@ -757,7 +728,6 @@ function getCheckedInCheckedOut($protimeid, $date = '') {
 	return $retval;
 }
 
-// TODOEXPLAIN
 function addAndRemoveAbsentiesInTimecard($timecard_id, $protime_id, $oDate) {
 	global $databases;
 
@@ -840,7 +810,6 @@ WHERE PROTIME_P_ABSENCE.PERSNR = " . $protime_id . "
 	}
 }
 
-// TODOEXPLAIN
 function getEerderNaarHuisMonthTotal($timecard_id, $oDate) {
 	global $databases;
 
@@ -858,7 +827,6 @@ function getEerderNaarHuisMonthTotal($timecard_id, $oDate) {
 	return $eerderWeg;
 }
 
-// TODOEXPLAIN
 function getEerderNaarHuisGroupedByDay($timecard_id, $oDate) {
 	global $databases;
 
@@ -878,7 +846,6 @@ function getEerderNaarHuisGroupedByDay($timecard_id, $oDate) {
 	return $eerderWeg;
 }
 
-// TODOEXPLAIN
 function getEerderNaarHuisDayTotal($timecard_id, $oDate) {
 	global $databases;
 
@@ -898,7 +865,6 @@ function getEerderNaarHuisDayTotal($timecard_id, $oDate) {
 	return $eerderWeg;
 }
 
-// TODOEXPLAIN
 function addEerderNaarHuisInTimecardMonth($timecard_id, $protime_id, $oDate) {
 	global $databases;
 
@@ -975,7 +941,6 @@ function addEerderNaarHuisInTimecardMonth($timecard_id, $protime_id, $oDate) {
 	}
 }
 
-// TODOEXPLAIN
 function addEerderNaarHuisInTimecard($timecard_id, $protime_id, $oDate) {
 	global $databases;
 
@@ -1046,7 +1011,6 @@ function addEerderNaarHuisInTimecard($timecard_id, $protime_id, $oDate) {
 	}
 }
 
-// TODOEXPLAIN
 function getAbsences($eid) {
 	global $databases;
 
@@ -1094,7 +1058,6 @@ WHERE PROTIME_P_ABSENCE.PERSNR=" . $eid . " AND PROTIME_P_ABSENCE.BOOKDATE>='" .
 	return $ret;
 }
 
-// TODOEXPLAIN
 function removeLeftChar( $haystack, $needle ) {
 	do {
 		$modified = false;
@@ -1116,7 +1079,6 @@ function removeLeftChar( $haystack, $needle ) {
 	return $haystack;
 }
 
-// TODOEXPLAIN
 function getAbsencesAndHolidays($eid, $year, $month, $min_minutes = 0) {
 	global $databases;
 
@@ -1185,7 +1147,6 @@ function Generate_Query($arrField, $arrSearch) {
 	return $retval;
 }
 
-// TODOEXPLAIN
 function createDateAsString($year, $month, $day = '') {
 	$ret = $year;
 
@@ -1198,7 +1159,6 @@ function createDateAsString($year, $month, $day = '') {
 	return $ret;
 }
 
-// TODOEXPLAIN
 function getBackUrl() {
 	global $protect;
 
@@ -1233,7 +1193,6 @@ function getBackUrl() {
 	return $ret;
 }
 
-// TODOEXPLAIN
 function getQuarterTotals( $date, $userTimecardId, $urlprefix ) {
 	global $settings;
 
@@ -1331,12 +1290,10 @@ function getQuarterTotals( $date, $userTimecardId, $urlprefix ) {
 	return $ret;
 }
 
-// TODOEXPLAIN
 function fixBrokenChars($text) {
 	return htmlentities($text, ENT_COMPAT | ENT_XHTML, 'ISO-8859-1', true);
 }
 
-// TODOEXPLAIN
 function verplaatsTussenvoegselNaarBegin( $text ) {
 	$text = trim($text);
 
@@ -1351,7 +1308,6 @@ function verplaatsTussenvoegselNaarBegin( $text ) {
 	return $text;
 }
 
-// TODOEXPLAIN
 function closeDataEntry($year, $month, $id = 0 ) {
 	global $databases;
 

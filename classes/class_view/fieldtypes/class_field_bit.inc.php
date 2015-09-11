@@ -6,7 +6,6 @@ class class_field_bit extends class_field {
 	private $m_different_true_value;
 	private $m_different_false_value;
 
-	// TODOEXPLAIN
 	function class_field_bit($fieldsettings) {
 		parent::class_field($fieldsettings);
 
@@ -34,7 +33,6 @@ class class_field_bit extends class_field {
 		}
 	}
 
-	// TODOEXPLAIN
 	function view_field($row) {
 		$retval = parent::view_field($row);
 
@@ -49,17 +47,14 @@ class class_field_bit extends class_field {
 		return $retval;
 	}
 
-	// TODOEXPLAIN
 	function get_show_different_values() {
 		return $this->m_show_different_values;
 	}
 
-	// TODOEXPLAIN
 	function get_different_true_value() {
 		return $this->m_different_true_value;
 	}
 
-	// TODOEXPLAIN
 	function get_different_false_value() {
 		return $this->m_different_false_value;
 	}

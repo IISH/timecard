@@ -9,7 +9,6 @@ class class_employee_not_work_related_absences {
 	private $year;
 	private $absences = array();
 
-	// TODOEXPLAIN
 	function class_employee_not_work_related_absences( $oEmployee, $year ) {
 		global $databases;
 
@@ -20,7 +19,6 @@ class class_employee_not_work_related_absences {
 		$this->initValues();
 	}
 
-	// TODOEXPLAIN
 	private function initValues() {
 		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
@@ -51,7 +49,6 @@ ORDER BY SUBSTRING(BOOKDATE,1,6), SHORT_1
 //		echo "</pre>";
 	}
 
-	// TODOEXPLAIN
 	public function getTotalInMinutesForSpecifiedMonth( $yyyymm ) {
 		$total = 0;
 
@@ -64,7 +61,6 @@ ORDER BY SUBSTRING(BOOKDATE,1,6), SHORT_1
 		return $total;
 	}
 
-	// TODOEXPLAIN
 	public function getSummarizationForSpecifiedMonth( $yyyymm ) {
 		$summarization = '';
 
@@ -77,7 +73,6 @@ ORDER BY SUBSTRING(BOOKDATE,1,6), SHORT_1
 		return $summarization;
 	}
 
-	// TODOEXPLAIN
 	public function getTotalInHoursForSpecifiedMonth( $yyyymm ) {
 		return $this->getTotalInMinutesForSpecifiedMonth( $yyyymm )/60.0;
 	}

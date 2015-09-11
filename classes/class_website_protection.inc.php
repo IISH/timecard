@@ -4,7 +4,6 @@ class class_website_protection {
 	function class_website_protection() {
 	}
 
-	// TODOEXPLAIN
 	function send_warning_mail($tekst) {
 		$message = '';
 
@@ -41,7 +40,6 @@ class class_website_protection {
 		}
 	}
 
-	// TODOEXPLAIN
 	function getShortUrl() {
 		$ret = $_SERVER["QUERY_STRING"];
 		if ( $ret != '' ) {
@@ -52,12 +50,10 @@ class class_website_protection {
 		return $ret;
 	}
 
-	// TODOEXPLAIN
 	function getLongUrl() {
 		return 'https://' . ( $_SERVER["HTTP_X_FORWARDED_HOST"] != '' ? $_SERVER["HTTP_X_FORWARDED_HOST"] : $_SERVER["SERVER_NAME"] ) . $this->getShortUrl();
 	}
 
-	// TODOEXPLAIN
 	function get_remote_addr() {
 		$retval = trim($_SERVER["HTTP_X_FORWARDED_FOR"]);
 		if ( $retval == '' ) {
@@ -72,7 +68,6 @@ class class_website_protection {
 		echo fillTemplate(class_settings::getSetting("error_to_browser"), array('text' => $text));
 	}
 
-	// TODOEXPLAIN
 	function check_for_xss_code($tekst, $tekst_is_integer) {
 		$foundxss = 0;
 
@@ -168,7 +163,6 @@ class class_website_protection {
 		}
 	}
 
-	// TODOEXPLAIN
 	function check_instr_xss($foundxss, $test, $searchvalue) {
 		if ( $foundxss == 0 ) {
 			if ( strpos($test, $searchvalue) !== false ) {
@@ -178,7 +172,6 @@ class class_website_protection {
 		return $foundxss;
 	}
 
-	// TODOEXPLAIN
 	function get_value($type = 'get', $field = '') {
 		$type = strtolower(trim($type));
 
@@ -248,7 +241,6 @@ class class_website_protection {
 		return $retval;
 	}
 
-	// TODOEXPLAIN
 	function request($type = '', $field = '', $pattern = '') {
 		$retval = $this->get_value($type, $field);
 
@@ -269,14 +261,12 @@ class class_website_protection {
 		return $retval;
 	}
 
-	// TODOEXPLAIN
 	function request_textarea($type = '', $field = '') {
 		$retval = $this->get_value($type, $field);
 
 		return $retval;
 	}
 
-	// TODOEXPLAIN
 	function request_positive_number_or_empty($type = '', $field = '') {
 		$retval = $this->get_value($type, $field);
 
@@ -301,7 +291,6 @@ class class_website_protection {
 		return $retval;
 	}
 
-	// TODOEXPLAIN
 	function request_negative_or_positive_number_or_empty($type = '', $field = '') {
 		$retval = $this->get_value($type, $field);
 
@@ -325,7 +314,6 @@ class class_website_protection {
 		return $retval;
 	}
 
-	// TODOEXPLAIN
 	function request_only_characters_or_empty($type = '', $field = '') {
 		$retval = $this->get_value($type, $field);
 
@@ -349,7 +337,6 @@ class class_website_protection {
 		return $retval;
 	}
 
-	// TODOEXPLAIN
 	function request_only_characters_or_numbers_or_empty($type = '', $field = '') {
 		$retval = $this->get_value($type, $field);
 
@@ -373,7 +360,6 @@ class class_website_protection {
 		return $retval;
 	}
 
-	// TODOEXPLAIN
 	function get_left_part($text, $search = ' ' ) {
 		$pos = strpos($text, $search);
 		if ( $pos !== false ) {
@@ -383,7 +369,6 @@ class class_website_protection {
 		return $text;
 	}
 
-	// TODOEXPLAIN
 	function send_email( $recipients, $subject, $message ) {
 		// check recipients
 		$recipients = trim($recipients);
@@ -405,7 +390,6 @@ class class_website_protection {
 		}
 	}
 
-	// TODOEXPLAIN
 	public function __toString() {
 		return "Class: " . get_class($this) . "\n";
 	}

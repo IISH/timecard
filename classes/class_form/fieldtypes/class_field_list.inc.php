@@ -16,7 +16,6 @@ class class_field_list extends class_field {
 	private $m_onchange;
 	private $m_javascriptcode;
 
-	// TODOEXPLAIN
 	function class_field_list($settings, $fieldsettings) {
 		global $databases;
 
@@ -80,7 +79,6 @@ class class_field_list extends class_field {
 		}
 	}
 
-	// TODOEXPLAIN
 	function form_field($row, $m_form, $required_typecheck_result = 0 ) {
 		// welke waarde moeten we gebruiken, uit de db? of uit de form?
 		// indien niet goed bewaard gebruik dan de form waarde
@@ -167,7 +165,6 @@ class class_field_list extends class_field {
 		return $inputfield;
 	}
 
-	// TODOEXPLAIN
 	function form_row($row, $tmp_data, $m_form, $required_typecheck_result = 0) {
 		// place input field in row template
 		$tmp_data = str_replace("::FIELD::", $this->form_field($row, $m_form, $required_typecheck_result), $tmp_data);
@@ -181,7 +178,6 @@ class class_field_list extends class_field {
 		return $tmp_data;
 	}
 
-	// TODOEXPLAIN
 	function is_field_value_correct($veldwaarde = "") {
 		$retval = 1; // default = okay
 

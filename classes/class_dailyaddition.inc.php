@@ -16,7 +16,6 @@ class class_dailyaddition {
 	private $firstDate;
 	private $lastDate;
 
-	// TODOEXPLAIN
 	function class_dailyaddition($id) {
 		global $databases;
 		$this->databases = $databases;
@@ -35,7 +34,6 @@ class class_dailyaddition {
 		$this->initValues();
 	}
 
-	// TODOEXPLAIN
 	private function initValues() {
 		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
@@ -78,7 +76,6 @@ WHERE DailyAutomaticAdditions.ID=" . $this->getId();
 	}
 
 	/**
-	 * TODOEXPLAIN
 	 * @return mixed
 	 */
 	public function getIsDeleted()
@@ -87,7 +84,6 @@ WHERE DailyAutomaticAdditions.ID=" . $this->getId();
 	}
 
 	/**
-	 * TODOEXPLAIN
 	 * @return mixed
 	 */
 	public function getIsEnabled()
@@ -96,7 +92,6 @@ WHERE DailyAutomaticAdditions.ID=" . $this->getId();
 	}
 
 	/**
-	 * TODOEXPLAIN
 	 * @return mixed
 	 */
 	public function getRatio()
@@ -105,7 +100,6 @@ WHERE DailyAutomaticAdditions.ID=" . $this->getId();
 	}
 
 	/**
-	 * TODOEXPLAIN
 	 * @return mixed
 	 */
 	public function getWorkcode()
@@ -114,7 +108,6 @@ WHERE DailyAutomaticAdditions.ID=" . $this->getId();
 	}
 
 	/**
-	 * TODOEXPLAIN
 	 * @return mixed
 	 */
 	public function getWorkcodeProjectnumber()
@@ -123,7 +116,6 @@ WHERE DailyAutomaticAdditions.ID=" . $this->getId();
 	}
 
 	/**
-	 * TODOEXPLAIN
 	 * @return mixed
 	 */
 	public function getWorkcodeDescription()
@@ -132,7 +124,6 @@ WHERE DailyAutomaticAdditions.ID=" . $this->getId();
 	}
 
 	/**
-	 * TODOEXPLAIN
 	 * @return mixed
 	 */
 	public function getDescription()
@@ -140,13 +131,11 @@ WHERE DailyAutomaticAdditions.ID=" . $this->getId();
 		return $this->description;
 	}
 
-	// TODOEXPLAIN
 	public function __toString() {
 		return "Class: " . get_class($this) . "\n#: " . $this->id . "\n";
 	}
 
 	/**
-	 * TODOEXPLAIN
 	 * @return mixed
 	 */
 	public function getFirstDate()
@@ -155,7 +144,6 @@ WHERE DailyAutomaticAdditions.ID=" . $this->getId();
 	}
 
 	/**
-	 * TODOEXPLAIN
 	 * @return mixed
 	 */
 	public function getLastDate()

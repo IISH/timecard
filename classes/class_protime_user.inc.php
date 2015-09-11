@@ -6,7 +6,6 @@ class class_protime_user {
 	private $lastname = '';
 	private $email = '';
 
-	// TODOEXPLAIN
 	function class_protime_user($protime_id, $settings) {
 		if ( $protime_id == '' || $protime_id < -1 ) {
 			$protime_id = 0;
@@ -20,7 +19,6 @@ class class_protime_user {
 		}
 	}
 
-	// TODOEXPLAIN
 	function getProtimeValues() {
 		// reset values
 		$query = "SELECT * FROM PROTIME_CURRIC WHERE PERSNR=" . $this->protime_id;
@@ -35,22 +33,18 @@ class class_protime_user {
 		mysql_free_result($resultReset);
 	}
 
-	// TODOEXPLAIN
 	function getId() {
 		return $this->protime_id;
 	}
 
-	// TODOEXPLAIN
 	function getFirstname() {
 		return $this->firstname;
 	}
 
-	// TODOEXPLAIN
 	function getLastname() {
 		return $this->lastname;
 	}
 
-	// TODOEXPLAIN
 	public function __toString() {
 		return "Class: " . get_class($this) . "\n#: " . $this->protime_id . "\n";
 	}

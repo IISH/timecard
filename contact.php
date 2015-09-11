@@ -13,10 +13,17 @@ echo $oPage->getPage();
 
 require_once "classes/_db_disconnect.inc.php";
 
-// TODOEXPLAIN
 function createContactContent() {
+	global $oWebuser;
+
+	if ( $oWebuser->isLoggedIn() ) {
+		$pageTemplate = "page_contact_when_logged_in";
+	} else {
+		$pageTemplate = "page_contact_when_not_logged_in";
+	}
+
 	// get design
-	$design = new class_contentdesign("page_contact");
+	$design = new class_contentdesign($pageTemplate);
 
 	// add header
 	$ret = $design->getHeader();

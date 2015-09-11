@@ -23,7 +23,6 @@ class class_field {
 	private $m_style = '';
 	private $m_noheader;
 
-	// TODOEXPLAIN
 	function class_field($fieldsettings) {
 		$this->oClassMisc = new class_misc();
 		$this->m_fieldname = '';
@@ -109,7 +108,6 @@ class class_field {
 		}
 	}
 
-	// TODOEXPLAIN
 	function get_if_no_value($retval) {
 		$retval = trim($retval);
 		if ( strlen($retval) == 0 ) {
@@ -121,78 +119,63 @@ class class_field {
 		return $retval;
 	}
 
-	// TODOEXPLAIN
 	function get_fieldname() {
 		return $this->m_fieldname;
 	}
 
-	// TODOEXPLAIN
 	function get_target() {
 		return $this->m_target;
 	}
 
-	// TODOEXPLAIN
 	function get_alttitle() {
 		return $this->m_alttitle;
 	}
 
-	// TODOEXPLAIN
 	function get_nobr() {
 		return $this->m_nobr;
 	}
 
-	// TODOEXPLAIN
 	function get_fieldname_pointer() {
 		return $this->m_fieldname_pointer;
 	}
 
-	// TODOEXPLAIN
 	function get_fieldlabel() {
 		return $this->m_fieldlabel;
 	}
 
-	// TODOEXPLAIN
 	function get_fieldlabel_alttitle() {
 		return $this->m_fieldlabel_alttitle;
 	}
 
-	// TODOEXPLAIN
 	function get_table_cell_width() {
 		return $this->m_table_cell_width;
 	}
 
-	// TODOEXPLAIN
 	function get_href() {
 		return $this->m_href;
 	}
 
-	// TODOEXPLAIN
 	function get_onclick() {
 		return $this->m_onclick;
 	}
 
-	// TODOEXPLAIN
 	function get_noheader() {
 		return $this->m_noheader;
 	}
 
-	// TODOEXPLAIN
 	function get_no_href_if() {
 		return $this->m_no_href_if;
 	}
 
-	// TODOEXPLAIN
 	function get_viewfilter() {
 		return $this->m_viewfilter;
 	}
 
-	// TODOEXPLAIN
 	function get_value($row) {
 		$retval = stripslashes($row[$this->get_fieldname()]);
 		return $retval;
 	}
 
-	// TODOEXPLAIN
 	function view_field($row) {
 
 		$retval = stripslashes($row[$this->get_fieldname()]);

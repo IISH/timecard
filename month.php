@@ -18,7 +18,6 @@ echo $oPage->getPage();
 
 require_once "classes/_db_disconnect.inc.php";
 
-// TODOEXPLAIN
 function createMonthContent( $date ) {
 	//
 	$oPrevNext = new class_prevnext($date);
@@ -30,7 +29,6 @@ function createMonthContent( $date ) {
 	return $ret;
 }
 
-	// TODOEXPLAIN
 	function getUserMonth( $date ) {
 		global $settings, $oWebuser, $oDate, $databases;
 

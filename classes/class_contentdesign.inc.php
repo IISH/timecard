@@ -12,7 +12,6 @@ class class_contentdesign {
 	private $footer;
 	private $isDeleted;
 
-	// TODOEXPLAIN
 	function class_contentdesign($design) {
 		global $databases;
 
@@ -28,7 +27,6 @@ class class_contentdesign {
 		$this->initValues();
 	}
 
-	// TODOEXPLAIN
 	private function initValues() {
 		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
@@ -65,7 +63,6 @@ class class_contentdesign {
 	}
 
 	/**
-	 * TODOEXPLAIN
 	 * @return mixed
 	 */
 	public function getHeader()
@@ -74,7 +71,6 @@ class class_contentdesign {
 	}
 
 	/**
-	 * TODOEXPLAIN
 	 * @return mixed
 	 */
 	public function getContent()
@@ -90,7 +86,6 @@ class class_contentdesign {
 	}
 
 	/**
-	 * TODOEXPLAIN
 	 * @return mixed
 	 */
 	public function getRecords()
@@ -99,7 +94,6 @@ class class_contentdesign {
 	}
 
 	/**
-	 * TODOEXPLAIN
 	 * @return mixed
 	 */
 	public function getFooter()
@@ -107,7 +101,6 @@ class class_contentdesign {
 		return $this->footer;
 	}
 
-	// TODOEXPLAIN
 	public function __toString() {
 		return "Class: " . get_class($this) . "\n#: " . $this->id . "\ndesign: " . $this->design . "\n";
 	}

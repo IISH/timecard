@@ -6,7 +6,6 @@ class class_mysql {
 	private $database;
 	private $conn;
 
-	// TODOEXPLAIN
 	function __construct($database) {
 		$this->server = $database["host"];
 		$this->user = $database["username"];
@@ -14,7 +13,6 @@ class class_mysql {
 		$this->database = $database["database"];
 	}
 
-	// TODOEXPLAIN
 	function connect() {
 		$this->conn = mysql_connect($this->server, $this->user, $this->password);
 		if ( !$this->conn ) {
@@ -27,17 +25,14 @@ class class_mysql {
 		return 1;
 	}
 
-	// TODOEXPLAIN
 	function close() {
 		@mysql_close($this->conn);
 	}
 
-	// TODOEXPLAIN
 	function getConnection() {
 		return $this->conn;
 	}
 
-	// TODOEXPLAIN
 	public function __toString() {
 		return "Class: " . get_class($this) . "\nserver: " . $this->server . "\nuser: " . $this->user . "\ndatabase: " . $this->database . "\n";
 	}

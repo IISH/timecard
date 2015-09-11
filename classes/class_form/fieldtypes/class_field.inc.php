@@ -9,7 +9,6 @@ class class_field {
 	private $m_onNew;
 	private $m_addquotes;
 
-	// TODOEXPLAIN
 	function class_field($fieldsettings) {
 		$this->oClassMisc = new class_misc();
 		$this->m_fieldname = '';
@@ -57,27 +56,22 @@ class class_field {
 		}
 	}
 
-	// TODOEXPLAIN
 	function get_style() {
 		return $this->m_style;
 	}
 
-	// TODOEXPLAIN
 	function get_class() {
 		return $this->m_class;
 	}
 
-	// TODOEXPLAIN
 	function get_fieldname() {
 		return $this->m_fieldname;
 	}
 
-	// TODOEXPLAIN
 	function get_fieldlabel() {
 		return $this->m_fieldlabel;
 	}
 
-	// TODOEXPLAIN
 	function get_onNew($primary_key = "") {
 		$veldwaarde = '';
 
@@ -110,7 +104,6 @@ class class_field {
 		return ($veldwaarde."");
 	}
 
-	// TODOEXPLAIN
 	function get_required_sign() {
 		if ( $this->is_field_required() == 1 ) {
 			$required = "<font color=\"red\" size=\"-2\" title=\"Required\"><sup>*</sup></font>";
@@ -121,17 +114,14 @@ class class_field {
 		return $required;
 	}
 
-	// TODOEXPLAIN
 	function is_field_required() {
 		return $this->m_required;
 	}
 
-	// TODOEXPLAIN
 	function is_field_value_correct($veldwaarde = "") {
 		return 1; // default = okay
 	}
 
-	// TODOEXPLAIN
 	function push_field_into_query_array($query_fields) {
 
 		$value = addslashes($this->get_form_value());
@@ -145,7 +135,6 @@ class class_field {
 		return $query_fields;
 	}
 
-	// TODOEXPLAIN
 	function get_form_value($field = '' ) {
 		if ( $field == '' ) {
 			$retval = $_POST["FORM_" . $this->get_fieldname()];
@@ -156,7 +145,6 @@ class class_field {
 		return $retval;
 	}
 
-	// TODOEXPLAIN
 	function cleanUpLabels($text) {
 		$text = str_replace('::REQUIRED::', '', $text);
 		$text = str_replace('::STYLE::', '', $text);

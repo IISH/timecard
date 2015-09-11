@@ -59,7 +59,6 @@ echo $retval;
 
 require_once "classes/_db_disconnect.inc.php";
 
-// TODOEXPLAIN
 function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium, $favIds ) {
 	global $settings, $databases;
 

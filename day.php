@@ -27,7 +27,6 @@ echo $oPage->getPage();
 
 require_once "classes/_db_disconnect.inc.php";
 
-// TODOEXPLAIN
 function createDayContent( $date ) {
 	//
 	$oPrevNext = new class_prevnext($date);
@@ -41,7 +40,6 @@ function createDayContent( $date ) {
 	return $ret;
 }
 
-// TODOEXPLAIN
 function getUserDay( $date ) {
 	global $settings, $oWebuser, $oDate, $databases;
 
@@ -61,7 +59,7 @@ function getUserDay( $date ) {
 <tr>
 	<td colspan=\"2\">
 		<div class='add_new_button'>
- 	    	<a href=\"edit.php?ID=0&d=" . $date["Ymd"] . "&backurl=" . urlencode(get_current_url()) . "\" class=\"button\">Add new</a>
+ 	    	<a href=\"edit.php?ID=0&d=" . $date["Ymd"] . "&backurl=" . urlencode(get_current_url()) . "\" class=\"button add_new_button\">Add new</a>
 		</div>
  	</td>
 </tr>
@@ -185,7 +183,6 @@ function getUserDay( $date ) {
 	return $ret;
 }
 
-// TODOEXPLAIN
 function getUserShortcuts($oUser, $oDate, $settings, $type) {
 	$userid = $oUser->getTimecardId();
 //	$departmentId = $oUser->getDepartmentId();
@@ -255,7 +252,6 @@ function getUserShortcuts($oUser, $oDate, $settings, $type) {
 	return $ret;
 }
 
-// TODOEXPLAIN
 function getUserRecentlyUsed($userid, $oDate, $settings) {
 	if ( $userid == '' || $userid == '0' || $userid == '-1' ) {
 		return '';
