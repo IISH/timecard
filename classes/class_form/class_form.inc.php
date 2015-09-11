@@ -27,7 +27,7 @@ class class_form {
 	// function calculate_document_id
 	function calculate_document_id() {
 		// document id
-		$this->m_doc_id = $_GET[$this->m_form["primarykey"]];
+		$this->m_doc_id = ( isset($_GET[$this->m_form["primarykey"]]) ? $_GET[$this->m_form["primarykey"]] : '' );
 		if ( $this->m_doc_id == '' ) {
 			$this->m_doc_id = "0";
 		}

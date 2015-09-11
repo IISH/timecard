@@ -110,6 +110,10 @@ input, select, textarea {
 	padding-bottom: 3px;
 }
 
+.add_new_button {
+	width: 100px;
+}
+
 .extrabuttonmargin {
 	line-height: 2;
 }

@@ -139,6 +139,9 @@ function getEmployeesRibbon($currentlySelectedEmployee, $year, $hide_all_employe
 		}
 
 		$current_employee = trim($user["firstname"] . ' ' . verplaatsTussenvoegselNaarBegin($user["lastname"]));
+		if ( $current_employee == '' ) {
+			$current_employee = trim($user["longcode"]);
+		}
 
 		$ret .= "<a href=\"" . GetModifyReturnQueryString("?", "eid", $user["id"]) . "\" title=\"" . $current_employee . "\">" . $current_employee . "</a>";
 
@@ -181,7 +184,8 @@ function getListOfUsersActiveInSpecificYear($year) {
 
 	$ret = array();
 	$last_id = '';
-	$query_users = "SELECT * FROM vw_Employees WHERE ( ( firstyear<=" . $year . " AND lastyear>=" . $year . ") OR isdisabled=0 ) AND is_test_account=0 ORDER BY FIRSTNAME, NAME ";
+	//$query_users = "SELECT * FROM vw_Employees WHERE ( ( firstyear<=" . $year . " AND lastyear>=" . $year . ") OR isdisabled=0 ) AND is_test_account=0 ORDER BY FIRSTNAME, NAME ";
+	$query_users = "SELECT * FROM vw_Employees WHERE ( ( firstyear<=" . $year . " AND lastyear>=" . $year . ") OR isdisabled=0 ) AND is_test_account=0 ORDER BY longcode ";
 	$result_users = mysql_query($query_users, $oConn->getConnection());
 	$item = array();
 	while ($row_users = mysql_fetch_assoc($result_users)) {
@@ -226,7 +230,7 @@ function protectFilename( $fname ) {
 
 // TODOEXPLAIN
 function getAndProtectSearch($field = 's') {
-	$s = $_GET[$field];
+	$s = ( isset( $_GET[$field] ) ? $_GET[$field] : '' );
 	$s = str_replace(array('?', "~", "`", "#", "$", "%", "^", "'", "\"", "(", ")", "<", ">", ":", ";", "*", "\n"), ' ', $s);
 
 	while ( strpos($s, '  ') !== false ) {
@@ -347,7 +351,11 @@ function GetModifyReturnQueryString($pre_character, $field, $value) {
 		$querystring_argument_value2 = explode('=', $querystring_argument_value, 2);
 
 		$value0 = $querystring_argument_value2[0];
-		$value1 = $querystring_argument_value2[1];
+		if ( count($querystring_argument_value2) > 1 ) {
+			$value1 = $querystring_argument_value2[1];
+		} else {
+			$value1 = '';
+		}
 
 		if ( $value0 != '' ) {
 			if ( $value1 != '' ) {

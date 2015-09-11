@@ -4,7 +4,7 @@ class class_datetime {
 	// TODOEXPLAIN
 	// todoprotectie
 	public static function getQueryDate() {
-		$d = $_GET["d"];
+		$d = ( isset($_GET["d"]) ? $_GET["d"] : '' );
 		if ( $d == '' ) {
 			$d = date("Ymd");
 		}

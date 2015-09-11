@@ -24,7 +24,7 @@ class class_view {
 
 	// TODOEXPLAIN
 	function calculate_order_by() {
-		$order_by = $_GET["order_by"];
+		$order_by = ( isset($_GET["order_by"]) ? $_GET["order_by"] : '' );
 		if ( $order_by == '' ) {
 			$order_by = $this->m_view["order_by"];
 		}
@@ -324,13 +324,13 @@ function onchange_change_filter_doc_submit(obj) {
 			// plaats filter waarde in form viewfilter
 			// filter veld bestaat altijd in viewfilter pagina
 			// andere hidden velden worden dynamisch toegevoegd
-			$viewfilter = str_replace("::FILTER::", $_GET["filter"], $viewfilter);
+			$viewfilter = str_replace("::FILTER::", ( isset($_GET["filter"]) ? $_GET["filter"] : '' ), $viewfilter);
 
 			$hiddenfields = '';
 
 			$querystring_argument_item = '';
 			$tmp_separator = '';
-			if ( is_array($_SERVER["argv"]) ) {
+			if ( isset($_SERVER["argv"]) && is_array($_SERVER["argv"]) ) {
 				foreach ( $_SERVER["argv"] as $tmp_value ) {
 					$querystring_argument_item .= $tmp_separator . $tmp_value;
 					$tmp_separator = "+";
@@ -345,10 +345,14 @@ function onchange_change_filter_doc_submit(obj) {
 
 				$querystring_argument_value2 = explode("=", $querystring_argument_value, 2);
 
-				$value1 = $querystring_argument_value2[1];
-				$value1 = str_replace("__amp;", "&amp;", $value1);
-				$value1 = urldecode($value1);
-				$value1 = str_replace("\"", "&quot;", $value1);
+				if ( count($querystring_argument_value2) > 1) {
+					$value1 = $querystring_argument_value2[1];
+					$value1 = str_replace("__amp;", "&amp;", $value1);
+					$value1 = urldecode($value1);
+					$value1 = str_replace("\"", "&quot;", $value1);
+				} else {
+					$value1 = '';
+				}
 
 
 				if ( substr($querystring_argument_value2[0], 0, 3) != "vf_" ) {
@@ -394,7 +398,7 @@ function onchange_change_filter_doc_submit(obj) {
 			if ( !isset($_GET["vf_" . $name]) ) {
 				$_GET["vf_" . $name] = '';
 			}
-			$value = $_GET["vf_" . $name];
+			$value = ( isset( $_GET["vf_" . $name] ) ? $_GET["vf_" . $name] : '' );
 			$value = str_replace("\\\"", "&quot;", $value);
 			$value = str_replace("\'", "'", $value);
 
@@ -404,7 +408,7 @@ function onchange_change_filter_doc_submit(obj) {
 		} elseif ( $field["type"] == "select" ) {
 			$retval .= "::LABEL:: <SELECT name=\"vf_::NAME::\" onchange=\"onSelectChange();\">\n::OPTIONS::\n</SELECT>\n";
 
-			$value = $_GET["vf_" . $name];
+			$value = ( isset( $_GET["vf_" . $name] ) ? $_GET["vf_" . $name] : '' );
 			$value = str_replace("\\\"", "&quot;", $value);
 			$value = str_replace("\'", "'", $value);
 
@@ -636,9 +640,9 @@ function onchange_change_filter_doc_submit(obj) {
 					$return_value .= "<tr><td colspan=\"" . ($this->m_view["calculate_total"]["totalcol"]-1) . "\"><b>Total:</b></td>";
 
 					$t = $calculate_total[$this->m_view["calculate_total"]["field"]];
-					if ( $this->m_view["calculate_total"]["type"] == 'integer' ) {
+					if ( isset ( $this->m_view["calculate_total"]["type"] ) && $this->m_view["calculate_total"]["type"] == 'integer' ) {
 						$t = $t;
-					} else if ( $this->m_view["calculate_total"]["type"] == 'integer_thousand_separator' ) {
+					} elseif (  isset ( $this->m_view["calculate_total"]["type"] ) && $this->m_view["calculate_total"]["type"] == 'integer_thousand_separator' ) {
 						$t = number_format ($t, 0, ',', '.');
 					} else {
 						$t = class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes($t);
@@ -692,7 +696,7 @@ function onchange_change_filter_doc_submit(obj) {
 	// TODOEXPLAIN
 	function get_view_buttons() {
 		// show add new button?
-		$add_new_url = $this->m_view["add_new_url"];
+		$add_new_url = ( isset($this->m_view["add_new_url"]) ? $this->m_view["add_new_url"] : '' );;
 
 		if ( $add_new_url == '' ) {
 			return '';
@@ -719,11 +723,11 @@ function onchange_change_filter_doc_submit(obj) {
 
 		$separator = '';
 
-		if ( is_array($this->m_view["filter"]) ) {
+		if ( isset($this->m_view["filter"]) && is_array($this->m_view["filter"]) ) {
 
 			// + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
 
-			if ( is_array($this->m_view["filter"]["choices"]) ) {
+			if ( isset($this->m_view["filter"]["choices"]) && is_array($this->m_view["filter"]["choices"]) ) {
 
 				// label
 				$filterlabel = $this->m_view["filter"]["label"];
