@@ -31,6 +31,12 @@ function createContactContent() {
 	// add content
 	$ret .= $design->getContent();
 
+	// get extra
+	$extra = new class_contentdesign("page_contact_extra");
+	$ret .= $extra->getHeader();
+	$ret .= $extra->getContent();
+	$ret .= $extra->getFooter();
+
 	// add footer
 	$ret .= $design->getFooter();
 
