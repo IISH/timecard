@@ -42,6 +42,7 @@ if ( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasFaAuthorisation() ) {
 	$menu->addMenuItem( new class_menuitem('exports.projectemployeetotaals', 'Project-Employee totals', 'export_project_employee_totals.php') );
 	$menu->addMenuItem( new class_menuitem('exports.euprojects', 'Employee-Project totals', 'admin_euprojecten_overzichten.php') );
 	$menu->addMenuItem( new class_menuitem('exports.oracle', 'Oracle', 'export_oracle.php') );
+	$menu->addMenuItem( new class_menuitem('exports.misc', 'Miscellaneous', 'misc.php') );
 }
 
 // + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +

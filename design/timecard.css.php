@@ -25,6 +25,25 @@ table {
 	border-collapse: separate;
 }
 
+table.misc {
+	border-spacing: 0px;
+	border-collapse: separate;
+}
+
+tr.misc {
+}
+
+td.misc {
+	border: 1px solid black;
+	padding: 3px;
+}
+
+th.misc {
+	border: 1px solid black;
+	font-weight: bold;
+	padding: 3px;
+}
+
 .bold {
 	font-weight: bold;
 }

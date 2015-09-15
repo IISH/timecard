@@ -4,6 +4,38 @@ class class_misc {
 	function class_misc() {
 	}
 
+	public static function convertArrayToHtmlTable( $arr, $class = 'misc' ) {
+		$ret = '';
+
+		$counter = 0;
+		foreach ( $arr as $row ) {
+			$counter++;
+			$r = '';
+
+			if ( $counter == 1 ) {
+				$start = '<th class="misc">';
+				$end = '</th>';
+			} else {
+				$start = '<td class="misc">';
+				$end = '</td>';
+			}
+
+			foreach ( $row as $item ) {
+				$r .= $start . $item . $end;
+			}
+
+			$r = '<tr class=\"misc\">' . $r . '</tr>';
+
+			$ret .= $r;
+		}
+
+		if ( $ret != '' ) {
+			$ret = "<table class=\"misc\">\n" . $ret . "</table>\n";
+		}
+
+		return $ret;
+	}
+
 	public static function convertMinutesToHours($value, $zero_value = '0') {
 		if ( $value == 0 || $value == '' ) {
 			$retval = $zero_value = '0';
