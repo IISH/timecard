@@ -23,7 +23,7 @@ require_once "classes/_db_disconnect.inc.php";
 function createExportOracleContent() {
 	global $protect;
 
-	$ret = '<h2>Misc 01 (Booked on Deparmtent)</h2><br>';
+	$ret = '<h2>Misc 01 (Booked on Department)</h2><br>';
 
 	$year = substr($protect->request_positive_number_or_empty('get', "y"), 0, 4);
 	$month = substr($protect->request_positive_number_or_empty('get', "m"), 0, 2);

@@ -24,7 +24,7 @@ function createExportOracleContent() {
 
 	$ret = '<h2>Miscellaneous</h2><br>';
 
-	$ret .= '<a href="misc01.php">Misc 01</a> (Booked on Deparmtent)<br>';
+	$ret .= '<a href="misc01.php">Misc 01</a> (Booked on Department)<br>';
 
 	return $ret;
 }
