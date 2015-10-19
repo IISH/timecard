@@ -77,6 +77,7 @@ function createProjectEditContent() {
 		, 'required' => 0
 		, 'onNew' => ''
 		, 'style' => 'width:425px;'
+		, 'convertEmptyToNull' => 1
 		)));
 
 	$oForm->add_field( new class_field_string ( array(

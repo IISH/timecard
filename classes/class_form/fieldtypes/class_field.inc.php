@@ -8,6 +8,7 @@ class class_field {
 	private $m_required;
 	private $m_onNew;
 	private $m_addquotes;
+	private $m_convertEmptyToNull;
 
 	function class_field($fieldsettings) {
 		$this->oClassMisc = new class_misc();
@@ -20,6 +21,7 @@ class class_field {
 		$this->m_class = '';
 		$this->m_style = '';
 		$this->m_readonly = 0;
+		$this->m_convertEmptyToNull = 0;
 
 		if ( is_array( $fieldsettings ) ) {
 			foreach ( $fieldsettings as $field => $value ) {
@@ -50,6 +52,9 @@ class class_field {
 						break;
 					case "readonly":
 						$this->m_readonly = $fieldsettings["readonly"];
+						break;
+					case "convertEmptyToNull":
+						$this->m_convertEmptyToNull = $fieldsettings["convertEmptyToNull"];
 						break;
 				}
 			}
@@ -123,10 +128,11 @@ class class_field {
 	}
 
 	function push_field_into_query_array($query_fields) {
-
 		$value = addslashes($this->get_form_value());
 
-		if ( $this->m_addquotes == 1 ) {
+		if ( $value == '' && $this->m_convertEmptyToNull == 1 ) {
+			$value = 'NULL';
+		} elseif ( $this->m_addquotes == 1 ) {
 			$value = "'" . $value . "'";
 		}
 
@@ -141,6 +147,8 @@ class class_field {
 		} else {
 			$retval = $_POST["FORM_" . $field];
 		}
+
+		$retval = trim( $retval );
 
 		return $retval;
 	}

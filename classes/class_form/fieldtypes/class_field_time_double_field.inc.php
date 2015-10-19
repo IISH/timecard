@@ -151,6 +151,9 @@ class class_field_time_double_field extends class_field {
 			$minutes = $_POST["FORM_" . $field . "_MINUTES"];
 		}
 
+		$hours = trim( $hours );
+		$minutes = trim( $minutes );
+
 		if ( $hours == '' ) {
 			$hours = 0;
 		}
