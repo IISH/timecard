@@ -65,7 +65,7 @@ class TCDateTime {
 
 	//
 	private function add( $what, $what_old_style ) {
-		$date = clone $this->date;
+		$date = $this->date;
 
 		if ( method_exists ( new DateTime(), "add" ) ) {
 			$date->add( new DateInterval($what) );
@@ -123,7 +123,7 @@ class TCDateTime {
 
 	//
 	public function sub( $what, $what_old_style ) {
-		$date = clone $this->date;
+		$date = $this->date;
 
 		if ( method_exists ( new DateTime(), "sub" ) ) {
 			$date->sub( new DateInterval($what) );

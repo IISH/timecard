@@ -22,6 +22,7 @@ require_once dirname(__FILE__) . "/class_feestdagen.inc.php";
 require_once dirname(__FILE__) . "/class_length_of_workday.inc.php";
 require_once dirname(__FILE__) . "/class_mysql.inc.php";
 require_once dirname(__FILE__) . "/class_misc01.inc.php";
+require_once dirname(__FILE__) . "/class_misc02.inc.php";
 require_once dirname(__FILE__) . "/class_national_holiday_brugdag.inc.php";
 require_once dirname(__FILE__) . "/class_page.inc.php";
 require_once dirname(__FILE__) . "/class_prevnext.inc.php";
