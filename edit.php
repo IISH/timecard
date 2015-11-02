@@ -159,9 +159,9 @@ doc_submit('saveclose')
 		}
 
 		if ( $oWebuser->getSortProjectsOnName() == 1 ) {
-			$projectQuery = 'SELECT ID, Concat(Description, \' (\', Projectnummer, \')\') AS ProjectNumberName FROM Workcodes WHERE ( isdisabled = 0 AND (lastdate IS NULL OR lastdate = \'\' OR lastdate >= \'' . $oDate->get("Y-m-d") . '\') ) ' . $currentValueOnNew . ' ORDER BY Description, Projectnummer ';
+			$projectQuery = 'SELECT ID, Concat(Description, IFNULL( CONCAT(\' (\', Projectnummer, \')\'), \'\') ) AS ProjectNumberName FROM Workcodes WHERE ( isdisabled = 0 AND (lastdate IS NULL OR lastdate = \'\' OR lastdate >= \'' . $oDate->get("Y-m-d") . '\') ) ' . $currentValueOnNew . ' ORDER BY Description, Projectnummer ';
 		} else {
-			$projectQuery = 'SELECT ID, Concat(Projectnummer, \' \', Description) AS ProjectNumberName FROM Workcodes WHERE ( isdisabled = 0 AND (lastdate IS NULL OR lastdate = \'\' OR lastdate >= \'' . $oDate->get("Y-m-d") . '\') ) ' . $currentValueOnNew . ' ORDER BY Projectnummer, Description ';
+			$projectQuery = 'SELECT ID, Concat(IFNULL(Projectnummer,\'\'), \' \', Description) AS ProjectNumberName FROM Workcodes WHERE ( isdisabled = 0 AND (lastdate IS NULL OR lastdate = \'\' OR lastdate >= \'' . $oDate->get("Y-m-d") . '\') ) ' . $currentValueOnNew . ' ORDER BY Projectnummer, Description ';
 		}
 		$oForm->add_field( new class_field_list ( $settings, array(
 			'fieldname' => 'WorkCode'
