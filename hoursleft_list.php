@@ -111,7 +111,7 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 		<th>Name</th>
 		<th style=\"width:$fixedColWidth;\">Hours per week</th>
 		<th style=\"width:$fixedColWidth;\"><a title=\"Exact calculation of\nyear total\">Year total (100%)</a></th>
-		<th style=\"width:$fixedColWidth;\">Year total (" . (int)(class_settings::getSetting("percentage_rule")*100.0) . "%)</th>
+		<th style=\"width:$fixedColWidth;\">Year total (" . (int)(Settings::get("percentage_rule")*100.0) . "%)</th>
 		<th colspan=3>January</th>
 		<th colspan=3>February</th>
 		<th colspan=3>March</th>
@@ -390,9 +390,9 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 
 			// year
 			$tmp = str_replace('{year_total_100_percent}', hoursLeft_formatNumber($yearWorkTotal), $tmp);
-			$tmp = str_replace('{year_total_percentage_rule}', hoursLeft_formatNumber($yearWorkTotal * class_settings::getSetting("percentage_rule")), $tmp);
+			$tmp = str_replace('{year_total_percentage_rule}', hoursLeft_formatNumber($yearWorkTotal * Settings::get("percentage_rule")), $tmp);
 			$tmp = str_replace('{left_total_100_percent}', hoursLeft_formatNumber($yearLeftTotal), $tmp);
-			$tmp = str_replace('{left_total_percentage_rule}', hoursLeft_formatNumber($yearLeftTotal * class_settings::getSetting("percentage_rule")), $tmp);
+			$tmp = str_replace('{left_total_percentage_rule}', hoursLeft_formatNumber($yearLeftTotal * Settings::get("percentage_rule")), $tmp);
 
 			$tmp = str_replace('{vacation_left}', hoursLeft_formatNumber($vacationLeft), $tmp);
 
@@ -412,13 +412,13 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 //		<th>Name</th>
 //		<th>Hours&nbsp;per&nbsp;week</th>
 //		<th>Year total (100%)</th>
-//		<th>Year total (" . (int)(class_settings::getSetting("percentage_rule")*100.0) . "%)</th>
+//		<th>Year total (" . (int)(Settings::get("percentage_rule")*100.0) . "%)</th>
 //		<th>Until end of year total (100%)</th>
 //		<th>Vacation left</th>
 //		<th>Nat. hol. left</th>
 //		<th>(Max. transfer)</th>
 //		<th>Left (100%)</th>
-//		<th>Left (" . (int)(class_settings::getSetting("percentage_rule")*100.0) . "%)</th>
+//		<th>Left (" . (int)(Settings::get("percentage_rule")*100.0) . "%)</th>
 //	</tr>
 //";
 //
@@ -488,7 +488,7 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 //
 //		// YEAR TOTAL 76
 //		$ret .= "\t\t<td valign=top>\n";
-//		$ret .= hoursLeft_formatNumber(1.0 * $yearWorkTotal * class_settings::getSetting("percentage_rule"), 1);
+//		$ret .= hoursLeft_formatNumber(1.0 * $yearWorkTotal * Settings::get("percentage_rule"), 1);
 //		$ret .= "\t\t</td>\n";
 //
 //		// END YEAR TOTAL
@@ -540,7 +540,7 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 //
 //		// LEFT 76
 //		$ret .= "\t\t<td valign=top>\n";
-//		$ret .= hoursLeft_formatNumber(1.0 * $left * class_settings::getSetting("percentage_rule"), 1);
+//		$ret .= hoursLeft_formatNumber(1.0 * $left * Settings::get("percentage_rule"), 1);
 //		$ret .= "\t\t</td>\n";
 //
 //		$ret .= "\t</tr>\n";

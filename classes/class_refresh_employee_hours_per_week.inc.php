@@ -32,7 +32,7 @@ class class_refresh_employee_hours_per_week {
 		}
 
 		// if time stamp differs with time stamp template then it is too old and should be refreshed
-		if ( $lastRefreshTime != date( class_settings::getSetting("timeStampRefreshLowPriority") ) ) {
+		if ( $lastRefreshTime != date( Settings::get("timeStampRefreshLowPriority") ) ) {
 			$force_refresh = true;
 		}
 
@@ -65,7 +65,7 @@ class class_refresh_employee_hours_per_week {
 		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
 
-		$curtime = date( class_settings::getSetting("timeStampRefreshLowPriority") );
+		$curtime = date( Settings::get("timeStampRefreshLowPriority") );
 		$totalHoursPerWeekText = addslashes($this->totalHoursPerWeekText);
 
 		$query = "
@@ -90,7 +90,7 @@ INSERT INTO Employee_Cache_Hours_Per_Week (
 		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
 
-		$curtime = date( class_settings::getSetting("timeStampRefreshLowPriority") );
+		$curtime = date( Settings::get("timeStampRefreshLowPriority") );
 		$totalHoursPerWeekText = addslashes($this->totalHoursPerWeekText);
 
 		$query = "

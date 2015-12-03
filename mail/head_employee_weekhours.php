@@ -13,7 +13,7 @@ if ( isset($_GET["cron_key"]) ) {
 } elseif ( isset($_POST["cron_key"]) ) {
 	$cron_key = $_POST["cron_key"];
 }
-if ( trim( $cron_key ) != class_settings::getSetting('cron_key') ) {
+if ( trim( $cron_key ) != Settings::get('cron_key') ) {
 	die('Error: Incorrect cron key...');
 }
 
@@ -63,8 +63,8 @@ foreach ( $departments as $oDepartment ) {
 	echo "Mail body: " . str_replace("\t", " &nbsp; &nbsp; ", str_replace("\n", "<br>\n", $mail_body)); echo "<br>";
 
 	// set headers
-	$mail_headers = 'From: "' . class_settings::getSetting('email_sender_name') . '" <' . class_settings::getSetting('email_sender_email') . '>' . "\r\n" .
-		'Reply-To: "' . class_settings::getSetting('email_sender_name') . '" <' . class_settings::getSetting('email_sender_email') . '>';
+	$mail_headers = 'From: "' . Settings::get('email_sender_name') . '" <' . Settings::get('email_sender_email') . '>' . "\r\n" .
+		'Reply-To: "' . Settings::get('email_sender_name') . '" <' . Settings::get('email_sender_email') . '>';
 
 	// check if weekly report e-mail is enabled
 	if ( !$oDepartment->getEnableweeklyreportmail() ) {

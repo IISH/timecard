@@ -42,6 +42,7 @@ require_once dirname(__FILE__) . "/class_project_totals.inc.php";
 require_once dirname(__FILE__) . "/class_workhours.inc.php";
 require_once dirname(__FILE__) . "/class_workhours_static.inc.php";
 require_once dirname(__FILE__) . "/class_settings.inc.php";
+require_once dirname(__FILE__) . "/syncinfo.inc.php";
 
 //
 require_once dirname(__FILE__) . "/_misc_functions.inc.php";

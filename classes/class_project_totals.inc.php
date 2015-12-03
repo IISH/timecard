@@ -38,8 +38,6 @@ GROUP BY LEFT(DateWorked, 7), WorkCode, Employees.ID, ProtimePersNr, NAME, FIRST
 ORDER BY FIRSTNAME, NAME, LEFT(DateWorked, 7)
 ";
 
-//		echo $query . ' +<br>';
-
 		$res = mysql_query($query, $oConn->getConnection());
 		while ($r = mysql_fetch_assoc($res)) {
 			//

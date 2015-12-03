@@ -23,6 +23,7 @@ require_once "classes/_db_disconnect.inc.php";
 function createChangeUserContent() {
 	global $protect, $settings;
 
+	$fldUserName = '';
 	$error = '';
 
 	if ( $protect->request_positive_number_or_empty('post', 'issubmitted') == '1' ) {

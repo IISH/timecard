@@ -195,17 +195,11 @@ class class_employee {
 
 		if ( $this->getProtimeId() != '0' ) {
 
-			// TODO: onduidelijk wat LIM_PERIODE en YEARCOUNTER doen in PROTIME_P_LIMIT
-			// moet de query uitgebreid worden?
-			// met LIM_PERIODE?
-			// met YEARCOUNTER?
-			// ... alleen END_VAL > 0 ?
-
 			$vakantie = advancedSingleRecordSelectMysql(
 						'default'
 						, "PROTIME_P_LIMIT"
 						, array("BEGIN_VAL", "END_VAL", "BOOKDATE")
-						, "PERSNR=" . $this->getProtimeId() . " AND EXEC_ORDER=2 AND LIM_PERIODE = 6 "
+						, "PERSNR=" . $this->getProtimeId() . " AND YEARCOUNTER=1 AND LIM_PERIODE = 6 "
 						, '*'
 						, "BOOKDATE DESC"
 					);
@@ -350,7 +344,7 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 
 	function getHoursPerWeek3($year) {
 		$oHoursPerWeek = new class_employee_hours_per_week($this, $year);
-		if ( date(class_settings::getSetting("timeStampRefreshLowPriority")) > $oHoursPerWeek->getLastRefresh() ) {
+		if ( date(Settings::get("timeStampRefreshLowPriority")) > $oHoursPerWeek->getLastRefresh() ) {
 			$oHoursPerWeek->refresh();
 		}
 
@@ -366,7 +360,7 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 				'default'
 				, "PROTIME_P_LIMIT"
 				, array("BEGIN_VAL", "END_VAL", "BOOKDATE")
-				, "PERSNR=" . $this->getProtimeId() . " AND EXEC_ORDER=2 "
+				, "PERSNR=" . $this->getProtimeId() . " AND YEARCOUNTER=1 "
 				, '*'
 				, "BOOKDATE DESC"
 			);
@@ -404,7 +398,7 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 						'default'
 						, "PROTIME_P_LIMIT"
 						, array("BEGIN_VAL", "END_VAL", "BOOKDATE")
-						, "PERSNR=" . $this->getProtimeId() . " AND EXEC_ORDER=2 "
+						, "PERSNR=" . $this->getProtimeId() . " AND YEARCOUNTER=1 "
 						, '*'
 						, "BOOKDATE DESC"
 					);
@@ -693,7 +687,7 @@ ORDER BY Workcodes.Description
 	// add 'daily automatic additions'
 	function addDailyAutomaticAdditions( $oDate, $protimeMonthData ) {
 		// don't do if legacy, or date in the future
-		//if ( $oDate->get("Y-m") < class_settings::getSetting("oldest_modifiable_daa_month") || $oDate->get("Y-m-d") >= date("Y-m-d") ) {
+		//if ( $oDate->get("Y-m") < Settings::get("oldest_modifiable_daa_month") || $oDate->get("Y-m-d") >= date("Y-m-d") ) {
 		if ( class_datetime::is_legacy( $oDate ) || $oDate->get("Y-m-d") >= date("Y-m-d") ) {
 			return;
 		}

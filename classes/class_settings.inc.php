@@ -3,14 +3,14 @@
  * Class for loading and getting settings from the database
  * @version 0.1 2014-06-05
  */
-class class_settings {
+class Settings {
 	private static $is_loaded = false;
 	private static $settings = null;
 
 	/**
 	 * Load the settings from the database
 	 */
-	private static function loadSettings() {
+	private static function load() {
 		global $databases;
 
 		$oConn = new class_mysql($databases['default']);
@@ -38,9 +38,9 @@ class class_settings {
 	 * @param string $setting_name The name of the setting
 	 * @return string The value of the setting
 	 */
-	public static function getSetting($setting_name) {
+	public static function get($setting_name) {
 		if ( !self::$is_loaded ) {
-			self::loadSettings();
+			self::load();
 		}
 
 		$value = self::$settings[$setting_name];
@@ -48,7 +48,7 @@ class class_settings {
 		return $value;
 	}
 
-	public static function saveSetting( $setting_name, $value, $settingsTable = '' ) {
+	public static function save( $setting_name, $value, $settingsTable = '' ) {
 		global $settings, $databases;
 		$setting_name = trim($setting_name);
 
@@ -62,7 +62,8 @@ class class_settings {
 			$oConn = new class_mysql($databases['default']);
 			$oConn->connect();
 
-			$result = mysql_query("SELECT * FROM `$settingsTable` WHERE `property`='" . $setting_name . "' ");
+			$query = "SELECT * FROM `$settingsTable` WHERE `property`='" . $setting_name . "' ";
+			$result = mysql_query($query);
 			$num_rows = mysql_num_rows($result);
 
 			if ($num_rows > 0) {

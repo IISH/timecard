@@ -7,7 +7,7 @@ class class_website_protection {
 	function send_warning_mail($tekst) {
 		$message = '';
 
-		$recipients = trim(class_settings::getSetting("admin_email"));
+		$recipients = trim(Settings::get("admin_email"));
 
 		$recipients = str_replace(array(';', ':', ' '), ',', $recipients);
 
@@ -65,7 +65,7 @@ class class_website_protection {
 
 	// Send error message to browser
 	function send_error_to_browser($text) {
-		echo fillTemplate(class_settings::getSetting("error_to_browser"), array('text' => $text));
+		echo fillTemplate(Settings::get("error_to_browser"), array('text' => $text));
 	}
 
 	function check_for_xss_code($tekst, $tekst_is_integer) {

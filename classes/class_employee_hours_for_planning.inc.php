@@ -77,7 +77,7 @@ class class_employee_hours_for_planning {
 			$this->number_of_nationalholidays[$r["yearmonth"]] = $r['number_of_nationalholidays'];
 			$this->number_of_brugdagen[$r["yearmonth"]] = $r['number_of_brugdagen'];
 
-			if ( date(class_settings::getSetting("timeStampRefreshLowPriority")) != $r['last_refresh'] ) {
+			if ( date(Settings::get("timeStampRefreshLowPriority")) != $r['last_refresh'] ) {
 				$areAllLastRefreshOkay = false;
 			}
 		}

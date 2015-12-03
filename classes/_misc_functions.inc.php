@@ -64,7 +64,7 @@ function convertToJiraUrl( $jira_issue_nr ) {
 	$ret = '';
 	$separator = '';
 
-	$jira_url_browse = class_settings::getSetting('jira_url_browse');
+	$jira_url_browse = Settings::get('jira_url_browse');
 
 	$jira_issue_nr = trim($jira_issue_nr);
 
@@ -659,7 +659,7 @@ https://timecard.socialhistoryservices.org/employees_edit.php?ID=" . $retval["id
 - and save the record
 (that's all.)
 After that you can close the Jira call.";
-		$protect->send_email( class_settings::getSetting("email_new_employees_to"), "IISG Timecard - new user added", $newUserBody );
+		$protect->send_email( Settings::get("email_new_employees_to"), "IISG Timecard - new user added", $newUserBody );
 	}
 
 	return $retval;
@@ -731,7 +731,7 @@ function getCheckedInCheckedOut($protimeid, $date = '') {
 function addAndRemoveAbsentiesInTimecard($timecard_id, $protime_id, $oDate) {
 	global $databases;
 
-	if ( $oDate->get("Y") < class_settings::getSetting("oldest_modifiable_year") ) {
+	if ( $oDate->get("Y") < Settings::get("oldest_modifiable_year") ) {
 		return;
 	}
 
@@ -883,7 +883,7 @@ function addEerderNaarHuisInTimecardMonth($timecard_id, $protime_id, $oDate) {
 	// eerder naar huis
 	for ( $i = 1; $i <= date("t", mktime(0, 0, 0, (int)( $oDate->get("m") ), (int)( $oDate->get("d") ), (int)( $oDate->get("Y") ) )); $i++ ) {
 		$oDate2 = new class_date( $oDate->get("y"), $oDate->get("m"), $i );
-		if ( $oDate->get("Y") < class_settings::getSetting("oldest_modifiable_year") || $oDate2->get("Ymd") >= date("Ymd") ) {
+		if ( $oDate->get("Y") < Settings::get("oldest_modifiable_year") || $oDate2->get("Ymd") >= date("Ymd") ) {
 			// break from for loop
 			break;
 		}
@@ -945,7 +945,7 @@ function addEerderNaarHuisInTimecard($timecard_id, $protime_id, $oDate) {
 	global $databases;
 
 	// add 'eerder naar huis' for dates until (excluding) today
-	if ( $oDate->get("Y") < class_settings::getSetting("oldest_modifiable_year") || $oDate->get("Ymd") >= date("Ymd") ) {
+	if ( $oDate->get("Y") < Settings::get("oldest_modifiable_year") || $oDate->get("Ymd") >= date("Ymd") ) {
 		return;
 	}
 
@@ -1204,7 +1204,7 @@ function getQuarterTotals( $date, $userTimecardId, $urlprefix ) {
 
 		$syncUrl = $urlprefix . "sync_timecard_protime.php?d=" . $oDate->get("Ymd") . "&eid=" . $userTimecardId;
 		$syncLabel = '';
-		if ( $oDate->get("Y") >= class_settings::getSetting("oldest_modifiable_year") ) {
+		if ( $oDate->get("Y") >= Settings::get("oldest_modifiable_year") ) {
 			$syncLabel = " <font size=-2><em><a href=\"" . $syncUrl . "\">(sync)</a></em></font>";
 		}
 		$ret .= '<td valign=top><table border=1 cellspacing=0 cellpadding=3>';

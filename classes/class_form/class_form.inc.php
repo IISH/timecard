@@ -114,7 +114,7 @@ class class_form {
 	function timecard_mysql_insert_id($table) {
 		$retval = '0';
 
-		$query = "SELECT TOP 1 ID FROM $table ORDER BY ID DESC ";
+		$query = "SELECT ID FROM $table ORDER BY ID DESC LIMIT 0, 1 ";
 		$result = mysql_query($query, $this->oDb->getConnection());
 		if ( $row = mysql_fetch_assoc($result) ) {
 			$retval = $row["ID"];

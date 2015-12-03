@@ -106,7 +106,7 @@ function createLoginPage() {
 </table>
 
 <br>
-" . class_settings::getSetting("text_functional_maintainer") . "
+" . Settings::get("text_functional_maintainer") . "
 <script language=\"javascript\">
 <!--
 document.frmA.fldLogin.focus();

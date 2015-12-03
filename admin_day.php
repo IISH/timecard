@@ -174,9 +174,9 @@ function getAdminDay( $date ) {
 
 			// hide add new button if ...
 			if ( $oDate->get("Y-m-d") < $oEmployee->getAllowAdditionsStartingDate() ) {
-				$ret .= '<div class="youcannot">' . class_settings::getSetting('error_cannot_modify_legacy_contact_fa') . ' (error: 256985)</div>';
+				$ret .= '<div class="youcannot">' . Settings::get('error_cannot_modify_legacy_contact_fa') . ' (error: 256985)</div>';
 			} elseif ( class_datetime::is_future( $oDate ) ) {
-				$ret .= '<div class="youcannot">' . class_settings::getSetting('error_cannot_add_in_the_future') . '</div>';
+				$ret .= '<div class="youcannot">' . Settings::get('error_cannot_add_in_the_future') . '</div>';
 			} else {
 				$ret .= "
 <table>

@@ -6,7 +6,7 @@ class class_field_jira_url_browse extends class_field {
 		$ret = '';
 
 		$value = trim(parent::view_field($row));
-		$jira_url_browse = class_settings::getSetting('jira_url_browse');
+		$jira_url_browse = Settings::get('jira_url_browse');
 
 		$separator = '';
 
