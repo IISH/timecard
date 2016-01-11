@@ -155,6 +155,8 @@ class SyncProtimeMysql {
 			$query = "INSERT INTO " . $this->getTargetTable() . " ( $fields ) VALUES ( $values ) ";
 		}
 
+//preprint( $query );
+
 		if ( $this->counter % 10 === 0 ) {
 			if ( $this->counter % 100 === 0 ) {
 				echo $this->counter . ' ';

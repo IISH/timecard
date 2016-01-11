@@ -1,8 +1,13 @@
-<?php 
-class class_misc {
+<?php
 
-	function class_misc() {
-	}
+function preprint( $object ) {
+	echo '<pre>';
+	print_r( $object );
+	echo '</pre>';
+}
+
+
+class class_misc {
 
 	public static function convertArrayToHtmlTable( $arr, $class = 'misc' ) {
 		$ret = '';

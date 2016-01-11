@@ -18,8 +18,8 @@ echo "Start time: " . date("Y-m-d H:i:s") . "<br>\n";
 // sync
 $sync = new SyncProtimeMysql();
 $sync->setSourceTable("PR_MONTH");
-$sync->setSourceCriterium(" BOOKDATE>='" . date("Ymd", mktime(0, 0, 0, date("m")-3, 1, date("Y"))) . "' ");
-//$sync->setSourceCriterium(" BOOKDATE>='20130101' ");
+$sync->setSourceCriterium(" BOOKDATE>='" . date("Ymd", mktime(0, 0, 0, date("m")-1, 1, date("Y"))) . "' ");
+//$sync->setSourceCriterium(" BOOKDATE>='" . date("Ymd", mktime(0, 0, 0, date("m")-1, 1, date("Y"))) . "' AND PERSNR IN (210, 245) ");
 $sync->setTargetTable("PROTIME_PR_MONTH");
 $sync->setPrimaryKey("PR_KEY");
 $sync->addFields( array("PR_KEY", "PERSNR", "BOOKDATE", "CYC_DP", "DAYPROG", "NORM", "WORKED", "PREST", "RPREST", "EXTRA", "WEEKPRES1", "WEEKPRES2", "WEEKPRES3", "PAYPERIO_PRES", "BALANCE", "TERMINAL", "FLAGS1", "FLAGS2", "FLAGS3", "FLAGS4", "FLAGS5", "FLAGS6", "FLAGS7", "ABS_CORE", "NROFBREAKS", "BREAKTIME", "CALCULATED", "ACCESSGROUP", "SHIFT", "CYCLIQ", "COSTCENTERGROUP", "COSTBLOCKING", "PP_FUNCTION", "COMMENTS", "CUSTOMER" ) );

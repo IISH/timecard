@@ -254,7 +254,8 @@ $objPHPExcel->getActiveSheet()->getStyle(convertSpreadsheatColumnNumberToColumnC
 // + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
 
 // close data entry for specified employee
-closeDataEntry($year, $month, $id);
+// close alleen bij oracle export
+//closeDataEntry($year, $month, $id);
 
 //
 include_once "_admin_euprojecten_overzichten_xls_90.inc.php";

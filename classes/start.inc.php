@@ -1,4 +1,6 @@
 <?php
+//die('Closed for maintenance (Sunday December 20, 2015)');
+
 session_start();
 
 $settings = array();
