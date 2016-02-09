@@ -4,14 +4,22 @@ $arrAfwezigheden = array("Verlof" => "verlof", "Feestdagen" => "feestdagen", "Zi
 
 // achterhaal naam van persoon
 $oEmployee = new class_employee($id, $settings);
-$employee_name = $oEmployee->getLastname() . ', ' . $oEmployee->getFirstname();
+$employee_name = trim($oEmployee->getLastname() . ', ' . $oEmployee->getFirstname());
 
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+// if no name, use login name
+if ( $employee_name == '' || $employee_name == ',' ){
+	$employee_name = $oEmployee->getLoginName();
+	$employee_name = str_replace('.', ' ', $employee_name);
+}
+
+// replace special characters by standard characters
+setlocale(LC_ALL, 'en_GB');
+$employee_name = str_replace(array('"', '\''), '', iconv("ISO-8859-1", "US-ASCII//TRANSLIT", $employee_name));
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 $projects = array();
 $projects = getListOfShowSeparatedProjectsOnReports($projects, $year, 0, 0);
-//print_r($projects);
-//echo "+++++<br><br>";
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -143,7 +151,6 @@ function getTimecardUrenGroupedByMonth($id, $year, $pid) {
 
 	$query .= " GROUP BY SUBSTR(DateWorked,1,7) ";
 
-//echo "1111 " . $query . "   ++++<br><br>";
 	$result = mysql_query($query, $oConn->getConnection());
 	while ($row = mysql_fetch_assoc($result)) {
 		$retval[$row["WORKDATE"]] = $row["AANTAL"];
@@ -178,8 +185,6 @@ WHERE Employee=" . $id . "
 GROUP BY SUBSTR(DateWorked,1,10)
 ";
 
-//echo "222 " . $query . "   ++++<br><br>";
-
 	$result = mysql_query($query, $oConn->getConnection());
 	while ($row = mysql_fetch_assoc($result)) {
 		$retval[$row["WORKDATE"]] = $row["AANTAL"];
@@ -189,43 +194,6 @@ GROUP BY SUBSTR(DateWorked,1,10)
 
 	return $retval;
 }
-
-/*
-function getTimecardUren($id, $year, $month, $day, $pid) {
-	global $databases;
-
-	$oConn = new class_mysql($databases['default']);
-	$oConn->connect();
-
-	$retval = 0;
-
-	$yearpostfix = '';
-//	if ( $year < 2014 ) {
-//		$yearpostfix = '_' . $year;
-//	}
-
-	$query = "SELECT SUM(TimeInMinutes) AS AANTAL FROM `Workhours$yearpostfix` WHERE Employee=" . $id . " ::DATE:: "
-		. " AND WorkCode IN (SELECT ID FROM `Workcodes$yearpostfix` WHERE ID=" . $pid . " OR ParentID = " . $pid . ") ";
-
-	if ( $day > 0 ) {
-		$query = str_replace("::DATE::", " AND DateWorked LIKE '" . $year . '-' . str_pad($month, 2, '0', STR_PAD_LEFT) . '-' . str_pad($day, 2, '0', STR_PAD_LEFT) . "%' ", $query);
-	} else {
-		$query = str_replace("::DATE::", " AND DateWorked LIKE '" . $year . '-' . str_pad($month, 2, '0', STR_PAD_LEFT) . "-%' ", $query);
-	}
-
-
-	echo "333 " . $query . "   ++++<br><br>";
-
-	$result = mysql_query($query, $oConn->getConnection());
-	if ($row = mysql_fetch_row($result)) {
-		$retval = $row[0];
-	}
-
-	mysql_free_result($result);
-
-	return $retval;
-}
-*/
 
 function getProtimeUrenGroupedByDay($protimeId, $year, $month, $view, $timecardid) {
 	global $databases;

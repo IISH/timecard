@@ -570,8 +570,6 @@ function advancedSingleRecordSelectMysql($db, $table, $fields, $criterium, $fiel
 		$advSelect .= " ORDER BY " . $order_by . " ";
 	}
 
-//debug($advSelect, 'advancedSingleRecordSelectMysql: ');
-
 	$resultAdvSelect = mysql_query($advSelect, $oConn->getConnection());
 	if ($rowSelect = mysql_fetch_assoc($resultAdvSelect)) {
 		$retval["__is_record_found"] = '1';
@@ -1228,8 +1226,18 @@ function getQuarterTotals( $date, $userTimecardId, $urlprefix ) {
 		for ( $i = 1; $i <= $number_of_days_in_current_month; $i++ ) {
 			$date2["d"] = $i;
 
-			$timecard_day_total = $timecard_day_totals[$i] + $dagvakantie2[$i];
-			$protime_day_total = $protime_day_totals[$i];
+			$timecard_day_total = 0;
+			if ( isset($timecard_day_totals[$i]) ) {
+				$timecard_day_total += $timecard_day_totals[$i];
+			}
+			if ( isset($dagvakantie2[$i]) ) {
+				$timecard_day_total += $dagvakantie2[$i];
+			}
+
+			$protime_day_total = 0;
+			if ( isset( $protime_day_totals[$i] ) ) {
+				$protime_day_total = $protime_day_totals[$i];
+			}
 
 			// TIMECARD
 			if ( $timecard_day_total == 0 && $protime_day_total == 0 ) {

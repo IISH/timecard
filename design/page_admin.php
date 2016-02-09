@@ -21,7 +21,14 @@
 <div class="main{cssextension}">
 
 	<div class="header">
-		<div class="welcome"><span><span class="name">{welcome}</span><span class="logout">{logout}</span></span></div>
+		<div class="welcome">
+			<span>
+				<span class="name">{name}</span>
+				<span class="holiday">{holiday}</span>
+				<span class="checkinout">{checkinout}</span>
+				<span class="logout">{logout}</span>
+			</span>
+		</div>
 		<div class="logo"><img src="images/logo-iisg/{color}.png"></div>
 		<div class="title"><span class="title">timecard</span><br><span class="subtitle">Bringing Hours Together</span></div>
 	</div>

@@ -23,6 +23,7 @@ class class_authentication {
 				// set some variables
 				ldap_set_option($ad, LDAP_OPT_PROTOCOL_VERSION, 3);
 				ldap_set_option($ad, LDAP_OPT_REFERRALS, 0);
+
 				// bind to the ldap directory
 				$bd = @ldap_bind($ad, $user, $pw);
 

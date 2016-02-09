@@ -38,30 +38,25 @@ function createSettingsPage() {
 		$data["firstname"] = $row["FIRSTNAME"];
 		$data["lastname"] = $row["NAME"];
 		$data["longcode"] = $row["LongCode"];
-		$data["hours"] = $oWebuser->calculateVacationHours();
+		$data["hours"] = $oWebuser->calculateVacationHoursUntilToday();
+		$data["checkinout"] = $oWebuser->getCheckInOut();
 
 		if ( $row["HoursDoubleField"] == '1' ) {
 			$data["tif_source"] = 'Double field';
-//			$data["tif_target"] = 'single field';
 		} else {
 			$data["tif_source"] = 'Single field';
-//			$data["tif_target"] = 'double field';
 		}
 
 		if ( $row["sort_projects_on_name"] == '1' ) {
 			$data["pso_source"] = 'Project name';
-//			$data["pso_target"] = 'Project number';
 		} else {
 			$data["pso_source"] = 'Project number';
-//			$data["pso_target"] = 'Project name';
 		}
 
 		if ( $row["show_jira_field"] == '1' ) {
 			$data["jira_source"] = 'Yes';
-//			$data["jira_target"] = 'No';
 		} else {
 			$data["jira_source"] = 'No';
-//			$data["jira_target"] = 'Yes';
 		}
 
 		// add content
