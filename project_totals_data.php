@@ -264,7 +264,21 @@ if ( count($oProjectTotals->getIds()) > 0 ) {
 		// name
 		$c = 1;
 		$oEmployee = new class_employee($id, $settings);
-		$sheet->SetCellValue( rc($r,$c), $oEmployee->getFirstLastname());
+
+		$employee_name = trim($oEmployee->getFirstLastname());
+
+		// if no name, use login name
+		if ( $employee_name == '' || $employee_name == ',' ){
+			$employee_name = $oEmployee->getLoginName();
+			$employee_name = str_replace('.', ' ', $employee_name);
+		}
+
+		// replace special characters by standard characters
+		setlocale(LC_ALL, 'en_GB');
+		$employee_name = str_replace(array('"', '\''), '', iconv("ISO-8859-1", "US-ASCII//TRANSLIT", $employee_name));
+
+//		$sheet->SetCellValue( rc($r,$c), $oEmployee->getFirstLastname());
+		$sheet->SetCellValue( rc($r,$c), $employee_name);
 		$sheet->getStyle( rc($r,$c) )->applyFromArray( $style_names );
 
 		// loop quarters
@@ -339,7 +353,7 @@ if ( count($oProjectTotals->getIds()) > 0 ) {
 }
 
 //
-$filename = $oProject->getDescription() . " (" . $year . ") project-employee totals.xlsx";
+$filename = $oProject->getDescription() . " (" . $year . ") project totals.xlsx";
 
 // send output to browser
 switch ( $output ) {

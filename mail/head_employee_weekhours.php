@@ -38,7 +38,7 @@ foreach ( $departments as $oDepartment ) {
 
 	// get department head
 	$oHead = $oDepartment->getHead();
-	$mail_body .= "Head:" . $fieldseparator . $oHead->getFirstname . ' ' . verplaatsTussenvoegselNaarBegin( $oHead->getLastname() ) . " \n\n";
+	$mail_body .= "Head:" . $fieldseparator . $oHead->getFirstLastname() . " \n\n";
 
 	// start / end date
 	$mail_body .= "From:" . $fieldseparator . $startdate . " \n";
@@ -47,7 +47,7 @@ foreach ( $departments as $oDepartment ) {
 	//
 	$employees = $oDepartment->getEmployeesAndHours($startdate, $enddate);
 	foreach ( $employees as $oEmployee ) {
-		$mail_body .= $oEmployee["employee"]->getFirstname() . ' ' . verplaatsTussenvoegselNaarBegin( $oEmployee["employee"]->getLastname() ) . ":" . $fieldseparator;
+		$mail_body .= $oEmployee["employee"]->getFirstLastname() . ":" . $fieldseparator;
 		$mail_body .= number_format(class_misc::convertMinutesToHours( $oEmployee["timeinminutes"] ),2, ',', '.') . " hour(s) \n";
 		$total += $oEmployee["timeinminutes"];
 	}

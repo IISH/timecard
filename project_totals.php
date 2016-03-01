@@ -14,7 +14,7 @@ if (  $tab == 'exports' ) {
 	$oPage->setTab($menuList->findTabNumber('projects.project_hour_totals'));
 }
 
-$oPage->setTitle('Timecard | Project hours - Totals');
+$oPage->setTitle('Timecard | Project totals');
 $oPage->setContent(createProjectContent());
 
 // show page
@@ -55,10 +55,10 @@ function createProjectContent() {
 	$next = fillTemplate($templateUrl, $dataNext);
 
 	// CURRENT DATE
-	$dataToday['label'] = '*';
-	$dataToday['direction'] = '0';
-	$dataToday['alt'] = 'go to current year';
-	$today = fillTemplate($templateUrl, $dataToday);
+//	$dataToday['label'] = '*';
+//	$dataToday['direction'] = '0';
+//	$dataToday['alt'] = 'go to current year';
+//	$today = fillTemplate($templateUrl, $dataToday);
 
 	// CURRENT DATE
 	$download['label'] = 'Download';
@@ -131,7 +131,7 @@ function changeYear( direction ) {
 <form name=\"frmForm\" id=\"frmForm\">
 <table width=100%>
 <tr>
-	<td>Year: " . $prev . " &nbsp; <span name=\"spanYear\" id=\"spanYear\">" . $year . "</span> " . $today . " &nbsp; " . $next . " &nbsp; &nbsp; " . $downloadButton . "</td>
+	<td>Year: " . $prev . " &nbsp; <span name=\"spanYear\" id=\"spanYear\">" . $year . "</span> &nbsp; " . $next . " &nbsp; &nbsp; " . $downloadButton . "</td>
 	<td align=right><a href=\"" . getBackUrl() . "\">Go back</a></td>
 </tr>
 </table>

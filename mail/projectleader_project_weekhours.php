@@ -38,7 +38,7 @@ foreach ( $projects as $oProject ) {
 
 	// get projectleader
 	$oProjectleader = $oProject->getProjectleader();
-	$mail_body .= "Project leader:" . $fieldseparator . $oProjectleader->getFirstname() . ' ' . verplaatsTussenvoegselNaarBegin( $oProjectleader->getLastname() ) . " \n\n";
+	$mail_body .= "Project leader:" . $fieldseparator . $oProjectleader->getFirstLastname() . " \n\n";
 
 	// start / end date
 	$mail_body .= "From:" . $fieldseparator . $startdate . " \n";
@@ -49,7 +49,7 @@ foreach ( $projects as $oProject ) {
 
 	// name / hours
 	foreach ($workhours as $p) {
-		$mail_body .= $p["employee"]->getFirstname() . ' ' . verplaatsTussenvoegselNaarBegin($p["employee"]->getLastname()) . ":" . $fieldseparator;
+		$mail_body .= $p["employee"]->getFirstLastname() . ":" . $fieldseparator;
 		$mail_body .= number_format(class_misc::convertMinutesToHours($p["timeinminutes"]),2, ',', '.') . " hour(s) \n";
 		$total += $p["timeinminutes"];
 	}

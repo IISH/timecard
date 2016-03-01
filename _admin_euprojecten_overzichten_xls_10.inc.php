@@ -4,7 +4,7 @@ $arrAfwezigheden = array("Verlof" => "verlof", "Feestdagen" => "feestdagen", "Zi
 
 // achterhaal naam van persoon
 $oEmployee = new class_employee($id, $settings);
-$employee_name = trim($oEmployee->getLastname() . ', ' . $oEmployee->getFirstname());
+$employee_name = $oEmployee->getLastFirstname();
 
 // if no name, use login name
 if ( $employee_name == '' || $employee_name == ',' ){

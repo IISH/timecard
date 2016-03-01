@@ -22,7 +22,7 @@ require_once "classes/_db_disconnect.inc.php";
 
 function createContent() {
 
-	$ret = '<h2>Miscellaneous</h2><br>';
+	$ret = '<h2>Exports - Miscellaneous</h2><br>';
 
 	$ret .= '<a href="misc01.php">Misc 01</a> (Booked on Department)<br>';
 	$ret .= '<a href="misc02.php">Misc 02</a> (User Rights)<br>';

@@ -12,22 +12,27 @@ if ( !isset($tab) ) {
 }
 if (  $tab == 'exports' ) {
 	$oPage->setTab($menuList->findTabNumber('exports.projectemployeetotaals'));
+	$tabName = 'Exports';
+	$contentdesign = 'page_exports_project_totals';
 } else {
 	$oPage->setTab($menuList->findTabNumber('projects.project_hour_totals'));
+	$tabName = 'Projects';
+	$contentdesign = 'page_project_employee_totals';
 }
-$oPage->setTitle('Timecard | Project hours - Totals');
-$oPage->setContent(createProjectContent( $tab ));
+$oPage->setTitle('Timecard | '. $tabName . ' - Project totals');
+$oPage->setContent(createProjectContent( $tab, $contentdesign ));
 
 // show page
 echo $oPage->getPage();
 
 require_once "classes/_db_disconnect.inc.php";
 
-function createProjectContent( $tab ) {
+function createProjectContent( $tab, $contentdesign ) {
 	global $settings, $databases, $oWebuser;
 
 	// get design
-	$design = new class_contentdesign("page_project_employee_totals");
+	//$design = new class_contentdesign("page_project_employee_totals");
+	$design = new class_contentdesign( $contentdesign );
 
 	// add header
 	$ret = $design->getHeader();

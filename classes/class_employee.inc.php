@@ -6,7 +6,7 @@ class class_employee {
 	private $timecard_id = 0;
 	private $databases;
 	private $protime_id = 0;
-	private $hoursdoublefield = '';
+	private $hoursdoublefield = -1;
 	private $isdisabled = 0;
 	private $lastname = '';
 	private $firstname = '';
@@ -18,7 +18,7 @@ class class_employee {
 	private $allow_additions_starting_date = '';
 	private $projects = array();
 	private $department = '';
-	private $sortProjectsOnName = 0;
+	private $sortProjectsOnName = -1;
 
 	function class_employee($timecard_id, $settings) {
 		global $databases;
@@ -56,15 +56,17 @@ class class_employee {
 
 			if ( $row_project["show_jira_field"] == 1 ) {
 				$this->show_jira_field = true;
+			} else {
+				$this->show_jira_field = false;
 			}
 
 			$this->hoursdoublefield = $row_project["HoursDoubleField"];
-			if ( $this->hoursdoublefield != 1 && $this->hoursdoublefield != -1 ) {
+			if ( !in_array($this->hoursdoublefield, array(-1, 1)) ) {
 				$this->hoursdoublefield = 1;
 			}
 
 			$this->sortProjectsOnName = $row_project["sort_projects_on_name"];
-			if ( $this->sortProjectsOnName != 1 && $this->sortProjectsOnName != -1 ) {
+			if ( !in_array($this->sortProjectsOnName, array(-1, 1)) ) {
 				$this->sortProjectsOnName = -1;
 			}
 
