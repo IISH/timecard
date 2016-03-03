@@ -61,12 +61,14 @@ class class_employee {
 			}
 
 			$this->hoursdoublefield = $row_project["HoursDoubleField"];
-			if ( !in_array($this->hoursdoublefield, array(-1, 1)) ) {
+			if ( !in_array($this->hoursdoublefield, array(0, 1)) ) {
+//			if ( !in_array($this->hoursdoublefield, array(-1, 1)) ) {
 				$this->hoursdoublefield = 1;
 			}
 
 			$this->sortProjectsOnName = $row_project["sort_projects_on_name"];
-			if ( !in_array($this->sortProjectsOnName, array(-1, 1)) ) {
+			if ( !in_array($this->sortProjectsOnName, array(0, 1)) ) {
+//			if ( !in_array($this->sortProjectsOnName, array(-1, 1)) ) {
 				$this->sortProjectsOnName = -1;
 			}
 
@@ -367,7 +369,7 @@ class class_employee {
 		$holidayFormatted = class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes($vac + $overtime);
 		$overtimeFormatted = class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes($overtime);
 
-		$retval = $holidayFormatted . ' hours <i>(including ' . $overtimeFormatted . ' hours overtime this month, processed until yesterday*)</i>';
+		$retval = $holidayFormatted . ' hours <i>(including ' . $overtimeFormatted . ' hours overtime this month)</i>';
 
 		return $retval;
 	}

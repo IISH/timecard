@@ -41,6 +41,33 @@ function createSettingsPage() {
 		$data["hours"] = $oWebuser->calculateVacationHoursUntilToday();
 		$data["checkinout"] = $oWebuser->getCheckInOut();
 
+		// add content
+		$ret .= fillTemplate($template, $data);
+	}
+	mysql_free_result($result);
+
+	// add footer
+	$ret .= $design->getFooter();
+
+	// + + + + + + + + + + + + + + + + + +
+
+	// PREFERENCES
+
+	// get design
+	$design = new class_contentdesign("page_preferences");
+
+	// add header
+	$ret .= $design->getHeader();
+
+	$oConn = new class_mysql($databases['default']);
+	$oConn->connect();
+
+	$query = "SELECT * FROM vw_Employees WHERE ID=" . $oWebuser->getTimecardId();
+	$result = mysql_query($query, $oConn->getConnection());
+
+	if ($row = mysql_fetch_assoc($result)) {
+		$template = $design->getContent();
+
 		if ( $row["HoursDoubleField"] == '1' ) {
 			$data["tif_source"] = 'Double field';
 		} else {
@@ -63,9 +90,6 @@ function createSettingsPage() {
 		$ret .= fillTemplate($template, $data);
 	}
 	mysql_free_result($result);
-
-	// add footer
-	$ret .= $design->getFooter();
 
 	return $ret;
 }
