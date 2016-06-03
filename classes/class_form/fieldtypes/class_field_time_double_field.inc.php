@@ -122,10 +122,12 @@ class class_field_time_double_field extends class_field {
 
 		// + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
 
-		$inputfield = str_replace("::FIELDNAME::", $this->get_fieldname(), $inputfield);
-
 		$inputfield = str_replace("::VALUE_HOURS::", $veldwaarde_hours, $inputfield);
 		$inputfield = str_replace("::VALUE_MINUTES::", $veldwaarde_minutes, $inputfield);
+
+		//
+		$inputfield = $this->setInputFieldAttributes($inputfield);
+		$inputfield = $this->cleanUpLabels($inputfield);
 
 		return $inputfield;
 	}

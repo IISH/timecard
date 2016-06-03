@@ -35,12 +35,13 @@ class class_field_textarea extends class_field {
 		$veldwaarde = str_replace("\"", "&quot;", $veldwaarde);
 		$veldwaarde = trim($veldwaarde);
 
-		$inputfield = "<textarea id=\"FORM_::FIELDNAME::\" name=\"FORM_::FIELDNAME::\" class=\"::CLASS::\" style=\"::STYLE::\">::VALUE::</textarea>";
+		$inputfield = "<textarea id=\"FORM_::FIELDNAME::\" name=\"FORM_::FIELDNAME::\" ::CLASS:: ::STYLE::>::VALUE::</textarea>";
 
-		$inputfield = str_replace("::FIELDNAME::", $this->get_fieldname(), $inputfield);
 		$inputfield = str_replace("::VALUE::", $veldwaarde, $inputfield);
-		$inputfield = str_replace("::CLASS::", $this->get_class(), $inputfield);
-		$inputfield = str_replace("::STYLE::", $this->get_style(), $inputfield);
+
+		//
+		$inputfield = $this->setInputFieldAttributes($inputfield);
+		$inputfield = $this->cleanUpLabels($inputfield);
 
 		return $inputfield;
 	}

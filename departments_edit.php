@@ -78,16 +78,16 @@ function createDepartmentsEditContent() {
 		, 'onNew' => '0'
 		)));
 
-	$oForm->add_field( new class_field_bit ( array(
+	$oForm->add_field( new class_field_static_string_list ( array(
 		'fieldname' => 'enable_weekly_report_mail'
-		, 'fieldlabel' => 'Enable weekly mail report?'
+		, 'fieldlabel' => 'Send weekly mail report?'
 		, 'onNew' => '1'
+		, 'choices' => array( array('1', 'yes'), array('0', 'no') )
 		)));
 
 	$oForm->add_field( new class_field_bit ( array(
 		'fieldname' => 'isenabled'
 		, 'fieldlabel' => 'Is enabled?'
-		, 'required' => 0
 		, 'onNew' => '1'
 		)));
 

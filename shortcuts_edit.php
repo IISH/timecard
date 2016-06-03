@@ -34,6 +34,7 @@ function createShortcutsContent() {
 	require_once("./classes/class_form/fieldtypes/class_field_list.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_time_double_field.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_time_single_field.inc.php");
+	require_once("./classes/class_form/fieldtypes/class_field_time_free_input_field.inc.php");
 
 	$oDb = new class_mysql($databases['default']);
 	$oForm = new class_form($settings, $oDb);
@@ -73,27 +74,36 @@ function createShortcutsContent() {
 		, 'show_empty_row' => true
 		)));
 
-	// single or double field
-	if ( $oWebuser->getHoursdoublefield() != 1 ) {
+	// single select field, double select field or free input field
+	if ( $oWebuser->getHoursdoublefield() == 2 ) {
 
-		$oForm->add_field( new class_field_time_single_field ( array(
+		$oForm->add_field( new class_field_time_free_input_field ( array(
 			'fieldname' => 'TimeInMinutes'
-			, 'fieldlabel' => 'Time (hh:mm)'
+			, 'fieldlabel' => 'Time (h:mm)'
+			, 'required' => 0
+			, 'placeholder' => '0:00'
+			, 'style' => 'width:60px;'
+			)));
+
+	} elseif ( $oWebuser->getHoursdoublefield() == 1 ) {
+
+		$oForm->add_field( new class_field_time_double_field ( array(
+			'fieldname' => 'TimeInMinutes'
+			, 'fieldlabel' => 'Time (h:mm)'
 			, 'required' => 1
-			, 'possible_hour_values' => array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")
+			, 'possible_hour_values' => array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10")
 			, 'possible_minute_values' => array("00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55")
 			)));
 
 	} else {
 
-		$oForm->add_field( new class_field_time_double_field ( array(
+		$oForm->add_field( new class_field_time_single_field ( array(
 			'fieldname' => 'TimeInMinutes'
-			, 'fieldlabel' => 'Time (hh:mm)'
+			, 'fieldlabel' => 'Time (h:mm)'
 			, 'required' => 1
-			, 'possible_hour_values' => array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")
+			, 'possible_hour_values' => array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10")
 			, 'possible_minute_values' => array("00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55")
 			)));
-
 	}
 
 	$oForm->add_field( new class_field_textarea ( array(

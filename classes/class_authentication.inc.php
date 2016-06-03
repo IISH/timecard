@@ -5,7 +5,7 @@ class class_authentication {
 	}
 
 	function authenticate( $login, $password ) {
-		return class_authentication::check_ldap('iisgnet\\' . $login, $password, array("apollo3.iisg.net"));
+		return class_authentication::check_ldap('iisgnet\\' . $login, $password, array('sa-dc02.iisg.net'));
 	}
 
 	function check_ldap($user, $pw, $servers) {

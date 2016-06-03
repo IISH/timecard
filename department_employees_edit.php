@@ -31,11 +31,7 @@ function createEmployeesEditContent() {
 
 	require_once("./classes/class_form/class_form.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_string.inc.php");
-//	require_once("./classes/class_form/fieldtypes/class_field_bit.inc.php");
-//	require_once("./classes/class_form/fieldtypes/class_field_integer.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_hidden.inc.php");
-//	require_once("./classes/class_form/fieldtypes/class_field_textarea.inc.php");
-//	require_once("./classes/class_form/fieldtypes/class_field_readonly.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_list.inc.php");
 
 	$oDb = new class_mysql($databases['default']);

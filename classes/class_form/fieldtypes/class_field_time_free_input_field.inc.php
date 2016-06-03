@@ -1,10 +1,10 @@
 <?php 
 require_once("./classes/class_form/fieldtypes/class_field.inc.php");
 
-class class_field_decimal extends class_field {
+class class_field_time_free_input_field extends class_field {
 	private $m_addquotes;
 
-	function class_field_decimal($fieldsettings) {
+	function class_field_integer($fieldsettings) {
 		parent::class_field($fieldsettings);
 
 		$this->m_addquotes = 0;
@@ -47,26 +47,20 @@ class class_field_decimal extends class_field {
 			}
 		}
 
-		$inputfield = "<input name=\"FORM_::FIELDNAME::\" type=\"text\" value=\"::VALUE::\" size=\"::SIZE::\" ::STYLE:: ::CLASS:: ::PLACEHOLDER::>";
+		$inputfield = "<input name=\"FORM_::FIELDNAME::\" type=\"text\" value=\"::VALUE::\" size=\"::SIZE::\" ::STYLE:: ::CLASS:: ::PLACEHOLDER:: autocomplete=\"off\">";
 
-		$inputfield = str_replace("::VALUE::", $veldwaarde, $inputfield);
+		if ( $veldwaarde == '' ) {
+			$inputfield = str_replace("::VALUE::", '', $inputfield);
+
+		} else {
+			$inputfield = str_replace("::VALUE::", class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes($veldwaarde), $inputfield);
+		}
 
 		//
 		$inputfield = $this->setInputFieldAttributes($inputfield);
 		$inputfield = $this->cleanUpLabels($inputfield);
 
 		return $inputfield;
-	}
-
-	function is_field_value_correct($veldwaarde = "") {
-		$retval = 1; // default = okay
-
-		if ( is_numeric($veldwaarde) === false ) {
-			// not an integer
-			$retval = 0;
-		}
-
-		return $retval;
 	}
 
 	function push_field_into_query_array($query_fields) {
@@ -79,5 +73,49 @@ class class_field_decimal extends class_field {
 		array_push($query_fields, array($this->get_fieldname() => $value));
 
 		return $query_fields;
+	}
+
+	function get_form_value($field = '' ) {
+		if ( $field == '' ) {
+			$retval = $_POST["FORM_" . $this->get_fieldname()];
+		} else {
+			$retval = $_POST["FORM_" . $field];
+		}
+
+		// replace everything except integers to semicolon
+		$retval = preg_replace('/[^0-9:]/', ':', $retval);
+		// TODO
+		$retval = str_replace('::::', ':', $retval);
+		$retval = str_replace(':::', ':', $retval);
+		$retval = str_replace('::', ':', $retval);
+
+		$arr = explode(':', $retval);
+		switch ( count($arr) ) {
+			case 0:
+				$retval = 0;
+				break;
+			case 1:
+				$arr[0] = substr("00" . $arr[0],-2);
+				$retval = $arr[0] * 60;
+				break;
+			default:
+				$arr[0] = substr("00" . $arr[0],-2);
+				$arr[1] = substr("00" . $arr[1],-2);
+				$retval = ( $arr[0] * 60 ) + $arr[1];
+		}
+
+		return $retval;
+	}
+
+	function is_field_value_correct($veldwaarde = "") {
+		$retval = 1; // default = okay
+
+		if ( $this->is_field_required() == 1 ) {
+			if ( $veldwaarde == '' ) {
+				$retval = '0:00';
+			}
+		}
+
+		return $retval;
 	}
 }

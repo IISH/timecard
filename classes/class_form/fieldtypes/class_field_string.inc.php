@@ -37,19 +37,13 @@ class class_field_string extends class_field {
 		// extra
 		$veldwaarde = trim($veldwaarde);
 
-		$inputfield = "<input name=\"FORM_::FIELDNAME::\" type=\"text\" value=\"::VALUE::\" size=\"::SIZE::\" ::STYLE:: ::CLASS::>";
-
-		$inputfield = str_replace("::SIZE::", $this->m_size, $inputfield);
-
-		$inputfield = str_replace("::FIELDNAME::", $this->get_fieldname(), $inputfield);
+		$inputfield = "<input name=\"FORM_::FIELDNAME::\" type=\"text\" value=\"::VALUE::\" size=\"::SIZE::\" ::STYLE:: ::CLASS:: ::PLACEHOLDER::>";
 
 		$inputfield = str_replace("::VALUE::", $veldwaarde, $inputfield);
 
-		if ( $this->get_style() != '' ) {
-			$inputfield = str_replace("::STYLE::", "STYLE=\"" . $this->get_style() . "\"", $inputfield);
-		} else {
-			$inputfield = str_replace("::STYLE::", '', $inputfield);
-		}
+		//
+		$inputfield = $this->setInputFieldAttributes($inputfield);
+		$inputfield = $this->cleanUpLabels($inputfield);
 
 		return $inputfield;
 	}

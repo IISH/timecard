@@ -6,7 +6,7 @@ class class_misc01 {
 
 		$ret = array();
 
-		$ret[] = array('Name', 'Description', 'Time (hh:mm)');
+		$ret[] = array('Name', 'Description', 'Time (h:mm)');
 
 		$oConn = new class_mysql($databases['default']);
 		$success = $oConn->connect();

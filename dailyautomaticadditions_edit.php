@@ -33,8 +33,8 @@ function createShortcutsContent() {
 	require_once("./classes/class_form/fieldtypes/class_field_textarea.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_list.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_string.inc.php");
-	require_once("./classes/class_form/fieldtypes/class_field_time_double_field.inc.php");
-	require_once("./classes/class_form/fieldtypes/class_field_time_single_field.inc.php");
+//	require_once("./classes/class_form/fieldtypes/class_field_time_double_field.inc.php");
+//	require_once("./classes/class_form/fieldtypes/class_field_time_single_field.inc.php");
 
 	$oDb = new class_mysql($databases['default']);
 	$oForm = new class_form($settings, $oDb);

@@ -11,7 +11,7 @@ if ( !in_array( $switch, array('tif', 'pso', 'jira') ) ) {
 switch ( $switch ) {
 	case "tif": // time input format
 		$field = 'HoursDoubleField';
-		$howManyChoices = 2;
+		$howManyChoices = 3;
 		break;
 	case "pso": // projects sorting order
 		$field = 'sort_projects_on_name';

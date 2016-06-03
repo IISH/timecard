@@ -61,10 +61,10 @@ class class_employee {
 			}
 
 			$this->hoursdoublefield = $row_project["HoursDoubleField"];
-			if ( !in_array($this->hoursdoublefield, array(0, 1)) ) {
+//			if ( !in_array($this->hoursdoublefield, array(0, 1, 2 )) ) {
 //			if ( !in_array($this->hoursdoublefield, array(-1, 1)) ) {
-				$this->hoursdoublefield = 1;
-			}
+//				$this->hoursdoublefield = 1;
+//			}
 
 			$this->sortProjectsOnName = $row_project["sort_projects_on_name"];
 			if ( !in_array($this->sortProjectsOnName, array(0, 1)) ) {

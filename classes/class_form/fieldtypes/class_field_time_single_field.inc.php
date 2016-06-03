@@ -97,7 +97,9 @@ class class_field_time_single_field extends class_field {
 
 		// + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
 
-		$inputfield = str_replace("::FIELDNAME::", $this->get_fieldname(), $inputfield);
+		//
+		$inputfield = $this->setInputFieldAttributes($inputfield);
+		$inputfield = $this->cleanUpLabels($inputfield);
 
 		return $inputfield;
 	}

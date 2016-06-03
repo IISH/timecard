@@ -68,11 +68,19 @@ function createSettingsPage() {
 	if ($row = mysql_fetch_assoc($result)) {
 		$template = $design->getContent();
 
-		if ( $row["HoursDoubleField"] == '1' ) {
-			$data["tif_source"] = 'Double field';
-		} else {
-			$data["tif_source"] = 'Single field';
+		switch ( $row["HoursDoubleField"] ) {
+			case "2":
+				$data["tif_source"] = 'Free number field';
+				break;
+			case "1":
+				$data["tif_source"] = 'Double select field';
+				break;
+			default:
+				$data["tif_source"] = 'Single select field';
 		}
+//		if ( $row["HoursDoubleField"] == '1' ) {
+//		} else {
+//		}
 
 		if ( $row["sort_projects_on_name"] == '1' ) {
 			$data["pso_source"] = 'Project name';

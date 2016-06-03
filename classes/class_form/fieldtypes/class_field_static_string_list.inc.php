@@ -74,8 +74,11 @@ class class_field_static_string_list extends class_field {
 		}
 		$inputfield .= "</select>\n";
 
-		$inputfield = str_replace("::FIELDNAME::", $this->get_fieldname(), $inputfield);
 		$inputfield = str_replace("::VALUE::", $veldwaarde, $inputfield);
+
+		//
+		$inputfield = $this->setInputFieldAttributes($inputfield);
+		$inputfield = $this->cleanUpLabels($inputfield);
 
 		return $inputfield;
 	}

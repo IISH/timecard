@@ -174,7 +174,6 @@ function getListOfUsersActiveInSpecificYear($year) {
 
 	$ret = array();
 	$last_id = '';
-	//$query_users = "SELECT * FROM vw_Employees WHERE ( ( firstyear<=" . $year . " AND lastyear>=" . $year . ") OR isdisabled=0 ) AND is_test_account=0 ORDER BY FIRSTNAME, NAME ";
 	$query_users = "SELECT * FROM vw_Employees WHERE ( ( firstyear<=" . $year . " AND lastyear>=" . $year . ") OR isdisabled=0 ) AND is_test_account=0 ORDER BY longcode ";
 	$result_users = mysql_query($query_users, $oConn->getConnection());
 	$item = array();

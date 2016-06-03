@@ -61,23 +61,23 @@ function createFeestdagenContent() {
 	if ( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasFaAuthorisation() ) {
 		$oView->add_field( new class_field_string ( array(
 			'fieldname' => 'omschrijving'
-		, 'fieldlabel' => 'Description'
-		, 'href' => 'finad_nationalholidays_edit.php?ID=[FLD:ID]&backurl=[BACKURL]'
-		)));
+			, 'fieldlabel' => 'Description'
+			, 'href' => 'finad_nationalholidays_edit.php?ID=[FLD:ID]&backurl=[BACKURL]'
+			)));
 	} else {
 		$oView->add_field( new class_field_string ( array(
 			'fieldname' => 'omschrijving'
-		, 'fieldlabel' => 'Description'
-		)));
+			, 'fieldlabel' => 'Description'
+			)));
 	}
 
 	$oView->add_field( new class_field_bit ( array(
 		'fieldname' => 'vooreigenrekening'
-	, 'fieldlabel' => 'For own account'
-	, 'show_different_values' => 1
-	, 'different_true_value' => 'yes'
-	, 'different_false_value' => 'no'
-	)));
+		, 'fieldlabel' => 'For own account'
+		, 'show_different_values' => 1
+		, 'different_true_value' => 'yes'
+		, 'different_false_value' => 'no'
+		)));
 
 	// generate view
 	$ret .= $oView->generate_view();

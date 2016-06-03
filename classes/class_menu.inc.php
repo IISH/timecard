@@ -28,7 +28,9 @@ if ( $oWebuser->hasAdminAuthorisation() ) {
 
 // TAB: PROJECTS
 $menu->addMenuGroup( new class_menugroup('Projects') );
-$menu->addMenuItem( new class_menuitem('projects.project_hour_totals', 'Project totals', 'project_employee_totals.php') );
+if ( $oWebuser->isLoggedIn() ) {
+	$menu->addMenuItem( new class_menuitem('projects.project_hour_totals', 'Project totals', 'project_employee_totals.php') );
+}
 if ( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasDepartmentAuthorisation() ) {
 	$menu->addMenuItem( new class_menuitem('projects.hoursleft', 'Hours for planning', 'hoursleft.php') );
 	$menu->addMenuItem( new class_menuitem('projects.vastwerk', 'Vast werk', 'vast_werk.php') );
