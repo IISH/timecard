@@ -623,6 +623,9 @@ function getAddEmployeeToTimecard($longcode) {
 
 	$query = "SELECT ID, LongCode FROM Employees WHERE LongCode='" . addslashes($longcode) . "' ORDER BY ID DESC ";
 	$result = mysql_query($query, $oConn->getConnection());
+	if ( !$result ) {
+		die('Invalid query: ' . mysql_error());
+	}
 
 	// get ID of employee
 	if ( $row = mysql_fetch_array($result) ) {
