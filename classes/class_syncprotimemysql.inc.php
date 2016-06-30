@@ -3,7 +3,7 @@ require_once dirname(__FILE__) . "/../sites/default/settings.php";
 require_once "class_mysql.inc.php";
 require_once "class_mssql.inc.php";
 
-class class_syncProtimeMysql {
+class SyncProtimeMysql {
 	protected $databases = null;
 	protected $sourceTable = '';
 	protected $targetTable = '';
@@ -85,7 +85,6 @@ class class_syncProtimeMysql {
 			// all records
 			$query = "UPDATE " . $this->targetTable . " SET sync_state=2 ";
 		}
-
 		$resultData = mysql_query($query, $oConn->getConnection());
 
 		//
@@ -96,7 +95,7 @@ class class_syncProtimeMysql {
 		$query .= " ORDER BY " . $this->getPrimaryKey();
 
 		// save counter in table
-		class_settings::saveSetting('cron_counter_' . $this->getTargetTable(), $this->counter, $this->getTargetTable() . "_syncinfo");
+		SyncInfo::save($this->getTargetTable(), 'counter', $this->counter);
 
 		$resultData = mssql_query($query, $oPt->getConnection());
 		while ( $rowData = mssql_fetch_array($resultData) ) {
@@ -117,7 +116,8 @@ class class_syncProtimeMysql {
 
 	protected function insertUpdateMysqlRecord($protimeRowData, $oConn) {
 
-		$result = mysql_query("SELECT * FROM " . $this->getTargetTable() . " WHERE " . $this->getPrimaryKey() . "='" . $protimeRowData[$this->getPrimaryKey()] . "' ", $oConn->getConnection());
+		$query = "SELECT * FROM " . $this->getTargetTable() . " WHERE " . $this->getPrimaryKey() . "='" . $protimeRowData[$this->getPrimaryKey()] . "' ";
+		$result = mysql_query($query, $oConn->getConnection());
 		$num_rows = mysql_num_rows($result);
 
 		$this->lastInsertId = $protimeRowData[$this->getPrimaryKey()];
@@ -160,7 +160,7 @@ class class_syncProtimeMysql {
 				echo $this->counter . ' ';
 
 				// save counter in table
-				class_settings::saveSetting('cron_counter_' . $this->getTargetTable(), $this->counter, $this->getTargetTable() . "_syncinfo");
+				SyncInfo::save($this->getTargetTable(), 'counter', $this->counter);
 			} else {
 				echo '. ';
 			}
@@ -168,7 +168,7 @@ class class_syncProtimeMysql {
 		}
 
 		// save counter in table
-		class_settings::saveSetting('cron_counter_' . $this->getTargetTable(), $this->counter, $this->getTargetTable() . "_syncinfo");
+		SyncInfo::save($this->getTargetTable(), 'counter', $this->counter);
 
 		// execute query
 		$result = mysql_query($query, $oConn->getConnection());

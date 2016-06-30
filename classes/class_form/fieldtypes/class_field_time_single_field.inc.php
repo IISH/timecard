@@ -43,8 +43,6 @@ class class_field_time_single_field extends class_field {
 	}
 
 	function form_field($row, $m_form, $required_typecheck_result = 0 ) {
-		$veldwaarde_hours_and_minutes = "0";
-
 		// welke waarde moeten we gebruiken, uit de db? of uit de form?
 		// indien niet goed bewaard gebruik dan de form waarde
 		if ( $required_typecheck_result == 0 ) {
@@ -99,7 +97,9 @@ class class_field_time_single_field extends class_field {
 
 		// + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
 
-		$inputfield = str_replace("::FIELDNAME::", $this->get_fieldname(), $inputfield);
+		//
+		$inputfield = $this->setInputFieldAttributes($inputfield);
+		$inputfield = $this->cleanUpLabels($inputfield);
 
 		return $inputfield;
 	}
@@ -122,6 +122,8 @@ class class_field_time_single_field extends class_field {
 		} else {
 			$hours_and_minutes = $_POST["FORM_" . $field . "_HOURS_AND_MINUTES"];
 		}
+
+		$hours_and_minutes = trim( $hours_and_minutes );
 
 		if ( $hours_and_minutes == '' ) {
 			$hours_and_minutes = 0;

@@ -33,8 +33,8 @@ function createShortcutsContent() {
 	require_once("./classes/class_form/fieldtypes/class_field_textarea.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_list.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_string.inc.php");
-	require_once("./classes/class_form/fieldtypes/class_field_time_double_field.inc.php");
-	require_once("./classes/class_form/fieldtypes/class_field_time_single_field.inc.php");
+//	require_once("./classes/class_form/fieldtypes/class_field_time_double_field.inc.php");
+//	require_once("./classes/class_form/fieldtypes/class_field_time_single_field.inc.php");
 
 	$oDb = new class_mysql($databases['default']);
 	$oForm = new class_form($settings, $oDb);
@@ -66,7 +66,7 @@ function createShortcutsContent() {
 	$oForm->add_field( new class_field_list ( $settings, array(
 		'fieldname' => 'workcode'
 		, 'fieldlabel' => 'Project'
-		, 'query' => 'SELECT ID, Concat(Projectnummer, \' \', Description) AS ProjectNumberName FROM Workcodes WHERE ( isdisabled = 0 AND (lastdate IS NULL OR lastdate = \'\' OR lastdate >= \'' . date("Y-m-d") . '\') ) ' . $currentValueOnNew . ' ORDER BY Projectnummer, Description '
+		, 'query' => 'SELECT ID, Concat(IFNULL(Projectnummer,\'\'), \' \', Description) AS ProjectNumberName FROM Workcodes WHERE ( isdisabled = 0 AND (lastdate IS NULL OR lastdate = \'\' OR lastdate >= \'' . date("Y-m-d") . '\') ) ' . $currentValueOnNew . ' ORDER BY Projectnummer, Description '
 		, 'id_field' => 'ID'
 		, 'description_field' => 'ProjectNumberName'
 		, 'empty_value' => '0'

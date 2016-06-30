@@ -13,7 +13,7 @@ if ( isset($_GET["cron_key"]) ) {
 } elseif ( isset($_POST["cron_key"]) ) {
 	$cron_key = $_POST["cron_key"];
 }
-if ( trim( $cron_key ) != class_settings::getSetting('cron_key') ) {
+if ( trim( $cron_key ) != Settings::get('cron_key') ) {
 	die('Error: Incorrect cron key...');
 }
 
@@ -38,7 +38,7 @@ foreach ( $departments as $oDepartment ) {
 
 	// get department head
 	$oHead = $oDepartment->getHead();
-	$mail_body .= "Head:" . $fieldseparator . $oHead->getFirstname . ' ' . verplaatsTussenvoegselNaarBegin( $oHead->getLastname() ) . " \n\n";
+	$mail_body .= "Head:" . $fieldseparator . $oHead->getFirstLastname() . " \n\n";
 
 	// start / end date
 	$mail_body .= "From:" . $fieldseparator . $startdate . " \n";
@@ -47,7 +47,7 @@ foreach ( $departments as $oDepartment ) {
 	//
 	$employees = $oDepartment->getEmployeesAndHours($startdate, $enddate);
 	foreach ( $employees as $oEmployee ) {
-		$mail_body .= $oEmployee["employee"]->getFirstname() . ' ' . verplaatsTussenvoegselNaarBegin( $oEmployee["employee"]->getLastname() ) . ":" . $fieldseparator;
+		$mail_body .= $oEmployee["employee"]->getFirstLastname() . ":" . $fieldseparator;
 		$mail_body .= number_format(class_misc::convertMinutesToHours( $oEmployee["timeinminutes"] ),2, ',', '.') . " hour(s) \n";
 		$total += $oEmployee["timeinminutes"];
 	}
@@ -63,8 +63,8 @@ foreach ( $departments as $oDepartment ) {
 	echo "Mail body: " . str_replace("\t", " &nbsp; &nbsp; ", str_replace("\n", "<br>\n", $mail_body)); echo "<br>";
 
 	// set headers
-	$mail_headers = 'From: "' . class_settings::getSetting('email_sender_name') . '" <' . class_settings::getSetting('email_sender_email') . '>' . "\r\n" .
-		'Reply-To: "' . class_settings::getSetting('email_sender_name') . '" <' . class_settings::getSetting('email_sender_email') . '>';
+	$mail_headers = 'From: "' . Settings::get('email_sender_name') . '" <' . Settings::get('email_sender_email') . '>' . "\r\n" .
+		'Reply-To: "' . Settings::get('email_sender_name') . '" <' . Settings::get('email_sender_email') . '>';
 
 	// check if weekly report e-mail is enabled
 	if ( !$oDepartment->getEnableweeklyreportmail() ) {

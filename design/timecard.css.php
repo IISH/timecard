@@ -210,10 +210,10 @@ div.title {
 
 div.welcome {
 	float: right;
-	margin-top: 20px;
+	margin-top: 5px;
 }
 
-div.logout {
+xxxdiv.logout {
 	float: right;
 	margin-top: 50px;
 }
@@ -232,6 +232,24 @@ span.logout {
 	font-family: 'Times New Roman';
 	font-size: 14px;
 	font-style: italic;
+	color: <?php echo $c; ?>;
+	text-align: right;
+}
+
+span.holiday {
+	display: block;
+	font-family: 'Times New Roman';
+	font-size: 14px;
+	xxxfont-style: italic;
+	color: <?php echo $c; ?>;
+	text-align: right;
+}
+
+span.checkinout {
+	display: block;
+	font-family: 'Times New Roman';
+	font-size: 14px;
+	xxxfont-style: italic;
 	color: <?php echo $c; ?>;
 	text-align: right;
 }

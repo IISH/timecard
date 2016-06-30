@@ -402,18 +402,22 @@ function onchange_change_filter_doc_submit(obj) {
 			$value = str_replace("\'", "'", $value);
 
 			$options = '';
-			foreach ( $field["choices"] as $choice_label => $choice_value) {
+			if ( isset($field["choices"]) ) {
+				if ( is_array($field["choices"]) ) {
+					foreach ( $field["choices"] as $choice_label => $choice_value) {
 
-				$tmpOption = "<OPTION value=\"" . $choice_value . "\" ::SELECTED::>" . $choice_label . "</OPTION>\n";
+						$tmpOption = "<OPTION value=\"" . $choice_value . "\" ::SELECTED::>" . $choice_label . "</OPTION>\n";
 
-				// 'SELECT' de gekozen optie
-				if ( $choice_value == $value ) {
-					$tmpOption = str_replace("::SELECTED::", "SELECTED", $tmpOption);
-				} else {
-					$tmpOption = str_replace("::SELECTED::", '', $tmpOption);
+						// 'SELECT' de gekozen optie
+						if ( $choice_value == $value ) {
+							$tmpOption = str_replace("::SELECTED::", "SELECTED", $tmpOption);
+						} else {
+							$tmpOption = str_replace("::SELECTED::", '', $tmpOption);
+						}
+
+						$options .= $tmpOption;
+					}
 				}
-
-				$options .= $tmpOption;
 			}
 
 			$retval = str_replace("::OPTIONS::", $options, $retval);

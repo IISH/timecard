@@ -133,7 +133,7 @@ function createEmployeesContent() {
 		, 'different_true_value' => 'test'
 		, 'different_false_value' => ''
 	)));
-
+/*
 	$oView->add_field( new class_field_string ( array(
 		'fieldname' => 'SHORT_1'
 		, 'fieldlabel' => 'Work location'
@@ -147,6 +147,21 @@ function createEmployeesContent() {
                     )
                 )
             )
+		)));
+*/
+	$oView->add_field( new class_field_string ( array(
+		'fieldname' => 'allow_additions_starting_date'
+		, 'fieldlabel' => 'Allow additions'
+		, 'viewfilter' => array(
+			'labelfilterseparator' => '<br>'
+			, 'filter' => array (
+				array (
+					'fieldname' => 'allow_additions_starting_date'
+					, 'type' => 'string'
+					, 'size' => 10
+					)
+				)
+			)
 		)));
 
 	// generate view

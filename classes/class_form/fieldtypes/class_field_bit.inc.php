@@ -35,7 +35,7 @@ class class_field_bit extends class_field {
 
 		$veldwaarde = $veldwaarde . '';
 
-		$inputfield = "<input name=\"FORM_::FIELDNAME::\" type=\"checkbox\" ::CHECKED:: ::STYLE:: ::CLASS::>";
+		$inputfield = "<input name=\"FORM_::FIELDNAME::\" type=\"checkbox\" ::CHECKED:: ::STYLE:: ::CLASS:: ::PLACEHOLDER::>";
 
 		if ( $veldwaarde == "1" || $veldwaarde == "on" || $veldwaarde == "checked" ) {
 			$inputfield = str_replace("::CHECKED::", "CHECKED", $inputfield);
@@ -43,7 +43,9 @@ class class_field_bit extends class_field {
 			$inputfield = str_replace("::CHECKED::", '', $inputfield);
 		}
 
-		$inputfield = str_replace("::FIELDNAME::", $this->get_fieldname(), $inputfield);
+		//
+		$inputfield = $this->setInputFieldAttributes($inputfield);
+		$inputfield = $this->cleanUpLabels($inputfield);
 
 		return $inputfield;
 	}

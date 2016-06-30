@@ -8,6 +8,8 @@ class class_field {
 	private $m_required;
 	private $m_onNew;
 	private $m_addquotes;
+	private $m_convertEmptyToNull;
+	private $m_placeholder;
 
 	function class_field($fieldsettings) {
 		$this->oClassMisc = new class_misc();
@@ -20,6 +22,8 @@ class class_field {
 		$this->m_class = '';
 		$this->m_style = '';
 		$this->m_readonly = 0;
+		$this->m_convertEmptyToNull = 0;
+		$this->m_placeholder = '';
 
 		if ( is_array( $fieldsettings ) ) {
 			foreach ( $fieldsettings as $field => $value ) {
@@ -51,6 +55,12 @@ class class_field {
 					case "readonly":
 						$this->m_readonly = $fieldsettings["readonly"];
 						break;
+					case "convertEmptyToNull":
+						$this->m_convertEmptyToNull = $fieldsettings["convertEmptyToNull"];
+						break;
+					case "placeholder":
+						$this->m_placeholder = $fieldsettings["placeholder"];
+						break;
 				}
 			}
 		}
@@ -58,6 +68,10 @@ class class_field {
 
 	function get_style() {
 		return $this->m_style;
+	}
+
+	function get_placeholder() {
+		return $this->m_placeholder;
 	}
 
 	function get_class() {
@@ -123,10 +137,11 @@ class class_field {
 	}
 
 	function push_field_into_query_array($query_fields) {
-
 		$value = addslashes($this->get_form_value());
 
-		if ( $this->m_addquotes == 1 ) {
+		if ( $value == '' && $this->m_convertEmptyToNull == 1 ) {
+			$value = 'NULL';
+		} elseif ( $this->m_addquotes == 1 ) {
 			$value = "'" . $value . "'";
 		}
 
@@ -142,6 +157,8 @@ class class_field {
 			$retval = $_POST["FORM_" . $field];
 		}
 
+		$retval = trim( $retval );
+
 		return $retval;
 	}
 
@@ -149,7 +166,27 @@ class class_field {
 		$text = str_replace('::REQUIRED::', '', $text);
 		$text = str_replace('::STYLE::', '', $text);
 		$text = str_replace('::CLASS::', '', $text);
+		$text = str_replace('::PLACEHOLDER::', '', $text);
 
 		return $text;
+	}
+
+	function setInputFieldAttributes($inputfield) {
+		$inputfield = str_replace("::FIELDNAME::", $this->get_fieldname(), $inputfield);
+		$inputfield = str_replace("::SIZE::", $this->m_size, $inputfield);
+
+		if ( $this->m_class != '' ) {
+			$inputfield = str_replace("::CLASS::", ' class="' . $this->m_class . '" ', $inputfield);
+		}
+
+		if ( $this->m_style != '' ) {
+			$inputfield = str_replace("::STYLE::", ' style="' . $this->m_style . '" ', $inputfield);
+		}
+
+		if ( $this->m_placeholder != '' ) {
+			$inputfield = str_replace("::PLACEHOLDER::", ' placeholder="' . $this->m_placeholder . '" ', $inputfield);
+		}
+
+		return $inputfield;
 	}
 }

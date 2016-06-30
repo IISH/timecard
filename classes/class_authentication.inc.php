@@ -5,7 +5,7 @@ class class_authentication {
 	}
 
 	function authenticate( $login, $password ) {
-		return class_authentication::check_ldap('iisgnet\\' . $login, $password, array("apollo3.iisg.net"));
+		return class_authentication::check_ldap('iisgnet\\' . $login, $password, array('sa-dc02.iisg.net'));
 	}
 
 	function check_ldap($user, $pw, $servers) {
@@ -23,6 +23,7 @@ class class_authentication {
 				// set some variables
 				ldap_set_option($ad, LDAP_OPT_PROTOCOL_VERSION, 3);
 				ldap_set_option($ad, LDAP_OPT_REFERRALS, 0);
+
 				// bind to the ldap directory
 				$bd = @ldap_bind($ad, $user, $pw);
 

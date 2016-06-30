@@ -64,7 +64,7 @@ function convertToJiraUrl( $jira_issue_nr ) {
 	$ret = '';
 	$separator = '';
 
-	$jira_url_browse = class_settings::getSetting('jira_url_browse');
+	$jira_url_browse = Settings::get('jira_url_browse');
 
 	$jira_issue_nr = trim($jira_issue_nr);
 
@@ -174,7 +174,6 @@ function getListOfUsersActiveInSpecificYear($year) {
 
 	$ret = array();
 	$last_id = '';
-	//$query_users = "SELECT * FROM vw_Employees WHERE ( ( firstyear<=" . $year . " AND lastyear>=" . $year . ") OR isdisabled=0 ) AND is_test_account=0 ORDER BY FIRSTNAME, NAME ";
 	$query_users = "SELECT * FROM vw_Employees WHERE ( ( firstyear<=" . $year . " AND lastyear>=" . $year . ") OR isdisabled=0 ) AND is_test_account=0 ORDER BY longcode ";
 	$result_users = mysql_query($query_users, $oConn->getConnection());
 	$item = array();
@@ -570,8 +569,6 @@ function advancedSingleRecordSelectMysql($db, $table, $fields, $criterium, $fiel
 		$advSelect .= " ORDER BY " . $order_by . " ";
 	}
 
-//debug($advSelect, 'advancedSingleRecordSelectMysql: ');
-
 	$resultAdvSelect = mysql_query($advSelect, $oConn->getConnection());
 	if ($rowSelect = mysql_fetch_assoc($resultAdvSelect)) {
 		$retval["__is_record_found"] = '1';
@@ -626,6 +623,9 @@ function getAddEmployeeToTimecard($longcode) {
 
 	$query = "SELECT ID, LongCode FROM Employees WHERE LongCode='" . addslashes($longcode) . "' ORDER BY ID DESC ";
 	$result = mysql_query($query, $oConn->getConnection());
+	if ( !$result ) {
+		die('Invalid query: ' . mysql_error());
+	}
 
 	// get ID of employee
 	if ( $row = mysql_fetch_array($result) ) {
@@ -653,13 +653,14 @@ function getAddEmployeeToTimecard($longcode) {
 		// send mail to admin to check the data
 		$newUserBody = "This message is for the IISG IT Department.
 A new timecard user has registered.
-Go to website and check users data.
-https://timecard.socialhistoryservices.org/employees_edit.php?ID=" . $retval["id"] . "
+Go to website and check the user(s) without a protime link
+https://timecard.socialhistoryservices.org/admin_not_linked_employees.php
+- click on an user
 - se(lec)t user's name in the Protime field
 - and save the record
 (that's all.)
 After that you can close the Jira call.";
-		$protect->send_email( class_settings::getSetting("email_new_employees_to"), "IISG Timecard - new user added", $newUserBody );
+		$protect->send_email( Settings::get("email_new_employees_to"), "IISG Timecard - new user added", $newUserBody );
 	}
 
 	return $retval;
@@ -685,7 +686,7 @@ function getCheckedInCheckedOut($protimeid, $date = '') {
 </tr>
 ";
 
-	$query = "SELECT REC_NR, PERSNR, BOOKDATE, BOOKTIME FROM PROTIME_BOOKINGS WHERE PERSNR=" . $protimeid . " AND BOOKDATE='" . $date . "' AND BOOKTIME<>9999 ORDER BY BOOKTIME ";
+	$query = "SELECT REC_NR, PERSNR, BOOKDATE, BOOKTIME FROM protime_bookings WHERE PERSNR=" . $protimeid . " AND BOOKDATE='" . $date . "' AND BOOKTIME<>9999 ORDER BY BOOKTIME ";
 
 	$oTc = new class_mysql($databases['default']);
 	$oTc->connect();
@@ -731,7 +732,7 @@ function getCheckedInCheckedOut($protimeid, $date = '') {
 function addAndRemoveAbsentiesInTimecard($timecard_id, $protime_id, $oDate) {
 	global $databases;
 
-	if ( $oDate->get("Y") < class_settings::getSetting("oldest_modifiable_year") ) {
+	if ( $oDate->get("Y") < Settings::get("oldest_modifiable_year") ) {
 		return;
 	}
 
@@ -751,11 +752,11 @@ function addAndRemoveAbsentiesInTimecard($timecard_id, $protime_id, $oDate) {
 
 	// doorloop Protime absenties en voeg/update toe aan Timecard
 	$query2 = "
-SELECT PROTIME_P_ABSENCE.REC_NR, PROTIME_P_ABSENCE.ABSENCE_VALUE, vw_ProtimeAbsences.workcode_id
-FROM PROTIME_P_ABSENCE
-	INNER JOIN vw_ProtimeAbsences ON PROTIME_P_ABSENCE.ABSENCE = vw_ProtimeAbsences.protime_absence_id
-WHERE PROTIME_P_ABSENCE.PERSNR = " . $protime_id . "
-	AND PROTIME_P_ABSENCE.BOOKDATE = '" . $oDate->get("Ymd") . "'
+SELECT protime_p_absence.REC_NR, protime_p_absence.ABSENCE_VALUE, vw_ProtimeAbsences.workcode_id
+FROM protime_p_absence
+	INNER JOIN vw_ProtimeAbsences ON protime_p_absence.ABSENCE = vw_ProtimeAbsences.protime_absence_id
+WHERE protime_p_absence.PERSNR = " . $protime_id . "
+	AND protime_p_absence.BOOKDATE = '" . $oDate->get("Ymd") . "'
 ";
 
 	$result2 = mysql_query($query2, $oConn->getConnection());
@@ -871,7 +872,7 @@ function addEerderNaarHuisInTimecardMonth($timecard_id, $protime_id, $oDate) {
 	$oConn = new class_mysql($databases['default']);
 	$oConn->connect();
 
-	$advSelect = "SELECT BOOKDATE, EXTRA FROM PROTIME_PR_MONTH WHERE PERSNR=" . $protime_id . " AND BOOKDATE LIKE '" . $oDate->get("Ym") . "%' GROUP BY BOOKDATE ";
+	$advSelect = "SELECT BOOKDATE, EXTRA FROM protime_pr_month WHERE PERSNR=" . $protime_id . " AND BOOKDATE LIKE '" . $oDate->get("Ym") . "%' GROUP BY BOOKDATE ";
 	//debug($advSelect, 'addEerderNaarHuisInTimecardMonth: ');
 	$arrExtras = array();
 	$resultAdvSelect = mysql_query($advSelect, $oConn->getConnection());
@@ -883,7 +884,7 @@ function addEerderNaarHuisInTimecardMonth($timecard_id, $protime_id, $oDate) {
 	// eerder naar huis
 	for ( $i = 1; $i <= date("t", mktime(0, 0, 0, (int)( $oDate->get("m") ), (int)( $oDate->get("d") ), (int)( $oDate->get("Y") ) )); $i++ ) {
 		$oDate2 = new class_date( $oDate->get("y"), $oDate->get("m"), $i );
-		if ( $oDate->get("Y") < class_settings::getSetting("oldest_modifiable_year") || $oDate2->get("Ymd") >= date("Ymd") ) {
+		if ( $oDate->get("Y") < Settings::get("oldest_modifiable_year") || $oDate2->get("Ymd") >= date("Ymd") ) {
 			// break from for loop
 			break;
 		}
@@ -945,7 +946,7 @@ function addEerderNaarHuisInTimecard($timecard_id, $protime_id, $oDate) {
 	global $databases;
 
 	// add 'eerder naar huis' for dates until (excluding) today
-	if ( $oDate->get("Y") < class_settings::getSetting("oldest_modifiable_year") || $oDate->get("Ymd") >= date("Ymd") ) {
+	if ( $oDate->get("Y") < Settings::get("oldest_modifiable_year") || $oDate->get("Ymd") >= date("Ymd") ) {
 		return;
 	}
 
@@ -955,7 +956,7 @@ function addEerderNaarHuisInTimecard($timecard_id, $protime_id, $oDate) {
 	//
 	$hours = advancedSingleRecordSelectMysql(
 			'default'
-			, "PROTIME_PR_MONTH"
+			, "protime_pr_month"
 			, array("EXTRA")
 			, "PERSNR=" . $protime_id . " AND BOOKDATE='" . $oDate->get("Ymd") . "' "
 		);
@@ -1018,10 +1019,10 @@ function getAbsences($eid) {
 	$oTc = new class_mysql($databases['default']);
 	$oTc->connect();
 
-	$query = "SELECT TOP 2000 PROTIME_P_ABSENCE.REC_NR, PROTIME_P_ABSENCE.PERSNR, PROTIME_P_ABSENCE.BOOKDATE, PROTIME_P_ABSENCE.ABSENCE_VALUE, PROTIME_P_ABSENCE.ABSENCE_STATUS, PROTIME_ABSENCE.SHORT_1, PROTIME_ABSENCE.ABSENCE
-FROM PROTIME_P_ABSENCE
-	LEFT OUTER JOIN PROTIME_ABSENCE ON PROTIME_P_ABSENCE.ABSENCE = PROTIME_ABSENCE.ABSENCE
-WHERE PROTIME_P_ABSENCE.PERSNR=" . $eid . " AND PROTIME_P_ABSENCE.BOOKDATE>='" . date("Ymd") . "' AND ( ABSENCE_VALUE>0 OR SHORT_1 <> 'Vakantie' ) AND PROTIME_P_ABSENCE.ABSENCE NOT IN (6) ORDER BY PROTIME_P_ABSENCE.BOOKDATE, PROTIME_P_ABSENCE.REC_NR ";
+	$query = "SELECT TOP 2000 protime_p_absence.REC_NR, protime_p_absence.PERSNR, protime_p_absence.BOOKDATE, protime_p_absence.ABSENCE_VALUE, protime_p_absence.ABSENCE_STATUS, protime_absence.SHORT_1, protime_absence.ABSENCE
+FROM protime_p_absence
+	LEFT OUTER JOIN protime_absence ON protime_p_absence.ABSENCE = protime_absence.ABSENCE
+WHERE protime_p_absence.PERSNR=" . $eid . " AND protime_p_absence.BOOKDATE>='" . date("Ymd") . "' AND ( ABSENCE_VALUE>0 OR SHORT_1 <> 'Vakantie' ) AND protime_p_absence.ABSENCE NOT IN (6) ORDER BY protime_p_absence.BOOKDATE, protime_p_absence.REC_NR ";
 	$result = mysql_query($query, $oTc->getConnection());
 	$num = mysql_num_rows($result);
 	if ( $num ) {
@@ -1087,12 +1088,12 @@ function getAbsencesAndHolidays($eid, $year, $month, $min_minutes = 0) {
 	$yearMonth = createDateAsString($year, $month);
 
 	$query = "
-SELECT PROTIME_P_ABSENCE.REC_NR, PROTIME_P_ABSENCE.PERSNR, PROTIME_P_ABSENCE.BOOKDATE, PROTIME_P_ABSENCE.ABSENCE_VALUE, PROTIME_P_ABSENCE.ABSENCE_STATUS, PROTIME_ABSENCE.SHORT_1, PROTIME_P_ABSENCE.ABSENCE
-FROM PROTIME_P_ABSENCE
-	LEFT OUTER JOIN PROTIME_ABSENCE ON PROTIME_P_ABSENCE.ABSENCE = PROTIME_ABSENCE.ABSENCE
-WHERE PROTIME_P_ABSENCE.PERSNR=" . $eid . " AND PROTIME_P_ABSENCE.BOOKDATE LIKE '" . $yearMonth . "%' AND PROTIME_P_ABSENCE.ABSENCE NOT IN (5, 19)
-AND ( PROTIME_P_ABSENCE.ABSENCE_VALUE>=" . $min_minutes . " OR PROTIME_P_ABSENCE.ABSENCE_VALUE=0 )
-ORDER BY PROTIME_P_ABSENCE.BOOKDATE, PROTIME_P_ABSENCE.REC_NR
+SELECT protime_p_absence.REC_NR, protime_p_absence.PERSNR, protime_p_absence.BOOKDATE, protime_p_absence.ABSENCE_VALUE, protime_p_absence.ABSENCE_STATUS, protime_absence.SHORT_1, protime_p_absence.ABSENCE
+FROM protime_p_absence
+	LEFT OUTER JOIN protime_absence ON protime_p_absence.ABSENCE = protime_absence.ABSENCE
+WHERE protime_p_absence.PERSNR=" . $eid . " AND protime_p_absence.BOOKDATE LIKE '" . $yearMonth . "%' AND protime_p_absence.ABSENCE NOT IN (5, 19)
+AND ( protime_p_absence.ABSENCE_VALUE>=" . $min_minutes . " OR protime_p_absence.ABSENCE_VALUE=0 )
+ORDER BY protime_p_absence.BOOKDATE, protime_p_absence.REC_NR
 ";
 
 	$oTc = new class_mysql($databases['default']);
@@ -1204,7 +1205,7 @@ function getQuarterTotals( $date, $userTimecardId, $urlprefix ) {
 
 		$syncUrl = $urlprefix . "sync_timecard_protime.php?d=" . $oDate->get("Ymd") . "&eid=" . $userTimecardId;
 		$syncLabel = '';
-		if ( $oDate->get("Y") >= class_settings::getSetting("oldest_modifiable_year") ) {
+		if ( $oDate->get("Y") >= Settings::get("oldest_modifiable_year") ) {
 			$syncLabel = " <font size=-2><em><a href=\"" . $syncUrl . "\">(sync)</a></em></font>";
 		}
 		$ret .= '<td valign=top><table border=1 cellspacing=0 cellpadding=3>';
@@ -1228,8 +1229,18 @@ function getQuarterTotals( $date, $userTimecardId, $urlprefix ) {
 		for ( $i = 1; $i <= $number_of_days_in_current_month; $i++ ) {
 			$date2["d"] = $i;
 
-			$timecard_day_total = $timecard_day_totals[$i] + $dagvakantie2[$i];
-			$protime_day_total = $protime_day_totals[$i];
+			$timecard_day_total = 0;
+			if ( isset($timecard_day_totals[$i]) ) {
+				$timecard_day_total += $timecard_day_totals[$i];
+			}
+			if ( isset($dagvakantie2[$i]) ) {
+				$timecard_day_total += $dagvakantie2[$i];
+			}
+
+			$protime_day_total = 0;
+			if ( isset( $protime_day_totals[$i] ) ) {
+				$protime_day_total = $protime_day_totals[$i];
+			}
 
 			// TIMECARD
 			if ( $timecard_day_total == 0 && $protime_day_total == 0 ) {

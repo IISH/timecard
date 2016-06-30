@@ -32,7 +32,7 @@ class class_refresh_employee_hours_per_week {
 		}
 
 		// if time stamp differs with time stamp template then it is too old and should be refreshed
-		if ( $lastRefreshTime != date( class_settings::getSetting("timeStampRefreshLowPriority") ) ) {
+		if ( $lastRefreshTime != date( Settings::get("timeStampRefreshLowPriority") ) ) {
 			$force_refresh = true;
 		}
 
@@ -65,7 +65,7 @@ class class_refresh_employee_hours_per_week {
 		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
 
-		$curtime = date( class_settings::getSetting("timeStampRefreshLowPriority") );
+		$curtime = date( Settings::get("timeStampRefreshLowPriority") );
 		$totalHoursPerWeekText = addslashes($this->totalHoursPerWeekText);
 
 		$query = "
@@ -90,7 +90,7 @@ INSERT INTO Employee_Cache_Hours_Per_Week (
 		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
 
-		$curtime = date( class_settings::getSetting("timeStampRefreshLowPriority") );
+		$curtime = date( Settings::get("timeStampRefreshLowPriority") );
 		$totalHoursPerWeekText = addslashes($this->totalHoursPerWeekText);
 
 		$query = "
@@ -149,15 +149,15 @@ class class_employee_hours_per_day_starting {
 		// probleem erhan
 		// nieuwe query naar aanleiding van wisselende week roosters
 		$query = "
-SELECT PROTIME_LNK_CURRIC_PROFILE.DATEFROM, MOD(CAST(PROTIME_CYC_DP.DAYNR AS UNSIGNED),7) AS DAG, SUM(PROTIME_DAYPROG.NORM)/count(*) AS HOEVEEL
-FROM PROTIME_LNK_CURRIC_PROFILE
-	LEFT JOIN PROTIME_CYC_DP ON PROTIME_LNK_CURRIC_PROFILE.PROFILE = PROTIME_CYC_DP.CYCLIQ
-	LEFT JOIN PROTIME_DAYPROG ON PROTIME_CYC_DP.DAYPROG = PROTIME_DAYPROG.DAYPROG
+SELECT protime_lnk_curric_profile.DATEFROM, MOD(CAST(protime_cyc_dp.DAYNR AS UNSIGNED),7) AS DAG, SUM(protime_dayprog.NORM)/count(*) AS HOEVEEL
+FROM protime_lnk_curric_profile
+	LEFT JOIN protime_cyc_dp ON protime_lnk_curric_profile.PROFILE = protime_cyc_dp.CYCLIQ
+	LEFT JOIN protime_dayprog ON protime_cyc_dp.DAYPROG = protime_dayprog.DAYPROG
 WHERE PROFILETYPE = '4'
 	AND PERSNR = '" . $this->oEmployee->getProtimeId() . "'
-	AND PROTIME_LNK_CURRIC_PROFILE.DATEFROM < '" . ($this->last_year+1)  . "'
-GROUP BY PROTIME_LNK_CURRIC_PROFILE.DATEFROM, MOD(CAST(PROTIME_CYC_DP.DAYNR AS UNSIGNED),7)
-ORDER BY PROTIME_LNK_CURRIC_PROFILE.DATEFROM DESC, MOD(CAST(PROTIME_CYC_DP.DAYNR AS UNSIGNED),7) ASC
+	AND protime_lnk_curric_profile.DATEFROM < '" . ($this->last_year+1)  . "'
+GROUP BY protime_lnk_curric_profile.DATEFROM, MOD(CAST(protime_cyc_dp.DAYNR AS UNSIGNED),7)
+ORDER BY protime_lnk_curric_profile.DATEFROM DESC, MOD(CAST(protime_cyc_dp.DAYNR AS UNSIGNED),7) ASC
 ";
 
 		$lastDate = '';

@@ -11,18 +11,22 @@ if ( !in_array( $switch, array('tif', 'pso', 'jira') ) ) {
 switch ( $switch ) {
 	case "tif": // time input format
 		$field = 'HoursDoubleField';
+		$howManyChoices = 3;
 		break;
 	case "pso": // projects sorting order
 		$field = 'sort_projects_on_name';
+		$howManyChoices = 2;
 		break;
 	case "jira": // show jira field
 		$field = 'show_jira_field';
+		$howManyChoices = 2;
 		break;
 	default:
 		die('Error 742564: Unknown switch: ' . $switch);
 }
 
-$query_update = "UPDATE Employees SET $field=$field*(-1) WHERE ID=" . $oWebuser->getTimecardId();
+$query_update = "UPDATE Employees SET $field=($field+1)%$howManyChoices WHERE ID=" . $oWebuser->getTimecardId();
+//$query_update = "UPDATE Employees SET $field=$field*(-1) WHERE ID=" . $oWebuser->getTimecardId();
 $result_update = mysql_query($query_update, $oConn->getConnection());
 
 require_once "classes/_db_disconnect.inc.php";

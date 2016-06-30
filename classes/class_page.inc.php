@@ -84,8 +84,25 @@ class class_page {
 			}
 			$logout = '<a href="logout.php" onclick="if (!confirm(\'Please confirm logout\')) return false;">(logout)</a>';
 		}
-		$page = str_replace('{welcome}', $welcome, $page);
+		$page = str_replace('{name}', $welcome, $page);
 		$page = str_replace('{logout}', $logout, $page);
+
+		if ( $oWebuser->isLoggedIn() ) {
+			$vac = $oWebuser->getVacationInMinutes();
+			$overtime = $oWebuser->getOvertimeInMinutes();
+			$holidayFormatted = class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes($vac + $overtime);
+
+			$page = str_replace('{holiday}', 'Vacation left: ' . $holidayFormatted . ' h', $page);
+		} else {
+			$page = str_replace('{holiday}', '', $page);
+		}
+
+		if ( $oWebuser->isLoggedIn() ) {
+			///
+			$page = str_replace('{checkinout}', 'In/Out: ' . $oWebuser->getCheckInOut(), $page);
+		} else {
+			$page = str_replace('{checkinout}', '', $page);
+		}
 
 		// als laatste
 		$page = str_replace('{date}', class_datetime::getQueryDate(), $page);

@@ -224,7 +224,7 @@ function createHoursLeftRemarks() {
 	$ret = "<br>Remarks
 <ol>
 	<li>If there a no hours shown, please edit user and set <a href=\"admin_not_linked_employees.php?backurl=" . urlencode(get_current_url()) . "\">Protime link'</a></li>
-	<li>" . (int)(class_settings::getSetting("percentage_rule")*100.0) . "% rule = " . class_settings::getSetting("percentage_rule") . ", the rest of the hours is for overhead (meetings, courses, sick leaves, ...)</li>
+	<li>" . (int)(Settings::get("percentage_rule")*100.0) . "% rule = " . Settings::get("percentage_rule") . ", the rest of the hours is for overhead (meetings, courses, sick leaves, ...)</li>
 </ol>
 ";
 

@@ -1,4 +1,8 @@
 <?php
+//die('Closed for maintenance (Sunday December 20, 2015)');
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
+
 session_start();
 
 $settings = array();
@@ -22,6 +26,7 @@ require_once dirname(__FILE__) . "/class_feestdagen.inc.php";
 require_once dirname(__FILE__) . "/class_length_of_workday.inc.php";
 require_once dirname(__FILE__) . "/class_mysql.inc.php";
 require_once dirname(__FILE__) . "/class_misc01.inc.php";
+require_once dirname(__FILE__) . "/class_misc02.inc.php";
 require_once dirname(__FILE__) . "/class_national_holiday_brugdag.inc.php";
 require_once dirname(__FILE__) . "/class_page.inc.php";
 require_once dirname(__FILE__) . "/class_prevnext.inc.php";
@@ -41,6 +46,7 @@ require_once dirname(__FILE__) . "/class_project_totals.inc.php";
 require_once dirname(__FILE__) . "/class_workhours.inc.php";
 require_once dirname(__FILE__) . "/class_workhours_static.inc.php";
 require_once dirname(__FILE__) . "/class_settings.inc.php";
+require_once dirname(__FILE__) . "/syncinfo.inc.php";
 
 //
 require_once dirname(__FILE__) . "/_misc_functions.inc.php";
@@ -50,8 +56,9 @@ $protect = new class_website_protection();
 
 // TODO remove before submit
 //$_SESSION["timecard"]["id"] = 1;
-//error_reporting(E_ERROR | E_PARSE);
+error_reporting(E_ERROR | E_PARSE);
 //error_reporting(E_ALL);
+//error_reporting(E_ALL & ~E_NOTICE);
 
 //
 $oWebuser = new class_employee( ( isset($_SESSION["timecard"]["id"]) ? $_SESSION["timecard"]["id"] : 0 ), $settings);

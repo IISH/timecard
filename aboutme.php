@@ -38,31 +38,8 @@ function createSettingsPage() {
 		$data["firstname"] = $row["FIRSTNAME"];
 		$data["lastname"] = $row["NAME"];
 		$data["longcode"] = $row["LongCode"];
-		$data["hours"] = $oWebuser->calculateVacationHours();
-
-		if ( $row["HoursDoubleField"] == '1' ) {
-			$data["tif_source"] = 'Double field';
-//			$data["tif_target"] = 'single field';
-		} else {
-			$data["tif_source"] = 'Single field';
-//			$data["tif_target"] = 'double field';
-		}
-
-		if ( $row["sort_projects_on_name"] == '1' ) {
-			$data["pso_source"] = 'Project name';
-//			$data["pso_target"] = 'Project number';
-		} else {
-			$data["pso_source"] = 'Project number';
-//			$data["pso_target"] = 'Project name';
-		}
-
-		if ( $row["show_jira_field"] == '1' ) {
-			$data["jira_source"] = 'Yes';
-//			$data["jira_target"] = 'No';
-		} else {
-			$data["jira_source"] = 'No';
-//			$data["jira_target"] = 'Yes';
-		}
+		$data["hours"] = $oWebuser->calculateVacationHoursUntilToday();
+		$data["checkinout"] = $oWebuser->getCheckInOut();
 
 		// add content
 		$ret .= fillTemplate($template, $data);
@@ -71,6 +48,56 @@ function createSettingsPage() {
 
 	// add footer
 	$ret .= $design->getFooter();
+
+	// + + + + + + + + + + + + + + + + + +
+
+	// PREFERENCES
+
+	// get design
+	$design = new class_contentdesign("page_preferences");
+
+	// add header
+	$ret .= $design->getHeader();
+
+	$oConn = new class_mysql($databases['default']);
+	$oConn->connect();
+
+	$query = "SELECT * FROM vw_Employees WHERE ID=" . $oWebuser->getTimecardId();
+	$result = mysql_query($query, $oConn->getConnection());
+
+	if ($row = mysql_fetch_assoc($result)) {
+		$template = $design->getContent();
+
+		switch ( $row["HoursDoubleField"] ) {
+			case "2":
+				$data["tif_source"] = 'Free number field';
+				break;
+			case "1":
+				$data["tif_source"] = 'Double select field';
+				break;
+			default:
+				$data["tif_source"] = 'Single select field';
+		}
+//		if ( $row["HoursDoubleField"] == '1' ) {
+//		} else {
+//		}
+
+		if ( $row["sort_projects_on_name"] == '1' ) {
+			$data["pso_source"] = 'Project name';
+		} else {
+			$data["pso_source"] = 'Project number';
+		}
+
+		if ( $row["show_jira_field"] == '1' ) {
+			$data["jira_source"] = 'Yes';
+		} else {
+			$data["jira_source"] = 'No';
+		}
+
+		// add content
+		$ret .= fillTemplate($template, $data);
+	}
+	mysql_free_result($result);
 
 	return $ret;
 }

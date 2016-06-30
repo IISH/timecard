@@ -111,7 +111,7 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 		<th>Name</th>
 		<th style=\"width:$fixedColWidth;\">Hours per week</th>
 		<th style=\"width:$fixedColWidth;\"><a title=\"Exact calculation of\nyear total\">Year total (100%)</a></th>
-		<th style=\"width:$fixedColWidth;\">Year total (" . (int)(class_settings::getSetting("percentage_rule")*100.0) . "%)</th>
+		<th style=\"width:$fixedColWidth;\">Year total (" . (int)(Settings::get("percentage_rule")*100.0) . "%)</th>
 		<th colspan=3>January</th>
 		<th colspan=3>February</th>
 		<th colspan=3>March</th>
@@ -275,7 +275,7 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 			}
 
 			// link name
-			$nameLink = "<a href=\"employees_edit.php?ID=" . $oEmployee->getTimecardId() . "&backurl=" . urlencode(get_current_url()) . "\">" . $oEmployee->getFirstname() . ' ' . verplaatsTussenvoegselNaarBegin( $oEmployee->getLastname() ) . "</a>";
+			$nameLink = "<a href=\"employees_edit.php?ID=" . $oEmployee->getTimecardId() . "&backurl=" . urlencode(get_current_url()) . "\">" . $oEmployee->getFirstLastname() . "</a>";
 
 			//
 			$monthWorkTotals = array();
@@ -390,9 +390,9 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 
 			// year
 			$tmp = str_replace('{year_total_100_percent}', hoursLeft_formatNumber($yearWorkTotal), $tmp);
-			$tmp = str_replace('{year_total_percentage_rule}', hoursLeft_formatNumber($yearWorkTotal * class_settings::getSetting("percentage_rule")), $tmp);
+			$tmp = str_replace('{year_total_percentage_rule}', hoursLeft_formatNumber($yearWorkTotal * Settings::get("percentage_rule")), $tmp);
 			$tmp = str_replace('{left_total_100_percent}', hoursLeft_formatNumber($yearLeftTotal), $tmp);
-			$tmp = str_replace('{left_total_percentage_rule}', hoursLeft_formatNumber($yearLeftTotal * class_settings::getSetting("percentage_rule")), $tmp);
+			$tmp = str_replace('{left_total_percentage_rule}', hoursLeft_formatNumber($yearLeftTotal * Settings::get("percentage_rule")), $tmp);
 
 			$tmp = str_replace('{vacation_left}', hoursLeft_formatNumber($vacationLeft), $tmp);
 
@@ -402,152 +402,6 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 		$ret .= "\t</tr>\n";
 		$ret .= "</table>\n";
 	}
-
-//	// OUDE VERSIE
-//	if ( count($arrEmployees) > 0 && false ) {
-//		$ret .= "
-//<br>
-//<table border=1>
-//	<tr>
-//		<th>Name</th>
-//		<th>Hours&nbsp;per&nbsp;week</th>
-//		<th>Year total (100%)</th>
-//		<th>Year total (" . (int)(class_settings::getSetting("percentage_rule")*100.0) . "%)</th>
-//		<th>Until end of year total (100%)</th>
-//		<th>Vacation left</th>
-//		<th>Nat. hol. left</th>
-//		<th>(Max. transfer)</th>
-//		<th>Left (100%)</th>
-//		<th>Left (" . (int)(class_settings::getSetting("percentage_rule")*100.0) . "%)</th>
-//	</tr>
-//";
-//
-//	for ( $i = 0; $i < count($arrEmployees); $i++ ) {
-//		$oEmployee = $arrEmployees[$i];
-//
-//		$hoursPerWeekText = '';
-//		$yearWorkTotal = 0;
-//		$endyearTotal = 0;
-//		$natHoliday = 0;
-//		$maxMeenemen = 0;
-//		$left = 0;
-//
-//		// NAME
-//		$ret .= "\t<tr>\n";
-//		$ret .= "\t\t<td valign=top width=\"200px\">";
-//		$tmp = "<div id=\"divAddRemove" . $oEmployee->getTimecardId() . "\" style=\"display:inline;\" >::ADDREMOVE::</div> ";
-//		//
-//		if ( strpos(',' . $favIds . ',', ',' . $oEmployee->getTimecardId() . ',') !== false ) {
-//			$tmp = str_replace('::ADDREMOVE::', '<a href="#" onClick="addRemove(' . $oEmployee->getTimecardId() . ', \'r\');" alt="Stop following this person" title="Stop following this person" class="nolink favourites_on">&#9733;</a>', $tmp);
-//		} else {
-//			$tmp = str_replace('::ADDREMOVE::', '<a href="#" onClick="addRemove(' . $oEmployee->getTimecardId() . ', \'a\');" alt="Start following this person" title="Start following this person" class="nolink favourites_off">&#9733;</a>', $tmp);
-//		}
-//
-//		$ret .= $tmp;
-//
-//		$ret .= "<a href=\"employees_edit.php?ID=" . $oEmployee->getTimecardId() . "&backurl=" . urlencode(get_current_url()) . "\">" . $oEmployee->getFirstname() . ' ' . verplaatsTussenvoegselNaarBegin( $oEmployee->getLastname() ) . "</a>";
-//		$ret .= "\t\t</td>\n";
-//
-//		$arrHoursPerWeek = $oEmployee->getHoursPerWeek2($year);
-//		if ( count( $arrHoursPerWeek ) > 0 ) {
-//			$separator = '';
-//			for ( $y = 0; $y < count($arrHoursPerWeek); $y++ ) {
-//				$startmonth = $arrHoursPerWeek[$y]->getStartmonth();
-//				$endmonth = $arrHoursPerWeek[$y]->getEndmonth();
-//				$hourspw = $arrHoursPerWeek[$y]->getHours();
-//
-//				$hoursPerWeekText .= $separator . $startmonth . '-' . $endmonth . ': ' . hoursLeft_formatNumber($hourspw,1);
-//				$separator = '<br>';
-//
-//				for ( $k = $startmonth; $k <= $endmonth; $k++ ) {
-//					$yearWorkTotal += ($hourspw * 4.333333333);
-//
-//					if ( $k >= $month ) {
-//						$endyearTotal += ($hourspw * 4.333333333);
-//					}
-//
-//					// calculate national holidays until end of year
-//					// national holidays * hoursperweek/daysperweek
-//					$natHoliday = $nrOfHolidays * $hourspw/5;
-//
-//					// you are allowed to take two weeks to next year
-//					$maxMeenemen = 2 * $hourspw;
-//				}
-//			}
-//		}
-//
-//		// HOURS PER WEEK
-//		$ret .= "\t\t<td valign=top>\n";
-//		$ret .= $hoursPerWeekText;
-//		$ret .= "\t\t</td>\n";
-//
-//		// YEAR TOTAL
-//		$ret .= "\t\t<td valign=top>\n";
-//		$ret .= hoursLeft_formatNumber($yearWorkTotal, 1);
-//		$ret .= "\t\t</td>\n";
-//
-//		// YEAR TOTAL 76
-//		$ret .= "\t\t<td valign=top>\n";
-//		$ret .= hoursLeft_formatNumber(1.0 * $yearWorkTotal * class_settings::getSetting("percentage_rule"), 1);
-//		$ret .= "\t\t</td>\n";
-//
-//		// END YEAR TOTAL
-//		$ret .= "\t\t<td valign=top>\n";
-//		$ret .= hoursLeft_formatNumber($endyearTotal, 1);
-//		$ret .= "\t\t</td>\n";
-//
-//		// VACATION LEFT
-//		$arrVacationLeft = $oEmployee->getVacationHours();
-//		$vacationLeft = $arrVacationLeft["value"];
-//		$vacationLeftBookdate = $arrVacationLeft["bookdate"];
-//		$ret .= "\t\t<td valign=top>\n";
-//		$ret .= hoursLeft_formatNumber($vacationLeft, 1);
-//
-//		$sterretje = '*';
-//		if ( $vacationLeftBookdate != '' && $vacationLeftBookdate < date("Ymd", mktime(0,0,0, date("m")-1, 1, date("Y")) ) ) {
-//			$sterretje = '**';
-//		}
-//
-//		$oD = new TCDateTime();
-//		$oD->setFromString($vacationLeftBookdate, 'Ymd');
-//		$ret .= "<a class=\"nolink\" title=\"Processed until: " . $oD->get()->format("Y-m-d") . "\">$sterretje</a>";
-//
-//		$ret .= "\t\t</td>\n";
-//
-//		// NATIONAL HOLIDAYS LEFT
-//		$ret .= "\t\t<td valign=top>\n";
-//		$ret .= hoursLeft_formatNumber($natHoliday, 1);
-//		$ret .= "\t\t</td>\n";
-//
-//		// MAX MEENEMEN
-//		$maxMeenemenText = hoursLeft_formatNumber($maxMeenemen, 1);
-//		if ( $maxMeenemenText != '' ) {
-//			$maxMeenemenText = '(' . $maxMeenemenText . ')';
-//		}
-//		$ret .= "\t\t<td valign=top>\n";
-//		$ret .= $maxMeenemenText;
-//		$ret .= "\t\t</td>\n";
-//
-//		//
-//		if ( $yearWorkTotal > 0 ) {
-//			$left = $endyearTotal - $vacationLeft - $natHoliday;
-//		}
-//
-//		// LEFT
-//		$ret .= "\t\t<td valign=top>\n";
-//		$ret .= hoursLeft_formatNumber($left, 1);
-//		$ret .= "\t\t</td>\n";
-//
-//		// LEFT 76
-//		$ret .= "\t\t<td valign=top>\n";
-//		$ret .= hoursLeft_formatNumber(1.0 * $left * class_settings::getSetting("percentage_rule"), 1);
-//		$ret .= "\t\t</td>\n";
-//
-//		$ret .= "\t</tr>\n";
-//	}
-//	$ret .= "</table>\n";
-//
-//	}
 
 	return $ret;
 }

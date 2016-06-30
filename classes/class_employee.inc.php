@@ -6,10 +6,11 @@ class class_employee {
 	private $timecard_id = 0;
 	private $databases;
 	private $protime_id = 0;
-	private $hoursdoublefield = '';
+	private $hoursdoublefield = -1;
 	private $isdisabled = 0;
 	private $lastname = '';
 	private $firstname = '';
+	private $loginname = '';
 	private $hoursperweek = 0;
 	private $daysperweek = 0;
 	private $authorisation = array();
@@ -17,7 +18,7 @@ class class_employee {
 	private $allow_additions_starting_date = '';
 	private $projects = array();
 	private $department = '';
-	private $sortProjectsOnName = 0;
+	private $sortProjectsOnName = -1;
 
 	function class_employee($timecard_id, $settings) {
 		global $databases;
@@ -40,7 +41,6 @@ class class_employee {
 
 		//
 		$query_project = "SELECT * FROM vw_Employees WHERE ID=" . $this->timecard_id;
-
 		$resultReset = mysql_query($query_project, $oConn->getConnection());
 		if ($row_project = mysql_fetch_assoc($resultReset)) {
 
@@ -48,6 +48,7 @@ class class_employee {
 			$this->protime_id = $row_project["ProtimePersNr"];
 			$this->lastname = $row_project["NAME"];
 			$this->firstname = $row_project["FIRSTNAME"];
+			$this->loginname = $row_project["LongCode"];
 			$this->hoursperweek = $row_project["hoursperweek"];
 			$this->daysperweek = $row_project["daysperweek"];
 			$this->allow_additions_starting_date = $row_project["allow_additions_starting_date"];
@@ -55,15 +56,19 @@ class class_employee {
 
 			if ( $row_project["show_jira_field"] == 1 ) {
 				$this->show_jira_field = true;
+			} else {
+				$this->show_jira_field = false;
 			}
 
 			$this->hoursdoublefield = $row_project["HoursDoubleField"];
-			if ( $this->hoursdoublefield != 1 && $this->hoursdoublefield != -1 ) {
-				$this->hoursdoublefield = 1;
-			}
+//			if ( !in_array($this->hoursdoublefield, array(0, 1, 2 )) ) {
+//			if ( !in_array($this->hoursdoublefield, array(-1, 1)) ) {
+//				$this->hoursdoublefield = 1;
+//			}
 
 			$this->sortProjectsOnName = $row_project["sort_projects_on_name"];
-			if ( $this->sortProjectsOnName != 1 && $this->sortProjectsOnName != -1 ) {
+			if ( !in_array($this->sortProjectsOnName, array(0, 1)) ) {
+//			if ( !in_array($this->sortProjectsOnName, array(-1, 1)) ) {
 				$this->sortProjectsOnName = -1;
 			}
 
@@ -134,6 +139,10 @@ class class_employee {
 		return $this->protime_id;
 	}
 
+	public function getLoginName() {
+		return $this->loginname;
+	}
+
 	function isLoggedIn() {
 		$ret = false;
 
@@ -190,36 +199,177 @@ class class_employee {
 		return trim($this->firstname);
 	}
 
-	function calculateVacationHours() {
+	function getCheckInOut( $yyyymmdd = '' ) {
+		global $databases;
+
 		$retval = '';
+
+		if ( $yyyymmdd == '' ) {
+			$yyyymmdd = date("Ymd");
+		}
+
+		$query = "SELECT REC_NR, PERSNR, BOOKDATE, BOOKTIME FROM protime_bookings WHERE PERSNR=" . $this->getProtimeId() . " AND BOOKDATE='" . $yyyymmdd . "' AND BOOKTIME<>9999 ORDER BY BOOKTIME ";
+
+		$oTc = new class_mysql($databases['default']);
+		$oTc->connect();
+
+		$result = mysql_query($query, $oTc->getConnection());
+		$status = 0;
+		$found = 0;
+		$template = "::IN::-::OUT::";
+		$inout = $template;
+		$separator = '';
+		while ( $row = mysql_fetch_array($result) ) {
+			$status++;
+			$found++;
+
+			if ( $status == 1 ) {
+				$inout = $separator . $template;
+				$inout = str_replace('::IN::', class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes($row["BOOKTIME"]), $inout);
+			} else {
+				$inout = str_replace('::OUT::', class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes($row["BOOKTIME"]), $inout);
+				$retval .= $inout;
+				$inout = '';
+				$separator = ', ';
+			}
+
+			$status = $status % 2;
+		}
+		mysql_free_result($result);
+
+		if ( $inout != '' ) {
+			$inout = str_replace('::IN::', '...', $inout);
+			$inout = str_replace('::OUT::', '...', $inout);
+			$retval .= $inout;
+		}
+
+
+		return $retval;
+	}
+
+	function getOvertimeInMinutes( $yyyy_mm = '' ) {
+		global $settings, $oWebuser;
+
+		$ret = 0;
+
+		if ( $yyyy_mm == '' ) {
+			$yyyy_mm = date("Ym");
+		}
+
+
+			$oDate = new class_date( date('Y'), date('m'), 1 );
+
+			$ret .= "<tr><td><strong><font size=\"-2\">Day</font></strong></td><td><strong><font size=\"-2\">Timecard</font></strong></td><td><strong><font size=\"-2\">Protime</font></strong></td><td><font size=\"-2\"><strong>Overtime</strong></font></td></tr>";
+
+			$number_of_days_in_current_month = $oDate->get('t');
+
+			$oEmployee = new class_employee( $oWebuser->getTimecardId(), $settings );
+
+			$date2["y"] = $oDate->get('Y');
+			$date2["m"] = $oDate->get('n');
+			$date2["d"] = 1;
+			$timecard_day_totals = $oEmployee->getTimecardDayTotals( $oDate->get('Y'), $oDate->get('n') );
+
+			$dagvakantie2 = $oEmployee->getEerderNaarHuisDayTotals( $oDate->get('Y'), $oDate->get('n') );
+			$protime_day_totals = $oEmployee->getProtimeDayTotals( $oDate->get('Ym') );
+			$protime_day_overtimes = $oEmployee->getProtimeDayOvertimes( $oDate->get('Ym') );
+
+			$total_overtime = 0;
+			for ( $i = 1; $i <= $number_of_days_in_current_month; $i++ ) {
+				$date2["d"] = $i;
+
+				$timecard_day_total = 0;
+				if ( isset($timecard_day_totals[$i]) ) {
+					$timecard_day_total += $timecard_day_totals[$i];
+				}
+				if ( isset($dagvakantie2[$i]) ) {
+					$timecard_day_total += $dagvakantie2[$i];
+				}
+
+				$protime_day_total = 0;
+				if ( isset($protime_day_totals[$i]) ) {
+					$protime_day_total = $protime_day_totals[$i];
+				}
+
+				// TIMECARD
+				if ( $timecard_day_total == 0 && $protime_day_total == 0 ) {
+					$timecard_day_total_nice = '&nbsp;';
+				} else {
+					$timecard_day_total_nice = class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes( $timecard_day_total );
+				}
+
+				// PROTIME
+				if ( $protime_day_total == 0 ) {
+					$protime_day_total_nice = '&nbsp;';
+				} else {
+					$protime_day_total_nice = class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes( $protime_day_total );
+				}
+
+				// OVERTIME +/-
+				$sign = '';
+				if ( $oDate->get('Ym') . substr('0'.$i,-2) < date("Ymd")) {
+					$extra = $protime_day_overtimes[$i];
+				} else {
+					$extra = 0;
+				}
+				$total_overtime += $extra;
+
+				if ( $extra > 0 ) {
+					$sign = '+';
+				}
+
+				if ( $extra == 0 ) {
+					$extra_nice = '&nbsp;';
+				} else {
+					$extra_nice =  $sign . class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes( $extra );
+				}
+
+
+				$oCurrentDay = new class_date( $date2["y"], $date2["m"], $i );
+				$weekday = $oCurrentDay->get('D j');
+				$ret .= "<tr><td><a href=\"\">$weekday</a></td><td>$timecard_day_total_nice</td><td>$protime_day_total_nice</td></tr>";
+			}
+
+			$ret = $total_overtime;
+
+
+		return $ret;
+	}
+
+	function getVacationInMinutes() {
+		$retval = 0;
 
 		if ( $this->getProtimeId() != '0' ) {
 
-			// TODO: onduidelijk wat LIM_PERIODE en YEARCOUNTER doen in PROTIME_P_LIMIT
-			// moet de query uitgebreid worden?
-			// met LIM_PERIODE?
-			// met YEARCOUNTER?
-			// ... alleen END_VAL > 0 ?
-
 			$vakantie = advancedSingleRecordSelectMysql(
-						'default'
-						, "PROTIME_P_LIMIT"
-						, array("BEGIN_VAL", "END_VAL", "BOOKDATE")
-						, "PERSNR=" . $this->getProtimeId() . " AND EXEC_ORDER=2 AND LIM_PERIODE = 6 "
-						, '*'
-						, "BOOKDATE DESC"
-					);
+				'default'
+				, "protime_p_limit"
+				, array("BEGIN_VAL", "END_VAL", "BOOKDATE")
+				, "PERSNR=" . $this->getProtimeId() . " AND YEARCOUNTER=1 AND LIM_PERIODE = 6 "
+				, '*'
+				, "BOOKDATE DESC"
+			);
 
 			$end_val = $vakantie["end_val"];
 			if ( $end_val != '' ) {
-				$bookdate = $vakantie["bookdate"];
-				$bookdate = substr($bookdate, 0, 4) . "-" . substr($bookdate, 4, 2) . "-" . substr($bookdate, 6, 2);
-				$retval .= number_format( $end_val/60, 2, ',', '.' ) . " hours <i>(processed until: " . $bookdate . "*)</i>";
+				$retval = $end_val;
 			} else {
-				$retval .= "<i>(no vacation days found)</i><br>";
+				$retval = 0;
 			}
 
 		}
+
+		return $retval;
+	}
+
+	function calculateVacationHoursUntilToday() {
+		$vac = $this->getVacationInMinutes();
+		$overtime = $this->getOvertimeInMinutes();
+
+		$holidayFormatted = class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes($vac + $overtime);
+		$overtimeFormatted = class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes($overtime);
+
+		$retval = $holidayFormatted . ' hours <i>(including ' . $overtimeFormatted . ' hours overtime this month)</i>';
 
 		return $retval;
 	}
@@ -278,7 +428,7 @@ class class_employee {
 
 		// reset values
 		$query = "SELECT SUBSTR(BOOKDATE, 1, 10) AS BOOKDATUM, WEEKPRES1, EXTRA
-FROM PROTIME_PR_MONTH
+FROM protime_pr_month
 WHERE PERSNR=" . $protime_id . " AND BOOKDATE LIKE '" . $date["y"] . str_pad( $date["m"], 2, '0', STR_PAD_LEFT) . "%'
 GROUP BY SUBSTR(BOOKDATE, 1, 10)
 ";
@@ -334,7 +484,7 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 			// 
 			$hours = advancedSingleRecordSelectMysql(
 					'default'
-					, "PROTIME_PR_MONTH"
+					, "protime_pr_month"
 					, array("PERSNR", "BOOKDATE", "PREST", "RPREST", "WEEKPRES1", "EXTRA")
 					, "PERSNR=" . $protime_id . " AND BOOKDATE='" . $oDate->get("Ymd") . "' "
 				);
@@ -350,7 +500,7 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 
 	function getHoursPerWeek3($year) {
 		$oHoursPerWeek = new class_employee_hours_per_week($this, $year);
-		if ( date(class_settings::getSetting("timeStampRefreshLowPriority")) > $oHoursPerWeek->getLastRefresh() ) {
+		if ( date(Settings::get("timeStampRefreshLowPriority")) > $oHoursPerWeek->getLastRefresh() ) {
 			$oHoursPerWeek->refresh();
 		}
 
@@ -364,9 +514,9 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 
 			$vakantie = advancedSingleRecordSelectMysql(
 				'default'
-				, "PROTIME_P_LIMIT"
+				, "protime_p_limit"
 				, array("BEGIN_VAL", "END_VAL", "BOOKDATE")
-				, "PERSNR=" . $this->getProtimeId() . " AND EXEC_ORDER=2 "
+				, "PERSNR=" . $this->getProtimeId() . " AND YEARCOUNTER=1 "
 				, '*'
 				, "BOOKDATE DESC"
 			);
@@ -380,7 +530,7 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 			$oConn = new class_mysql($this->databases['default']);
 			$oConn->connect();
 
-			$query = "SELECT SUM(ABSENCE_VALUE) AS SOM FROM PROTIME_P_ABSENCE  WHERE PERSNR=" . $this->getProtimeId() . " AND ABSENCE IN ( 12 ) AND BOOKDATE LIKE '$year%' AND BOOKDATE > '{$vakantie["bookdate"]}' ";
+			$query = "SELECT SUM(ABSENCE_VALUE) AS SOM FROM protime_p_absence  WHERE PERSNR=" . $this->getProtimeId() . " AND ABSENCE IN ( 12 ) AND BOOKDATE LIKE '$year%' AND BOOKDATE > '{$vakantie["bookdate"]}' ";
 			$result = mysql_query($query, $oConn->getConnection());
 			if ( $row = mysql_fetch_array($result) ) {
 				$ret -= $row["SOM"];
@@ -402,9 +552,9 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 
 			$vakantie = advancedSingleRecordSelectMysql(
 						'default'
-						, "PROTIME_P_LIMIT"
+						, "protime_p_limit"
 						, array("BEGIN_VAL", "END_VAL", "BOOKDATE")
-						, "PERSNR=" . $this->getProtimeId() . " AND EXEC_ORDER=2 "
+						, "PERSNR=" . $this->getProtimeId() . " AND YEARCOUNTER=1 "
 						, '*'
 						, "BOOKDATE DESC"
 					);
@@ -505,7 +655,11 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 		$protime_day_total_extra = $this->getProtimeDayTotalsPart($protime_id, $yyyymm, 'extra');
 
 		foreach ( $protime_day_total_extra as $a=>$b ) {
-			$arrExtras[$a] += $b;
+			if ( isset( $arrExtras[$a] ) ) {
+				$arrExtras[$a] += $b;
+			} else {
+				$arrExtras[$a] = $b;
+			}
 		}
 
 		return $arrExtras;
@@ -518,7 +672,7 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 
 		if ( $protime_id != '' && $protime_id != '0' ) {
 
-			$query = "SELECT PERSNR, BOOKDATE, PREST, RPREST, WEEKPRES1, EXTRA FROM PROTIME_PR_MONTH WHERE PERSNR=" . $protime_id . " AND LEFT(BOOKDATE, 6)=" . $yyyymm;
+			$query = "SELECT PERSNR, BOOKDATE, PREST, RPREST, WEEKPRES1, EXTRA FROM protime_pr_month WHERE PERSNR=" . $protime_id . " AND LEFT(BOOKDATE, 6)=" . $yyyymm;
 			$oTc = new class_mysql($databases['default']);
 			$oTc->connect();
 
@@ -693,7 +847,7 @@ ORDER BY Workcodes.Description
 	// add 'daily automatic additions'
 	function addDailyAutomaticAdditions( $oDate, $protimeMonthData ) {
 		// don't do if legacy, or date in the future
-		//if ( $oDate->get("Y-m") < class_settings::getSetting("oldest_modifiable_daa_month") || $oDate->get("Y-m-d") >= date("Y-m-d") ) {
+		//if ( $oDate->get("Y-m") < Settings::get("oldest_modifiable_daa_month") || $oDate->get("Y-m-d") >= date("Y-m-d") ) {
 		if ( class_datetime::is_legacy( $oDate ) || $oDate->get("Y-m-d") >= date("Y-m-d") ) {
 			return;
 		}
@@ -895,7 +1049,7 @@ GROUP BY ProtimeID
 
 			$res = advancedSingleRecordSelectMysql(
 				'default'
-				, "PROTIME_CURRIC"
+				, "protime_curric"
 				, array("EMAIL")
 				, "PERSNR=" . $this->getProtimeId()
 			);

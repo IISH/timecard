@@ -3,36 +3,28 @@ require_once "classes/start.inc.php";
 
 $oWebuser->checkLoggedIn();
 
+if ( !( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasFaAuthorisation() ) ) {
+	echo "You are not authorized to access this page.<br>";
+	die('Go to <a href="index.php">timecard home</a>');
+}
+
 // create webpage
 $oPage = new class_page('design/page.php', $settings);
 $oPage->removeSidebar();
-
-if ( !isset($tab) ) {
-	$tab = '';
-}
-if (  $tab == 'exports' ) {
-	$oPage->setTab($menuList->findTabNumber('exports.projectemployeetotaals'));
-	$tabName = 'Exports';
-	$contentdesign = 'page_exports_project_totals';
-} else {
-	$oPage->setTab($menuList->findTabNumber('projects.project_hour_totals'));
-	$tabName = 'Projects';
-	$contentdesign = 'page_project_employee_totals';
-}
-$oPage->setTitle('Timecard | '. $tabName . ' - Project totals');
-$oPage->setContent(createProjectContent( $tab, $contentdesign ));
+$oPage->setTab($menuList->findTabNumber('finad.projects'));
+$oPage->setTitle('Timecard | Projects (all)');
+$oPage->setContent(createProjectContent());
 
 // show page
 echo $oPage->getPage();
 
 require_once "classes/_db_disconnect.inc.php";
 
-function createProjectContent( $tab, $contentdesign ) {
-	global $settings, $databases, $oWebuser;
+function createProjectContent() {
+	global $settings, $databases;
 
 	// get design
-	//$design = new class_contentdesign("page_project_employee_totals");
-	$design = new class_contentdesign( $contentdesign );
+	$design = new class_contentdesign("page_projects_all");
 
 	// add header
 	$ret = $design->getHeader();
@@ -46,7 +38,6 @@ function createProjectContent( $tab, $contentdesign ) {
 	$oDb = new class_mysql($databases['default']);
 	$oView = new class_view($settings, $oDb);
 
-	//
 	$oView->set_view( array(
 		'query' => "SELECT Workcodes.*, vw_Employees.FULLNAME  FROM Workcodes LEFT JOIN vw_Employees ON Workcodes.projectleader = vw_Employees.ID WHERE 1=1 "
 		, 'count_source_type' => 'query'
@@ -58,9 +49,9 @@ function createProjectContent( $tab, $contentdesign ) {
 
 	$oView->add_field( new class_field_string ( array(
 		'fieldname' => 'Description'
-		, 'fieldlabel' => 'Project'
+		, 'fieldlabel' => 'Department'
 		, 'if_no_value' => '-no value-'
-		, 'href' => 'project_totals.php?ID=[FLD:ID]&tab=' . $tab . '&backurl=[BACKURL]'
+		, 'href' => 'projects_edit.php?ID=[FLD:ID]&backurl=[BACKURL]'
 		, 'viewfilter' => array(
 			'labelfilterseparator' => '<br>'
 			, 'filter' => array (
@@ -75,7 +66,7 @@ function createProjectContent( $tab, $contentdesign ) {
 
 	$oView->add_field( new class_field_string ( array(
 		'fieldname' => 'Projectnummer'
-		, 'fieldlabel' => 'Project number&nbsp;'
+		, 'fieldlabel' => 'Project number'
 		, 'viewfilter' => array(
 			'labelfilterseparator' => '<br>'
 			, 'filter' => array (
@@ -91,7 +82,7 @@ function createProjectContent( $tab, $contentdesign ) {
 	$oView->add_field( new class_field_string ( array(
 		'fieldname' => 'lastdate'
 		, 'fieldlabel' => 'End date'
-		, 'XXXviewfilter' => array(
+		, 'viewfilter' => array(
 			'labelfilterseparator' => '<br>'
 			, 'filter' => array (
 					array (
@@ -103,24 +94,20 @@ function createProjectContent( $tab, $contentdesign ) {
 			)
 		)));
 
-	// show project leader only if admin or FinAdm
-	// don't show if projectleader
-	if ( $oWebuser->hasAdminAuthorisation() || $oWebuser->hasFaAuthorisation() ) {
-		$oView->add_field( new class_field_string ( array(
-			'fieldname' => 'FULLNAME'
-			, 'fieldlabel' => 'Project leader'
-			, 'viewfilter' => array(
-				'labelfilterseparator' => '<br>'
-				, 'filter' => array (
-						array (
-							'fieldname' => 'FULLNAME'
-							, 'type' => 'string'
-							, 'size' => 10
-						)
+	$oView->add_field( new class_field_string ( array(
+		'fieldname' => 'FULLNAME'
+		, 'fieldlabel' => 'Project leader'
+		, 'viewfilter' => array(
+			'labelfilterseparator' => '<br>'
+			, 'filter' => array (
+					array (
+						'fieldname' => 'FULLNAME'
+						, 'type' => 'string'
+						, 'size' => 10
 					)
 				)
-			)));
-	}
+			)
+		)));
 
 	// generate view
 	$ret .= $oView->generate_view();

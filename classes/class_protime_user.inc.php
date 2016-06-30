@@ -21,7 +21,7 @@ class class_protime_user {
 
 	function getProtimeValues() {
 		// reset values
-		$query = "SELECT * FROM PROTIME_CURRIC WHERE PERSNR=" . $this->protime_id;
+		$query = "SELECT * FROM protime_curric WHERE PERSNR=" . $this->protime_id;
 		$resultReset = mysql_query($query);
 		if ($row = mysql_fetch_assoc($resultReset)) {
 

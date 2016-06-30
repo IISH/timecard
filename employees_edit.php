@@ -81,7 +81,7 @@ function createEmployeesEditContent() {
 	$oForm->add_field( new class_field_list ( $settings, array(
 		'fieldname' => 'ProtimePersNr'
 		, 'fieldlabel' => 'Protime link'
-		, 'query' => "SELECT PERSNR, CONCAT(RTRIM(LTRIM(FIRSTNAME)), ' ', RTRIM(LTRIM(NAME))) AS FULLNAME FROM PROTIME_CURRIC WHERE 1=1 ORDER BY FIRSTNAME, NAME "
+		, 'query' => "SELECT PERSNR, CONCAT(RTRIM(LTRIM(FIRSTNAME)), ' ', RTRIM(LTRIM(NAME))) AS FULLNAME FROM protime_curric WHERE 1=1 ORDER BY FIRSTNAME, NAME "
 
 		, 'id_field' => 'PERSNR'
 		, 'description_field' => 'FULLNAME'
@@ -97,7 +97,7 @@ function createEmployeesEditContent() {
 		, 'fieldlabel' => 'Allow additions starting (yyyy-mm-dd)'
 		, 'size' => 35
 		, 'onNew' => date("Y-m-01")
-	)));
+		)));
 
 	$oForm->add_field( new class_field_readonly ( array(
 		'fieldname' => 'REGISTERNR'
@@ -110,15 +110,19 @@ function createEmployeesEditContent() {
 		)));
 
 	$oForm->add_field( new class_field_bit ( array(
+		'fieldname' => 'export_to_oracle'
+		, 'fieldlabel' => 'Export to Oracle?'
+		, 'onNew' => 1
+		)));
+
+	$oForm->add_field( new class_field_bit ( array(
 		'fieldname' => 'isdisabled'
 		, 'fieldlabel' => 'Check if disabled?'
-		, 'required' => 0
 		)));
 
 	$oForm->add_field( new class_field_bit ( array(
 		'fieldname' => 'is_test_account'
 		, 'fieldlabel' => 'Check if test account?'
-		, 'required' => 0
 		)));
 
 	$oForm->add_field( new class_field_readonly ( array(

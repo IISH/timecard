@@ -48,11 +48,12 @@ class class_field_date extends class_field {
 			$inputfield .= "<input name=\"FORM_::FIELDNAME::\" type=\"text\" value=\"::VALUE::\" size=\"::SIZE::\" ::STYLE:: ::CLASS::>\n";
 		}
 
-		$inputfield = str_replace("::SIZE::", $this->m_size, $inputfield);
-
-		$inputfield = str_replace("::FIELDNAME::", $this->get_fieldname(), $inputfield);
 		$inputfield = str_replace("::VALUE::", $veldwaarde, $inputfield);
 		$inputfield = str_replace("::VALUE2::", $veldwaarde2, $inputfield);
+
+		//
+		$inputfield = $this->setInputFieldAttributes($inputfield);
+		$inputfield = $this->cleanUpLabels($inputfield);
 
 		return $inputfield;
 	}

@@ -12,7 +12,7 @@ if ( isset($_GET["cron_key"]) ) {
 } elseif ( isset($_POST["cron_key"]) ) {
 	$cron_key = $_POST["cron_key"];
 }
-if ( trim( $cron_key ) != class_settings::getSetting('cron_key') ) {
+if ( trim( $cron_key ) != Settings::get('cron_key') ) {
 	die('Error: Incorrect cron key...');
 }
 
@@ -38,7 +38,7 @@ foreach ( $projects as $oProject ) {
 
 	// get projectleader
 	$oProjectleader = $oProject->getProjectleader();
-	$mail_body .= "Project leader:" . $fieldseparator . $oProjectleader->getFirstname() . ' ' . verplaatsTussenvoegselNaarBegin( $oProjectleader->getLastname() ) . " \n\n";
+	$mail_body .= "Project leader:" . $fieldseparator . $oProjectleader->getFirstLastname() . " \n\n";
 
 	// start / end date
 	$mail_body .= "From:" . $fieldseparator . $startdate . " \n";
@@ -49,7 +49,7 @@ foreach ( $projects as $oProject ) {
 
 	// name / hours
 	foreach ($workhours as $p) {
-		$mail_body .= $p["employee"]->getFirstname() . ' ' . verplaatsTussenvoegselNaarBegin($p["employee"]->getLastname()) . ":" . $fieldseparator;
+		$mail_body .= $p["employee"]->getFirstLastname() . ":" . $fieldseparator;
 		$mail_body .= number_format(class_misc::convertMinutesToHours($p["timeinminutes"]),2, ',', '.') . " hour(s) \n";
 		$total += $p["timeinminutes"];
 	}
@@ -57,7 +57,7 @@ foreach ( $projects as $oProject ) {
 	$mail_body .=  number_format(class_misc::convertMinutesToHours($total),2, ',', '.') . " hour(s) \n";
 
 	//
-	$mail_body .= "\n" . class_settings::getSetting('text_functional_maintainer_in_email') . "\n";
+	$mail_body .= "\n" . Settings::get('text_functional_maintainer_in_email') . "\n";
 
 	//
 	$mail_body .= "\nEmail sent on:" . $fieldseparator . date("Y-m-d H:i:s") . " \n\n";
@@ -66,28 +66,28 @@ foreach ( $projects as $oProject ) {
 	echo str_replace("\t", " &nbsp; &nbsp; ", str_replace("\n", "<br>\n", $mail_subject)) . "<br>\n";
 
 	// set headers
-	$mail_headers = 'From: "' . class_settings::getSetting('email_sender_name') . '" <' . class_settings::getSetting('email_sender_email') . '>' . "\r\n" .
-		'Reply-To: "' . class_settings::getSetting('email_sender_name') . '" <' . class_settings::getSetting('email_sender_email') . '>';
+	$mail_headers = 'From: "' . Settings::get('email_sender_name') . '" <' . Settings::get('email_sender_email') . '>' . "\r\n" .
+		'Reply-To: "' . Settings::get('email_sender_name') . '" <' . Settings::get('email_sender_email') . '>';
 
 	// check if weekly report e-mail is enabled
 	if ( !$oProject->getEnableweeklyreportmail() ) {
 		$m = "SKIPPED: Weekly report e-mail is disabled for this project.";
 		echo $m;
 		$mail_body .= $m;
-		mail(class_settings::getSetting('admin_email'), 'SKIPPED ' . $mail_subject, $mail_body, $mail_headers);
+		mail(Settings::get('admin_email'), 'SKIPPED ' . $mail_subject, $mail_body, $mail_headers);
 	} else {
 		// get email projectleader
 		$projectleaderEmail = $oProjectleader->getEmail();
 		if ( $projectleaderEmail != '' ) {
 			// send email to projectleader
-			$mail_headers .= "\r\n" . 'bcc: ' . class_settings::getSetting('admin_email');
+			$mail_headers .= "\r\n" . 'bcc: ' . Settings::get('admin_email');
 			mail($projectleaderEmail, $mail_subject, $mail_body, $mail_headers);
 			echo "E-mail sent to $projectleaderEmail";
 		} else {
 			$m = "SKIPPED: The project leader for this project has no e-mail (contact IISG reception).";
 			echo $m;
 			$mail_body .= $m;
-			mail(class_settings::getSetting('admin_email'), 'SKIPPED ' . $mail_subject, $mail_body, $mail_headers);
+			mail(Settings::get('admin_email'), 'SKIPPED ' . $mail_subject, $mail_body, $mail_headers);
 		}
 	}
 

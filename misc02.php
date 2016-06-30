@@ -1,4 +1,4 @@
-<?php
+<?php 
 require_once "classes/start.inc.php";
 
 $oWebuser->checkLoggedIn();
@@ -21,11 +21,11 @@ echo $oPage->getPage();
 require_once "classes/_db_disconnect.inc.php";
 
 function createContent() {
+	global $protect;
 
-	$ret = '<h2>Exports - Miscellaneous</h2><br>';
+	$ret = '<h2>Misc 02 (User Rights)</h2><br>';
 
-	$ret .= '<a href="misc01.php">Misc 01</a> (Booked on Department)<br>';
-	$ret .= '<a href="misc02.php">Misc 02</a> (User Rights)<br>';
+	$ret .= class_misc::convertArrayToHtmlTable(class_misc02::getMisc02());
 
 	return $ret;
 }

@@ -104,18 +104,20 @@ function createLoginPage() {
 </tr>
 </form>
 </table>
+";
 
+	// add footer
+	$ret .= $design->getFooter();
+
+	$ret .= "
 <br>
-" . class_settings::getSetting("text_functional_maintainer") . "
+" . Settings::get("text_functional_maintainer") . "
 <script language=\"javascript\">
 <!--
 document.frmA.fldLogin.focus();
 // -->
 </script>
 ";
-
-	// add footer
-	$ret .= $design->getFooter();
 
 	return $ret;
 }

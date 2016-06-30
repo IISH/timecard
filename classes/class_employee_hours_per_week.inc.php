@@ -53,7 +53,7 @@ class class_employee_hours_per_week {
 			$isRecordFound = true;
 		}
 
-		if ( $recursive && ( !$isRecordFound || date(class_settings::getSetting("timeStampRefreshLowPriority")) != $this->last_refresh ) ) {
+		if ( $recursive && ( !$isRecordFound || date(Settings::get("timeStampRefreshLowPriority")) != $this->last_refresh ) ) {
 			$oRefresh = new class_refresh_employee_hours_per_week($this->oEmployee, $this->year);
 			$oRefresh->refresh( false );
 

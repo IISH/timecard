@@ -16,14 +16,12 @@ $pid=0;
 //$pid = 210; // tjerck
 //$pid = 35; // mco
 //$pid = 202; // lwo
-
 //$pid = 131; // mmi
 //$pid = 169; // mieke
 //$pid = 191; // jwa
-
 //$pid = 480; // bas van leeuwen
 
-$arr = array( 37 );
+$arr = array( 35 );
 
 foreach ( $arr as $pid) {
 

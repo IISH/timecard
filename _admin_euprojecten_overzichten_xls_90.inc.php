@@ -14,8 +14,10 @@ foreach ( $arrHandtekeningen as $handtekening ) {
 // Set active sheet index to the first sheet, so Excel opens this as the first sheet
 $objPHPExcel->setActiveSheetIndex(0);
 
+// create filename and protect special characters
 $fnaam = protectFilename($periode . '-' . $employee_name) . ".xlsx";
 
+// output
 header("Content-type: application/octet-stream");
 header("Content-Disposition: attachment; filename=\"" . $fnaam . "\"");
 $objWriter = PHPExcel_IOFactory::createWriter( $objPHPExcel, 'Excel2007' );

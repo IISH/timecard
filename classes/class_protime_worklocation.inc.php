@@ -25,7 +25,7 @@ class class_protime_worklocation {
 		$oConn = new class_mysql($this->databases['default']);
 		$oConn->connect();
 
-		$query = "SELECT * FROM PROTIME_WORKLOCATION WHERE LOCATIONID=" . $this->getLocationId();
+		$query = "SELECT * FROM protime_worklocation WHERE LOCATIONID=" . $this->getLocationId();
 
 		$res = mysql_query($query, $oConn->getConnection());
 		if ($r = mysql_fetch_assoc($res)) {
@@ -112,7 +112,7 @@ class class_protime_worklocation {
 		$oConn = new class_mysql($databases['default']);
 		$oConn->connect();
 
-		$query = "SELECT * FROM PROTIME_WORKLOCATION ORDER BY LOCATIONID";
+		$query = "SELECT * FROM protime_worklocation ORDER BY LOCATIONID";
 
 		$res = mysql_query($query, $oConn->getConnection());
 		while ($r = mysql_fetch_assoc($res)) {

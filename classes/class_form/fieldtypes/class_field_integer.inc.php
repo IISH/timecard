@@ -47,17 +47,13 @@ class class_field_integer extends class_field {
 			}
 		}
 
-		$inputfield = "<input name=\"FORM_::FIELDNAME::\" type=\"text\" value=\"::VALUE::\" size=\"::SIZE::\" ::STYLE:: ::CLASS::>";
+		$inputfield = "<input name=\"FORM_::FIELDNAME::\" type=\"text\" value=\"::VALUE::\" size=\"::SIZE::\" ::STYLE:: ::CLASS:: ::PLACEHOLDER::>";
 
-		$inputfield = str_replace("::SIZE::", $this->m_size, $inputfield);
-
-		$inputfield = str_replace("::FIELDNAME::", $this->get_fieldname(), $inputfield);
 		$inputfield = str_replace("::VALUE::", $veldwaarde, $inputfield);
 
-		$style = $this->get_style();
-		if ( $style != '' ) {
-			$inputfield = str_replace("::STYLE::", ' style="' . $style . '" ', $inputfield);
-		}
+		//
+		$inputfield = $this->setInputFieldAttributes($inputfield);
+		$inputfield = $this->cleanUpLabels($inputfield);
 
 		return $inputfield;
 	}

@@ -20,9 +20,9 @@ $oPage->setTab($menuList->findTabNumber('administrator.day'));
 $oPage->setTitle('Timecard | Admin Day (edit)');
 
 if ( $oDate->get("Y-m-d") < $oEmployee->getAllowAdditionsStartingDate() ) {
-	$ret .= '<div class="youcannot">' . class_settings::getSetting('error_cannot_modify_legacy_contact_fa') . ' (error: 256985)</div>';
+	$ret .= '<div class="youcannot">' . Settings::get('error_cannot_modify_legacy_contact_fa') . ' (error: 256985)</div>';
 } elseif ( class_datetime::is_future( $oDate ) ) {
-	$oPage->setContent( '<div class="youcannot">' . class_settings::getSetting('error_cannot_add_in_the_future') . '</div>' );
+	$oPage->setContent( '<div class="youcannot">' . Settings::get('error_cannot_add_in_the_future') . '</div>' );
 } else {
 	$oPage->setContent(createAdminDayEditContent( $date  ));
 }
@@ -128,6 +128,7 @@ function getAdminDayEdit( $date, $oShortcutTemplate ) {
 	require_once("./classes/class_form/fieldtypes/class_field_string.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_time_double_field.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_time_single_field.inc.php");
+	require_once("./classes/class_form/fieldtypes/class_field_time_free_input_field.inc.php");
 
 	// TODOTODO DIRTY
 	$oDb = new class_mysql($databases['default']);
@@ -175,7 +176,7 @@ function getAdminDayEdit( $date, $oShortcutTemplate ) {
 	$oForm->add_field( new class_field_list ( $settings, array(
 		'fieldname' => 'WorkCode'
 		, 'fieldlabel' => 'Project'
-		, 'query' => 'SELECT ID, Concat(Projectnummer, \' \', Description) AS ProjectNumberName FROM Workcodes WHERE ( isdisabled = 0 AND (lastdate IS NULL OR lastdate = \'\' OR lastdate >= \'' . $oDate->get("Y-m-d") . '\') ) ' . $currentValueOnNew . ' ORDER BY Projectnummer, Description '
+		, 'query' => 'SELECT ID, Concat(IFNULL(Projectnummer,\'\'), \' \', Description) AS ProjectNumberName FROM Workcodes WHERE ( isdisabled = 0 AND (lastdate IS NULL OR lastdate = \'\' OR lastdate >= \'' . $oDate->get("Y-m-d") . '\') ) ' . $currentValueOnNew . ' ORDER BY Projectnummer, Description '
 		, 'id_field' => 'ID'
 		, 'description_field' => 'ProjectNumberName'
 		, 'empty_value' => '0'
@@ -184,21 +185,26 @@ function getAdminDayEdit( $date, $oShortcutTemplate ) {
 		, 'onNew' => $onNew["project"]
 		)));
 
-	// single or double field
-	if ( $oWebuser->getHoursdoublefield() == 1 || $oWebuser->getHoursdoublefield() == 2 ) {
+	// single select field, double select field or free input field
+	if ( $oWebuser->getHoursdoublefield() == 2 ) {
 
-		if ( $oWebuser->getHoursdoublefield() == 2 ) {
-			$possible_minute_values = array("00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59");
-		} else {
-			$possible_minute_values = array("00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55");
-		}
+		$oForm->add_field( new class_field_time_free_input_field ( array(
+			'fieldname' => 'TimeInMinutes'
+			, 'fieldlabel' => 'Time (h:mm)'
+			, 'required' => 0
+			, 'onNew' => $onNew["time"]
+			, 'placeholder' => '0:00'
+			, 'style' => 'width:60px;'
+			)));
+
+	} elseif ( $oWebuser->getHoursdoublefield() == 1 ) {
 
 		$oForm->add_field( new class_field_time_double_field ( array(
 			'fieldname' => 'TimeInMinutes'
-			, 'fieldlabel' => 'Time (hh:mm)'
+			, 'fieldlabel' => 'Time (h:mm)'
 			, 'required' => 0
-			, 'possible_hour_values' => array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")
-			, 'possible_minute_values' => $possible_minute_values
+			, 'possible_hour_values' => array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10")
+			, 'possible_minute_values' => array("00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55")
 			, 'onNew' => $onNew["time"]
 			)));
 
@@ -206,9 +212,9 @@ function getAdminDayEdit( $date, $oShortcutTemplate ) {
 
 		$oForm->add_field( new class_field_time_single_field ( array(
 			'fieldname' => 'TimeInMinutes'
-			, 'fieldlabel' => 'Time (hh:mm)'
+			, 'fieldlabel' => 'Time (h:mm)'
 			, 'required' => 0
-			, 'possible_hour_values' => array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")
+			, 'possible_hour_values' => array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10")
 			, 'possible_minute_values' => array("00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55")
 			, 'onNew' => $onNew["time"]
 			)));

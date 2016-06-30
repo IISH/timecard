@@ -20,8 +20,10 @@ class class_mysql {
 		}
 
 		// connect to database
-		mysql_select_db($this->database, $this->conn);
-
+		$db_selected = mysql_select_db($this->database, $this->conn);
+		if ( !$db_selected ) {
+			die ('Cannot select database : ' . mysql_error());
+		}
 		return 1;
 	}
 

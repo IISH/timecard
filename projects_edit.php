@@ -47,7 +47,6 @@ function createProjectEditContent() {
 
 	require_once("./classes/class_form/class_form.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_string.inc.php");
-	require_once("./classes/class_form/fieldtypes/class_field_bit.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_integer.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_hidden.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_list.inc.php");
@@ -77,6 +76,7 @@ function createProjectEditContent() {
 		, 'required' => 0
 		, 'onNew' => ''
 		, 'style' => 'width:425px;'
+		, 'convertEmptyToNull' => 1
 		)));
 
 	$oForm->add_field( new class_field_string ( array(
@@ -108,11 +108,12 @@ function createProjectEditContent() {
 		, 'onNew' => '0'
 		)));
 
-	$oForm->add_field( new class_field_bit ( array(
+	$oForm->add_field( new class_field_static_string_list ( array(
 		'fieldname' => 'enable_weekly_report_mail'
-	, 'fieldlabel' => 'Enable weekly mail report?'
-	, 'onNew' => '1'
-	)));
+		, 'fieldlabel' => 'Send weekly mail report?'
+		, 'onNew' => '1'
+		, 'choices' => array( array('1', 'yes'), array('0', 'no') )
+		)));
 
 	$oForm->add_field( new class_field_string ( array(
 		'fieldname' => 'lastdate'

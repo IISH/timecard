@@ -9,12 +9,12 @@ if ( isset($_GET["cron_key"]) ) {
 } elseif ( isset($_POST["cron_key"]) ) {
 	$cron_key = $_POST["cron_key"];
 }
-if ( trim( $cron_key ) != class_settings::getSetting('cron_key') ) {
+if ( trim( $cron_key ) != Settings::get('cron_key') ) {
 	die('Error: Incorrect cron key...');
 }
 
 // save cron start run
-class_settings::saveSetting('cron_' . $path_parts['filename'] . '_start', date("Y-m-d H:i:s"));
+SyncInfo::save($path_parts['filename'], 'start', date("Y-m-d H:i:s"));
 
 //
 echo "Start time: " . date("Y-m-d H:i:s") . "<br>\n";
@@ -32,7 +32,7 @@ foreach ( class_employee::getListOfEnabledAndLinkedEmployees() as $oUser ) {
 
 	foreach ( $arrMonths as $oDate ) {
 		// save current state
-		class_settings::saveSetting('cron_' . $path_parts['filename'] . '_state', $oUser->getTimecardId() . " - " . $oDate->get("Y-m"));
+		SyncInfo::save($path_parts['filename'], 'counter', $oUser->getTimecardId() . " - " . $oDate->get("Y-m"));
 
 		echo ' ' . (int)$oDate->get("m");
 		$oUser->syncTimecardProtimeMonthInformation( $oDate );
@@ -43,7 +43,7 @@ foreach ( class_employee::getListOfEnabledAndLinkedEmployees() as $oUser ) {
 }
 
 // save cron end run
-class_settings::saveSetting('cron_' . $path_parts['filename'] . '_end', date("Y-m-d H:i:s"));
+SyncInfo::save($path_parts['filename'], 'end', date("Y-m-d H:i:s"));
 
 //
 echo "End time: " . date("Y-m-d H:i:s") . "<br>\n";

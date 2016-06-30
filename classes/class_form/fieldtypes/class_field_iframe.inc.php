@@ -41,12 +41,9 @@ class class_field_iframe extends class_field {
 
 		$inputfield = str_replace("::SRC::", $this->m_src, $inputfield);
 
-		$inputfield = str_replace("::NAME::", $this->get_fieldname(), $inputfield);
-
-		$style = $this->get_style();
-		if ( $style != '' ) {
-			$inputfield = str_replace("::STYLE::", ' style="' . $style . '" ', $inputfield);
-		}
+		//
+		$inputfield = $this->setInputFieldAttributes($inputfield);
+		$inputfield = $this->cleanUpLabels($inputfield);
 
 		return $inputfield;
 	}
