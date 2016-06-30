@@ -1,4 +1,5 @@
 <?php
+die('deprecated');
 require_once "../classes/start.inc.php";
 
 // check cron key
@@ -20,7 +21,7 @@ $sync = new SyncProtimeMysql();
 $sync->setSourceTable("P_LIMIT");
 $sync->setSourceCriterium(" BOOKDATE>='" . date("Ymd", mktime(0, 0, 0, date("m")-3, 1, date("Y"))) . "' ");
 //$sync->setSourceCriterium(" BOOKDATE>='20130101' ");
-$sync->setTargetTable("PROTIME_P_LIMIT");
+$sync->setTargetTable("protime_p_limit");
 $sync->setPrimaryKey("REC_NR");
 $sync->addFields( array("REC_NR", "PERSNR", "BOOKDATE", "LIMIT_LINE", "LIM_PERIODE", "ITEM_TYPE", "YEARCOUNTER", "BEGIN_VAL", "END_VAL", "EXEC_ORDER") );
 SyncInfo::save($sync->getTargetTable(), 'start', date("Y-m-d H:i:s"));

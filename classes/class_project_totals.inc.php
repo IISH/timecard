@@ -30,7 +30,7 @@ class class_project_totals {
 SELECT LEFT(DateWorked, 7) AS YearMonth, WorkCode AS ProjectId, Employees.ID AS TimecardId, ProtimePersNr, NAME, FIRSTNAME, SUM(TimeInMinutes) AS TOTMIN
 FROM Workhours$postfix
 	INNER JOIN Employees ON Workhours$postfix.Employee = Employees.ID
-	INNER JOIN PROTIME_CURRIC ON Employees.ProtimePersNr = PROTIME_CURRIC.PERSNR
+	INNER JOIN protime_curric ON Employees.ProtimePersNr = protime_curric.PERSNR
 WHERE WorkCode = {$this->projectId}
 AND Workhours$postfix.isdeleted = 0
 AND DateWorked LIKE '{$this->year}%'

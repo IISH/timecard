@@ -208,7 +208,7 @@ class class_employee {
 			$yyyymmdd = date("Ymd");
 		}
 
-		$query = "SELECT REC_NR, PERSNR, BOOKDATE, BOOKTIME FROM PROTIME_BOOKINGS WHERE PERSNR=" . $this->getProtimeId() . " AND BOOKDATE='" . $yyyymmdd . "' AND BOOKTIME<>9999 ORDER BY BOOKTIME ";
+		$query = "SELECT REC_NR, PERSNR, BOOKDATE, BOOKTIME FROM protime_bookings WHERE PERSNR=" . $this->getProtimeId() . " AND BOOKDATE='" . $yyyymmdd . "' AND BOOKTIME<>9999 ORDER BY BOOKTIME ";
 
 		$oTc = new class_mysql($databases['default']);
 		$oTc->connect();
@@ -343,7 +343,7 @@ class class_employee {
 
 			$vakantie = advancedSingleRecordSelectMysql(
 				'default'
-				, "PROTIME_P_LIMIT"
+				, "protime_p_limit"
 				, array("BEGIN_VAL", "END_VAL", "BOOKDATE")
 				, "PERSNR=" . $this->getProtimeId() . " AND YEARCOUNTER=1 AND LIM_PERIODE = 6 "
 				, '*'
@@ -428,7 +428,7 @@ class class_employee {
 
 		// reset values
 		$query = "SELECT SUBSTR(BOOKDATE, 1, 10) AS BOOKDATUM, WEEKPRES1, EXTRA
-FROM PROTIME_PR_MONTH
+FROM protime_pr_month
 WHERE PERSNR=" . $protime_id . " AND BOOKDATE LIKE '" . $date["y"] . str_pad( $date["m"], 2, '0', STR_PAD_LEFT) . "%'
 GROUP BY SUBSTR(BOOKDATE, 1, 10)
 ";
@@ -484,7 +484,7 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 			// 
 			$hours = advancedSingleRecordSelectMysql(
 					'default'
-					, "PROTIME_PR_MONTH"
+					, "protime_pr_month"
 					, array("PERSNR", "BOOKDATE", "PREST", "RPREST", "WEEKPRES1", "EXTRA")
 					, "PERSNR=" . $protime_id . " AND BOOKDATE='" . $oDate->get("Ymd") . "' "
 				);
@@ -514,7 +514,7 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 
 			$vakantie = advancedSingleRecordSelectMysql(
 				'default'
-				, "PROTIME_P_LIMIT"
+				, "protime_p_limit"
 				, array("BEGIN_VAL", "END_VAL", "BOOKDATE")
 				, "PERSNR=" . $this->getProtimeId() . " AND YEARCOUNTER=1 "
 				, '*'
@@ -530,7 +530,7 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 			$oConn = new class_mysql($this->databases['default']);
 			$oConn->connect();
 
-			$query = "SELECT SUM(ABSENCE_VALUE) AS SOM FROM PROTIME_P_ABSENCE  WHERE PERSNR=" . $this->getProtimeId() . " AND ABSENCE IN ( 12 ) AND BOOKDATE LIKE '$year%' AND BOOKDATE > '{$vakantie["bookdate"]}' ";
+			$query = "SELECT SUM(ABSENCE_VALUE) AS SOM FROM protime_p_absence  WHERE PERSNR=" . $this->getProtimeId() . " AND ABSENCE IN ( 12 ) AND BOOKDATE LIKE '$year%' AND BOOKDATE > '{$vakantie["bookdate"]}' ";
 			$result = mysql_query($query, $oConn->getConnection());
 			if ( $row = mysql_fetch_array($result) ) {
 				$ret -= $row["SOM"];
@@ -552,7 +552,7 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 
 			$vakantie = advancedSingleRecordSelectMysql(
 						'default'
-						, "PROTIME_P_LIMIT"
+						, "protime_p_limit"
 						, array("BEGIN_VAL", "END_VAL", "BOOKDATE")
 						, "PERSNR=" . $this->getProtimeId() . " AND YEARCOUNTER=1 "
 						, '*'
@@ -672,7 +672,7 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 
 		if ( $protime_id != '' && $protime_id != '0' ) {
 
-			$query = "SELECT PERSNR, BOOKDATE, PREST, RPREST, WEEKPRES1, EXTRA FROM PROTIME_PR_MONTH WHERE PERSNR=" . $protime_id . " AND LEFT(BOOKDATE, 6)=" . $yyyymm;
+			$query = "SELECT PERSNR, BOOKDATE, PREST, RPREST, WEEKPRES1, EXTRA FROM protime_pr_month WHERE PERSNR=" . $protime_id . " AND LEFT(BOOKDATE, 6)=" . $yyyymm;
 			$oTc = new class_mysql($databases['default']);
 			$oTc->connect();
 
@@ -1049,7 +1049,7 @@ GROUP BY ProtimeID
 
 			$res = advancedSingleRecordSelectMysql(
 				'default'
-				, "PROTIME_CURRIC"
+				, "protime_curric"
 				, array("EMAIL")
 				, "PERSNR=" . $this->getProtimeId()
 			);

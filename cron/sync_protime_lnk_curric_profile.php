@@ -1,4 +1,5 @@
 <?php
+die('deprecated');
 require_once "../classes/start.inc.php";
 
 // check cron key
@@ -18,7 +19,7 @@ echo "Start time: " . date("Y-m-d H:i:s") . "<br>\n";
 // sync
 $sync = new SyncProtimeMysql();
 $sync->setSourceTable("LNK_CURRIC_PROFILE");
-$sync->setTargetTable("PROTIME_LNK_CURRIC_PROFILE");
+$sync->setTargetTable("protime_lnk_curric_profile");
 $sync->setPrimaryKey("REC_NR");
 $sync->addFields( array("REC_NR", "PERSNR", "PROFILE", "PROFILETYPE", "DATEFROM", "DAYNUMBER", "CUSTOMER") );
 SyncInfo::save($sync->getTargetTable(), 'start', date("Y-m-d H:i:s"));

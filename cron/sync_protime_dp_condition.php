@@ -1,4 +1,5 @@
 <?php
+die('deprecated');
 require_once "../classes/start.inc.php";
 
 // check cron key
@@ -18,7 +19,7 @@ echo "Start time: " . date("Y-m-d H:i:s") . "<br>\n";
 // sync
 $sync = new SyncProtimeMysql();
 $sync->setSourceTable("DP_CONDITION");
-$sync->setTargetTable("PROTIME_DP_CONDITION");
+$sync->setTargetTable("protime_dp_condition");
 $sync->setPrimaryKey("DP_CONDITION");
 $sync->addFields( array("DP_CONDITION", "DAYPROG", "EXEC_ORDER", "DOTHIS", "DO_VALUE1", "DO_VALUE2", "DO_VALUE3") );
 SyncInfo::save($sync->getTargetTable(), 'start', date("Y-m-d H:i:s"));

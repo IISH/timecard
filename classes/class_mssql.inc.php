@@ -17,7 +17,7 @@ class class_mssql {
 	function connect() {
 		$this->conn = mssql_connect($this->server, $this->user, $this->password);
 		if ( !$this->conn ) {
-			die('Error: 174154 - Could not connect to MSSQL server<br>' . mssql_error());
+			die( 'Error: 174154 - Could not connect to MSSQL server: ' . $this->server );
 		}
 
 		// connect to database

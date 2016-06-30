@@ -39,7 +39,7 @@ function createWorkLocationsContent() {
 	$oView = new class_view($settings, $oDb);
 
 	$oView->set_view( array(
-		'query' => 'SELECT * FROM PROTIME_WORKLOCATION WHERE 1=1 '
+		'query' => 'SELECT * FROM protime_worklocation WHERE 1=1 '
 		, 'count_source_type' => 'query'
 		, 'order_by' => 'SHORT_1, LOCATIONID ASC '
 		, 'anchor_field' => 'LOCATIONID'

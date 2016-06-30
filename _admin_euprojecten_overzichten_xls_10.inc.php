@@ -226,7 +226,7 @@ function getProtimeUrenGroupedByDay($protimeId, $year, $month, $view, $timecardi
 	// 13	Werk buiten IISG
 	// 18	Werk thuis
 
-	$query = "SELECT SUBSTR(BOOKDATE, 1, 10) AS WORKDATE, SUM(ABSENCE_VALUE) AS AANTAL FROM PROTIME_P_ABSENCE WHERE PERSNR=" . $protimeId . " AND BOOKDATE LIKE '" . $year . substr('0'.$month,-2) . "%' ";
+	$query = "SELECT SUBSTR(BOOKDATE, 1, 10) AS WORKDATE, SUM(ABSENCE_VALUE) AS AANTAL FROM protime_p_absence WHERE PERSNR=" . $protimeId . " AND BOOKDATE LIKE '" . $year . substr('0'.$month,-2) . "%' ";
 
 	$query .= "	AND ABSENCE IN ( ";
 	switch ( $view ) {
@@ -307,7 +307,7 @@ function getProtimeUren($id, $year, $month, $view, $timecardid) {
 	// 13	Werk buiten IISG
 	// 18	Werk thuis
 
-	$query = "SELECT SUM(ABSENCE_VALUE) AS AANTAL FROM PROTIME_P_ABSENCE WHERE PERSNR=" . $id . " AND BOOKDATE LIKE '" . $year . substr('0'.$month,-2) . "%' AND ABSENCE IN ( ";
+	$query = "SELECT SUM(ABSENCE_VALUE) AS AANTAL FROM protime_p_absence WHERE PERSNR=" . $id . " AND BOOKDATE LIKE '" . $year . substr('0'.$month,-2) . "%' AND ABSENCE IN ( ";
 	switch ( $view ) {
 		case "verlof":
 			$query .= "1,2,8,9,10,11,16,17,7,3,19,12";

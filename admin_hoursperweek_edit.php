@@ -53,10 +53,10 @@ function createHoursperweekEditContent() {
 		, 'fieldlabel' => '#'
 		)));
 
-	$q = "SELECT Employees.ID, CONCAT( RTRIM( LTRIM( IFNULL(PROTIME_CURRIC.FIRSTNAME,'') ) ) , ' ', RTRIM( LTRIM( IFNULL(PROTIME_CURRIC.NAME,'') ) ), ' (#', Employees.ID, IF(Employees.is_test_account=1, ', testaccount', ''), ')' ) AS FULLNAME
+	$q = "SELECT Employees.ID, CONCAT( RTRIM( LTRIM( IFNULL(protime_curric.FIRSTNAME,'') ) ) , ' ', RTRIM( LTRIM( IFNULL(protime_curric.NAME,'') ) ), ' (#', Employees.ID, IF(Employees.is_test_account=1, ', testaccount', ''), ')' ) AS FULLNAME
 FROM Employees
-	LEFT JOIN PROTIME_CURRIC ON Employees.ProtimePersNr = PROTIME_CURRIC.PERSNR
-	LEFT JOIN PROTIME_WORKLOCATION ON PROTIME_CURRIC.WORKLOCATION = PROTIME_WORKLOCATION.LOCATIONID
+	LEFT JOIN protime_curric ON Employees.ProtimePersNr = protime_curric.PERSNR
+	LEFT JOIN protime_worklocation ON protime_curric.WORKLOCATION = protime_worklocation.LOCATIONID
 WHERE is_test_account=0
 	AND ( isdisabled=0 OR Employees.ID=" . $protect->request('get', 'ID') . " )
 ORDER BY FULLNAME ";
