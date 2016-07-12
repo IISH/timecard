@@ -5,7 +5,9 @@ class class_authentication {
 	}
 
 	function authenticate( $login, $password ) {
-		return class_authentication::check_ldap('iisgnet\\' . $login, $password, array('sa-dc02.iisg.net'));
+		// TODO: move authentication settings to jira/confluence active directory
+		// TODO: after move to jira/confluence ldap, who is allowed to enter data??? (this must be configured somewhere)
+		return class_authentication::check_ldap('iisgnet\\' . $login, $password, array('sa-dc02.iisg.net', 'sa-dc01.iisg.net'));
 	}
 
 	function check_ldap($user, $pw, $servers) {
