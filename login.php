@@ -89,11 +89,11 @@ function createLoginPage() {
 <input type=\"hidden\" name=\"issubmitted\" value=\"1\">
 <tr>
 	<td>Login name:</td>
-	<td><input type=\"text\" name=\"fldLogin\" class=\"login\" maxlength=\"50\" value=\"" . $fldLogin . "\"> <i>(SA / 2X account, firstname.lastname)</i></td>
+	<td><input type=\"text\" name=\"fldLogin\" class=\"login\" maxlength=\"50\" value=\"" . $fldLogin . "\" placeholder=\"firstname.lastname\"></td>
 </tr>
 <tr>
 	<td>Password:&nbsp;</td>
-	<td><input type=\"password\" name=\"fldPassword\" class=\"password\" maxlength=\"50\" value=\"\"></td>
+	<td><input type=\"password\" name=\"fldPassword\" class=\"password\" maxlength=\"50\" value=\"\" placeholder=\"password\"></td>
 </tr>
 <tr>
 	<td></td>
