@@ -14,7 +14,7 @@ class class_authentication {
 		$login_correct = 0;
 
 		// LDAP AUTHENTICATIE VIA PHP-LDAP
-		// php-ldap moet geinstalleerd zijn op de server
+		// php-ldap must be installed on the server
 
 		foreach ( $servers as $server ) {
 			if ( $login_correct == 0 ) {
@@ -38,6 +38,10 @@ class class_authentication {
 				ldap_unbind($ad);
 			}
 		}
+
+        if ( $login_correct == 0 ) {
+            error_log("LOGIN FAILED $user from " . class_misc::get_remote_addr() . " (SA: " . trim(Settings::get('ms_active_directories')) . ")");
+        }
 
 		return $login_correct;
 	}
