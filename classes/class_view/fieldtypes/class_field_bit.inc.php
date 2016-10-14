@@ -6,8 +6,8 @@ class class_field_bit extends class_field {
 	private $m_different_true_value;
 	private $m_different_false_value;
 
-	function class_field_bit($fieldsettings) {
-		parent::class_field($fieldsettings);
+	function __construct($fieldsettings) {
+		parent::__construct($fieldsettings);
 
 		$this->m_show_different_values = false;
 		$this->m_different_true_value = '';

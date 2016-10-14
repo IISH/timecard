@@ -15,7 +15,7 @@ class class_form {
 	protected $m_doc_id;
 	private $m_old_doc_id;
 
-	function class_form($settings, $oDb) {
+	function __construct($settings, $oDb) {
 		$this->settings = $settings;
 		$this->oDb = $oDb;
 		$this->oClassFile = new class_file();

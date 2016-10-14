@@ -14,7 +14,7 @@ class class_employee_hours_for_planning {
 	private $number_of_nationalholidays = array();
 	private $number_of_brugdagen = array();
 
-	function class_employee_hours_for_planning( $oEmployee, $year ) {
+	function __construct( $oEmployee, $year ) {
 		global $databases;
 		$this->databases = $databases;
 

@@ -20,7 +20,7 @@ class class_employee {
 	private $department = '';
 	private $sortProjectsOnName = -1;
 
-	function class_employee($timecard_id, $settings) {
+	function __construct($timecard_id, $settings) {
 		global $databases;
 
 		if ( $timecard_id == '' || $timecard_id < -1 ) {

@@ -2,8 +2,8 @@
 require_once("./classes/class_form/fieldtypes/class_field.inc.php");
 
 class class_field_date extends class_field {
-	function class_field_date($fieldsettings) {
-		parent::class_field($fieldsettings);
+	function __construct($fieldsettings) {
+		parent::__construct($fieldsettings);
 
 		if ( is_array( $fieldsettings ) ) {
 			foreach ( $fieldsettings as $field => $value ) {

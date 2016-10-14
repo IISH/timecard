@@ -1,7 +1,7 @@
 <?php
 class class_website_protection {
 	// construct
-	function class_website_protection() {
+	function __construct() {
 	}
 
 	function send_warning_mail($tekst) {

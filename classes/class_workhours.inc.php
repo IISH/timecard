@@ -15,7 +15,7 @@ class class_workhours {
 	private $daily_automatic_addition_id;
 	private $is_time_fixed;
 
-	function class_workhours($id) {
+	function __construct($id) {
 		global $databases;
 		$this->databases = $databases;
 

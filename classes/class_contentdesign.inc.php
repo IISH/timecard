@@ -12,7 +12,7 @@ class class_contentdesign {
 	private $footer;
 	private $isDeleted;
 
-	function class_contentdesign($design) {
+	function __construct($design) {
 		global $databases;
 
 		$this->databases = $databases;

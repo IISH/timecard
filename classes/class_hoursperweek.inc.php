@@ -7,7 +7,7 @@ class class_hoursperweek {
 	private $startmonth;
 	private $endmonth;
 
-	function class_hoursperweek($id, $settings) {
+	function __construct($id, $settings) {
 		global $databases;
 		$this->databases = $databases;
 

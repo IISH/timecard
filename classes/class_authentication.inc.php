@@ -1,13 +1,13 @@
 <?php 
 class class_authentication {
 
-	function class_authentication() {
+	function __construct() {
 	}
 
 	function authenticate( $login, $password ) {
 		// TODO: move authentication settings to jira/confluence active directory
 		// TODO: after move to jira/confluence ldap, who is allowed to enter data??? (this must be configured somewhere)
-		return class_authentication::check_ldap('iisgnet\\' . $login, $password, array('sa-dc02.iisg.net', 'sa-dc01.iisg.net'));
+		return class_authentication::check_ldap('iisgnet\\' . $login, $password, explode(' ', trim(Settings::get('ms_active_directories'))));
 	}
 
 	function check_ldap($user, $pw, $servers) {

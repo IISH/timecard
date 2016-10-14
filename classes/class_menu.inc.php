@@ -87,7 +87,7 @@ class class_menuitem {
 	public $label = '';
 	public $url = '';
 
-	function class_menuitem($code, $label, $url ) {
+	function __construct($code, $label, $url ) {
 		$this->code = $code;
 		$this->label = $label;
 		$this->url = $url;
@@ -118,7 +118,7 @@ class class_menugroup {
 	public $menuitems = array();
 	public $counter = 0;
 
-	function class_menugroup($label, $code = '') {
+	function __construct($label, $code = '') {
 		$this->code = $code;
 		$this->label = $label;
 	}

@@ -14,7 +14,7 @@ class class_project {
 	private $enable_weekly_report_mail;
 	private $year;
 
-	function class_project($id, $year = '') {
+	function __construct($id, $year = '') {
 		global $databases;
 		$this->databases = $databases;
 

@@ -9,7 +9,7 @@ class class_protime_worklocation {
 	private $short_2;
 	private $description;
 
-	function class_protime_worklocation($id) {
+	function __construct($id) {
 		global $databases;
 		$this->databases = $databases;
 

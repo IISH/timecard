@@ -11,7 +11,7 @@ class class_field {
 	private $m_convertEmptyToNull;
 	private $m_placeholder;
 
-	function class_field($fieldsettings) {
+	function __construct($fieldsettings) {
 		$this->oClassMisc = new class_misc();
 		$this->m_fieldname = '';
 		$this->m_fieldlabel = '';

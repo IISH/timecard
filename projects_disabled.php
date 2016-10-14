@@ -21,7 +21,7 @@ echo $oPage->getPage();
 require_once "classes/_db_disconnect.inc.php";
 
 function createProjectContent() {
-	global $settings, $databases;
+	global $settings, $databases, $oWebuser;
 
 	// get design
 	$design = new class_contentdesign("page_projects_disabled");
@@ -38,10 +38,17 @@ function createProjectContent() {
 	$oDb = new class_mysql($databases['default']);
 	$oView = new class_view($settings, $oDb);
 
+	// order of listing
+	if ( $oWebuser->getSortProjectsOnName() == 1 ) {
+		$order = 'Workcodes.Description, Workcodes.Projectnummer, Workcodes.ID DESC ';
+	} else {
+		$order = 'Workcodes.Projectnummer, Workcodes.Description, Workcodes.ID DESC ';
+	}
+
 	$oView->set_view( array(
 		'query' => "SELECT Workcodes.*, vw_Employees.FULLNAME  FROM Workcodes LEFT JOIN vw_Employees ON Workcodes.projectleader = vw_Employees.ID WHERE Workcodes.isdisabled<>0 "
 		, 'count_source_type' => 'query'
-		, 'order_by' => 'Workcodes.Description, Workcodes.ID DESC '
+		, 'order_by' => $order
 		, 'anchor_field' => 'ID'
 		, 'viewfilter' => true
 		, 'table_parameters' => ' cellspacing="0" cellpadding="0" border="0" '

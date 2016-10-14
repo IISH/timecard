@@ -1,7 +1,7 @@
 <?php 
 class class_calendar {
 
-	function class_calendar() {
+	function __construct() {
 	}
 
 	function getCalendar($date, $originalDate, $scriptname, $querystring) {

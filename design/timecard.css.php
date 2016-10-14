@@ -509,3 +509,16 @@ div.add_new_button {
 	margin-bottom: 20px;
 	margin-top: 20px;
 }
+
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+	color: darkgrey;
+}
+::-moz-placeholder { /* Firefox 19+ */
+	color: darkgrey;
+}
+:-ms-input-placeholder { /* IE 10+ */
+	color: darkgrey;
+}
+:-moz-placeholder { /* Firefox 18- */
+	color: darkgrey;
+}

@@ -13,7 +13,7 @@ class class_department {
 	private $isenabled;
 	private $isdeleted;
 
-	function class_department($id) {
+	function __construct($id) {
 		global $databases;
 		$this->databases = $databases;
 

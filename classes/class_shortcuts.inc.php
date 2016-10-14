@@ -8,7 +8,7 @@ class class_shortcuts {
 	private $databases;
 	private $oDate;
 
-	function class_shortcuts($oUser, $settings, $oDate) {
+	function __construct($oUser, $settings, $oDate) {
 		global $databases;
 
 		$this->oUser = $oUser;

@@ -3,8 +3,8 @@ require_once("./classes/class_view/fieldtypes/class_field.inc.php");
 
 class class_field_integer extends class_field {
 
-	function class_field_integer($fieldsettings) {
-		parent::class_field($fieldsettings);
+	function __construct($fieldsettings) {
+		parent::__construct($fieldsettings);
 
 		if ( is_array( $fieldsettings ) ) {
 			foreach ( $fieldsettings as $field => $value ) {

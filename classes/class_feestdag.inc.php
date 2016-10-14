@@ -9,7 +9,7 @@ class class_feestdag {
 	private $vooreigenrekening;
 	private $isdeleted;
 
-	function class_feestdag($id) {
+	function __construct($id) {
 		$this->id = $id;
 		$this->date = '';
 		$this->description = '';

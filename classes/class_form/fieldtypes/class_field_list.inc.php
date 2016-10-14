@@ -16,10 +16,10 @@ class class_field_list extends class_field {
 	private $m_onchange;
 	private $m_javascriptcode;
 
-	function class_field_list($settings, $fieldsettings) {
+	function __construct($settings, $fieldsettings) {
 		global $databases;
 
-		parent::class_field($fieldsettings);
+		parent::__construct($fieldsettings);
 
 		$this->m_query = '';
 		$this->m_id_field = '';

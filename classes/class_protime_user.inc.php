@@ -6,7 +6,7 @@ class class_protime_user {
 	private $lastname = '';
 	private $email = '';
 
-	function class_protime_user($protime_id, $settings) {
+	function __construct($protime_id, $settings) {
 		if ( $protime_id == '' || $protime_id < -1 ) {
 			$protime_id = 0;
 		}

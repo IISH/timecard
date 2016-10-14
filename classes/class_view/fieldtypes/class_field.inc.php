@@ -23,7 +23,7 @@ class class_field {
 	private $m_style = '';
 	private $m_noheader;
 
-	function class_field($fieldsettings) {
+	function __construct($fieldsettings) {
 		$this->oClassMisc = new class_misc();
 		$this->m_fieldname = '';
 		$this->m_fieldname_pointer = '';

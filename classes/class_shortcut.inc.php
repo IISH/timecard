@@ -18,7 +18,7 @@ class class_shortcut {
 	private $extraExplanation;
 	private $department;
 
-	function class_shortcut($id) {
+	function __construct($id) {
 		global $databases, $settings;
 		$this->databases = $databases;
 		$this->settings = $settings;

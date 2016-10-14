@@ -7,7 +7,7 @@ class class_national_holiday_brugdag {
 	private $year;
 	private $low = array();
 
-	function class_national_holiday_brugdag( $year ) {
+	function __construct( $year ) {
 		global $databases;
 		$this->databases = $databases;
 

@@ -48,21 +48,28 @@ function createLoginPage() {
 				// if not add new user
 				$persinfo = getAddEmployeeToTimecard($fldLogin);
 
-				// save id
-				$_SESSION["timecard"]["id"] = $persinfo["id"];
+                // get user
+                $oWebuser = new class_employee($persinfo["id"], $settings);
 
-				$oWebuser = new class_employee($persinfo["id"], $settings);
+                // if disabled show disabled message
+                if ( $oWebuser->isDisabled() == 1 ) {
+                    // show error
+                    $error .= "Your account is disabled. Please contact the Functional Maintainer of the application.";
+                } else {
+                    // save id
+                    $_SESSION["timecard"]["id"] = $persinfo["id"];
 
-				// update wanneer gebruiker voor het laatst is ingelogd op timecard
-				updateLastUserLogin( $oWebuser->getTimecardId() );
+                    // update wanneer gebruiker voor het laatst is ingelogd op timecard
+                    updateLastUserLogin($oWebuser->getTimecardId());
 
-				// redirect to prev page
-				if ( $burl == '' ) {
-					$burl = 'index.php';
-				}
+                    // redirect to prev page
+                    if ($burl == '') {
+                        $burl = 'index.php';
+                    }
 
-				Header("Location: " . $burl);
-				die("Go to <a href=\"" . $burl . "\">next</a>");
+                    Header("Location: " . $burl);
+                    die("Go to <a href=\"" . $burl . "\">next</a>");
+                }
 			} else {
 				// show error
 				$error .= "User/Password combination incorrect.";

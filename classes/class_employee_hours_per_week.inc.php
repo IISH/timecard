@@ -11,7 +11,7 @@ class class_employee_hours_per_week {
 	private $hours_per_week_text;
 	private $last_refresh;
 
-	function class_employee_hours_per_week( $oEmployee, $year ) {
+	function __construct( $oEmployee, $year ) {
 		global $databases;
 
 		$this->oEmployee = $oEmployee;

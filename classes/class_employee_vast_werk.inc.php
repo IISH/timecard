@@ -8,7 +8,7 @@ class class_employee_vast_werk {
 	private $year;
 	private $vastwerk = array();
 
-	function class_employee_vast_werk( $oEmployee, $year ) {
+	function __construct( $oEmployee, $year ) {
 		global $databases;
 
 		$this->oEmployee = $oEmployee;

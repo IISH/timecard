@@ -13,7 +13,7 @@ class class_view {
 
 	private $m_order_by;
 
-	function class_view($settings, $oDb) {
+	function __construct($settings, $oDb) {
 		$this->settings = $settings;
 
 		$this->oDb = $oDb;

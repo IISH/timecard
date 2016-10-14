@@ -5,8 +5,8 @@ class class_field_remark extends class_field {
 
 	/**
 	 */
-	function class_field_dummy($settings) {
-		parent::class_field($settings);
+	function __construct($settings) {
+		parent::__construct($settings);
 
 		if ( is_array( $settings ) ) {
 			foreach ( $settings as $field => $value ) {

@@ -7,7 +7,7 @@ class class_length_of_workday {
 	private $oEmployee;
 	private $low = array();
 
-	function class_length_of_workday( $oEmployee ) {
+	function __construct( $oEmployee ) {
 		global $databases;
 		$this->databases = $databases;
 
