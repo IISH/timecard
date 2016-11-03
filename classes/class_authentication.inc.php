@@ -5,9 +5,10 @@ class class_authentication {
 	}
 
 	function authenticate( $login, $password ) {
+	    global $active_directories;
 		// TODO: move authentication settings to jira/confluence active directory
 		// TODO: after move to jira/confluence ldap, who is allowed to enter data??? (this must be configured somewhere)
-		return class_authentication::check_ldap('iisgnet\\' . $login, $password, explode(' ', trim(Settings::get('ms_active_directories'))));
+		return class_authentication::check_ldap('iisgnet\\' . $login, $password, $active_directories);
 	}
 
 	function check_ldap($user, $pw, $servers) {
@@ -40,7 +41,7 @@ class class_authentication {
 		}
 
         if ( $login_correct == 0 ) {
-            error_log("LOGIN FAILED $user from " . class_misc::get_remote_addr() . " (SA: " . trim(Settings::get('ms_active_directories')) . ")");
+            error_log("LOGIN FAILED $user from " . class_misc::get_remote_addr() . " (AD: " . trim(Settings::get('ms_active_directories')) . ")");
         }
 
 		return $login_correct;
