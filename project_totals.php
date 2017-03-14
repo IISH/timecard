@@ -55,12 +55,6 @@ function createProjectContent() {
 	$next = fillTemplate($templateUrl, $dataNext);
 
 	// CURRENT DATE
-//	$dataToday['label'] = '*';
-//	$dataToday['direction'] = '0';
-//	$dataToday['alt'] = 'go to current year';
-//	$today = fillTemplate($templateUrl, $dataToday);
-
-	// CURRENT DATE
 	$download['label'] = 'Download';
 	$download['alt'] = 'Download excel file';
 	$downloadButton = '';

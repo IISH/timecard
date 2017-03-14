@@ -38,7 +38,14 @@ foreach ( $projects as $oProject ) {
 
 	// get projectleader
 	$oProjectleader = $oProject->getProjectleader();
-	$mail_body .= "Project leader:" . $fieldseparator . $oProjectleader->getFirstLastname() . " \n\n";
+	$mail_body .= "Project leader:" . $fieldseparator . $oProjectleader->getFirstLastname() . " \n";
+
+	// hours
+	$mail_body .= "Planned hours:" . $fieldseparator . $oProject->getEstimatedHours() . " \n";
+	$mail_body .= "Booked hours:" . $fieldseparator . class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes($oProject->getBookedMinutes()) . ' (h:mm)' . " \n";
+	$mail_body .= "Left hours:" . $fieldseparator . class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes($oProject->getLeftMinutes()) . ' (h:mm)' . " \n";
+
+	$mail_body .= "\n";
 
 	// start / end date
 	$mail_body .= "From:" . $fieldseparator . $startdate . " \n";

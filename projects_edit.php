@@ -87,6 +87,14 @@ function createProjectEditContent() {
 		, 'style' => 'width:425px;'
 		)));
 
+	$oForm->add_field( new class_field_integer ( array(
+		'fieldname' => 'hours_estimated'
+		, 'fieldlabel' => 'Hours estimated'
+		, 'required' => 1
+		, 'onNew' => '0'
+		, 'style' => 'width:425px;'
+		)));
+
 	$oForm->add_field( new class_field_textarea ( array(
 		'fieldname' => 'ExtraComment'
 		, 'fieldlabel' => 'Description'

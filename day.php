@@ -122,7 +122,7 @@ function getUserDay( $date ) {
 			}
 
 			// if legacy, then no edit link
-			if ( class_datetime::is_legacy( $oDate ) || $oDate->get("Y-m-d") < $oWebuser->getAllowAdditionsStartingDate() ) {
+			if ( $oDate->get("Y-m-d") < $oWebuser->getAllowAdditionsStartingDate() ) {
 				$ret .= "
 		<TD class=\"recorditem\"><nobr>" . $row["Description"] . "</nobr></td>
 ";

@@ -36,6 +36,14 @@ $style_top = array(
 	, 'alignment' => array( 'horizontal' => 'left' )
 );
 
+$style_top_warning = array(
+	'font' => array(
+		'bold' => true
+		, 'color' => array('rgb' => 'FF0000')
+	)
+	, 'alignment' => array( 'horizontal' => 'left' )
+);
+
 $style_names = array(
 	'font' => array( 'bold' => true )
 	, 'alignment' => array( 'horizontal' => 'left' )
@@ -81,9 +89,9 @@ $style_highlight_background_month = array(
 $style_highlight_background_quarter = array(
 	'fill' => array(
 		'type' => 'solid'
-	, 'color' => array('rgb' => 'ffff00')
+		, 'color' => array('rgb' => 'ffff00')
 	)
-, 'borders' => array(
+	, 'borders' => array(
 		'outline' => array(
 			'style' => 'thin',
 			'color' => array('rgb' => '000000'),
@@ -107,8 +115,6 @@ $style_highlight_background_year = array(
 // + + + + + + + + +
 
 /** PHPExcel */
-//require_once 'PHPExcel/PHPExcel.php';
-//require_once('PHPExcel/PHPExcel/IOFactory.php');
 require_once 'PHPExcel_1.8.0/PHPExcel.php';
 require_once('PHPExcel_1.8.0/PHPExcel/IOFactory.php');
 
@@ -212,6 +218,31 @@ $r++;
 $sheet->SetCellValue( rc($r,1), 'Year:');
 $sheet->SetCellValue( rc($r,2), $year);
 $sheet->getStyle( rc($r,2) )->applyFromArray( $style_top );
+$sheet->mergeCells('B'.$r.':R'.$r);
+
+// Planned hours
+$r++;
+$sheet->SetCellValue( rc($r,1), 'Planned hours:');
+$sheet->SetCellValue( rc($r,2), $oProject->getEstimatedHours());
+$sheet->getStyle( rc($r,2) )->applyFromArray( $style_top );
+$sheet->mergeCells('B'.$r.':R'.$r);
+
+// Booked hours
+$r++;
+$sheet->SetCellValue( rc($r,1), 'Booked hours:');
+$sheet->SetCellValue( rc($r,2), class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes($oProject->getBookedMinutes()) . ' (h:mm)');
+$sheet->getStyle( rc($r,2) )->applyFromArray( $style_top );
+$sheet->mergeCells('B'.$r.':R'.$r);
+
+// Left hours
+$r++;
+$sheet->SetCellValue( rc($r,1), 'Left hours:');
+$sheet->SetCellValue( rc($r,2), class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes($oProject->getLeftMinutes()) . ' (h:mm)');
+if ( $oProject->getLeftMinutes() >= 0 ) {
+	$sheet->getStyle(rc($r, 2))->applyFromArray($style_top);
+} else {
+	$sheet->getStyle(rc($r, 2))->applyFromArray($style_top_warning);
+}
 $sheet->mergeCells('B'.$r.':R'.$r);
 
 // empty line (IE9 compatbile)

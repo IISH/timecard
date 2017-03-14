@@ -59,7 +59,7 @@ function createAdminQuarterContent( $date ) {
 
 			// if legacy, then no edit link
 			$add_new_url = '';
-			if ( !class_datetime::is_legacy( $oDate ) && !( $oDate->get("Y-m-d") < $oEmployee->getAllowAdditionsStartingDate() ) ) {
+			if ( $oDate->get("Y-m-d") >= $oEmployee->getAllowAdditionsStartingDate() ) {
 				$add_new_url = "admin_edit.php?ID=0&d=" . $oDate->get("Ymd") . "&eid=" . $oEmployee->getTimecardId() . "&backurl=[BACKURL]";
 			}
 
@@ -108,7 +108,7 @@ function createAdminQuarterContent( $date ) {
 
 			// if legacy, then no edit link
 			$href = '';
-			if ( !class_datetime::is_legacy( $oDate ) && !( $oDate->get("Y-m-d") < $oEmployee->getAllowAdditionsStartingDate() ) ) {
+			if (  $oDate->get("Y-m-d") >= $oEmployee->getAllowAdditionsStartingDate() ) {
 				$href = 'admin_edit.php?ID=[FLD:ID]&d=' . $oDate->get("Ymd") . '&backurl=[BACKURL]';
 			}
 

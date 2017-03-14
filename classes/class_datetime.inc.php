@@ -144,26 +144,6 @@ class class_datetime {
 		return $retval;
 	}
 
-	public static function is_legacy( $oDate, $max_age_in_months = 3 ) {
-		$isLegacy = false;
-
-		if ( $max_age_in_months < 0 ) {
-			$max_age_in_months = 0;
-		}
-
-		$a = new TCDateTime(); // current date
-		for ( $i = 1; $i <= $max_age_in_months; $i++ ) {
-			// go back a month
-			$a->subMonth();
-		}
-
-		if ( $oDate->get("Y-m-d") < $a->getFirstDate()->format("Y-m-d") ) {
-			$isLegacy = true;
-		}
-
-		return $isLegacy;
-	}
-
 	public static function is_future( $oDate ) {
 		$isFuture = false;
 
