@@ -3,6 +3,7 @@ require_once dirname(__FILE__) . "/../sites/default/settings.php";
 require_once "class_mysql.inc.php";
 
 class class_employee {
+	private $oConn;
 	private $timecard_id = 0;
 	private $databases;
 	private $protime_id = 0;
@@ -17,8 +18,9 @@ class class_employee {
 	private $show_jira_field = false;
 	private $allow_additions_starting_date = '';
 	private $projects = array();
-	private $department = '';
 	private $sortProjectsOnName = -1;
+	private $extra_rights_on_departments = array();
+	private $extra_rights_on_users = array();
 
 	function __construct($timecard_id, $settings) {
 		global $databases;
@@ -30,18 +32,18 @@ class class_employee {
 		$this->timecard_id = $timecard_id;
 		$this->databases = $databases;
 
+		$this->oConn = new class_mysql($this->databases['default']);
+		$this->oConn->connect();
+
 		if ( $timecard_id > 0 ) {
 			$this->getTimecardValues();
 		}
 	}
 
 	function getTimecardValues() {
-		$oConn = new class_mysql($this->databases['default']);
-		$oConn->connect();
-
 		//
 		$query_project = "SELECT * FROM vw_Employees WHERE ID=" . $this->timecard_id;
-		$resultReset = mysql_query($query_project, $oConn->getConnection());
+		$resultReset = mysql_query($query_project, $this->oConn->getConnection());
 		if ($row_project = mysql_fetch_assoc($resultReset)) {
 
 			$this->isdisabled = $row_project["isdisabled"];
@@ -52,7 +54,6 @@ class class_employee {
 			$this->hoursperweek = $row_project["hoursperweek"];
 			$this->daysperweek = $row_project["daysperweek"];
 			$this->allow_additions_starting_date = $row_project["allow_additions_starting_date"];
-			$this->department = $row_project["Department"];
 
 			if ( $row_project["show_jira_field"] == 1 ) {
 				$this->show_jira_field = true;
@@ -66,15 +67,18 @@ class class_employee {
 //				$this->hoursdoublefield = 1;
 //			}
 
+			// calculate DepartmentHead Extra Rights On Departments & Users
+			$this->calcDepartmentHeadExtraRightsOnDepartments();
+			$this->calcDepartmentHeadExtraRightsOnUsers();
+
 			$this->sortProjectsOnName = $row_project["sort_projects_on_name"];
 			if ( !in_array($this->sortProjectsOnName, array(0, 1)) ) {
-//			if ( !in_array($this->sortProjectsOnName, array(-1, 1)) ) {
 				$this->sortProjectsOnName = -1;
 			}
 
 			// AUTHORISATION
 			$queryAuthorisation = "SELECT * FROM Employee_Authorisation WHERE EmployeeID=" . $this->timecard_id;
-			$resultAuthorisation = mysql_query($queryAuthorisation, $oConn->getConnection());
+			$resultAuthorisation = mysql_query($queryAuthorisation, $this->oConn->getConnection());
 			while ($rowAuthorisation = mysql_fetch_assoc($resultAuthorisation)) {
 				$this->authorisation[] = $rowAuthorisation["authorisation"];
 			}
@@ -82,7 +86,7 @@ class class_employee {
 
 			// PROJECTS
 			$queryProjects = "SELECT * FROM Workcodes WHERE projectleader=" . $this->timecard_id . " ORDER BY Description";
-			$resultProjects = mysql_query($queryProjects, $oConn->getConnection());
+			$resultProjects = mysql_query($queryProjects, $this->oConn->getConnection());
 			while ($rowProjects = mysql_fetch_assoc($resultProjects)) {
 				$this->projects[] = $rowProjects["ID"];
 			}
@@ -91,8 +95,30 @@ class class_employee {
 		mysql_free_result($resultReset);
 	}
 
+	function calcDepartmentHeadExtraRightsOnDepartments() {
+		if ( $this->protime_id != 0 ) {
+			$query = "SELECT * FROM DepartmentHead_Extra_Rights_on_Departments WHERE PERSNR_Head=" . $this->protime_id;
+			$result = mysql_query($query, $this->oConn->getConnection());
+			while ($row = mysql_fetch_assoc($result)) {
+				$this->extra_rights_on_departments[] = $row["DEPART"];
+			}
+			mysql_free_result($result);
+		}
+	}
+
+	function calcDepartmentHeadExtraRightsOnUsers() {
+		if ( $this->protime_id != 0 ) {
+			$query = "SELECT * FROM DepartmentHead_Extra_Rights_on_Users WHERE PERSNR_Head=" . $this->protime_id;
+			$result = mysql_query($query, $this->oConn->getConnection());
+			while ($row = mysql_fetch_assoc($result)) {
+				$this->extra_rights_on_users[] = $row["PERSNR_Employee"];
+			}
+			mysql_free_result($result);
+		}
+	}
+
 	function getAuthorisation() {
-		return $this->authorisation ;
+		return $this->authorisation;
 	}
 
 	function getAllowAdditionsStartingDate() {
@@ -100,7 +126,7 @@ class class_employee {
 	}
 
 	function hasAdminAuthorisation() {
-		return ( in_array( 'admin', $this->getAuthorisation() ) ) ? true : false ;
+		return ( in_array( 'admin', $this->authorisation ) ) ? true : false ;
 	}
 
 	function isProjectLeader() {
@@ -108,15 +134,15 @@ class class_employee {
 	}
 
 	function hasFaAuthorisation() {
-		return ( in_array( 'fa', $this->getAuthorisation() ) ) ? true : false ;
+		return ( in_array( 'fa', $this->authorisation ) ) ? true : false ;
 	}
 
 	function hasDepartmentAuthorisation() {
-		return ( in_array( 'department', $this->getAuthorisation() ) ) ? true : false ;
+		return ( in_array( 'department', $this->authorisation ) ) ? true : false ;
 	}
 
 	function hasReportsAuthorisation() {
-		return ( in_array( 'reports', $this->getAuthorisation() ) ) ? true : false ;
+		return ( in_array( 'reports', $this->authorisation ) ) ? true : false ;
 	}
 
 	function isDisabled() {
@@ -129,10 +155,6 @@ class class_employee {
 
 	public function getTimecardId() {
 		return $this->timecard_id;
-	}
-
-	public function getDepartmentId() {
-		return $this->department;
 	}
 
 	public function getProtimeId() {
@@ -263,16 +285,16 @@ class class_employee {
 
 			$number_of_days_in_current_month = $oDate->get('t');
 
-			$oEmployee = new class_employee( $oWebuser->getTimecardId(), $settings );
+//			$oEmployee = new class_employee( $oWebuser->getTimecardId(), $settings );
 
 			$date2["y"] = $oDate->get('Y');
 			$date2["m"] = $oDate->get('n');
 			$date2["d"] = 1;
-			$timecard_day_totals = $oEmployee->getTimecardDayTotals( $oDate->get('Y'), $oDate->get('n') );
+			$timecard_day_totals = $this->getTimecardDayTotals( $oDate->get('Y'), $oDate->get('n') );
 
-			$dagvakantie2 = $oEmployee->getEerderNaarHuisDayTotals( $oDate->get('Y'), $oDate->get('n') );
-			$protime_day_totals = $oEmployee->getProtimeDayTotals( $oDate->get('Ym') );
-			$protime_day_overtimes = $oEmployee->getProtimeDayOvertimes( $oDate->get('Ym') );
+			$dagvakantie2 = $this->getEerderNaarHuisDayTotals( $oDate->get('Y'), $oDate->get('n') );
+			$protime_day_totals = $this->getProtimeDayTotals( $oDate->get('Ym') );
+			$protime_day_overtimes = $this->getProtimeDayOvertimes( $oDate->get('Ym') );
 
 			$total_overtime = 0;
 			for ( $i = 1; $i <= $number_of_days_in_current_month; $i++ ) {
@@ -363,6 +385,9 @@ class class_employee {
 	}
 
 	function calculateVacationHoursUntilToday() {
+		$vac = 0;
+		$overtime = 0;
+
 		$vac = $this->getVacationInMinutes();
 		$overtime = $this->getOvertimeInMinutes();
 
@@ -375,8 +400,8 @@ class class_employee {
 	}
 
 	function findTimecardIdUsingProtimeId($protime_id) {
-		$oConn = new class_mysql($this->databases['default']);
-		$oConn->connect();
+//		$oConn = new class_mysql($this->databases['default']);
+//		$oConn->connect();
 
 		$val = 0;
 
@@ -423,8 +448,8 @@ class class_employee {
 
 		$protime_id = $this->getProtimeId();
 
-		$oConn = new class_mysql($this->databases['default']);
-		$oConn->connect();
+//		$oConn = new class_mysql($this->databases['default']);
+//		$oConn->connect();
 
 		// reset values
 		$query = "SELECT SUBSTR(BOOKDATE, 1, 10) AS BOOKDATUM, WEEKPRES1, EXTRA
@@ -433,7 +458,7 @@ WHERE PERSNR=" . $protime_id . " AND BOOKDATE LIKE '" . $date["y"] . str_pad( $d
 GROUP BY SUBSTR(BOOKDATE, 1, 10)
 ";
 
-		$result = mysql_query($query, $oConn->getConnection());
+		$result = mysql_query($query, $this->oConn->getConnection());
 		while ($row = mysql_fetch_assoc($result)) {
 
 			$protime_day_total = $row['WEEKPRES1'];
@@ -527,11 +552,11 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 				$ret = 0;
 			}
 
-			$oConn = new class_mysql($this->databases['default']);
-			$oConn->connect();
+//			$oConn = new class_mysql($this->databases['default']);
+//			$oConn->connect();
 
 			$query = "SELECT SUM(ABSENCE_VALUE) AS SOM FROM protime_p_absence  WHERE PERSNR=" . $this->getProtimeId() . " AND ABSENCE IN ( 12 ) AND BOOKDATE LIKE '$year%' AND BOOKDATE > '{$vakantie["bookdate"]}' ";
-			$result = mysql_query($query, $oConn->getConnection());
+			$result = mysql_query($query, $this->oConn->getConnection());
 			if ( $row = mysql_fetch_array($result) ) {
 				$ret -= $row["SOM"];
 			}
@@ -574,15 +599,15 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 	}
 
 	function getFavourites( $type ) {
-		$oConn = new class_mysql($this->databases['default']);
-		$oConn->connect();
+//		$oConn = new class_mysql($this->databases['default']);
+//		$oConn->connect();
 
 		$ids = array();
 		$ids[] = '0';
 
 		$query = "SELECT * FROM EmployeeFavourites WHERE TimecardID=" . $this->getTimecardId() . ' AND type=\'' . $type . '\' ';
 
-		$result = mysql_query($query, $oConn->getConnection());
+		$result = mysql_query($query, $this->oConn->getConnection());
 		while ( $row = mysql_fetch_array($result) ) {
 			$ids[] = $row["ProtimeID"];
 		}
@@ -592,13 +617,13 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 	}
 
 	function getTimecardDayTotals( $year, $month ) {
-		$oConn = new class_mysql($this->databases['default']);
-		$oConn->connect();
+//		$oConn = new class_mysql($this->databases['default']);
+//		$oConn->connect();
 
 		$ret = array();
 
 		$query = 'SELECT *, DAY(DateWorked) AS CURRENTDAY FROM vw_hours_user WHERE Employee=' . $this->getTimecardId() . ' AND DateWorked LIKE \'' . $year . '-' . str_pad($month, 2, '0', STR_PAD_LEFT) . '-%\' AND protime_absence_recnr>=0 ORDER BY DateWorked ';
-		$result = mysql_query($query, $oConn->getConnection());
+		$result = mysql_query($query, $this->oConn->getConnection());
 		while ($row = mysql_fetch_assoc($result)) {
 			if ( !isset( $ret[ $row["CURRENTDAY"] ] ) ) {
 				$ret[ $row["CURRENTDAY"]+0 ] = 0;
@@ -612,15 +637,15 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 
 
 	function getEerderNaarHuisDayTotals( $year, $month ) {
-		$oConn = new class_mysql($this->databases['default']);
-		$oConn->connect();
+//		$oConn = new class_mysql($this->databases['default']);
+//		$oConn->connect();
 
 		$ret = array();
 
 		// achterhaal 
 		$query = "SELECT TimeInMinutes, DAY(DateWorked) AS CURRENTDAY FROM Workhours WHERE Employee=" . $this->getTimecardId() . " AND DateWorked LIKE '" . $year . "-" . str_pad($month, 2, '0', STR_PAD_LEFT) . "-%' AND protime_absence_recnr=-1 ORDER BY DateWorked ";
 
-		$result = mysql_query($query, $oConn->getConnection());
+		$result = mysql_query($query, $this->oConn->getConnection());
 		while ( $row = mysql_fetch_array($result) ) {
 			if ( !isset( $ret[ $row["CURRENTDAY"] ] ) ) {
 				$ret[ $row["CURRENTDAY"]+0 ] = 0;
@@ -694,8 +719,8 @@ GROUP BY SUBSTR(BOOKDATE, 1, 10)
 	function getAllDailyAdditions() {
 		$arr = array();
 
-		$oConn = new class_mysql($this->databases['default']);
-		$oConn->connect();
+//		$oConn = new class_mysql($this->databases['default']);
+//		$oConn->connect();
 
 		// TODOTODO
 		$query = "
@@ -709,7 +734,7 @@ ORDER BY Workcodes.Description
 
 		$query = str_replace('::USER::', $this->timecard_id, $query);
 
-		$result = mysql_query($query, $oConn->getConnection());
+		$result = mysql_query($query, $this->oConn->getConnection());
 		if ( mysql_num_rows($result) > 0 ) {
 
 			while ($row = mysql_fetch_assoc($result)) {
@@ -725,8 +750,8 @@ ORDER BY Workcodes.Description
 	function getEnabledDailyAdditions( $oDate ) {
 		$arr = array();
 
-		$oConn = new class_mysql($this->databases['default']);
-		$oConn->connect();
+//		$oConn = new class_mysql($this->databases['default']);
+//		$oConn->connect();
 
 		// TODOTODO: add first_date and last_date controle
 		$query = "
@@ -744,7 +769,7 @@ ORDER BY Workcodes.Description
 
 		$query = str_replace('::USER::', $this->timecard_id, $query);
 
-		$result = mysql_query($query, $oConn->getConnection());
+		$result = mysql_query($query, $this->oConn->getConnection());
 		if ( mysql_num_rows($result) > 0 ) {
 
 			while ($row = mysql_fetch_assoc($result)) {
@@ -760,8 +785,8 @@ ORDER BY Workcodes.Description
 	function getTotalWeightOfEnabledDailyAdditions() {
 		$total = 0;
 
-		$oConn = new class_mysql($this->databases['default']);
-		$oConn->connect();
+//		$oConn = new class_mysql($this->databases['default']);
+//		$oConn->connect();
 
 			// TODOTODO
 		$query = "
@@ -777,7 +802,7 @@ ORDER BY Workcodes.Description
 
 		$query = str_replace('::USER::', $this->timecard_id, $query);
 
-		$result = mysql_query($query, $oConn->getConnection());
+		$result = mysql_query($query, $this->oConn->getConnection());
 		if ( mysql_num_rows($result) > 0 ) {
 
 			while ($row = mysql_fetch_assoc($result)) {
@@ -933,11 +958,11 @@ ORDER BY Workcodes.Description
 	function getTimecardDayTotal( $oDate ) {
 		$hoursTotal = 0;
 
-		$oConn = new class_mysql($this->databases['default']);
-		$oConn->connect();
+//		$oConn = new class_mysql($this->databases['default']);
+//		$oConn->connect();
 
 		$query = 'SELECT * FROM vw_hours_user WHERE Employee=' . $this->getTimecardId() . ' AND DateWorked="' . $oDate->get("Y-m-d") . '" AND protime_absence_recnr>=0 ';
-		$result = mysql_query($query, $oConn->getConnection());
+		$result = mysql_query($query, $this->oConn->getConnection());
 		while ($row = mysql_fetch_assoc($result)) {
 			$hoursTotal += $row["TimeInMinutes"];
 		}
@@ -948,43 +973,13 @@ ORDER BY Workcodes.Description
 	}
 
 	function setZeroNoneFixedDaa( $oDate ) {
-		$oConn = new class_mysql($this->databases['default']);
-		$oConn->connect();
+//		$oConn = new class_mysql($this->databases['default']);
+//		$oConn->connect();
 
 		$query = "UPDATE Workhours SET TimeInMinutes=0 WHERE Employee=" . $this->getTimecardId() . " AND DateWorked=\"" . $oDate->get("Y-m-d") . "\" AND isdeleted=0 AND daily_automatic_addition_id>0 AND fixed_time=0 AND protime_absence_recnr>=0 AND TimeInMinutes<>0 ";
-		$result = mysql_query($query, $oConn->getConnection());
+		$result = mysql_query($query, $this->oConn->getConnection());
 
 		return;
-	}
-
-	public static function getListOfDaaEmployees() {
-		global $settings, $databases;
-
-		$ret = array();
-
-		$query = "
-SELECT ID
-FROM `Employees`
-WHERE `isdisabled`=0
-AND `ProtimePersNr`>0
-		AND `ID` IN (
-				SELECT DISTINCT `employee`
-				FROM `DailyAutomaticAdditions`
-				WHERE `isenabled`=1 AND `isdeleted`=0 AND `ratio`>0
-			)
-";
-
-		$oConn = new class_mysql($databases['default']);
-		$oConn->connect();
-
-		$result = mysql_query($query, $oConn->getConnection());
-
-		while ($row = mysql_fetch_assoc($result)) {
-			$ret[] = new class_employee($row["ID"], $settings);
-		}
-		mysql_free_result($result);
-
-		return $ret;
 	}
 
 	public static function getListOfEnabledAndLinkedEmployees() {
@@ -1060,5 +1055,13 @@ GROUP BY ProtimeID
 		}
 
 		return $retval;
+	}
+
+	public function getDepartmentHeadExtraRightsOnDepartments() {
+		return $this->extra_rights_on_departments;
+	}
+
+	public function getDepartmentHeadExtraRightsOnUsers() {
+		return $this->extra_rights_on_users;
 	}
 }

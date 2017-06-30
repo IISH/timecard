@@ -13,6 +13,17 @@ $menu->addMenuItem( new class_menuitem('timecard.quartertotals', 'Quarter Totals
 // + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
 
 // TAB: TIMECARD (ADMIN)
+$menu->addMenuGroup( new class_menugroup('Department') );
+if ( $oWebuser->hasDepartmentAuthorisation() || count( $oWebuser->getDepartmentHeadExtraRightsOnDepartments() ) > 0  || count( $oWebuser->getDepartmentHeadExtraRightsOnUsers() ) > 0 ) {
+	$menu->addMenuItem( new class_menuitem('department.day', 'Day', 'department_day.php?d={date}&eid={eid}') );
+	$menu->addMenuItem( new class_menuitem('department.month', 'Month', 'department_month.php?d={date}&eid={eid}') );
+	$menu->addMenuItem( new class_menuitem('department.quarter', 'Quarter', 'department_quarter.php?d={date}&eid={eid}') );
+	$menu->addMenuItem( new class_menuitem('department.quartertotals', 'Quarter Totals', 'department_quartertotals.php?d={date}&eid={eid}') );
+}
+
+// + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
+
+// TAB: TIMECARD (ADMIN)
 $menu->addMenuGroup( new class_menugroup('Administrator') );
 if ( $oWebuser->hasAdminAuthorisation() ) {
 	$menu->addMenuItem( new class_menuitem('administrator.day', 'Day', 'admin_day.php?d={date}&eid={eid}') );

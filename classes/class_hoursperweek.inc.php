@@ -1,5 +1,5 @@
 <?php
-die('disabled by gcu');
+die('deprecated. contact gcu');
 
 class class_hoursperweek {
 	private $databases;

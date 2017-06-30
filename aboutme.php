@@ -78,9 +78,6 @@ function createSettingsPage() {
 			default:
 				$data["tif_source"] = 'Single select field';
 		}
-//		if ( $row["HoursDoubleField"] == '1' ) {
-//		} else {
-//		}
 
 		if ( $row["sort_projects_on_name"] == '1' ) {
 			$data["pso_source"] = 'Project name';

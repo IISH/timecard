@@ -4,16 +4,21 @@ require_once "class_mysql.inc.php";
 require_once "class_date.inc.php";
 
 class class_shortcuts {
-	private $oUser;
 	private $databases;
+	private $oTimecardUser;
+	private $settings;
 	private $oDate;
+	private $oProtimeUser;
 
-	function __construct($oUser, $settings, $oDate) {
+	function __construct($oTimecardUser, $settings, $oDate) {
 		global $databases;
 
-		$this->oUser = $oUser;
 		$this->databases = $databases;
+		$this->oTimecardUser = $oTimecardUser;
+		$this->settings = $settings;
 		$this->oDate = $oDate;
+
+		$this->oProtimeUser = new class_protime_user($this->oTimecardUser->getProtimeId(), $this->settings);
 	}
 
 	function getEnabledShortcuts( $type ) {
@@ -41,8 +46,10 @@ ORDER BY Workcodes.Description, UserCreatedQuickAdds.WorkDescription, UserCreate
 		}
 
 		$query = str_replace('::CRITERIUM::', $criterium, $query);
-		$query = str_replace('::USER::', $this->oUser->getTimecardId(), $query);
-		$department = $this->oUser->getDepartmentId();
+		$query = str_replace('::USER::', $this->oTimecardUser->getTimecardId(), $query);
+
+		//
+		$department = $this->oProtimeUser->getDepartmentId();
 		if ( $department == '' ) {
 			$department = 0;
 		}
@@ -75,9 +82,8 @@ AND (
 ( Workcodes.isdisabled = 0 AND (Workcodes.lastdate IS NULL OR Workcodes.lastdate = '' OR Workcodes.lastdate >= '" . $this->oDate->get("Y-m-d") . "') )
 )
 ORDER BY Projectnummer, Description, TimeInMinutes DESC, WorkDescription ";
-//AND Workcodes.show_in_selectlist = 1
-		$query = str_replace('::USER::', $this->oUser->getTimecardId(), $query);
-		$query = str_replace('::DEPARTMENT::', $this->oUser->getDepartmentId(), $query);
+
+		$query = str_replace('::USER::', $this->oTimecardUser->getTimecardId(), $query);
 
 		$result = mysql_query($query, $oConn->getConnection());
 		if ( mysql_num_rows($result) > 0 ) {
@@ -109,6 +115,6 @@ ORDER BY Projectnummer, Description, TimeInMinutes DESC, WorkDescription ";
 	}
 
 	public function __toString() {
-		return "Class: " . get_class($this) . "\nuser id: " . $this->oUser->getTimecardId() . "\ndate: " . $this->oDate->get("Y-m-d") . "\n";
+		return "Class: " . get_class($this) . "\nuser id: " . $this->oTimecardUser->getTimecardId() . "\ndate: " . $this->oDate->get("Y-m-d") . "\n";
 	}
 }

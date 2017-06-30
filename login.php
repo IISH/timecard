@@ -61,6 +61,7 @@ function createLoginPage() {
 
                     // update wanneer gebruiker voor het laatst is ingelogd op timecard
                     updateLastUserLogin($oWebuser->getTimecardId());
+//die('aaaaa');
 
                     // redirect to prev page
                     if ($burl == '') {
