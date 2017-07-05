@@ -1,7 +1,7 @@
 <?php
 class class_website_protection {
 	// construct
-	function class_website_protection() {
+	function __construct() {
 	}
 
 	function send_warning_mail($tekst) {
@@ -30,8 +30,8 @@ class class_website_protection {
 			$message = $message . "Date: " . date("Y-m-d") . $eol;
 			$message = $message . "Time: " . date("H:i:s") . $eol;
 			$message = $message . "URL: " . $this->getLongUrl() . $eol;
-			$message = $message . "IP address: " . $this->get_remote_addr() . $eol;
-			$message = $message . "IP Location: " . $iplocator . $this->get_remote_addr() . $eol;
+			$message = $message . "IP address: " . class_misc::get_remote_addr() . $eol;
+			$message = $message . "IP Location: " . $iplocator . class_misc::get_remote_addr() . $eol;
 			$message = $message . $eol;
 			$message = $message . "Warning: " . $tekst;
 
@@ -52,15 +52,6 @@ class class_website_protection {
 
 	function getLongUrl() {
 		return 'https://' . ( $_SERVER["HTTP_X_FORWARDED_HOST"] != '' ? $_SERVER["HTTP_X_FORWARDED_HOST"] : $_SERVER["SERVER_NAME"] ) . $this->getShortUrl();
-	}
-
-	function get_remote_addr() {
-		$retval = trim($_SERVER["HTTP_X_FORWARDED_FOR"]);
-		if ( $retval == '' ) {
-			$retval = trim($_SERVER["REMOTE_ADDR"]);
-		}
-
-		return $retval;
 	}
 
 	// Send error message to browser

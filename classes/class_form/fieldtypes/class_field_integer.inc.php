@@ -4,8 +4,8 @@ require_once("./classes/class_form/fieldtypes/class_field.inc.php");
 class class_field_integer extends class_field {
 	private $m_addquotes;
 
-	function class_field_integer($fieldsettings) {
-		parent::class_field($fieldsettings);
+	function __construct($fieldsettings) {
+		parent::__construct($fieldsettings);
 
 		$this->m_addquotes = 0;
 

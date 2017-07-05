@@ -11,7 +11,7 @@ class class_refresh_employee_hours_per_week {
 	private $totalHoursPerWeekText;
 	private $isNew;
 
-	function class_refresh_employee_hours_per_week( $oEmployee, $year ) {
+	function __construct( $oEmployee, $year ) {
 		global $databases;
 		$this->databases = $databases;
 
@@ -132,7 +132,7 @@ class class_employee_hours_per_day_starting {
 	private $arr = array();
 	private $startDayTotals = array();
 
-	function class_employee_hours_per_day_starting( $oEmployee, $last_year ) {
+	function __construct( $oEmployee, $last_year ) {
 		global $databases;
 		$this->databases = $databases;
 

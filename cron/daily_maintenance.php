@@ -1,5 +1,5 @@
 <?php
-require_once "../classes/start.inc.php";
+require_once dirname(__FILE__) . "/../classes/start.inc.php";
 $path_parts['filename'] = 'daily_maintenance';
 
 // check cron key

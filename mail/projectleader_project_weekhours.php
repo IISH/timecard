@@ -38,7 +38,14 @@ foreach ( $projects as $oProject ) {
 
 	// get projectleader
 	$oProjectleader = $oProject->getProjectleader();
-	$mail_body .= "Project leader:" . $fieldseparator . $oProjectleader->getFirstLastname() . " \n\n";
+	$mail_body .= "Project leader:" . $fieldseparator . $oProjectleader->getFirstLastname() . " \n";
+
+	// hours
+	$mail_body .= "Planned hours:" . $fieldseparator . $oProject->getEstimatedHours() . " \n";
+	$mail_body .= "Booked hours:" . $fieldseparator . class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes($oProject->getBookedMinutes()) . ' (h:mm)' . " \n";
+	$mail_body .= "Left hours:" . $fieldseparator . class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes($oProject->getLeftMinutes()) . ' (h:mm)' . " \n";
+
+	$mail_body .= "\n";
 
 	// start / end date
 	$mail_body .= "From:" . $fieldseparator . $startdate . " \n";
@@ -56,10 +63,13 @@ foreach ( $projects as $oProject ) {
 	$mail_body .= "Total:" . $fieldseparator;
 	$mail_body .=  number_format(class_misc::convertMinutesToHours($total),2, ',', '.') . " hour(s) \n";
 
-	//
+	// see also
+	$mail_body .= "\nSee also: https://timecard.socialhistoryservices.org/project_totals.php?ID=" . $oProject->getId() . "\n";
+
+	// questions? contact functional maintainer
 	$mail_body .= "\n" . Settings::get('text_functional_maintainer_in_email') . "\n";
 
-	//
+	// sent on
 	$mail_body .= "\nEmail sent on:" . $fieldseparator . date("Y-m-d H:i:s") . " \n\n";
 
 	// show message on screen

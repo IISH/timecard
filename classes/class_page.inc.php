@@ -16,7 +16,7 @@ class class_page {
 	private $left_menu;
 	private $cssextension;
 
-	function class_page($page_template, $settings) {
+	function __construct($page_template, $settings) {
 		$this->page_template = $page_template;
 		$this->settings = $settings;
 		$this->remove_sidebar = 0;

@@ -3,7 +3,7 @@ require_once "classes/start.inc.php";
 
 $oWebuser->checkLoggedIn();
 
-if ( !$oWebuser->hasAdminAuthorisation() ) {
+if ( !$oWebuser->hasDepartmentAuthorisation() && count( $oWebuser->getDepartmentHeadExtraRightsOnDepartments() ) == 0  && count( $oWebuser->getDepartmentHeadExtraRightsOnUsers() ) == 0 ) {
 	echo "You are not authorized to access this page.<br>";
 	die('Go to <a href="index.php">timecard home</a>');
 }
@@ -20,10 +20,10 @@ $oPage = new class_page('design/page_admin.php', $settings);
 if ( $oEmployee->getTimecardId() == -1 || $oEmployee->getTimecardId() == '' ) {
 	$oPage->removeSidebar();
 }
-$oPage->setTab($menuList->findTabNumber('administrator.day'));
-$oPage->setTitle('Timecard | Admin Day');
+$oPage->setTab($menuList->findTabNumber('department.day'));
+$oPage->setTitle('Timecard | Department Day');
 $oPage->setContent(createAdminDayContent( $date ) . getCheckedInCheckedOut( $oEmployee->getProtimeId(), $date["Ymd"] ) );
-$oPage->setLeftMenu( getEmployeesRibbon( $oEmployee, $date["y"] ) );
+$oPage->setLeftMenu( getDepartmentEmployeesRibbon( $oEmployee, $date["y"] ) );
 
 // add shortcuts and recently used
 if ( $date["y"] >= "2013" ) {
@@ -74,7 +74,7 @@ function getAdminDay( $date ) {
 			// if legacy, then no edit link
 			$add_new_url = '';
 			if ( $oDate->get("Y-m-d") >= $oEmployee->getAllowAdditionsStartingDate() ) {
-				$add_new_url = "admin_edit.php?ID=0&d=" . $oDate->get("Ymd") . "&eid=" . $oEmployee->getTimecardId() . "&backurl=[BACKURL]";
+				$add_new_url = "department_edit.php?ID=0&d=" . $oDate->get("Ymd") . "&eid=" . $oEmployee->getTimecardId() . "&backurl=[BACKURL]";
 			}
 
 			$oView->set_view( array(
@@ -108,7 +108,7 @@ function getAdminDay( $date ) {
 			// if legacy, then no edit link
 			$href = '';
 			if ( $oDate->get("Y-m-d") >= $oEmployee->getAllowAdditionsStartingDate() ) {
-				$href = 'admin_edit.php?ID=[FLD:ID]&d=' . $oDate->get("Ymd") . '&backurl=[BACKURL]';
+				$href = 'department_edit.php?ID=[FLD:ID]&d=' . $oDate->get("Ymd") . '&backurl=[BACKURL]';
 			}
 
 			$oView->add_field( new class_field_string ( array(
@@ -183,7 +183,7 @@ function getAdminDay( $date ) {
 <tr>
 	<td colspan=\"2\">
 		<div class='add_new_button'>
- 		    <a href=\"admin_edit.php?ID=0&d=" . $date["Ymd"] . "&eid=" . $oEmployee->getTimecardId() . "&backurl=" . urlencode(get_current_url()) . "\" class=\"button add_new_button\">Add new</a>
+ 		    <a href=\"department_edit.php?ID=0&d=" . $date["Ymd"] . "&eid=" . $oEmployee->getTimecardId() . "&backurl=" . urlencode(get_current_url()) . "\" class=\"button add_new_button\">Add new</a>
 		</div>
  	</td>
 </tr>
@@ -244,7 +244,7 @@ function getAdminDay( $date ) {
 ";
 					} else {
 						$ret .= "
-		<TD class=\"recorditem\"><nobr><A HREF=\"admin_edit.php?ID=" . $row["ID"] . "&d=" . $date["Ymd"] . "&eid=" . $oEmployee->getTimecardId() . "&backurl=" . urlencode(get_current_url()) . "\" title=\"Edit hours\">" . $row["Description"] . "</a></nobr></td>
+		<TD class=\"recorditem\"><nobr><A HREF=\"department_edit.php?ID=" . $row["ID"] . "&d=" . $date["Ymd"] . "&eid=" . $oEmployee->getTimecardId() . "&backurl=" . urlencode(get_current_url()) . "\" title=\"Edit hours\">" . $row["Description"] . "</a></nobr></td>
 ";
 					}
 				}
@@ -335,7 +335,7 @@ function getAdminDay( $date ) {
 		// records
 		$records = '';
 		foreach ( $oShortcuts->getEnabledShortcuts( $type ) as $shortcut) {
-			$url = "admin_edit.php?ID=0&eid=" . $pid . "&d=" . $oDate->get("Ymd") . "&template=" . $shortcut["id"];
+			$url = "department_edit.php?ID=0&eid=" . $pid . "&d=" . $oDate->get("Ymd") . "&template=" . $shortcut["id"];
 			$url .= "&backurl=" . urlencode(get_current_url());
 			$shortcut["url"] = $url;
 
@@ -389,7 +389,7 @@ function getAdminDay( $date ) {
 		// record
 		$records = '';
 		foreach ( $oRecentlyUsed->getRecentlyUsed() as $recentlyUsed) {
-			$recentlyUsed["url"] = "admin_edit.php?ID=0&eid=" . $pid . "&d=" . $oDate->get("Ymd") . "&p=" . $recentlyUsed["id"] . "&backurl=" . urlencode(get_current_url());
+			$recentlyUsed["url"] = "department_edit.php?ID=0&eid=" . $pid . "&d=" . $oDate->get("Ymd") . "&p=" . $recentlyUsed["id"] . "&backurl=" . urlencode(get_current_url());
 
 			$records .= fillTemplate($design->getRecords(), $recentlyUsed);
 		}

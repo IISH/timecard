@@ -18,7 +18,7 @@ class class_refresh_employee_hours_for_planning {
 	private $nationalHolidayPerDag = array();
 	private $brugdagPerDag = array();
 
-	function class_refresh_employee_hours_for_planning( $oEmployee, $year ) {
+	function __construct( $oEmployee, $year ) {
 		global $databases;
 		$this->databases = $databases;
 

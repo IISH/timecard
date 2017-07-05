@@ -3,7 +3,7 @@ require_once "classes/start.inc.php";
 
 $oWebuser->checkLoggedIn();
 
-if ( !$oWebuser->hasAdminAuthorisation() ) {
+if ( !$oWebuser->hasDepartmentAuthorisation() && count( $oWebuser->getDepartmentHeadExtraRightsOnDepartments() ) == 0  && count( $oWebuser->getDepartmentHeadExtraRightsOnUsers() ) == 0 ) {
 	echo "You are not authorized to access this page.<br>";
 	die('Go to <a href="index.php">timecard home</a>');
 }
@@ -11,35 +11,33 @@ if ( !$oWebuser->hasAdminAuthorisation() ) {
 $date = class_datetime::get_date($protect);
 $oDate = new class_date( $date["y"], $date["m"], $date["d"] );
 
-//
 $oEmployee = new class_employee($protect->request('get', 'eid'), $settings);
 
 // create webpage
 $oPage = new class_page('design/page_admin.php', $settings);
 $oPage->removeSidebar();
-$oPage->setTab($menuList->findTabNumber('administrator.month'));
-$oPage->setTitle('Timecard | Admin Month');
-$oPage->setContent(createAdminMonthContent( $date ));
-$oPage->setLeftMenu( getEmployeesRibbon( $oEmployee, $date["y"] ) );
+$oPage->setTab($menuList->findTabNumber('department.quarter'));
+$oPage->setTitle('Timecard | Department Quarter');
+$oPage->setContent(createAdminQuarterContent( $date ));
+$oPage->setLeftMenu( getDepartmentEmployeesRibbon( $oEmployee, $date["y"] ) );
 
 // show page
 echo $oPage->getPage();
 
 require_once "classes/_db_disconnect.inc.php";
 
-function createAdminMonthContent( $date ) {
+function createAdminQuarterContent( $date ) {
 	//
 	$oPrevNext = new class_prevnext($date);
-	$ret = $oPrevNext->getMonthRibbon();
+	$ret = $oPrevNext->getQuarterRibbon();
 
-	$ret .= getAdminMonth( $date );
+	//
+	$ret .= getAdminQuarter( $date );
 
 	return $ret;
 }
-
-	function getAdminMonth( $date ) {
+	function getAdminQuarter( $date ) {
 		global $settings, $oEmployee, $oDate, $databases;
-		$ret = '';
 
 		if ( $oEmployee->getTimecardId() != '' ) {
 			require_once("./classes/class_view/class_view.inc.php");
@@ -50,16 +48,19 @@ function createAdminMonthContent( $date ) {
 			$oDb = new class_mysql($databases['default']);
 			$oView = new class_view($settings, $oDb);
 
+			$oPrevNext = new class_prevnext($date);
+			$extra_month_criterium = $oPrevNext->getExtraMonthCriterium();
+
 			if ( $oEmployee->getTimecardId() == -1 ) {
-				$tmp_query = 'SELECT * FROM vw_hours_admin WHERE DateWorked LIKE \'' . $oDate->get("Y-m") . '-%\' ';
+				$tmp_query = 'SELECT * FROM vw_hours_admin WHERE DateWorked LIKE \'' . $oDate->get("Y") . '-%\' ' . $extra_month_criterium . ' ';
 			} else {
-				$tmp_query = 'SELECT * FROM vw_hours_admin WHERE Employee=' . $oEmployee->getTimecardId() . ' AND DateWorked LIKE \'' . $oDate->get("Y-m") . '-%\' ';
+				$tmp_query = 'SELECT * FROM vw_hours_admin WHERE Employee=' . $oEmployee->getTimecardId() . ' AND DateWorked LIKE \'' . $oDate->get("Y") . '-%\' ' . $extra_month_criterium . ' ';
 			}
 
 			// if legacy, then no edit link
 			$add_new_url = '';
 			if ( $oDate->get("Y-m-d") >= $oEmployee->getAllowAdditionsStartingDate() ) {
-				$add_new_url = "admin_edit.php?ID=0&d=" . $oDate->get("Ymd") . "&eid=" . $oEmployee->getTimecardId() . "&backurl=[BACKURL]";
+				$add_new_url = "department_edit.php?ID=0&d=" . $oDate->get("Ymd") . "&eid=" . $oEmployee->getTimecardId() . "&backurl=[BACKURL]";
 			}
 
 			$oView->set_view( array(
@@ -79,7 +80,7 @@ function createAdminMonthContent( $date ) {
 				, 'fieldlabel' => 'Date'
 				, 'format' => 'D j F'
 				, 'nobr' => true
-				, 'href' => 'admin_day.php?eid=[FLD:Employee]&d=[FLD:yyyymmdd]&backurl=[BACKURL]&backurllabel=Month+(all empl.)'
+				, 'href' => 'department_day.php?eid=[FLD:Employee]&d=[FLD:yyyymmdd]&backurl=[BACKURL]&backurllabel=Quarter+(all empl.)'
 				)));
 
 			if ( $oEmployee->getTimecardId() == -1 ) {
@@ -107,8 +108,8 @@ function createAdminMonthContent( $date ) {
 
 			// if legacy, then no edit link
 			$href = '';
-			if ( $oDate->get("Y-m-d") >= $oEmployee->getAllowAdditionsStartingDate() ) {
-				$href = 'admin_edit.php?ID=[FLD:ID]&d=' . $oDate->get("Ymd") . '&backurl=[BACKURL]';
+			if (  $oDate->get("Y-m-d") >= $oEmployee->getAllowAdditionsStartingDate() ) {
+				$href = 'department_edit.php?ID=[FLD:ID]&d=' . $oDate->get("Ymd") . '&backurl=[BACKURL]';
 			}
 
 			$oView->add_field( new class_field_string ( array(
@@ -176,7 +177,7 @@ function createAdminMonthContent( $date ) {
 				)));
 
 			// generate view
-			$ret .= $oView->generate_view() . "___";
+			$ret = $oView->generate_view();
 		}
 
 		return $ret;

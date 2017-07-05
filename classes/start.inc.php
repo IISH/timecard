@@ -22,7 +22,6 @@ require_once dirname(__FILE__) . "/class_employee_not_work_related_absences.inc.
 require_once dirname(__FILE__) . "/class_employee_vast_werk.inc.php";
 require_once dirname(__FILE__) . "/class_feestdag.inc.php";
 require_once dirname(__FILE__) . "/class_feestdagen.inc.php";
-//require_once dirname(__FILE__) . "/class_hoursperweek.inc.php";
 require_once dirname(__FILE__) . "/class_length_of_workday.inc.php";
 require_once dirname(__FILE__) . "/class_mysql.inc.php";
 require_once dirname(__FILE__) . "/class_misc01.inc.php";

@@ -33,7 +33,7 @@ function createFeestdagenContent() {
 	$oView = new class_view($settings, $oDb);
 
 	$oView->set_view( array(
-		'query' => 'SELECT * FROM Feestdagen WHERE 1=1 AND isdeleted=0 AND datum >= \'' . date('Y-m-d') . '\''
+		'query' => 'SELECT * FROM Feestdagen WHERE 1=1 AND isdeleted=0 AND ( datum >= \'' . date('Y-m-d') . '\' AND datum <= \'' . (date('Y')+1) . '-01-10\' )'
 		, 'count_source_type' => 'query'
 		, 'order_by' => 'datum ASC '
 		, 'anchor_field' => 'ID'
@@ -52,6 +52,7 @@ function createFeestdagenContent() {
 		, 'fieldlabel' => 'Description'
 		)));
 
+/*
 	$oView->add_field( new class_field_bit ( array(
 		'fieldname' => 'vooreigenrekening'
 		, 'fieldlabel' => 'For own account'
@@ -59,7 +60,7 @@ function createFeestdagenContent() {
 		, 'different_true_value' => 'yes'
 		, 'different_false_value' => 'no'
 		)));
-
+*/
 	// generate view
 	$ret .= $oView->generate_view();
 

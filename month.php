@@ -45,7 +45,7 @@ function createMonthContent( $date ) {
 
 		// if legacy, then no edit link
 		$add_new_url = '';
-		if ( !class_datetime::is_legacy( $oDate ) && !( $oDate->get("Y-m-d") < $oWebuser->getAllowAdditionsStartingDate() ) ) {
+		if ( $oDate->get("Y-m-d") >= $oWebuser->getAllowAdditionsStartingDate() ) {
 			$add_new_url = "edit.php?ID=0&d=" . $oDate->get("Ymd") . "&backurl=[BACKURL]";
 		}
 
@@ -71,7 +71,7 @@ function createMonthContent( $date ) {
 
 		// if legacy, then no edit link
 		$href = '';
-		if ( !class_datetime::is_legacy( $oDate ) && !( $oDate->get("Y-m-d") < $oWebuser->getAllowAdditionsStartingDate() ) ) {
+		if ( $oDate->get("Y-m-d") >= $oWebuser->getAllowAdditionsStartingDate() ) {
 			$href = 'edit.php?ID=[FLD:ID]&d=' . $oDate->get("Ymd") . '&backurl=[BACKURL]';
 		}
 

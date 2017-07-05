@@ -9,7 +9,7 @@ class class_employee_not_work_related_absences {
 	private $year;
 	private $absences = array();
 
-	function class_employee_not_work_related_absences( $oEmployee, $year ) {
+	function __construct( $oEmployee, $year ) {
 		global $databases;
 
 		$this->oEmployee = $oEmployee;

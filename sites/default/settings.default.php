@@ -34,10 +34,6 @@ $databases = array (
 		),
 );
 
-$domain_controllers = array(
-	array(
-		'server' => '',
-		'loginname_prefix' => '',
-		'loginname_postfix' => '',
-	)
+$active_directories = array(
+    ''
 );

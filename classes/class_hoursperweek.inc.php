@@ -1,5 +1,5 @@
 <?php
-die('disabled by gcu');
+die('deprecated. contact gcu');
 
 class class_hoursperweek {
 	private $databases;
@@ -7,7 +7,7 @@ class class_hoursperweek {
 	private $startmonth;
 	private $endmonth;
 
-	function class_hoursperweek($id, $settings) {
+	function __construct($id, $settings) {
 		global $databases;
 		$this->databases = $databases;
 

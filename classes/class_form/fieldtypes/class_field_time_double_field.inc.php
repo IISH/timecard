@@ -5,8 +5,8 @@ class class_field_time_double_field extends class_field {
 	private $m_possible_hour_values;
 	private $m_possible_minute_values;
 
-	function class_field_time_double_field($fieldsettings) {
-		parent::class_field($fieldsettings);
+	function __construct($fieldsettings) {
+		parent::__construct($fieldsettings);
 
 		$this->m_possible_hour_values = array("0", "1", "2", "3", "4", "5", "6", "7", "8");
 		$this->m_possible_minute_values = array("00", "15", "30", "45");

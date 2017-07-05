@@ -5,8 +5,9 @@ class class_protime_user {
 	private $firstname = '';
 	private $lastname = '';
 	private $email = '';
+	private $department_id = '';
 
-	function class_protime_user($protime_id, $settings) {
+	function __construct($protime_id, $settings) {
 		if ( $protime_id == '' || $protime_id < -1 ) {
 			$protime_id = 0;
 		}
@@ -28,6 +29,7 @@ class class_protime_user {
 			$this->lastname = $row["NAME"];
 			$this->firstname = $row["FIRSTNAME"];
 			$this->email = $row["EMAIL"];
+			$this->department_id = $row["DEPART"];
 
 		}
 		mysql_free_result($resultReset);
@@ -43,6 +45,14 @@ class class_protime_user {
 
 	function getLastname() {
 		return $this->lastname;
+	}
+
+	function getEmail() {
+		return $this->email;
+	}
+
+	public function getDepartmentId() {
+		return $this->department_id;
 	}
 
 	public function __toString() {

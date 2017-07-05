@@ -13,8 +13,10 @@ class class_project {
 	private $oProjectleader;
 	private $enable_weekly_report_mail;
 	private $year;
+	private $hours_estimated;
+	private $minutes_booked;
 
-	function class_project($id, $year = '') {
+	function __construct($id, $year = '') {
 		global $databases;
 		$this->databases = $databases;
 
@@ -30,6 +32,8 @@ class class_project {
 		$this->enddate = '';
 		$this->oProjectleader = null;
 		$this->enable_weekly_report_mail = 0;
+		$this->hours_estimated = 0;
+		$this->minutes_booked = null;
 
 		$this->initValues();
 	}
@@ -81,6 +85,37 @@ class class_project {
 		} else {
 			return new class_employee($this->projectleader, $this->settings);
 		}
+	}
+
+	public function getEstimatedHours() {
+		return $this->hours_estimated;
+	}
+
+	public function getBookedMinutes($force_recalculate = 0 ) {
+		$ret = 0;
+
+		if ( $force_recalculate || $this->minutes_booked == null ) {
+
+			$oConn = new class_mysql($this->databases['default']);
+			$oConn->connect();
+
+			$postfix = getTablePostfix( $this->year );
+
+			$query = "SELECT SUM(TimeInMinutes) AS AANTAL FROM Workhours$postfix WHERE WorkCode=" . $this->getId() . " AND isdeleted=0 ";
+			$res = mysql_query($query, $oConn->getConnection());
+			if ($r = mysql_fetch_assoc($res)) {
+				$ret = $r["AANTAL"];
+			}
+			mysql_free_result($res);
+
+			$this->minutes_booked = $ret;
+		}
+
+		return $this->minutes_booked;
+	}
+
+	public function getLeftMinutes() {
+		return ($this->getEstimatedHours()*60) - $this->getBookedMinutes();
 	}
 
 	public function __toString() {

@@ -8,7 +8,7 @@ class class_recentlyused {
 	private $databases;
 	private $oDate;
 
-	function class_recentlyused($user, $settings, $oDate) {
+	function __construct($user, $settings, $oDate) {
 		global $databases;
 
 		if ( $user == '' ) {

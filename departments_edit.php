@@ -1,5 +1,5 @@
 <?php
-die('Disabled by GCU');
+die('deprecated. contact gcu');
 
 require_once "classes/start.inc.php";
 require_once("classes/class_misc.inc.php");

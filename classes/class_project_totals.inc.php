@@ -10,7 +10,7 @@ class class_project_totals {
 	private $arr = array();
 	private $ids = array();
 
-	function class_project_totals($projectId, $year) {
+	function __construct($projectId, $year) {
 		global $databases;
 		$this->databases = $databases;
 
@@ -87,7 +87,7 @@ class class_project_totals_item {
 	private $timecardId;
 	private $protimePersNr;
 
-	function class_project_totals_item() {
+	function __construct() {
 	}
 
 	//

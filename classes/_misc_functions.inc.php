@@ -94,6 +94,76 @@ function goBackTo() {
 	return $ret;
 }
 
+function getDepartmentEmployeesRibbon($currentlySelectedEmployee, $year) {
+	global $oWebuser, $settings;
+
+	$selected_employee = "Select an employee";
+
+	$prev = '';
+	$next = '';
+
+	$ret = "
+<b>Selected employee:</b><br>
+<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
+<tr>
+	<td colspan=2 align=\"center\">::SELECTEDEMPLOYEE::</td>
+</tr>
+<tr>
+	<td style=\"text-align:left;padding-left:20px;\">::PREV::</td>
+	<td style=\"text-align:right;padding-right:20px;\" align=\"right\">::NEXT::</td>
+</tr>
+</table>
+<br>
+<b>Employees: </b><br>";
+
+	$oProtimeUser = new class_protime_user($oWebuser->getProtimeId(), $settings);
+	$allowedDepartments = array_merge(array($oProtimeUser->getDepartmentId()), $oWebuser->getDepartmentHeadExtraRightsOnDepartments());
+	$allowedUsers = $oWebuser->getDepartmentHeadExtraRightsOnUsers();
+	foreach ( getListOfUsersActiveInSpecificYearAndInDepartment($year, $allowedDepartments, $allowedUsers) as $user ) {
+		if ( $currentlySelectedEmployee->getTimecardId() == $user["id"] ) {
+			$ret .= "<b>";
+			$selected_employee = trim($user["firstname"] . ' ' . verplaatsTussenvoegselNaarBegin($user["lastname"]));
+			$prev = $user['prev'];
+			$next = $user['next'];
+		}
+
+		$current_employee = trim($user["firstname"] . ' ' . verplaatsTussenvoegselNaarBegin($user["lastname"]));
+		if ( $current_employee == '' ) {
+			$current_employee = trim($user["longcode"]);
+		}
+
+		$ret .= "<a href=\"" . GetModifyReturnQueryString("?", "eid", $user["id"]) . "\" title=\"" . $current_employee . "\">" . $current_employee . "</a>";
+
+		if ( $currentlySelectedEmployee->getTimecardId() == $user["id"] ) {
+			$ret .= "</b>";
+		}
+
+		$ret .= "<br>";
+	}
+
+	if ( $currentlySelectedEmployee->getTimecardId() == -1 ) {
+		$selected_employee = 'all employees';
+	}
+
+	$ret = str_replace("::SELECTEDEMPLOYEE::", $selected_employee, $ret);
+
+	// prev
+	if ( $prev != '' ) {
+		$ret = str_replace('::PREV::', '<a href="' . GetModifyReturnQueryString("?", "eid", $prev) . '">&laquo; prev</a>', $ret);
+	} else {
+		$ret = str_replace('::PREV::', '&laquo; prev', $ret);
+	}
+
+	// next
+	if ( $next != '' ) {
+		$ret = str_replace('::NEXT::', '<a href="' . GetModifyReturnQueryString("?", "eid", $next) . '">next &raquo;</a>', $ret);
+	} else {
+		$ret = str_replace('::NEXT::', 'next &raquo;', $ret);
+	}
+
+	return $ret;
+}
+
 function getEmployeesRibbon($currentlySelectedEmployee, $year, $hide_all_employees_choice = 0) {
 	//global $oEmployee;
 
@@ -166,6 +236,58 @@ function getEmployeesRibbon($currentlySelectedEmployee, $year, $hide_all_employe
 	return $ret;
 }
 
+function getListOfUsersActiveInSpecificYearAndInDepartment($year, $arrDepartments, $arrUsers) {
+	global $databases;
+
+	if ( count($arrDepartments) == 0 ) {
+		$arrDepartments[] = '0';
+	}
+
+	if ( count($arrUsers) == 0 ) {
+		$arrUsers[] = '0';
+	}
+
+	$oConn = new class_mysql($databases['default']);
+	$oConn->connect();
+
+	$ret = array();
+	$last_id = '';
+	$query_users = "
+SELECT vw_Employees.*
+FROM vw_Employees
+	INNER JOIN protime_curric ON vw_Employees.ProtimePersNr = protime_curric.PERSNR
+WHERE 
+	firstyear<=" . $year . " 
+	AND lastyear>=" . $year . " 
+	AND is_test_account=0 
+	AND ( 
+			protime_curric.DEPART IN (" . implode(", ", $arrDepartments) . ")
+			OR protime_curric.PERSNR IN (" . implode(", ", $arrUsers) . ")
+		)
+ORDER BY longcode
+";
+
+	$result_users = mysql_query($query_users, $oConn->getConnection());
+	$item = array();
+	while ($row_users = mysql_fetch_assoc($result_users)) {
+		if ( $last_id != '' ) {
+			$item["next"] = $row_users["ID"];
+			$ret[] = $item;
+			$item = array();
+		}
+		$item["id"] = $row_users["ID"];
+		$item["firstname"] = $row_users["FIRSTNAME"];
+		$item["lastname"] = $row_users["NAME"];
+		$item["longcode"] = $row_users["LongCode"];
+		$item["prev"] = $last_id;
+		$last_id = $row_users["ID"];
+	}
+	$ret[] = $item;
+	mysql_free_result($result_users);
+
+	return $ret;
+}
+
 function getListOfUsersActiveInSpecificYear($year) {
 	global $databases;
 
@@ -174,7 +296,7 @@ function getListOfUsersActiveInSpecificYear($year) {
 
 	$ret = array();
 	$last_id = '';
-	$query_users = "SELECT * FROM vw_Employees WHERE ( ( firstyear<=" . $year . " AND lastyear>=" . $year . ") OR isdisabled=0 ) AND is_test_account=0 ORDER BY longcode ";
+	$query_users = "SELECT * FROM vw_Employees WHERE firstyear<=" . $year . " AND lastyear>=" . $year . " AND is_test_account=0 ORDER BY longcode ";
 	$result_users = mysql_query($query_users, $oConn->getConnection());
 	$item = array();
 	while ($row_users = mysql_fetch_assoc($result_users)) {
@@ -516,16 +638,22 @@ function advancedRecordUpdate($db, $table, $fields, $criterium, $test = 0 ) {
 	$advQuery = "UPDATE " . $table . " SET ";
 
 	if ( is_array($fields) ) {
-		$separator = '';
+		$separator2 = '';
+
 		foreach ($fields as $a => $b) {
+			$separator = '';
+			$advQuery .= $separator2;
+
 			if ( is_array($b) ) {
 				foreach ($b as $c => $d) {
 					$advQuery .= $separator . $c . "=" . $d;
 					$separator = ", ";
 				}
 			} else {
+//echo "+<br>";
 				$advQuery .= $a . "=" . $b;
 			}
+			$separator2 = ", ";
 		}
 	}
 
@@ -908,8 +1036,8 @@ function addEerderNaarHuisInTimecardMonth($timecard_id, $protime_id, $oDate) {
 					, "Workhours"
 					, array(
 						array("WorkCode" => 7)
-					, array("WorkDescription" => "''")
-					, array("TimeInMinutes" => $eerderWeg)
+						, array("WorkDescription" => "''")
+						, array("TimeInMinutes" => $eerderWeg)
 					)
 					, "ID=" . $zoek["id"]
 					, 0

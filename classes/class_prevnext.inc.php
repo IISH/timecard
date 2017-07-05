@@ -2,7 +2,7 @@
 class class_prevnext {
 	private $date;
 
-	function class_prevnext( $date ) {
+	function __construct( $date ) {
 		global $settings;
 
 		$this->date = $date;

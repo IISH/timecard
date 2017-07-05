@@ -4,8 +4,8 @@ require_once("./classes/class_view/fieldtypes/class_field.inc.php");
 class class_field_button extends class_field {
 	private $m_buttonlabel;
 
-	function class_field_button($fieldsettings) {
-		parent::class_field($fieldsettings);
+	function __construct($fieldsettings) {
+		parent::__construct($fieldsettings);
 
 		$this->m_buttonlabel = '';
 

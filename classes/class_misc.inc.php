@@ -6,8 +6,15 @@ function preprint( $object ) {
 	echo '</pre>';
 }
 
-
 class class_misc {
+    public static function get_remote_addr() {
+        $retval = trim($_SERVER["HTTP_X_FORWARDED_FOR"]);
+        if ( $retval == '' ) {
+            $retval = trim($_SERVER["REMOTE_ADDR"]);
+        }
+
+        return $retval;
+    }
 
 	public static function normalize ($string) {
 		$table = array(

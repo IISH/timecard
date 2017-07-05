@@ -122,7 +122,7 @@ function getUserDay( $date ) {
 			}
 
 			// if legacy, then no edit link
-			if ( class_datetime::is_legacy( $oDate ) || $oDate->get("Y-m-d") < $oWebuser->getAllowAdditionsStartingDate() ) {
+			if ( $oDate->get("Y-m-d") < $oWebuser->getAllowAdditionsStartingDate() ) {
 				$ret .= "
 		<TD class=\"recorditem\"><nobr>" . $row["Description"] . "</nobr></td>
 ";
@@ -171,9 +171,9 @@ function getUserDay( $date ) {
 ";
 
 	$timecard_day_total = $timecard_deeltotaal+$dagvakantie;
-	$oEmployee = new class_employee( $oWebuser->getTimecardId(), $settings );
+//	$oEmployee = new class_employee( $oWebuser->getTimecardId(), $settings );
 
-	$protime_day_total = $oEmployee->getProtimeDayTotal($date);
+	$protime_day_total = $oWebuser->getProtimeDayTotal($date);
 
 	$ret .= "
 <span class=\"" . ( ( (int)$timecard_day_total - (int)$protime_day_total ) >= 3 || ( (int)$timecard_day_total - (int)$protime_day_total ) <= -3 ? "boldRed" : "bold" ) . "\">" . class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes( $timecard_day_total ) . "</span></td></tr>
@@ -185,7 +185,6 @@ function getUserDay( $date ) {
 
 function getUserShortcuts($oUser, $oDate, $settings, $type) {
 	$userid = $oUser->getTimecardId();
-//	$departmentId = $oUser->getDepartmentId();
 
 	if ( $userid == '' || $userid == '0' || $userid == '-1' ) {
 		return;
@@ -193,7 +192,6 @@ function getUserShortcuts($oUser, $oDate, $settings, $type) {
 
 	// get design
 	if ( $type == 'department' ) {
-
 		$design = new class_contentdesign("page_div_department_shortcuts");
 	} else {
 		$design = new class_contentdesign("page_div_shortcuts");
@@ -208,15 +206,7 @@ function getUserShortcuts($oUser, $oDate, $settings, $type) {
 	$records = '';
 
 	foreach ( $oShortcuts->getEnabledShortcuts( $type ) as $shortcut) {
-//		$url = "edit.php?ID=0&d=" . $oDate->get("Ymd") . "&template=" . $shortcut["id"] . "&p=" . $shortcut["projectnr"] . "&t=" . $shortcut["minutes"];
-		$url = "edit.php?ID=0&d=" . $oDate->get("Ymd") . "&template=" . $shortcut["id"];
-//		if ( trim($shortcut["autosave"]) == '1' ) {
-//			$url .= "&autoSave=" . trim($shortcut["autosave"]);
-//		}
-//		if ( trim($shortcut["description"]) != '' ) {
-//			$url .= "&desc=" . urlencode(htmlspecialchars($shortcut["description"]));
-//		}
-		$url .= "&backurl=" . urlencode(get_current_url());
+		$url = "edit.php?ID=0&d=" . $oDate->get("Ymd") . "&template=" . $shortcut["id"] . "&backurl=" . urlencode(get_current_url());
 		$shortcut["url"] = $url;
 
 		if ( trim($shortcut["autosave"]) == '1' ) {

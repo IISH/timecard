@@ -4,8 +4,8 @@ require_once("./classes/class_form/fieldtypes/class_field.inc.php");
 class class_field_static_string_list extends class_field {
 	private $m_choices;
 
-	function class_field_static_string_list($fieldsettings) {
-		parent::class_field($fieldsettings);
+	function __construct($fieldsettings) {
+		parent::__construct($fieldsettings);
 
 		$this->m_choices = '';
 

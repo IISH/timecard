@@ -1,18 +1,21 @@
 <?php 
 class class_authentication {
 
-	function class_authentication() {
+	function __construct() {
 	}
 
 	function authenticate( $login, $password ) {
-		return class_authentication::check_ldap('iisgnet\\' . $login, $password, array('sa-dc02.iisg.net'));
+	    global $active_directories;
+		// TODO: move authentication settings to jira/confluence active directory
+		// TODO: after move to jira/confluence ldap, who is allowed to enter data??? (this must be configured somewhere)
+		return class_authentication::check_ldap('iisgnet\\' . $login, $password, $active_directories);
 	}
 
 	function check_ldap($user, $pw, $servers) {
 		$login_correct = 0;
 
 		// LDAP AUTHENTICATIE VIA PHP-LDAP
-		// php-ldap moet geinstalleerd zijn op de server
+		// php-ldap must be installed on the server
 
 		foreach ( $servers as $server ) {
 			if ( $login_correct == 0 ) {
@@ -36,6 +39,10 @@ class class_authentication {
 				ldap_unbind($ad);
 			}
 		}
+
+        if ( $login_correct == 0 ) {
+            error_log("LOGIN FAILED $user from " . class_misc::get_remote_addr() . " (AD: " . trim(Settings::get('ms_active_directories')) . ")");
+        }
 
 		return $login_correct;
 	}

@@ -16,7 +16,7 @@ class class_dailyaddition {
 	private $firstDate;
 	private $lastDate;
 
-	function class_dailyaddition($id) {
+	function __construct($id) {
 		global $databases;
 		$this->databases = $databases;
 		$this->id = $id;

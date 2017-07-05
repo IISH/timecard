@@ -1,7 +1,7 @@
 <?php 
 class class_file {
 
-	function class_file() {
+	function __construct() {
 	}
 
 	function getFileSource($bestandsnaam) {
