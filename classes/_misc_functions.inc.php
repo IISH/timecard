@@ -638,10 +638,10 @@ function advancedRecordUpdate($db, $table, $fields, $criterium, $test = 0 ) {
 	$advQuery = "UPDATE " . $table . " SET ";
 
 	if ( is_array($fields) ) {
-		$separator = '';
 		$separator2 = '';
 
 		foreach ($fields as $a => $b) {
+			$separator = '';
 			$advQuery .= $separator2;
 
 			if ( is_array($b) ) {
@@ -669,6 +669,7 @@ function advancedRecordUpdate($db, $table, $fields, $criterium, $test = 0 ) {
 		$oConn->connect();
 
 //debug($advQuery, "advancedRecordUpdate: ");
+
 		// run
 		$resultAdvUpdate = mysql_query($advQuery, $oConn->getConnection());
 	}
