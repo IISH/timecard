@@ -1,4 +1,7 @@
 <?php
+/*
+ * version: 2017-06-05 14:34
+ */
 
 function preprint( $object ) {
 	echo '<pre>';
