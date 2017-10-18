@@ -105,11 +105,9 @@ function createProjectEditContent() {
 	$oForm->add_field( new class_field_list ( $settings, array(
 		'fieldname' => 'projectleader'
 		, 'fieldlabel' => 'Project leader'
-		, 'query' => "SELECT ID, CONCAT(RTRIM(LTRIM(FIRSTNAME)), ' ', RTRIM(LTRIM(NAME)), ' (#', ID, IF(is_test_account=1, ', testaccount', ''), ')') AS FULLNAME FROM vw_Employees WHERE isdisabled=0 ORDER BY FIRSTNAME, NAME "
-
+		, 'query' => "SELECT ID, CONCAT(RTRIM(LTRIM(FIRSTNAME)), ' ', RTRIM(LTRIM(NAME)), ' (#', ID, IF(is_test_account=1, ', testaccount', ''), ')') AS FULLNAME FROM vw_Employees WHERE isdisabled=0 AND FIRSTNAME IS NOT NULL AND NAME IS NOT NULL ORDER BY FIRSTNAME, NAME "
 		, 'id_field' => 'ID'
 		, 'description_field' => 'FULLNAME'
-
 		, 'empty_value' => '0'
 		, 'required' => 0
 		, 'show_empty_row' => true

@@ -750,7 +750,13 @@ function getAddEmployeeToTimecard($longcode) {
 
 	$retval["id"] = '0';
 
-	$query = "SELECT ID, LongCode FROM Employees WHERE LongCode='" . addslashes($longcode) . "' ORDER BY ID DESC ";
+	if ( strpos($longcode, '.') !== false ) {
+		// IISG
+		$query = "SELECT ID, LongCode FROM Employees WHERE LongCode='" . addslashes($longcode) . "' ORDER BY ID DESC ";
+	} else {
+		// KNAW
+		$query = "SELECT ID, LongCode FROM Employees WHERE LongCodeKnaw='" . addslashes($longcode) . "' ORDER BY ID DESC ";
+	}
 	$result = mysql_query($query, $oConn->getConnection());
 	if ( !$result ) {
 		die('Invalid query: ' . mysql_error());
@@ -762,34 +768,60 @@ function getAddEmployeeToTimecard($longcode) {
 	} else {
 		//
 		$a = new TCDateTime();
-		// disabled one month back
-		//$a->subMonth(); // one month back
 		$allow_additions_starting_date = $a->getFirstDate()->format("Y-m-d");
 		$year = date("Y");
 
 		$created_on = date("Y-m-d H:i:s");
 
-		// insert new record in Employees database
-		$queryInsert = "INSERT INTO Employees (LongCode, firstyear, lastyear, allow_additions_starting_date, created_on) VALUES ('" . addslashes($longcode) . "', $year, $year, '$allow_additions_starting_date', '$created_on') ";
-		$resultInsert = mysql_query($queryInsert, $oConn->getConnection());
+		if ( strpos($longcode, '.') !== false ) {
+			// IISG
+			// everyone with a IISG account is allowed to use timecard
+			// so without any problems we can add the user to the database
 
-		// get the id of the last created document
-		$result2 = mysql_query($query, $oConn->getConnection());
-		if ( $row2 = mysql_fetch_array($result2) ) {
-			$retval["id"] = $row2["ID"];
-		}
+			// insert new record in Employees database
+			$queryInsert = "INSERT INTO Employees (LongCode, firstyear, lastyear, allow_additions_starting_date, created_on) VALUES ('" . addslashes($longcode) . "', $year, $year, '$allow_additions_starting_date', '$created_on') ";
+			$resultInsert = mysql_query($queryInsert, $oConn->getConnection());
 
-		// send mail to admin to check the data
-		$newUserBody = "This message is for the IISG IT Department.
-A new timecard user has registered.
+			// get the id of the last created document
+			$result2 = mysql_query($query, $oConn->getConnection());
+			if ($row2 = mysql_fetch_array($result2)) {
+				$retval["id"] = $row2["ID"];
+			}
+
+
+			// send mail to admin to check the data
+			$newUserBody = "A new timecard user has registered (" . $longcode . ").
 Go to website and check the user(s) without a protime link
 https://timecard.socialhistoryservices.org/admin_not_linked_employees.php
 - click on an user
-- se(lec)t user's name in the Protime field
+- enter the users KNAW login
+- select user's name in the Protime field
 - and save the record
 (that's all.)
 After that you can close the Jira call.";
-		$protect->send_email( Settings::get("email_new_employees_to"), "IISG Timecard - new user added", $newUserBody );
+			$protect->send_email( Settings::get("email_new_employees_to"), "IISG Timecard - new user added (" . $longcode . ")", $newUserBody );
+
+		} else {
+			// KNAW
+			// not overyone with a KNAW account is allowed to use the timecard application
+			// do not add users automatically to the database
+			// send mail to admin to check the data
+			$newUserBody = "An unknown KNAW employee has tried to login in timecard (" . $longcode . ").
+If this user should be authorized to use timecard, please add him/her via:
+https://timecard.socialhistoryservices.org/employees.php
+- click on 'Add employee'
+- enter the users SA login
+- enter the users KNAW login
+- select user's name in the Protime field
+- and save the record
+(that's all.)
+After that you can close the Jira call.";
+			$protect->send_email( Settings::get("email_new_employees_to"), "IISG Timecard - blocked unknown KNAW employee (" . $longcode . ")", $newUserBody );
+
+			//
+			$_SESSION["timecard"]["id"] = 0;
+			die('Error: You are not authorized to use this application. Please contact IT department.');
+		}
 	}
 
 	return $retval;

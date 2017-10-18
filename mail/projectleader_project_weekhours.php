@@ -84,20 +84,20 @@ foreach ( $projects as $oProject ) {
 		$m = "SKIPPED: Weekly report e-mail is disabled for this project.";
 		echo $m;
 		$mail_body .= $m;
-		mail(Settings::get('admin_email'), 'SKIPPED ' . $mail_subject, $mail_body, $mail_headers);
+		mail(Settings::get('bcc_email'), 'SKIPPED ' . $mail_subject, $mail_body, $mail_headers);
 	} else {
 		// get email projectleader
 		$projectleaderEmail = $oProjectleader->getEmail();
 		if ( $projectleaderEmail != '' ) {
 			// send email to projectleader
-			$mail_headers .= "\r\n" . 'bcc: ' . Settings::get('admin_email');
+			$mail_headers .= "\r\n" . 'bcc: ' . Settings::get('bcc_email');
 			mail($projectleaderEmail, $mail_subject, $mail_body, $mail_headers);
 			echo "E-mail sent to $projectleaderEmail";
 		} else {
 			$m = "SKIPPED: The project leader for this project has no e-mail (contact IISG reception).";
 			echo $m;
 			$mail_body .= $m;
-			mail(Settings::get('admin_email'), 'SKIPPED ' . $mail_subject, $mail_body, $mail_headers);
+			mail(Settings::get('bbc_email'), 'SKIPPED ' . $mail_subject, $mail_body, $mail_headers);
 		}
 	}
 

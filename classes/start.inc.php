@@ -45,6 +45,7 @@ require_once dirname(__FILE__) . "/class_project_totals.inc.php";
 require_once dirname(__FILE__) . "/class_workhours.inc.php";
 require_once dirname(__FILE__) . "/class_workhours_static.inc.php";
 require_once dirname(__FILE__) . "/class_settings.inc.php";
+require_once dirname(__FILE__) . "/pdo.inc.php";
 require_once dirname(__FILE__) . "/syncinfo.inc.php";
 
 //
@@ -71,3 +72,6 @@ $menuList = $menu->getMenuSubset();
 // always connect to timecard database
 $oConn = new class_mysql($databases['default']);
 $oConn->connect();
+
+// connect to databases
+$dbConn = new class_pdo( $databases['default'] );

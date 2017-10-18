@@ -57,14 +57,26 @@ function createEmployeesEditContent() {
 	if ( $oWebuser->hasAdminAuthorisation() ) {
 		$oForm->add_field( new class_field_string ( array(
 			'fieldname' => 'LongCode'
-			, 'fieldlabel' => 'SA/2X login (firstname.lastname)'
+			, 'fieldlabel' => 'SA login (firstname.lastname)'
+			, 'required' => 1
+			, 'size' => 35
+			)));
+
+		$oForm->add_field( new class_field_string ( array(
+			'fieldname' => 'LongCodeKnaw'
+			, 'fieldlabel' => 'KNAW login (FirstnameL)'
 			, 'required' => 1
 			, 'size' => 35
 			)));
 	} else {
 		$oForm->add_field( new class_field_readonly ( array(
 			'fieldname' => 'LongCode'
-			, 'fieldlabel' => 'SA/2X login'
+			, 'fieldlabel' => 'SA login'
+			)));
+
+		$oForm->add_field( new class_field_readonly ( array(
+			'fieldname' => 'LongCodeKnaw'
+			, 'fieldlabel' => 'KNAW login'
 			)));
 	}
 

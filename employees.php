@@ -98,7 +98,7 @@ function createEmployeesContent() {
 
 	$oView->add_field( new class_field_string ( array(
 		'fieldname' => 'LongCode'
-		, 'fieldlabel' => 'SA/2X login'
+		, 'fieldlabel' => 'SA login'
 		, 'viewfilter' => array(
 							'labelfilterseparator' => '<br>'
 							, 'filter' => array (
@@ -109,6 +109,21 @@ function createEmployeesContent() {
 												)
 											)
 							)
+		)));
+
+	$oView->add_field( new class_field_string ( array(
+		'fieldname' => 'LongCodeKnaw'
+		, 'fieldlabel' => 'KNAW login'
+		, 'viewfilter' => array(
+			'labelfilterseparator' => '<br>'
+			, 'filter' => array (
+					array (
+						'fieldname' => 'LongCodeKnaw'
+						, 'type' => 'string'
+						, 'size' => 10
+					)
+				)
+			)
 		)));
 
 	$oView->add_field( new class_field_string ( array(

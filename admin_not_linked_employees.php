@@ -48,7 +48,7 @@ function createEmployeesContent() {
 
 	$oView->add_field( new class_field_string ( array(
 		'fieldname' => 'LongCode'
-		, 'fieldlabel' => 'SA/2X login'
+		, 'fieldlabel' => 'SA login'
 		, 'href' => 'employees_edit.php?ID=[FLD:ID]&backurl=[BACKURL]'
 		, 'viewfilter' => array(
 				'labelfilterseparator' => '<br>'
