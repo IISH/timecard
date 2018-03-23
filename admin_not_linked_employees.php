@@ -21,7 +21,7 @@ echo $oPage->getPage();
 require_once "classes/_db_disconnect.inc.php";
 
 function createEmployeesContent() {
-	global $settings, $databases;
+	global $settings, $databases, $dbConn;
 
 	// get design
 	$design = new class_contentdesign("page_admin_not_linked_employees");
@@ -33,8 +33,7 @@ function createEmployeesContent() {
 	require_once("./classes/class_view/fieldtypes/class_field_string.inc.php");
 	require_once("./classes/class_view/fieldtypes/class_field_integer.inc.php");
 
-	$oDb = new class_mysql($databases['default']);
-	$oView = new class_view($settings, $oDb);
+	$oView = new class_view($settings, $dbConn);
 
 	$oView->set_view( array(
 		'query' => 'SELECT * FROM vw_Employees WHERE 1=1 AND isdisabled=0 AND ProtimePersNr=0 '
@@ -48,7 +47,7 @@ function createEmployeesContent() {
 
 	$oView->add_field( new class_field_string ( array(
 		'fieldname' => 'LongCode'
-		, 'fieldlabel' => 'SA login'
+		, 'fieldlabel' => 'IISG SA login'
 		, 'href' => 'employees_edit.php?ID=[FLD:ID]&backurl=[BACKURL]'
 		, 'viewfilter' => array(
 				'labelfilterseparator' => '<br>'

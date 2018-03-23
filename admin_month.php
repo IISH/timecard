@@ -38,7 +38,7 @@ function createAdminMonthContent( $date ) {
 }
 
 	function getAdminMonth( $date ) {
-		global $settings, $oEmployee, $oDate, $databases;
+		global $settings, $oEmployee, $oDate, $databases, $dbConn;
 		$ret = '';
 
 		if ( $oEmployee->getTimecardId() != '' ) {
@@ -47,8 +47,7 @@ function createAdminMonthContent( $date ) {
 			require_once("./classes/class_view/fieldtypes/class_field_time.inc.php");
 			require_once("./classes/class_view/fieldtypes/class_field_date.inc.php");
 
-			$oDb = new class_mysql($databases['default']);
-			$oView = new class_view($settings, $oDb);
+			$oView = new class_view($settings, $dbConn);
 
 			if ( $oEmployee->getTimecardId() == -1 ) {
 				$tmp_query = 'SELECT * FROM vw_hours_admin WHERE DateWorked LIKE \'' . $oDate->get("Y-m") . '-%\' ';

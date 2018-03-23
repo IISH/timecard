@@ -92,8 +92,7 @@ $menu->addMenuItem( new class_menuitem('pp.contact', 'Contact', 'contact.php') )
 // + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
 
 class class_menuitem {
-	// TODOTODO private
-
+	//
 	public $code = '';
 	public $label = '';
 	public $url = '';
@@ -122,8 +121,7 @@ class class_menuitem {
 }
 
 class class_menugroup {
-	// TODOTODO private
-
+	//
 	public $code = '';
 	public $label = '';
 	public $menuitems = array();
@@ -173,7 +171,7 @@ class class_menugroup {
 }
 
 class class_menu {
-	// TODOTODO private
+	//
 	public $menu = array();
 
 	function addMenuGroup( $menugroup ) {

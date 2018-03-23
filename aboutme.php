@@ -18,7 +18,7 @@ echo $oPage->getPage();
 require_once "classes/_db_disconnect.inc.php";
 
 function createSettingsPage() {
-	global $settings, $oWebuser, $databases;
+	global $settings, $oWebuser, $databases, $dbConn;
 
 	// get design
 	$design = new class_contentdesign("page_aboutme");
@@ -26,13 +26,11 @@ function createSettingsPage() {
 	// add header
 	$ret = $design->getHeader();
 
-	$oConn = new class_mysql($databases['default']);
-	$oConn->connect();
-
 	$query = "SELECT * FROM vw_Employees WHERE ID=" . $oWebuser->getTimecardId();
-	$result = mysql_query($query, $oConn->getConnection());
-
-	if ($row = mysql_fetch_assoc($result)) {
+	$stmt = $dbConn->prepare($query);
+	$stmt->execute();
+	$result = $stmt->fetchAll();
+	foreach ($result as $row) {
 		$template = $design->getContent();
 
 		$data["firstname"] = $row["FIRSTNAME"];
@@ -44,7 +42,6 @@ function createSettingsPage() {
 		// add content
 		$ret .= fillTemplate($template, $data);
 	}
-	mysql_free_result($result);
 
 	// add footer
 	$ret .= $design->getFooter();
@@ -59,13 +56,11 @@ function createSettingsPage() {
 	// add header
 	$ret .= $design->getHeader();
 
-	$oConn = new class_mysql($databases['default']);
-	$oConn->connect();
-
 	$query = "SELECT * FROM vw_Employees WHERE ID=" . $oWebuser->getTimecardId();
-	$result = mysql_query($query, $oConn->getConnection());
-
-	if ($row = mysql_fetch_assoc($result)) {
+	$stmt = $dbConn->prepare($query);
+	$stmt->execute();
+	$result = $stmt->fetchAll();
+	foreach ($result as $row) {
 		$template = $design->getContent();
 
 		switch ( $row["HoursDoubleField"] ) {
@@ -94,7 +89,6 @@ function createSettingsPage() {
 		// add content
 		$ret .= fillTemplate($template, $data);
 	}
-	mysql_free_result($result);
 
 	return $ret;
 }

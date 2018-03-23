@@ -207,9 +207,8 @@ class class_calendar {
 
 		$retval = str_replace("::DAG::", $dag, $retval);
 
-// TODOTODOTODO
-		$tmpQueryString = $querystring;
-		$tmpQueryString .= '&d=' . $date["Ym"] . substr("0" . $dag,-2);
+		//
+		$tmpQueryString = $querystring . '&d=' . $date["Ym"] . substr("0" . $dag,-2);
 		$tmpQueryString = removeLeftChar($tmpQueryString, array('?', '&'));
 		$retval = str_replace("::URL::", $scriptname . '?' . $tmpQueryString, $retval);
 

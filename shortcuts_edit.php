@@ -18,7 +18,7 @@ echo $oPage->getPage();
 require_once "classes/_db_disconnect.inc.php";
 
 function createShortcutsContent() {
-	global $settings, $oWebuser, $protect, $databases;
+	global $settings, $oWebuser, $protect, $databases, $dbConn;
 
 	// get design
 	$design = new class_contentdesign("page_shortcuts_edit");
@@ -36,8 +36,7 @@ function createShortcutsContent() {
 	require_once("./classes/class_form/fieldtypes/class_field_time_single_field.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_time_free_input_field.inc.php");
 
-	$oDb = new class_mysql($databases['default']);
-	$oForm = new class_form($settings, $oDb);
+	$oForm = new class_form($settings, $dbConn);
 
 	$oForm->set_form( array(
 		'query' => 'SELECT * FROM UserCreatedQuickAdds WHERE ID=[FLD:ID] AND Employee=' . $oWebuser->getTimecardId() . ' AND isdeleted=0 '

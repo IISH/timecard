@@ -21,7 +21,7 @@ echo $oPage->getPage();
 require_once "classes/_db_disconnect.inc.php";
 
 function createVastWerkContent() {
-	global $protect, $settings, $oWebuser, $databases;
+	global $protect, $settings, $oWebuser, $databases, $dbConn;
 
 	// get design
 	$design = new class_contentdesign("page_vastwerk_edit");
@@ -38,8 +38,7 @@ function createVastWerkContent() {
 	require_once("./classes/class_form/fieldtypes/class_field_textarea.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_static_string_list.inc.php");
 
-	$oDb = new class_mysql($databases['default']);
-	$oForm = new class_form($settings, $oDb);
+	$oForm = new class_form($settings, $dbConn);
 
 	$oForm->set_form( array(
 		'query' => "SELECT * FROM VastWerk WHERE ID=[FLD:ID] "

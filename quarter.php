@@ -33,7 +33,7 @@ function createQuarterContent( $date ) {
 }
 
 	function getUserQuarter( $date ) {
-		global $settings, $oWebuser, $oDate, $databases;
+		global $settings, $oWebuser, $oDate, $databases, $dbConn;
 
 		require_once("./classes/class_view/class_view.inc.php");
 		require_once("./classes/class_view/fieldtypes/class_field_string.inc.php");
@@ -41,8 +41,7 @@ function createQuarterContent( $date ) {
 		require_once("./classes/class_view/fieldtypes/class_field_date.inc.php");
 		require_once("./classes/class_view/fieldtypes/class_field_jira_url_browse.inc.php");
 
-		$oDb = new class_mysql($databases['default']);
-		$oView = new class_view($settings, $oDb);
+		$oView = new class_view($settings, $dbConn);
 
 		// if legacy, then no edit link
 		$add_new_url = '';

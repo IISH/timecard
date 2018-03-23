@@ -37,7 +37,7 @@ function createAdminQuarterContent( $date ) {
 	return $ret;
 }
 	function getAdminQuarter( $date ) {
-		global $settings, $oEmployee, $oDate, $databases;
+		global $settings, $oEmployee, $oDate, $databases, $dbConn;
 
 		if ( $oEmployee->getTimecardId() != '' ) {
 			require_once("./classes/class_view/class_view.inc.php");
@@ -45,8 +45,7 @@ function createAdminQuarterContent( $date ) {
 			require_once("./classes/class_view/fieldtypes/class_field_time.inc.php");
 			require_once("./classes/class_view/fieldtypes/class_field_date.inc.php");
 
-			$oDb = new class_mysql($databases['default']);
-			$oView = new class_view($settings, $oDb);
+			$oView = new class_view($settings, $dbConn);
 
 			$oPrevNext = new class_prevnext($date);
 			$extra_month_criterium = $oPrevNext->getExtraMonthCriterium();

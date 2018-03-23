@@ -1,7 +1,7 @@
 <?php 
 require_once dirname(__FILE__) . "/class_employee.inc.php";
 require_once dirname(__FILE__) . "/../sites/default/settings.php";
-require_once "class_mysql.inc.php";
+require_once "pdo.inc.php";
 
 class class_employee_hours_for_planning {
 	private $settings;
@@ -15,12 +15,8 @@ class class_employee_hours_for_planning {
 	private $number_of_brugdagen = array();
 
 	function __construct( $oEmployee, $year ) {
-		global $databases;
-		$this->databases = $databases;
-
 		$this->oEmployee = $oEmployee;
 		$this->year = $year;
-
 		$this->initValues( true );
 	}
 
@@ -49,15 +45,16 @@ class class_employee_hours_for_planning {
 	}
 
 	private function initValues( $recursive = false ) {
-		$oConn = new class_mysql($this->databases['default']);
-		$oConn->connect();
-
+		global $dbConn;
 		$query = "SELECT * FROM Employee_Cache_Planning WHERE EmployeeId=" . $this->oEmployee->getTimecardId() . " AND yearmonth LIKE '" . $this->year . "-%' ORDER BY yearmonth ";
 
-		$res = mysql_query($query, $oConn->getConnection());
 		$recordsFound = 0;
 		$areAllLastRefreshOkay = true;
-		while ($r = mysql_fetch_assoc($res)) {
+
+		$stmt = $dbConn->prepare($query);
+		$stmt->execute();
+		$result = $stmt->fetchAll();
+		foreach ($result as $r) {
 			$recordsFound++;
 
 			$total_work = 0;
@@ -81,14 +78,10 @@ class class_employee_hours_for_planning {
 				$areAllLastRefreshOkay = false;
 			}
 		}
-		mysql_free_result($res);
-
-//		$areAllLastRefreshOkay = false; // TODO VERWIJDEREN REGEL
 
 		if ( $recursive && ( $recordsFound < 12 || !$areAllLastRefreshOkay ) ) {
 			$oRefresh = new class_refresh_employee_hours_for_planning($this->oEmployee, $this->year);
 			$oRefresh->refresh( false ); // TODO SET THIS LINE
-//			$oRefresh->refresh( true ); // TODO remove this line
 
 			//
 			$this->initValues( false );

@@ -1,9 +1,8 @@
 <?php 
 require_once dirname(__FILE__) . "/../sites/default/settings.php";
-require_once dirname(__FILE__) . "/class_mysql.inc.php";
+require_once dirname(__FILE__) . "/pdo.inc.php";
 
 class class_dailyaddition {
-	private $databases;
 	private $id;
 	private $employeeId;
 	private $workcode;
@@ -17,8 +16,6 @@ class class_dailyaddition {
 	private $lastDate;
 
 	function __construct($id) {
-		global $databases;
-		$this->databases = $databases;
 		$this->id = $id;
 		$this->employeeId = 0;
 		$this->workcode = 0;
@@ -35,16 +32,16 @@ class class_dailyaddition {
 	}
 
 	private function initValues() {
-		$oConn = new class_mysql($this->databases['default']);
-		$oConn->connect();
+		global $dbConn;
 
 		$query = "SELECT DailyAutomaticAdditions.*, Workcodes.Projectnummer AS workcodeProjectnumber, Workcodes.Description AS workcodeDescription
 FROM DailyAutomaticAdditions
 	INNER JOIN Workcodes ON DailyAutomaticAdditions.workcode = Workcodes.ID
 WHERE DailyAutomaticAdditions.ID=" . $this->getId();
 
-		$res = mysql_query($query, $oConn->getConnection());
-		if ($r = mysql_fetch_assoc($res)) {
+		$stmt = $dbConn->prepare($query);
+		$stmt->execute();
+		if ( $r = $stmt->fetch() ) {
 			$this->employeeId = $r["employee"];
 			$this->workcode = $r["workcode"];
 			$this->workcodeProjectnumber = $r["workcodeProjectnumber"];
@@ -56,7 +53,6 @@ WHERE DailyAutomaticAdditions.ID=" . $this->getId();
 			$this->firstDate = $r["first_date"];
 			$this->lastDate = $r["last_date"];
 		}
-		mysql_free_result($res);
 	}
 
 	/**

@@ -2,27 +2,23 @@
 die('deprecated. contact gcu');
 
 class class_hoursperweek {
-	private $databases;
 	private $hours;
 	private $startmonth;
 	private $endmonth;
 
 	function __construct($id, $settings) {
-		global $databases;
-		$this->databases = $databases;
-
-		$oConn = new class_mysql($this->databases['default']);
-		$oConn->connect();
+		global $dbConn;
 
 		// reset values
 		$query = "SELECT * FROM HoursPerWeek WHERE ID=" . $id . " ";
-		$result = mysql_query($query, $oConn->getConnection());
-		while ($row = mysql_fetch_assoc($result)) {
+		$stmt = $dbConn->prepare($query);
+		$stmt->execute();
+		$result = $stmt->fetchAll();
+		foreach ($result as $row) {
 			$this->hours = $row["hoursperweek"];
 			$this->startmonth = $row["startmonth"];
 			$this->endmonth = $row["endmonth"];
 		}
-		mysql_free_result($result);
 	}
 
 	function getHours() {

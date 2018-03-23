@@ -132,10 +132,7 @@ function fixCol($value) {
 }
 
 function getTimecardUrenGroupedByMonth($id, $year, $pid) {
-	global $databases;
-
-	$oConn = new class_mysql($databases['default']);
-	$oConn->connect();
+	global $dbConn;
 
 	$retval = array();
 
@@ -150,22 +147,18 @@ function getTimecardUrenGroupedByMonth($id, $year, $pid) {
 	$query = str_replace("::DATE::", " AND DateWorked LIKE '" . $year . "-%' ", $query);
 
 	$query .= " GROUP BY SUBSTR(DateWorked,1,7) ";
-
-	$result = mysql_query($query, $oConn->getConnection());
-	while ($row = mysql_fetch_assoc($result)) {
+	$stmt = $dbConn->prepare($query);
+	$stmt->execute();
+	$result = $stmt->fetchAll();
+	foreach ($result as $row) {
 		$retval[$row["WORKDATE"]] = $row["AANTAL"];
 	}
-
-	mysql_free_result($result);
 
 	return $retval;
 }
 
 function getTimecardUrenGroupedByDay($id, $year, $month, $pid) {
-	global $databases;
-
-	$oConn = new class_mysql($databases['default']);
-	$oConn->connect();
+	global $dbConn;
 
 	$retval = array();
 
@@ -185,18 +178,18 @@ WHERE Employee=" . $id . "
 GROUP BY SUBSTR(DateWorked,1,10)
 ";
 
-	$result = mysql_query($query, $oConn->getConnection());
-	while ($row = mysql_fetch_assoc($result)) {
+	$stmt = $dbConn->prepare($query);
+	$stmt->execute();
+	$result = $stmt->fetchAll();
+	foreach ($result as $row) {
 		$retval[$row["WORKDATE"]] = $row["AANTAL"];
 	}
-
-	mysql_free_result($result);
 
 	return $retval;
 }
 
 function getProtimeUrenGroupedByDay($protimeId, $year, $month, $view, $timecardid) {
-	global $databases;
+	global $dbConn;
 
 	$retval = array();
 
@@ -245,19 +238,14 @@ function getProtimeUrenGroupedByDay($protimeId, $year, $month, $view, $timecardi
 	}
 	$query .= "	) GROUP BY SUBSTR(BOOKDATE, 1, 10) ";
 
-	$oTc = new class_mysql($databases['default']);
-	$oTc->connect();
-
-//	echo "444 " . $query . "   ++++<br><br>";
-
-	$result2 = mysql_query($query, $oTc->getConnection());
-
-	while ($row2 = mysql_fetch_assoc($result2)) {
+	$stmt = $dbConn->prepare($query);
+	$stmt->execute();
+	$result2 = $stmt->fetchAll();
+	foreach ($result2 as $row2) {
 		$oD = new TCDateTime();
 		$oD->setFromString($row2["WORKDATE"], 'Ymd');
 		$retval[ $oD->get()->format("Y-m-d") ] = $row2["AANTAL"];
 	}
-	mysql_free_result($result2);
 
 	if ( $view == 'verlof' ) {
 		// achterhaal 'eerder weg'
@@ -277,7 +265,7 @@ function getProtimeUrenGroupedByDay($protimeId, $year, $month, $view, $timecardi
 }
 
 function getProtimeUren($id, $year, $month, $view, $timecardid) {
-	global $databases;
+	global $dbConn;
 
 	$retval = 0.0;
 
@@ -324,16 +312,12 @@ function getProtimeUren($id, $year, $month, $view, $timecardid) {
 	}
 	$query .= "	) ";
 
-	$oTc = new class_mysql($databases['default']);
-	$oTc->connect();
-
-//	echo "5555 " . $query . "   ++++<br><br>";
-	$result2 = mysql_query($query, $oTc->getConnection());
-
-	while ($row2 = mysql_fetch_row($result2)) {
+	$stmt = $dbConn->prepare($query);
+	$stmt->execute();
+	$result2 = $stmt->fetchAll();
+	foreach ($result2 as $row2) {
 		$retval += $row2[0];
 	}
-	mysql_free_result($result2);
 
 	// if 'verlof', add also 'eerder weg'
 	if ( $view == 'verlof' ) {
@@ -344,10 +328,7 @@ function getProtimeUren($id, $year, $month, $view, $timecardid) {
 }
 
 function getProjectName( $id, $handle, $year ) {
-	global $databases;
-
-	$oConn = new class_mysql($databases['default']);
-	$oConn->connect();
+	global $dbConn;
 
 	$retval = '';
 
@@ -358,14 +339,13 @@ function getProjectName( $id, $handle, $year ) {
 
 	$queryPN = "SELECT Description, ProjectnummerEu FROM `Workcodes$yearpostfix` WHERE ID=" . $id;
 
-//	echo "6666 " . $queryPN . "   ++++<br><br>";
 
-	$resultPN = mysql_query($queryPN, $oConn->getConnection());
-	if ($rowPN = mysql_fetch_array($resultPN)) {
+	$stmt = $dbConn->prepare($queryPN);
+	$stmt->execute();
+	$result = $stmt->fetchAll();
+	foreach ($result as $rowPN) {
 		$retval = $rowPN["Description"] . " (" . trim($rowPN["ProjectnummerEu"]) . ")";
 	}
-
-	mysql_free_result($resultPN);
 
 	$retval = str_replace('()', '', $retval);
 
@@ -414,15 +394,13 @@ function getMonthNameInDutch( $m, $length = 3) {
 }
 
 function getListOfShowSeparatedProjectsOnReports( $retval, $year, $level, $parent_id = 0 ) {
-	global $databases;
+	global $dbConn;
 
 	$yearpostfix = '';
 //	if ( $year < 2014 ) {
 //		$yearpostfix = '_' . $year;
 //	}
 
-	$oConn = new class_mysql($databases['default']);
-	$oConn->connect();
 	$query = "SELECT * FROM `Workcodes$yearpostfix` ::WHERE:: ORDER BY Description ";
 
 	if ( $level > 0 ) {
@@ -436,10 +414,10 @@ function getListOfShowSeparatedProjectsOnReports( $retval, $year, $level, $paren
 			 ", $query);
 	}
 
-//	echo "7777 " . $query . "   ++++<br><br>";
-	$result = mysql_query($query, $oConn->getConnection());
-
-	while ($row = mysql_fetch_array($result)) {
+	$stmt = $dbConn->prepare($query);
+	$stmt->execute();
+	$result = $stmt->fetchAll();
+	foreach ($result as $row) {
 		$spaces = str_repeat(' ', $level);
 		$id = $row["ID"];
 
@@ -461,16 +439,12 @@ function getListOfShowSeparatedProjectsOnReports( $retval, $year, $level, $paren
 			$retval = getListOfShowSeparatedProjectsOnReports( $retval, $year, $newlevel, $id);
 		}
 	}
-	mysql_free_result($result);
 
 	return $retval;
 }
 
 function getNumberOfChildren( $projectId, $year ) {
-	global $databases;
-
-	$oConn = new class_mysql($databases['default']);
-	$oConn->connect();
+	global $dbConn;
 
 	$retval = 0;
 
@@ -481,13 +455,12 @@ function getNumberOfChildren( $projectId, $year ) {
 
 	$query = "SELECT COUNT(*) AS AANTAL FROM `Workcodes$yearpostfix` WHERE ParentID=" . $projectId;
 
-//	echo "8888 " . $query . "   ++++<br><br>";
-
-	$result = mysql_query($query, $oConn->getConnection());
-	if ($row = mysql_fetch_array($result)) {
+	$stmt = $dbConn->prepare($query);
+	$stmt->execute();
+	$result = $stmt->fetchAll();
+	foreach ($result as $row) {
 		$retval = $row["AANTAL"];
 	}
-	mysql_free_result($result);
 
 	return $retval;
 }

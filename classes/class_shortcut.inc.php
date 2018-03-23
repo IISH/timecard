@@ -1,9 +1,8 @@
 <?php
 require_once dirname(__FILE__) . "/../sites/default/settings.php";
-require_once "class_mysql.inc.php";
+require_once "pdo.inc.php";
 
 class class_shortcut {
-	private $databases;
 	private $settings;
 
 	private $id;
@@ -19,8 +18,7 @@ class class_shortcut {
 	private $department;
 
 	function __construct($id) {
-		global $databases, $settings;
-		$this->databases = $databases;
+		global $settings;
 		$this->settings = $settings;
 
 		if ( trim($id) == '' || $id < 0) {
@@ -33,14 +31,14 @@ class class_shortcut {
 	}
 
 	private function initValues() {
-		if ( $this->getId() > 0 ) {
-			$oConn = new class_mysql($this->databases['default']);
-			$oConn->connect();
+		global $dbConn;
 
+		if ( $this->getId() > 0 ) {
 			$query = "SELECT * FROM UserCreatedQuickAdds WHERE ID=" . $this->getId();
 
-			$res = mysql_query($query, $oConn->getConnection());
-			if ($r = mysql_fetch_assoc($res)) {
+			$stmt = $dbConn->prepare($query);
+			$stmt->execute();
+			if ( $r = $stmt->fetch() ) {
 				$this->employee = $r["Employee"];
 				$this->oEmployee = new class_employee($r["Employee"], $this->settings);
 				$this->workCode = $r["WorkCode"];
@@ -52,7 +50,6 @@ class class_shortcut {
 				$this->extraExplanation = $r["extra_explanation"];
 				$this->department = $r["Department"];
 			}
-			mysql_free_result($res);
 		}
 	}
 

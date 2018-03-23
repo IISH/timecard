@@ -16,7 +16,7 @@ echo $oPage->getPage();
 require_once "classes/_db_disconnect.inc.php";
 
 function createFeestdagenContent() {
-	global $settings, $oWebuser, $databases;
+	global $settings, $oWebuser, $databases, $dbConn;
 
 	// get design
 	$design = new class_contentdesign("page_nationalholidays");
@@ -29,8 +29,7 @@ function createFeestdagenContent() {
 	require_once("./classes/class_view/fieldtypes/class_field_string.inc.php");
 	require_once("./classes/class_view/fieldtypes/class_field_bit.inc.php");
 
-	$oDb = new class_mysql($databases['default']);
-	$oView = new class_view($settings, $oDb);
+	$oView = new class_view($settings, $dbConn);
 
 	$oView->set_view( array(
 		'query' => 'SELECT * FROM Feestdagen WHERE 1=1 AND isdeleted=0 AND ( datum >= \'' . date('Y-m-d') . '\' AND datum <= \'' . (date('Y')+1) . '-01-10\' )'

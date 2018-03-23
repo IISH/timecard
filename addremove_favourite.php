@@ -33,7 +33,8 @@ if ( $dowhat == 'a' ) {
 }
 
 if ( $query != '' ) {
-	$resultSelect = mysql_query($query, $oConn->getConnection());
+	$stmt = $dbConn->prepare($query);
+	$stmt->execute();
 
 	echo $div;
 } else {

@@ -41,10 +41,7 @@ function createDayContent( $date ) {
 }
 
 function getUserDay( $date ) {
-	global $settings, $oWebuser, $oDate, $databases;
-
-	$oConn = new class_mysql($databases['default']);
-	$oConn->connect();
+	global $settings, $oWebuser, $oDate, $databases, $dbConn;
 
 	$ret = '';
 
@@ -92,8 +89,10 @@ function getUserDay( $date ) {
 	$timecard_deeltotaal = 0;
 
 	$query = 'SELECT * FROM vw_hours_user WHERE Employee=' . $oWebuser->getTimecardId() . ' AND DateWorked="' . $oDate->get("Y-m-d") . '" AND protime_absence_recnr>=0 ORDER BY Description, TimeInMinutes DESC ';
-	$result = mysql_query($query, $oConn->getConnection());
-	while ($row = mysql_fetch_assoc($result)) {
+	$stmt = $dbConn->prepare($query);
+	$stmt->execute();
+	$result = $stmt->fetchAll();
+	foreach ($result as $row) {
 		$timecard_deeltotaal += $row["TimeInMinutes"];
 		$description = $row["WorkDescription"];
 		if ( strlen($description) > 35 ) {
@@ -151,7 +150,6 @@ function getUserDay( $date ) {
 	$ret .= "	</tr>
 ";
 	}
-	mysql_free_result($result);
 
 	$dagvakantie = getEerderNaarHuisDayTotal( $oWebuser->getTimecardId(), $oDate );
 	if ( $dagvakantie > 0 ) {

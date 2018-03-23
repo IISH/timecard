@@ -6,15 +6,11 @@ require_once dirname(__FILE__) . "/_misc_functions.inc.php";
 class class_refresh_employee_hours_per_week {
 	private $oEmployee;
 	private $year;
-	private $databases;
 	private $totalHoursPerWeek;
 	private $totalHoursPerWeekText;
 	private $isNew;
 
 	function __construct( $oEmployee, $year ) {
-		global $databases;
-		$this->databases = $databases;
-
 		$this->oEmployee = $oEmployee;
 		$this->year = $year;
 
@@ -62,8 +58,7 @@ class class_refresh_employee_hours_per_week {
 	}
 
 	private function newRecord() {
-		$oConn = new class_mysql($this->databases['default']);
-		$oConn->connect();
+		global $dbConn;
 
 		$curtime = date( Settings::get("timeStampRefreshLowPriority") );
 		$totalHoursPerWeekText = addslashes($this->totalHoursPerWeekText);
@@ -83,12 +78,12 @@ INSERT INTO Employee_Cache_Hours_Per_Week (
 	, '{$totalHoursPerWeekText}'
 )";
 
-		$result = mysql_query($query, $oConn->getConnection());
+		$stmt = $dbConn->prepare($query);
+		$stmt->execute();
 	}
 
 	private function updateRecord() {
-		$oConn = new class_mysql($this->databases['default']);
-		$oConn->connect();
+		global $dbConn;
 
 		$curtime = date( Settings::get("timeStampRefreshLowPriority") );
 		$totalHoursPerWeekText = addslashes($this->totalHoursPerWeekText);
@@ -101,7 +96,8 @@ SET
 	, hours_per_week_text = '{$totalHoursPerWeekText}'
 WHERE EmployeeID = {$this->oEmployee->getTimecardId()} AND year = {$this->year}";
 
-		$result = mysql_query($query, $oConn->getConnection());
+		$stmt = $dbConn->prepare($query);
+		$stmt->execute();
 	}
 
 	public function __toString() {
@@ -109,18 +105,17 @@ WHERE EmployeeID = {$this->oEmployee->getTimecardId()} AND year = {$this->year}"
 	}
 
 	public function getLastRefreshTime() {
-		$lastRefreshTime = '';
+		global $dbConn;
 
-		$oConn = new class_mysql($this->databases['default']);
-		$oConn->connect();
+		$lastRefreshTime = '';
 
 		$query = "SELECT * FROM Employee_Cache_Hours_Per_Week WHERE EmployeeID=" . $this->oEmployee->getTimecardId() . " AND year=" . $this->year;
 
-		$result = mysql_query($query, $oConn->getConnection());
-		if ($row = mysql_fetch_assoc($result)) {
+		$stmt = $dbConn->prepare($query);
+		$stmt->execute();
+		if ( $row = $stmt->fetch() ) {
 			$lastRefreshTime = $row['last_refresh'];
 		}
-		mysql_free_result($result);
 
 		return $lastRefreshTime;
 	}
@@ -133,9 +128,6 @@ class class_employee_hours_per_day_starting {
 	private $startDayTotals = array();
 
 	function __construct( $oEmployee, $last_year ) {
-		global $databases;
-		$this->databases = $databases;
-
 		$this->oEmployee = $oEmployee;
 		$this->last_year = $last_year;
 
@@ -143,8 +135,7 @@ class class_employee_hours_per_day_starting {
 	}
 
 	private function initValues() {
-		$oConn = new class_mysql($this->databases['default']);
-		$oConn->connect();
+		global $dbConn;
 
 		// probleem erhan
 		// nieuwe query naar aanleiding van wisselende week roosters
@@ -163,8 +154,10 @@ ORDER BY protime_lnk_curric_profile.DATEFROM DESC, MOD(CAST(protime_cyc_dp.DAYNR
 		$lastDate = '';
 		$total = 0;
 
-		$result = mysql_query($query, $oConn->getConnection());
-		while ($row = mysql_fetch_assoc($result)) {
+		$stmt = $dbConn->prepare($query);
+		$stmt->execute();
+		$result = $stmt->fetchAll();
+		foreach ($result as $row) {
 
 			// convert date format
 			$oTCDate = new TCDateTime();
@@ -192,8 +185,6 @@ ORDER BY protime_lnk_curric_profile.DATEFROM DESC, MOD(CAST(protime_cyc_dp.DAYNR
 			// save in grouped array
 			$this->startDayTotals[] = array( 'date' => $lastDate, 'minutes' => $total );
 		}
-
-		mysql_free_result($result);
 	}
 
 	public function getCurrentTotalMinutesPerWeek() {

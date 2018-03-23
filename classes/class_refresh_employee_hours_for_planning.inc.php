@@ -6,7 +6,6 @@ require_once dirname(__FILE__) . "/_misc_functions.inc.php";
 class class_refresh_employee_hours_for_planning {
 	private $oEmployee;
 	private $year;
-	private $databases;
 	private $totalHoursPerWeek;
 	private $totalHoursPerWeekText;
 	private $isNew;
@@ -19,9 +18,6 @@ class class_refresh_employee_hours_for_planning {
 	private $brugdagPerDag = array();
 
 	function __construct( $oEmployee, $year ) {
-		global $databases;
-		$this->databases = $databases;
-
 		$this->oEmployee = $oEmployee;
 		$this->year = $year;
 
@@ -130,13 +126,11 @@ class class_refresh_employee_hours_for_planning {
 	}
 
 	private function newRecord($month) {
+		global $dbConn;
+
 		$month2 = substr('0'.$month,-2);
 
-		$oConn = new class_mysql($this->databases['default']);
-		$oConn->connect();
-
 		$curtime = date( Settings::get("timeStampRefreshLowPriority") );
-//		$totalHoursPerWeekText = addslashes($this->totalHoursPerWeekText);
 
 		$query = "
 INSERT INTO `Employee_Cache_Planning` (
@@ -149,7 +143,8 @@ INSERT INTO `Employee_Cache_Planning` (
 	, '{$curtime}'
 )";
 
-		$result = mysql_query($query, $oConn->getConnection());
+		$stmt = $dbConn->prepare($query);
+		$stmt->execute();
 
 		// TODO temp disabled
 		//$this->updateRecordNationalHoliday( $month );
@@ -157,10 +152,9 @@ INSERT INTO `Employee_Cache_Planning` (
 	}
 
 	private function updateRecord($month) {
-		$month2 = substr('0'.$month,-2);
+		global $dbConn;
 
-		$oConn = new class_mysql($this->databases['default']);
-		$oConn->connect();
+		$month2 = substr('0'.$month,-2);
 
 		$curtime = date( Settings::get("timeStampRefreshLowPriority") );
 
@@ -190,20 +184,20 @@ SET
 	, `last_refresh` = '{$curtime}'
 WHERE `EmployeeID` = {$this->oEmployee->getTimecardId()} AND `yearmonth` = '{$this->year}-{$month2}'";
 
-		$result = mysql_query($query, $oConn->getConnection());
+		$stmt = $dbConn->prepare($query);
+		$stmt->execute();
 
-		// TODO temp disabled
+		// TODO temporary disabled
 		//$this->updateRecordNationalHoliday( $month );
 		//$this->updateRecordBrugdag( $month );
 	}
 
 	private function updateRecordNationalHoliday( $month ) {
+		global $dbConn;
+
 		$month2 = substr('0'.$month,-2);
 		$aantalNationalHolidays = 0;
 		$total = 0;
-
-		$oConn = new class_mysql($this->databases['default']);
-		$oConn->connect();
 
 		$query = "
 UPDATE `Employee_Cache_Planning`
@@ -233,16 +227,16 @@ SET
 	, `number_of_nationalholidays` = {$aantalNationalHolidays}
 WHERE `EmployeeID` = {$this->oEmployee->getTimecardId()} AND `yearmonth` = '{$this->year}-{$month2}' ";
 
-		$result = mysql_query($query, $oConn->getConnection());
+		$stmt = $dbConn->prepare($query);
+		$stmt->execute();
 	}
 
 	private function updateRecordBrugdag( $month ) {
+		global $dbConn;
+
 		$month2 = substr('0'.$month,-2);
 		$aantalBrugdagen = 0;
 		$total = 0;
-
-		$oConn = new class_mysql($this->databases['default']);
-		$oConn->connect();
 
 		$query = "
 UPDATE `Employee_Cache_Planning`
@@ -272,7 +266,8 @@ SET
 	, `number_of_brugdagen` = {$aantalBrugdagen}
 WHERE `EmployeeID` = {$this->oEmployee->getTimecardId()} AND `yearmonth` = '{$this->year}-{$month2}' ";
 
-		$result = mysql_query($query, $oConn->getConnection());
+		$stmt = $dbConn->prepare($query);
+		$stmt->execute();
 	}
 
 	public function __toString() {
@@ -280,18 +275,17 @@ WHERE `EmployeeID` = {$this->oEmployee->getTimecardId()} AND `yearmonth` = '{$th
 	}
 
 	public function getLastRefreshTime( $month ) {
-		$lastRefreshTime = '';
+		global $dbConn;
 
-		$oConn = new class_mysql($this->databases['default']);
-		$oConn->connect();
+		$lastRefreshTime = '';
 
 		$query = "SELECT * FROM Employee_Cache_Planning WHERE EmployeeID=" . $this->oEmployee->getTimecardId() . " AND yearmonth='" . $this->year . '-' . substr('0'.$month,-2) . "' ";
 
-		$result = mysql_query($query, $oConn->getConnection());
-		if ($row = mysql_fetch_assoc($result)) {
+		$stmt = $dbConn->prepare($query);
+		$stmt->execute();
+		if ( $row = $stmt->fetch() ) {
 			$lastRefreshTime = $row['last_refresh'];
 		}
-		mysql_free_result($result);
 
 		return $lastRefreshTime;
 	}

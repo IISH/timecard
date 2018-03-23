@@ -69,9 +69,10 @@ $data[] = array(
 $col_taaknummer = '1';	// always 1
 $col_maand = date("F Y", mktime (0, 0, 0, $month, 1, $year));
 
-$oConn->connect();
-$result = mysql_query($query, $oConn->getConnection());
-while ($row = mysql_fetch_assoc($result)) {
+$stmt = $dbConn->prepare($query);
+$stmt->execute();
+$result = $stmt->fetchAll();
+foreach ($result as $row) {
 
 	$col_projectnummer = '';
 	$col_organisatienaam = '';
@@ -127,8 +128,6 @@ while ($row = mysql_fetch_assoc($result)) {
 		);
 
 }
-
-mysql_free_result($result);
 
 //
 closeDataEntry($year, $month);

@@ -2,14 +2,11 @@
 class class_misc01 {
 
 	public static function getMisc01($yyyy_mm) {
-		global $databases;
+		global $dbConn;
 
 		$ret = array();
 
 		$ret[] = array('Name', 'Description', 'Time (h:mm)');
-
-		$oConn = new class_mysql($databases['default']);
-		$success = $oConn->connect();
 
 		//
 		$query = "
@@ -25,38 +22,35 @@ ORDER BY vw_Employees.FULLNAME, LongCode, WorkDescription ";
 		$lastTask = '';
 		$total = 0;
 
-		$result = mysql_query($query, $oConn->getConnection());
-		if ( mysql_num_rows($result) > 0 ) {
+		$stmt = $dbConn->prepare($query);
+		$stmt->execute();
+		$result = $stmt->fetchAll();
+		foreach ($result as $row) {
+			$currentUser = trim($row["FIRSTNAME"] . ' ' . verplaatsTussenvoegselNaarBegin($row["NAME"]));
+			$currentTask = class_misc01::CutTask($row["WorkDescription"]);
 
-			while ($row = mysql_fetch_assoc($result)) {
-				$currentUser = trim($row["FIRSTNAME"] . ' ' . verplaatsTussenvoegselNaarBegin($row["NAME"]));
-				$currentTask = class_misc01::CutTask($row["WorkDescription"]);
-
-				if ( $currentUser == '' ) {
-					$currentUser = $row['LongCode'];
-				}
-
-				//
-				if ( strlen( $currentTask ) <= 3 ) {
-					$currentTask = strtoupper($currentTask);
-				}
-
-				if ( $lastUser != '' ) {
-					if ( $currentUser != $lastUser || strtolower($currentTask) != strtolower($lastTask) ) {
-						// save into array
-						$ret[] = array($lastUser, $lastTask, class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes($total) );
-						$total = 0;
-					}
-				}
-
-				$total += $row["TimeInMinutes"];
-
-				// remember last ...
-				$lastUser = $currentUser;
-				$lastTask = $currentTask;
+			if ( $currentUser == '' ) {
+				$currentUser = $row['LongCode'];
 			}
-			mysql_free_result($result);
 
+			//
+			if ( strlen( $currentTask ) <= 3 ) {
+				$currentTask = strtoupper($currentTask);
+			}
+
+			if ( $lastUser != '' ) {
+				if ( $currentUser != $lastUser || strtolower($currentTask) != strtolower($lastTask) ) {
+					// save into array
+					$ret[] = array($lastUser, $lastTask, class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes($total) );
+					$total = 0;
+				}
+			}
+
+			$total += $row["TimeInMinutes"];
+
+			// remember last ...
+			$lastUser = $currentUser;
+			$lastTask = $currentTask;
 		}
 
 		// don't forget to save last record in array

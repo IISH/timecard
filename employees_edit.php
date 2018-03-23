@@ -21,7 +21,7 @@ echo $oPage->getPage();
 require_once "classes/_db_disconnect.inc.php";
 
 function createEmployeesEditContent() {
-	global $protect, $settings, $oWebuser, $databases;
+	global $protect, $settings, $oWebuser, $databases, $dbConn;
 
 	// get design
 	$design = new class_contentdesign("page_employees_edit");
@@ -38,8 +38,7 @@ function createEmployeesEditContent() {
 	require_once("./classes/class_form/fieldtypes/class_field_readonly.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_list.inc.php");
 
-	$oDb = new class_mysql($databases['default']);
-	$oForm = new class_form($settings, $oDb);
+	$oForm = new class_form($settings, $dbConn);
 
 	$oForm->set_form( array(
 		'query' => "SELECT * FROM vw_Employees WHERE ID=[FLD:ID] "
@@ -57,7 +56,7 @@ function createEmployeesEditContent() {
 	if ( $oWebuser->hasAdminAuthorisation() ) {
 		$oForm->add_field( new class_field_string ( array(
 			'fieldname' => 'LongCode'
-			, 'fieldlabel' => 'SA login (firstname.lastname)'
+			, 'fieldlabel' => 'IISG SA login (firstname.lastname)'
 			, 'required' => 1
 			, 'size' => 35
 			)));
@@ -71,7 +70,7 @@ function createEmployeesEditContent() {
 	} else {
 		$oForm->add_field( new class_field_readonly ( array(
 			'fieldname' => 'LongCode'
-			, 'fieldlabel' => 'SA login'
+			, 'fieldlabel' => 'IISG SA login'
 			)));
 
 		$oForm->add_field( new class_field_readonly ( array(
@@ -140,6 +139,11 @@ function createEmployeesEditContent() {
 	$oForm->add_field( new class_field_readonly ( array(
 		'fieldname' => 'last_user_login'
 		, 'fieldlabel' => 'Last login'
+		)));
+
+	$oForm->add_field( new class_field_readonly ( array(
+		'fieldname' => 'lastyear'
+		, 'fieldlabel' => 'Last active year'
 		)));
 
 	// generate form

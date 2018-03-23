@@ -23,7 +23,7 @@ echo $oPage->getPage();
 require_once "classes/_db_disconnect.inc.php";
 
 function createDepartmentsContent() {
-	global $settings, $databases;
+	global $settings, $databases, $dbConn;
 
 	// get design
 	$design = new class_contentdesign("page_departments_disabled");
@@ -37,8 +37,7 @@ function createDepartmentsContent() {
 	require_once("./classes/class_view/class_view.inc.php");
 	require_once("./classes/class_view/fieldtypes/class_field_string.inc.php");
 
-	$oDb = new class_mysql($databases['default']);
-	$oView = new class_view($settings, $oDb);
+	$oView = new class_view($settings, $dbConn);
 
 	$oView->set_view( array(
 		'query' => "SELECT Departments.ID, Departments.name, vw_Employees.FULLNAME FROM Departments LEFT JOIN vw_Employees ON Departments.head = vw_Employees.ID WHERE Departments.isenabled<>1 AND Departments.isdeleted=0 "

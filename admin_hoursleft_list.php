@@ -16,15 +16,14 @@ $s = getAndProtectSearch();
 
 $retval = '';
 
-$oConn2 = new class_mysql($databases['default']);
-$oConn2->connect();
 $favIds = '0';
-$queryFav = "SELECT * FROM EmployeeFavourites WHERE TimecardID=" . $oWebuser->getTimecardId() . ' AND type=\'hoursleft\' ';
-$resultFav = mysql_query($queryFav, $oConn2->getConnection());
-while ( $rowFav = mysql_fetch_array($resultFav) ) {
+$query = "SELECT * FROM EmployeeFavourites WHERE TimecardID=" . $oWebuser->getTimecardId() . ' AND type=\'hoursleft\' ';
+$stmt = $dbConn->prepare($query);
+$stmt->execute();
+$result = $stmt->fetchAll();
+foreach ($result as $rowFav) {
 	$favIds .= ',' . $rowFav["ProtimeID"];
 }
-mysql_free_result($resultFav);
 
 // CRITERIUM
 $queryCriterium = '';
@@ -61,12 +60,9 @@ echo $retval;
 
 require_once "classes/_db_disconnect.inc.php";
 
-// TODOEXPLAIN
+//
 function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium, $favIds ) {
-	global $settings, $databases;
-
-	$oConn = new class_mysql($databases['default']);
-	$oConn->connect();
+	global $settings, $databases, $dbConn;
 
 	$ret = '';
 
@@ -80,25 +76,14 @@ function createHoursLeftContent( $selectedMonth, $selectedYear, $queryCriterium,
 		$month = date("m");
 	}
 
-//	// calculate number of holidays until end of year
-//	$nrOfHolidays = 0;
-//	$queryHolidays = "SELECT COUNT(*) AS aantal FROM Feestdagen WHERE datum LIKE '" . $year . "%' AND datum>='" . date("Y-m-d") . "' AND isdeleted=0 ";
-//	$resultHolidays = mysql_query($queryHolidays, $oConn->getConnection());
-//	if ( $rowHolidays = mysql_fetch_array($resultHolidays) ) {
-//		$nrOfHolidays = $rowHolidays["aantal"];
-//	}
-//	mysql_free_result($resultHolidays);
-	//
-
-	$oConn->connect();
+	$arrEmployees = array();
 
 	// loop employees
-	$querySelect = "SELECT ID FROM vw_Employees WHERE isdisabled=0 AND is_test_account=0 " . $queryCriterium . " ORDER BY FIRSTNAME, NAME ";
-
-	$resultSelect = mysql_query($querySelect, $oConn->getConnection());
-
-	$arrEmployees = array();
-	while ( $rowSelect = mysql_fetch_assoc($resultSelect) ) {
+	$query = "SELECT ID FROM vw_Employees WHERE isdisabled=0 AND is_test_account=0 " . $queryCriterium . " ORDER BY FIRSTNAME, NAME ";
+	$stmt = $dbConn->prepare($query);
+	$stmt->execute();
+	$result = $stmt->fetchAll();
+	foreach ($result as $rowSelect) {
 		$oEmployee = new class_employee($rowSelect["ID"], $settings);
 		$arrEmployees[] = $oEmployee;
 	}

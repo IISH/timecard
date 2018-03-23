@@ -32,8 +32,14 @@ $databases = array (
 			'driver' => 'mysql',
 			'prefix' => '',
 		),
-);
-
-$active_directories = array(
-    ''
+	'sync_knaw_ad' =>
+		array (
+			'database' => '',
+			'username' => '',
+			'password' => '',
+			'host' => '',
+			'port' => '',
+			'driver' => 'mysql',
+			'prefix' => '',
+		),
 );

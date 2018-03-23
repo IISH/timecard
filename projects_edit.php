@@ -21,7 +21,7 @@ echo $oPage->getPage();
 require_once "classes/_db_disconnect.inc.php";
 
 function createProjectEditContent() {
-	global $protect, $settings, $databases;
+	global $protect, $settings, $databases, $dbConn;
 
 	// get design
 	$design = new class_contentdesign("page_projects_edit");
@@ -54,8 +54,7 @@ function createProjectEditContent() {
 	require_once("./classes/class_form/fieldtypes/class_field_textarea.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_readonly.inc.php");
 
-	$oDb = new class_mysql($databases['default']);
-	$oForm = new class_form($settings, $oDb);
+	$oForm = new class_form($settings, $dbConn);
 
 	$oForm->set_form( array(
 		'query' => 'SELECT * FROM Workcodes WHERE ID=[FLD:ID] '

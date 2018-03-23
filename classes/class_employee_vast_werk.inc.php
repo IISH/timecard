@@ -1,26 +1,20 @@
 <?php
 require_once dirname(__FILE__) . "/../sites/default/settings.php";
-require_once "class_mysql.inc.php";
+require_once "pdo.inc.php";
 
 class class_employee_vast_werk {
 	private $oEmployee;
-	private $databases;
 	private $year;
 	private $vastwerk = array();
 
 	function __construct( $oEmployee, $year ) {
-		global $databases;
-
 		$this->oEmployee = $oEmployee;
 		$this->year = $year;
-		$this->databases = $databases;
-
 		$this->initValues();
 	}
 
 	private function initValues() {
-		$oConn = new class_mysql($this->databases['default']);
-		$oConn->connect();
+		global $dbConn;
 
 		$query = "
 SELECT *
@@ -30,13 +24,14 @@ WHERE EmployeeID = {$this->oEmployee->getTimecardId()}
 	AND isdeleted=0
 ";
 
-		$result = mysql_query($query, $oConn->getConnection());
-		while ($row = mysql_fetch_assoc($result)) {
+		$stmt = $dbConn->prepare($query);
+		$stmt->execute();
+		$result = $stmt->fetchAll();
+		foreach ($result as $row) {
 			$period = $row['period'];
 			$hours = $row['hours'];
 			$this->vastwerk[] = array( 'period' => $period, 'hours' => $hours );
 		}
-		mysql_free_result($result);
 	}
 
 	public function getMonthTotal( $month ) {

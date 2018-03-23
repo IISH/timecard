@@ -1,29 +1,25 @@
 <?php
 require_once dirname(__FILE__) . "/../sites/default/settings.php";
-require_once "class_mysql.inc.php";
+require_once "pdo.inc.php";
 
 class class_national_holiday_brugdag {
-	private $databases;
 	private $year;
 	private $low = array();
 
 	function __construct( $year ) {
-		global $databases;
-		$this->databases = $databases;
-
 		$this->year = $year;
-
 		$this->initValues();
 	}
 
 	private function initValues() {
-		$oConn = new class_mysql($this->databases['default']);
-		$oConn->connect();
+		global $dbConn;
 
 		$query = "SELECT * FROM Feestdagen WHERE datum LIKE '{$this->year}-%' AND isdeleted=0 ORDER BY datum ASC ";
 
-		$res = mysql_query($query, $oConn->getConnection());
-		while ($r = mysql_fetch_assoc($res)) {
+		$stmt = $dbConn->prepare($query);
+		$stmt->execute();
+		$result = $stmt->fetchAll();
+		foreach ($result as $r) {
 
 			$dayOfWeek = $r["DAYNR"];
 			if ( $dayOfWeek == '7' ) {
@@ -32,7 +28,6 @@ class class_national_holiday_brugdag {
 
 			$this->low[] = array('date' => $r["datum"], 'description' => $r['omschrijving'], 'vooreigenrekening' => $r['vooreigenrekening'], 'dayofweek' => $dayOfWeek);
 		}
-		mysql_free_result($res);
 	}
 
 	public function getAll() {

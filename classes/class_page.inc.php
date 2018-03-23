@@ -121,10 +121,9 @@ class class_page {
 		<ul>
 ";
 
-		// TODOTODO MODIFY
+		//
 		foreach ( $menuList as $a=>$b ) {
 			$counter = 0;
-
 			foreach ( $b as $c ) {
 				$sMenu .= "			<li><a href=\"#tabs-" . $counter . "\">" . $c->getLabel() . "</a></li>\n";
 				$counter++;
@@ -136,7 +135,6 @@ class class_page {
 
 		// FOR EACH GROUP ADD ITEMS
 		$counter = 0;
-		// TODOTODO MODIFY
 		foreach ( $menuList as $a=>$b ) {
 			foreach ( $b as $c ) {
 				$sMenu .= "		<div id=\"tabs-" . $counter . "\">

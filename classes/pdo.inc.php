@@ -26,7 +26,7 @@ class class_pdo {
 		try {
 			$this->conn = new PDO($this->driver . ':host=' . $this->server . ';dbname=' . $this->database, $this->user, $this->password);
 		} catch (PDOException $e) {
-			echo 'Connection failed: ' . $e->getMessage();
+			die( 'Connection failed: ' . $e->getMessage() );
 		}
 	}
 

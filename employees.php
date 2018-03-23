@@ -21,7 +21,7 @@ echo $oPage->getPage();
 require_once "classes/_db_disconnect.inc.php";
 
 function createEmployeesContent() {
-	global $settings, $databases;
+	global $settings, $databases, $dbConn;
 
 	// get design
 	$design = new class_contentdesign("page_employees");
@@ -36,11 +36,11 @@ function createEmployeesContent() {
 	require_once("./classes/class_view/fieldtypes/class_field_string.inc.php");
 	require_once("./classes/class_view/fieldtypes/class_field_bit.inc.php");
 
-	$oDb = new class_mysql($databases['default']);
-	$oView = new class_view($settings, $oDb);
+	$oView = new class_view($settings, $dbConn);
 
+//	'query' => "SELECT * FROM vw_Employees WHERE isdisabled=0 AND lastyear>=" . date("Y")
 	$oView->set_view( array(
-		'query' => "SELECT * FROM vw_Employees WHERE 1=1 AND isdisabled=0 "
+		'query' => "SELECT * FROM vw_Employees WHERE 1=1 "
 		, 'count_source_type' => 'query'
 		, 'order_by' => 'LongCode, ID DESC '
 		, 'anchor_field' => 'ID'
@@ -98,7 +98,7 @@ function createEmployeesContent() {
 
 	$oView->add_field( new class_field_string ( array(
 		'fieldname' => 'LongCode'
-		, 'fieldlabel' => 'SA login'
+		, 'fieldlabel' => 'IISG SA login'
 		, 'viewfilter' => array(
 							'labelfilterseparator' => '<br>'
 							, 'filter' => array (
@@ -172,6 +172,21 @@ function createEmployeesContent() {
 			, 'filter' => array (
 				array (
 					'fieldname' => 'allow_additions_starting_date'
+					, 'type' => 'string'
+					, 'size' => 10
+					)
+				)
+			)
+		)));
+
+	$oView->add_field( new class_field_string ( array(
+		'fieldname' => 'lastyear'
+		, 'fieldlabel' => 'Last active year'
+		, 'viewfilter' => array(
+			'labelfilterseparator' => '<br>'
+			, 'filter' => array (
+					array (
+						'fieldname' => 'lastyear'
 					, 'type' => 'string'
 					, 'size' => 10
 					)

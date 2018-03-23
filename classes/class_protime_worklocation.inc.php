@@ -1,18 +1,14 @@
 <?php 
 require_once dirname(__FILE__) . "/../sites/default/settings.php";
-require_once dirname(__FILE__) . "/class_mysql.inc.php";
+require_once dirname(__FILE__) . "/pdo.inc.php";
 
 class class_protime_worklocation {
-	private $databases;
 	private $locationId;
 	private $short_1;
 	private $short_2;
 	private $description;
 
 	function __construct($id) {
-		global $databases;
-		$this->databases = $databases;
-
 		$this->locationId = $id;
 		$this->short_1 = '';
 		$this->short_2 = '';
@@ -22,18 +18,16 @@ class class_protime_worklocation {
 	}
 
 	private function initValues() {
-		$oConn = new class_mysql($this->databases['default']);
-		$oConn->connect();
+		global $dbConn;
 
 		$query = "SELECT * FROM protime_worklocation WHERE LOCATIONID=" . $this->getLocationId();
-
-		$res = mysql_query($query, $oConn->getConnection());
-		if ($r = mysql_fetch_assoc($res)) {
+		$stmt = $dbConn->prepare($query);
+		$stmt->execute();
+		if ( $r = $stmt->fetch() ) {
 			$this->short_1 = $r["SHORT_1"];
 			$this->short_2 = $r["SHORT_2"];
 			$this->description = $r["DESCRIPTION"];
 		}
-		mysql_free_result($res);
 	}
 
 	/**
@@ -105,20 +99,17 @@ class class_protime_worklocation {
 	}
 
 	public static function getProtimeWorklocations() {
-		global $databases;
+		global $dbConn;
 
 		$arr_p_wl = array();
 
-		$oConn = new class_mysql($databases['default']);
-		$oConn->connect();
-
 		$query = "SELECT * FROM protime_worklocation ORDER BY LOCATIONID";
-
-		$res = mysql_query($query, $oConn->getConnection());
-		while ($r = mysql_fetch_assoc($res)) {
+		$stmt = $dbConn->prepare($query);
+		$stmt->execute();
+		$result = $stmt->fetchAll();
+		foreach ($result as $r) {
 			$arr_p_wl[$r["LOCATIONID"]] = new class_protime_worklocation( $r["LOCATIONID"] );
 		}
-		mysql_free_result($res);
 
 		return $arr_p_wl;
 	}

@@ -41,7 +41,7 @@ function createLoginPage() {
 		// check if both field are entered
 		if ( $fldLogin != '' && $fldPassword != '' ) {
 
-			$result_login_check = class_authentication::authenticate($fldLogin, $fldPassword);
+			$result_login_check = Authentication::authenticate($fldLogin, $fldPassword);
 
 			if ( $result_login_check == 1 ) {
 				// check if person can be found in database, get id
@@ -61,7 +61,6 @@ function createLoginPage() {
 
                     // update wanneer gebruiker voor het laatst is ingelogd op timecard
                     updateLastUserLogin($oWebuser->getTimecardId());
-//die('aaaaa');
 
                     // redirect to prev page
                     if ($burl == '') {

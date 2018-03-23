@@ -23,7 +23,7 @@ echo $oPage->getPage();
 require_once "classes/_db_disconnect.inc.php";
 
 function createDepartmentsContent() {
-	global $settings, $protect, $databases;
+	global $settings, $protect, $databases, $dbConn;
 
 	// get design
 	$design = new class_contentdesign("page_department_employees");
@@ -37,8 +37,7 @@ function createDepartmentsContent() {
 	require_once("./classes/class_view/class_view.inc.php");
 	require_once("./classes/class_view/fieldtypes/class_field_string.inc.php");
 
-	$oDb = new class_mysql($databases['default']);
-	$oView = new class_view($settings, $oDb);
+	$oView = new class_view($settings, $dbConn);
 
 	$oView->set_view( array(
 		'query' => "SELECT * FROM vw_Employees INNER JOIN DepartmentEmployee ON vw_Employees.ID=DepartmentEmployee.EmployeeID WHERE DepartmentEmployee.DepartmentID=[FLD:ID] and DepartmentEmployee.isdeleted=0 "

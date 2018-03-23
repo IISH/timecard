@@ -21,18 +21,18 @@ class class_protime_user {
 	}
 
 	function getProtimeValues() {
+		global $dbConn;
+
 		// reset values
 		$query = "SELECT * FROM protime_curric WHERE PERSNR=" . $this->protime_id;
-		$resultReset = mysql_query($query);
-		if ($row = mysql_fetch_assoc($resultReset)) {
-
+		$stmt = $dbConn->prepare($query);
+		$stmt->execute();
+		if ( $row = $stmt->fetch() ) {
 			$this->lastname = $row["NAME"];
 			$this->firstname = $row["FIRSTNAME"];
 			$this->email = $row["EMAIL"];
 			$this->department_id = $row["DEPART"];
-
 		}
-		mysql_free_result($resultReset);
 	}
 
 	function getId() {

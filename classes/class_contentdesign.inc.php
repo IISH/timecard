@@ -1,9 +1,8 @@
 <?php 
 require_once dirname(__FILE__) . "/../sites/default/settings.php";
-require_once dirname(__FILE__) . "/class_mysql.inc.php";
+require_once dirname(__FILE__) . "/pdo.inc.php";
 
 class class_contentdesign {
-	private $databases;
 	private $id;
 	private $design;
 	private $header;
@@ -13,9 +12,6 @@ class class_contentdesign {
 	private $isDeleted;
 
 	function __construct($design) {
-		global $databases;
-
-		$this->databases = $databases;
 		$this->id = 0;
 		$this->design = $design;
 		$this->header = '';
@@ -28,21 +24,20 @@ class class_contentdesign {
 	}
 
 	private function initValues() {
-		$oConn = new class_mysql($this->databases['default']);
-		$oConn->connect();
+		global $dbConn;
 
 		$query = "SELECT * FROM `Contentdesign` WHERE `design`='" . $this->design . "' ";
 
-		$res = mysql_query($query, $oConn->getConnection());
-		if ($r = mysql_fetch_assoc($res)) {
-			$this->id = $r["ID"];
-			$this->header = $r["header"];
-			$this->content = $r["content"];
-			$this->records = $r["records"];
-			$this->footer = $r["footer"];
-			$this->isDeleted = $r["isdeleted"];
-		}
-		mysql_free_result($res);
+		$stmt = $dbConn->prepare($query);
+		$stmt->execute();
+		$r = $stmt->fetch();
+
+		$this->id = $r["ID"];
+		$this->header = $r["header"];
+		$this->content = $r["content"];
+		$this->records = $r["records"];
+		$this->footer = $r["footer"];
+		$this->isDeleted = $r["isdeleted"];
 	}
 
 	/**
