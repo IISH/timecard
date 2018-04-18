@@ -77,7 +77,7 @@ class class_misc {
 		return $retval;
 	}
 
-	function multiplyTag($tag, $code, $start, $end) {
+	public static function multiplyTag($tag, $code, $start, $end) {
 		$ret = '';
 		$separator = '';
 

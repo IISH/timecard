@@ -26,6 +26,11 @@ class class_field_readonly extends class_field {
 
 		// strip slashes
 		$veldwaarde = stripslashes($veldwaarde);
+
+		if ( $this->get_protectSpecialChars() == 1 ) {
+			$veldwaarde = fixSpecialChars($veldwaarde, 1);
+		}
+
 		$veldwaarde = str_replace("\"", "&quot;", $veldwaarde);
 
 		$inputfield = "::VALUE::";

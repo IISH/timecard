@@ -1,19 +1,20 @@
 <?php 
 header('Content-type: text/css');
 require_once "../classes/class_misc.inc.php";
-require_once "../classes/class_website_protection.inc.php";
+//require_once "../classes/class_website_protection.inc.php";
 
 // number of tabs
 $t = 10;
 
 // menu/footer color (only 6 char/digit allowed)
-$protect = new class_website_protection();
-$c = $protect->request('get', 'c', '/^[0-9a-zA-Z]{6,6}$/');
-if ( $c == '' ) {
-	$c = '#73A0C9';
-} else {
-	$c = '#' . $c;
-}
+//$protect = new class_website_protection();
+//$c = $protect->request('get', 'c', '/^[0-9a-zA-Z]{6,6}$/');
+//if ( $c == '' ) {
+	//$c = '#73A0C9';
+	$c = '#707070;';
+//} else {
+//	$c = '#' . $c;
+//}
 ?>
 html, body, input, textarea, select {
 	font-family: Verdana;
@@ -213,14 +214,8 @@ div.welcome {
 	margin-top: 5px;
 }
 
-xxxdiv.logout {
-	float: right;
-	margin-top: 50px;
-}
-
 span.name {
 	display: block;
-	font-family: 'Times New Roman';
 	font-size: 18px;
 	font-weight: bold;
 	color: <?php echo $c; ?>;
@@ -229,7 +224,6 @@ span.name {
 
 span.logout {
 	display: block;
-	font-family: 'Times New Roman';
 	font-size: 14px;
 	font-style: italic;
 	color: <?php echo $c; ?>;
@@ -238,18 +232,14 @@ span.logout {
 
 span.holiday {
 	display: block;
-	font-family: 'Times New Roman';
 	font-size: 14px;
-	xxxfont-style: italic;
 	color: <?php echo $c; ?>;
 	text-align: right;
 }
 
 span.checkinout {
 	display: block;
-	font-family: 'Times New Roman';
 	font-size: 14px;
-	xxxfont-style: italic;
 	color: <?php echo $c; ?>;
 	text-align: right;
 }
@@ -389,14 +379,12 @@ div.hidden {
 }
 
 span.title {
-	font-family: 'Times New Roman';
 	font-size: 32px;
 	font-weight: bold;
 	color: <?php echo $c; ?>;
 }
 
 span.subtitle {
-	font-family: 'Times New Roman';
 	font-size: 16px;
 	font-weight: bold;
 	color: <?php echo $c; ?>;
@@ -420,9 +408,14 @@ span.subtitle {
 }
 
 <?php echo class_misc::multiplyTag('#tabs-{x}', '{x}', 0, $t); ?> {
-	font-size:8pt;
+	font-size: 8pt;
 	color: <?php echo $c; ?>;
 	font-weight: bold;
+}
+
+/* new */
+.ui-tabs .ui-tabs-nav li {
+	background-color: green;
 }
 
 .ui-tabs .ui-tabs-nav li a {
@@ -435,8 +428,8 @@ span.subtitle {
 
 <?php echo class_misc::multiplyTag('#tabs-{x} ul', '{x}', 0, $t); ?> {
 	list-style-type: none;
-	padding: 0px;
-	margin: 0px;
+	padding: 0;
+	margin: 0;
 }
 
 <?php echo class_misc::multiplyTag('#tabs-{x} ul li', '{x}', 0, $t); ?> {

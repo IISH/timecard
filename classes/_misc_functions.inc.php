@@ -53,9 +53,9 @@ function hoursLeft_formatNumber($value, $decimal = 1, $show_zero = false) {
 	return $ret;
 }
 
-function fixCharErrors( $text ) {
-	$text = str_replace("Ã«", "&euml;", $text);
-	$text = str_replace("ë", "&euml;", $text);
+function fixSpecialChars($text ) {
+	$text = trim( $text );
+	$text = iconv("ISO-8859-1", "UTF-8//TRANSLIT", $text);
 
 	return $text;
 }
@@ -1433,10 +1433,6 @@ function getQuarterTotals( $date, $userTimecardId, $urlprefix ) {
 ";
 
 	return $ret;
-}
-
-function fixBrokenChars($text) {
-	return htmlentities($text, ENT_COMPAT | ENT_XHTML, 'ISO-8859-1', true);
 }
 
 function verplaatsTussenvoegselNaarBegin( $text ) {

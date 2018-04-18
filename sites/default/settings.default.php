@@ -12,34 +12,4 @@ $databases = array (
 			'driver' => 'mysql',
 			'prefix' => '',
 		),
-	'protime_cache' =>
-		array (
-			'database' => '',
-			'username' => '',
-			'password' => '',
-			'host' => '',
-			'port' => '',
-			'driver' => 'mysql',
-			'prefix' => '',
-		),
-	'protime_live' =>
-		array (
-			'database' => '',
-			'username' => '',
-			'password' => '',
-			'host' => '',
-			'port' => '',
-			'driver' => 'mysql',
-			'prefix' => '',
-		),
-	'sync_knaw_ad' =>
-		array (
-			'database' => '',
-			'username' => '',
-			'password' => '',
-			'host' => '',
-			'port' => '',
-			'driver' => 'mysql',
-			'prefix' => '',
-		),
 );

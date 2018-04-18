@@ -87,6 +87,7 @@ class class_field_list extends class_field {
 
 		// strip slashes
 		$veldwaarde = stripslashes($veldwaarde);
+
 		$veldwaarde = str_replace("\"", "&quot;", $veldwaarde);
 
 		$inputfield = "<select name=\"FORM_::FIELDNAME::\" ::STYLE:: ::ONCHANGE::>\n";
@@ -128,7 +129,12 @@ class class_field_list extends class_field {
 			if ( $optionvalue == $veldwaarde ) {
 				$inputfield .= " SELECTED";
 			}
-			$inputfield .= ">" . fixCharErrors(stripslashes(trim($row2[$this->m_description_field]))) . "</option>\n";
+
+			$optionValue = stripslashes($row2[$this->m_description_field]);
+			if ( $this->get_protectSpecialChars() ) {
+				$optionValue = fixSpecialChars(  $optionValue );
+			}
+			$inputfield .= ">" . $optionValue . "</option>\n";
 		}
 
 		$inputfield .= "</select>\n";

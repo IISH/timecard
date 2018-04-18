@@ -10,6 +10,7 @@ class class_field {
 	private $m_addquotes;
 	private $m_convertEmptyToNull;
 	private $m_placeholder;
+	private $m_protectSpecialChars = 0;
 
 	function __construct($fieldsettings) {
 		$this->oClassMisc = new class_misc();
@@ -61,6 +62,9 @@ class class_field {
 					case "placeholder":
 						$this->m_placeholder = $fieldsettings["placeholder"];
 						break;
+					case "protectSpecialChars":
+						$this->m_protectSpecialChars = $fieldsettings["protectSpecialChars"];
+						break;
 				}
 			}
 		}
@@ -84,6 +88,10 @@ class class_field {
 
 	function get_fieldlabel() {
 		return $this->m_fieldlabel;
+	}
+
+	function get_protectSpecialChars() {
+		return $this->m_protectSpecialChars;
 	}
 
 	function get_onNew($primary_key = "") {

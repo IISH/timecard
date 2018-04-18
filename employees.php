@@ -67,6 +67,7 @@ function createEmployeesContent() {
 	$oView->add_field( new class_field_string ( array(
 		'fieldname' => 'FIRSTNAME'
 		, 'fieldlabel' => 'First name'
+		, 'protectSpecialChars' => 1
 		, 'if_no_value' => '-'
 		, 'href' => 'employees_edit.php?ID=[FLD:ID]&backurl=[BACKURL]'
 		, 'viewfilter' => array(
@@ -84,6 +85,9 @@ function createEmployeesContent() {
 	$oView->add_field( new class_field_string ( array(
 		'fieldname' => 'NAME'
 		, 'fieldlabel' => 'Last name'
+		, 'protectSpecialChars' => 1
+		, 'if_no_value' => '-'
+		, 'href' => 'employees_edit.php?ID=[FLD:ID]&backurl=[BACKURL]'
 		, 'viewfilter' => array(
 			'labelfilterseparator' => '<br>'
 			, 'filter' => array (
@@ -125,7 +129,7 @@ function createEmployeesContent() {
 				)
 			)
 		)));
-
+/*
 	$oView->add_field( new class_field_string ( array(
 		'fieldname' => 'REGISTERNR'
 		, 'fieldlabel' => 'KNAW #'
@@ -140,7 +144,7 @@ function createEmployeesContent() {
 											)
 							)
 		)));
-
+*/
 	$oView->add_field( new class_field_bit ( array(
 		'fieldname' => 'is_test_account'
 		, 'fieldlabel' => 'Test?'

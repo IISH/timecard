@@ -3,7 +3,7 @@
 <html>
 <head>
 	<title>{title}</title>
-	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 	<meta name="Robots" content="noindex,nofollow">
 	<script language="JavaScript" src="javascript/shared.js"></script>
 	<link rel="stylesheet" href="jquery/jquery-ui.css" />

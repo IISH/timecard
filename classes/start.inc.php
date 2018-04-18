@@ -36,7 +36,6 @@ require_once dirname(__FILE__) . "/class_refresh_employee_hours_for_planning.inc
 require_once dirname(__FILE__) . "/class_refresh_employee_hours_per_week.inc.php";
 require_once dirname(__FILE__) . "/class_shortcut.inc.php";
 require_once dirname(__FILE__) . "/class_shortcuts.inc.php";
-require_once dirname(__FILE__) . "/class_syncprotimemysql.inc.php";
 require_once dirname(__FILE__) . "/class_tcdatetime.inc.php";
 require_once dirname(__FILE__) . "/class_website_protection.inc.php";
 require_once dirname(__FILE__) . "/class_project.inc.php";
