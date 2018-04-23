@@ -1,9 +1,11 @@
 <?php
-//die('Closed for maintenance (Sunday December 20, 2015)');
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
 
 session_start();
+
+//
+require_once __DIR__ . "/../vendor/autoload.php";
 
 $settings = array();
 
@@ -44,6 +46,7 @@ require_once dirname(__FILE__) . "/class_project_totals.inc.php";
 require_once dirname(__FILE__) . "/class_workhours.inc.php";
 require_once dirname(__FILE__) . "/class_workhours_static.inc.php";
 require_once dirname(__FILE__) . "/class_settings.inc.php";
+require_once dirname(__FILE__) . "/mail.inc.php";
 require_once dirname(__FILE__) . "/misc.inc.php";
 require_once dirname(__FILE__) . "/pdo.inc.php";
 require_once dirname(__FILE__) . "/syncinfo.inc.php";
