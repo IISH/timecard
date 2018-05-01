@@ -25,7 +25,7 @@ $projects = getListOfShowSeparatedProjectsOnReports($projects, $year, 0, 0);
 
 /** PHPExcel */
 require_once 'PHPExcel/PHPExcel.php';
-require_once('PHPExcel/PHPExcel/IOFactory.php');
+require_once 'PHPExcel/PHPExcel/IOFactory.php';
 
 // Create new PHPExcel object
 $objPHPExcel = new PHPExcel();

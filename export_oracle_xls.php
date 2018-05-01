@@ -149,7 +149,7 @@ if ( $output == 'debug'  ) {
 
 	// create excel file
 	require_once 'PHPExcel/PHPExcel.php';
-	require_once('PHPExcel/PHPExcel/IOFactory.php');
+	require_once 'PHPExcel/PHPExcel/IOFactory.php';
 	$objPHPExcel = new PHPExcel();
 	$objPHPExcel->getProperties()->setCreator("IISG")
 								 ->setLastModifiedBy("IISG");

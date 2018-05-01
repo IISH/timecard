@@ -7,8 +7,6 @@ settings.php
 .git
 *.ipr
 *.iml
-phpinfo.php
 test.php
 testtest.php
 testmailserver.php
-PHPExcel

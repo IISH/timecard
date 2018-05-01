@@ -79,7 +79,7 @@ function createChangeUserContent() {
 <input type=\"hidden\" name=\"issubmitted\" value=\"1\">
 <tr>
 	<td>User login name:</td>
-	<td><input type=\"text\" name=\"fldUserName\" class=\"login\" maxlength=\"50\" value=\"" . $fldUserName . "\" placeholder=\"firstname.lastname\"></td>
+	<td><input type=\"text\" name=\"fldUserName\" class=\"login\" maxlength=\"50\" value=\"" . $fldUserName . "\" placeholder=\"FirstnameL\"></td>
 </tr>
 <tr>
 	<td></td>

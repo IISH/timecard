@@ -594,7 +594,6 @@ function advancedRecordInsert($db, $table, $fields, $test = 0 ) {
 
 	$tot_fields = '';
 	$tot_values = '';
-	$separator = '';
 
 	if ( is_array($fields) ) {
 		$separator = '';
