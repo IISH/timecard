@@ -782,7 +782,7 @@ function getAddEmployeeToTimecard($longcode) {
 			// send mail to admin to check the data
 			$newUserBody = "A new timecard user has registered (" . $longcode . ").
 Go to website and check the user(s) without a protime link
-https://timecard.socialhistoryservices.org/admin_not_linked_employees.php
+https://intranet.bb.huc.knaw.nl/timecard/admin_not_linked_employees.php
 - click on an user
 - enter the users KNAW login
 - select user's name in the Protime field
@@ -798,7 +798,7 @@ After that you can close the Jira call.";
 			// send mail to admin to check the data
 			$newUserBody = "An unknown KNAW employee has tried to login in timecard (" . $longcode . ").
 If this user should be authorized to use timecard, please add him/her via:
-https://timecard.socialhistoryservices.org/employees.php
+https://intranet.bb.huc.knaw.nl/timecard/employees.php
 - click on 'Add employee'
 - enter the users SA login
 - enter the users KNAW login
@@ -810,7 +810,7 @@ After that you can close the Jira call.";
 
 			//
 			$_SESSION["timecard"]["id"] = 0;
-			die('Error: You are not authorized to use this application. Please contact IT department.');
+			die('Error: You are not authorized to use this application. Please send an email to: servicedesk at social history services dot org.');
 		}
 	}
 

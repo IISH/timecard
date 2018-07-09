@@ -64,7 +64,7 @@ foreach ( $projects as $oProject ) {
 	$mail_body .=  number_format(class_misc::convertMinutesToHours($total),2, ',', '.') . " hour(s) \n";
 
 	// see also
-	$mail_body .= "\nSee also: https://timecard.socialhistoryservices.org/project_totals.php?ID=" . $oProject->getId() . "\n";
+	$mail_body .= "\nSee also: https://intranet.bb.huc.knaw.nl/timecard/project_totals.php?ID=" . $oProject->getId() . "\n";
 
 	// questions? contact functional maintainer
 	$mail_body .= "\n" . Settings::get('text_functional_maintainer_in_email') . "\n";
@@ -80,7 +80,7 @@ foreach ( $projects as $oProject ) {
 		$m = "SKIPPED: Weekly report e-mail is disabled for this project.";
 		echo $m;
 		$mail_body .= $m;
-		Mail::sendEmail(Settings::get('bcc_email'), 'SKIPPED ' . $mail_subject, $mail_body);
+		Mail::sendEmail(Settings::get('admin_email'), 'SKIPPED ' . $mail_subject, $mail_body);
 	} else {
 		// get email projectleader
 		$projectleaderEmail = $oProjectleader->getEmail();
@@ -93,7 +93,7 @@ foreach ( $projects as $oProject ) {
 			$m = "SKIPPED: The project leader for this project has no e-mail (contact IISG reception).";
 			echo $m;
 			$mail_body .= $m;
-			Mail::sendEmail(Settings::get('bbc_email'), 'SKIPPED ' . $mail_subject, $mail_body);
+			Mail::sendEmail(Settings::get('admin_email'), 'SKIPPED ' . $mail_subject, $mail_body);
 		}
 	}
 
