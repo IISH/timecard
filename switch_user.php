@@ -46,7 +46,7 @@ function createChangeUserContent() {
 		if ( $fldUserName != '' ) {
 
 			// check if person can be found in database, get id
-			$persinfo = getEmployeeIdByLongCode($fldUserName);
+			$persinfo = getEmployeeIdByLoginName($fldUserName);
 
 			if ( $persinfo["id"] != "" && $persinfo["id"] != "0" ) {
 				// save id

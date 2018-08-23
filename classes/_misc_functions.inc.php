@@ -719,17 +719,21 @@ function updateLastUserLogin($userid) {
 		);
 }
 
-function getEmployeeIdByLongCode($longcode) {
+function getEmployeeIdByLoginName($loginName) {
 	global $dbConn;
 
 	$retval["id"] = '0';
 
-	$query = "SELECT ID, LongCode FROM Employees WHERE LongCode='" . addslashes($longcode) . "' ORDER BY ID DESC ";
-	$stmt = $dbConn->prepare($query);
-	$stmt->execute();
-	$result = $stmt->fetchAll();
-	foreach ($result as $row) {
-		$retval["id"] = $row["ID"];
+	if ( $loginName != '' && $loginName != '-'  ) {
+
+		$query = "SELECT ID FROM Employees WHERE LongCode='" . addslashes($loginName) . "' OR LongCodeKnaw='" . addslashes($loginName) . "' ORDER BY ID DESC ";
+		$stmt = $dbConn->prepare($query);
+		$stmt->execute();
+		$result = $stmt->fetchAll();
+		foreach ($result as $row) {
+			$retval["id"] = $row["ID"];
+		}
+
 	}
 
 	return $retval;
