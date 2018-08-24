@@ -1472,3 +1472,27 @@ function closeDataEntry($year, $month, $id = 0 ) {
 		$stmt->execute();
 	}
 }
+
+function getAllEmployeesLoginnameAndFullname() {
+	global $dbConn;
+
+	$retval = array();
+
+	$query = "SELECT LongCodeKnaw, protime_curric.FIRSTNAME, protime_curric.NAME
+FROM Employees
+	LEFT JOIN protime_curric ON Employees.ProtimePersNr = protime_curric.PERSNR
+WHERE LongCodeKnaw IS NOT NULL AND LongCodeKnaw<>'' AND LongCodeKnaw<>'-'
+ORDER BY Employees.LongCodeKnaw ";
+	$stmt = $dbConn->prepare($query);
+	$stmt->execute();
+	$result = $stmt->fetchAll();
+	foreach ($result as $row) {
+		$retval[] = array(
+			'LongCodeKnaw' => $row['LongCodeKnaw']
+			, 'FIRSTNAME' => $row['FIRSTNAME']
+			, 'NAME' => $row['NAME']
+		);
+	}
+
+	return $retval;
+}
