@@ -36,7 +36,7 @@ $fnaam = protectFilename('export-for-oracle-' . $year . '-' . str_pad( $month, 2
 // + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
 
 $query = "
-SELECT vw_Employees.*, Workcodes.Projectnummer, Workcodes.Description AS Projectname, SUM(Workhours.TimeInMinutes) AS AantalMinuten
+SELECT vw_Employees.REGISTERNR, vw_Employees.FIRSTNAME, vw_Employees.NAME, vw_Employees.LongCode, vw_Employees.WORKLOCATION, Workcodes.Projectnummer, Workcodes.Description AS Projectname, SUM(Workhours.TimeInMinutes) AS AantalMinuten
 FROM Workhours
 	INNER JOIN Workcodes ON Workhours.Workcode = Workcodes.ID
 	INNER JOIN vw_Employees ON Workhours.Employee = vw_Employees.ID
@@ -49,7 +49,6 @@ GROUP BY vw_Employees.REGISTERNR, vw_Employees.FIRSTNAME, vw_Employees.NAME, vw_
 HAVING SUM(Workhours.TimeInMinutes) > 0
 ORDER BY vw_Employees.REGISTERNR, vw_Employees.WORKLOCATION, vw_Employees.LongCode, Workcodes.Projectnummer, Projectname
 ";
-//ORDER BY vw_Employees.REGISTERNR, vw_Employees.WORKLOCATION, vw_Employees.NAME, vw_Employees.FIRSTNAME, Workcodes.Projectnummer, Projectname
 
 // calculate data
 $data = array();

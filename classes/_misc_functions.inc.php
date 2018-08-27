@@ -894,14 +894,11 @@ function addAndRemoveAbsentiesInTimecard($timecard_id, $protime_id, $oDate) {
 	// string will be used in later stadium to remove all 'leftover' absences
 	$timecard_absenties = ';';
 	$query = "SELECT * FROM Workhours WHERE Employee=" . $timecard_id . " AND DateWorked LIKE '" . $oDate->get("Y-m-d") . "%' AND protime_absence_recnr>0 ";
-//debug($query);
 
 	$stmt = $dbConn->prepare($query);
 	$stmt->execute();
 	$result = $stmt->fetchAll();
 	foreach ($result as $row) {
-
-
 		$timecard_absenties .= $row["protime_absence_recnr"] . ";";
 	}
 
@@ -913,7 +910,6 @@ FROM protime_p_absence
 WHERE protime_p_absence.PERSNR = " . $protime_id . "
 	AND protime_p_absence.BOOKDATE = '" . $oDate->get("Ymd") . "'
 ";
-//debug($query2);
 
 	$stmt = $dbConn->prepare($query2);
 	$stmt->execute();
@@ -989,7 +985,11 @@ function getEerderNaarHuisGroupedByDay($timecard_id, $oDate) {
 	$eerderWeg = array();
 
 	// achterhaal
-	$query = "SELECT SUBSTR(DateWorked, 1, 10) AS WORKDATE, SUM(TimeInMinutes) AS TOTMINUTES FROM Workhours WHERE Employee=" . $timecard_id . " AND DateWorked LIKE '" . $oDate->get("Y-m-") . "%' AND protime_absence_recnr=-1 GROUP BY SUBSTR(DateWorked, 1, 10) ";
+	$query = "SELECT SUBSTR(DateWorked, 1, 10) AS WORKDATE, SUM(TimeInMinutes) AS TOTMINUTES
+FROM Workhours
+WHERE Employee=" . $timecard_id . " AND DateWorked LIKE '" . $oDate->get("Y-m-") . "%' AND protime_absence_recnr=-1
+GROUP BY SUBSTR(DateWorked, 1, 10) ";
+
 	$stmt = $dbConn->prepare($query);
 	$stmt->execute();
 	$result = $stmt->fetchAll();
@@ -1020,8 +1020,7 @@ function getEerderNaarHuisDayTotal($timecard_id, $oDate) {
 function addEerderNaarHuisInTimecardMonth($timecard_id, $protime_id, $oDate) {
 	global $dbConn;
 
-	$query = "SELECT BOOKDATE, EXTRA FROM protime_pr_month WHERE PERSNR=" . $protime_id . " AND BOOKDATE LIKE '" . $oDate->get("Ym") . "%' GROUP BY BOOKDATE ";
-//debug($query, 'addEerderNaarHuisInTimecardMonth: ');
+	$query = "SELECT BOOKDATE, EXTRA FROM protime_pr_month WHERE PERSNR=" . $protime_id . " AND BOOKDATE LIKE '" . $oDate->get("Ym") . "%' GROUP BY BOOKDATE, EXTRA ";
 	$arrExtras = array();
 	$stmt = $dbConn->prepare($query);
 	$stmt->execute();

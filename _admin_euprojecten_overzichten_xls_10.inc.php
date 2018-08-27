@@ -141,12 +141,13 @@ function getTimecardUrenGroupedByMonth($id, $year, $pid) {
 //		$yearpostfix = '_' . $year;
 //	}
 
-	$query = "SELECT SUBSTR(DateWorked,1,7) AS WORKDATE, SUM(TimeInMinutes) AS AANTAL FROM `Workhours$yearpostfix` WHERE Employee=" . $id . " ::DATE:: "
-		. " AND WorkCode IN (SELECT ID FROM `Workcodes$yearpostfix` WHERE ID=" . $pid . " OR ParentID = " . $pid . ") ";
+	$query = "
+SELECT SUBSTR(DateWorked,1,7) AS WORKDATE, SUM(TimeInMinutes) AS AANTAL
+FROM `Workhours$yearpostfix`
+WHERE Employee=" . $id . " AND DateWorked LIKE '" . $year . "-%'
+	AND WorkCode IN (SELECT ID FROM `Workcodes$yearpostfix` WHERE ID=" . $pid . " OR ParentID = " . $pid . ")
+GROUP BY SUBSTR(DateWorked,1,7) ";
 
-	$query = str_replace("::DATE::", " AND DateWorked LIKE '" . $year . "-%' ", $query);
-
-	$query .= " GROUP BY SUBSTR(DateWorked,1,7) ";
 	$stmt = $dbConn->prepare($query);
 	$stmt->execute();
 	$result = $stmt->fetchAll();
@@ -219,9 +220,10 @@ function getProtimeUrenGroupedByDay($protimeId, $year, $month, $view, $timecardi
 	// 13	Werk buiten IISG
 	// 18	Werk thuis
 
-	$query = "SELECT SUBSTR(BOOKDATE, 1, 10) AS WORKDATE, SUM(ABSENCE_VALUE) AS AANTAL FROM protime_p_absence WHERE PERSNR=" . $protimeId . " AND BOOKDATE LIKE '" . $year . substr('0'.$month,-2) . "%' ";
-
-	$query .= "	AND ABSENCE IN ( ";
+	$query = "
+SELECT SUBSTR(BOOKDATE, 1, 10) AS WORKDATE, SUM(ABSENCE_VALUE) AS AANTAL
+FROM protime_p_absence
+WHERE PERSNR=" . $protimeId . " AND BOOKDATE LIKE '" . $year . substr('0'.$month,-2) . "%' AND ABSENCE IN ( ";
 	switch ( $view ) {
 		case "verlof":
 			$query .= "1,2,8,9,10,11,16,17,7,3,19,12";

@@ -35,7 +35,6 @@ class Authentication {
 
 				// try to connect to the ldap server
 				$ad = ldap_connect($server->getProtocolAndServer(), $server->getPort());
-//preprint( $server->getProtocolAndServer() );
 				// set some variables
 				ldap_set_option($ad, LDAP_OPT_PROTOCOL_VERSION, 3);
 				ldap_set_option($ad, LDAP_OPT_REFERRALS, 0);
@@ -46,7 +45,6 @@ class Authentication {
 
 				// verify binding, if binding succeeds then login is correct
 				if ( $bd ) {
-//preprint('BOUND');
 					$whitelist = trim($auth['whitelist']);
 					$blacklist = trim($auth['blacklist']);
 
@@ -93,15 +91,12 @@ class Authentication {
 
 					}
 				} else {
-//					preprint("111 AUTHENTICATION FAILED $user from " . Misc::get_remote_addr() . " (LDAP: " . $server->getProtocolAndServer() . ")");
 					error_log("AUTHENTICATION FAILED $user from " . Misc::get_remote_addr() . " (LDAP: " . $server->getProtocolAndServer() . ")");
 				}
 				// never forget to unbind!
 				ldap_unbind($ad);
 			}
 		}
-
-//die('xxxx');
 
 		return $login_correct;
 	}

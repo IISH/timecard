@@ -28,7 +28,6 @@ WHERE PERSNR = {$this->oEmployee->getProtimeId()}
 GROUP BY SUBSTRING(BOOKDATE,1,6), SHORT_1
 ORDER BY SUBSTRING(BOOKDATE,1,6), SHORT_1
 ";
-
 		$stmt = $dbConn->prepare($query);
 		$stmt->execute();
 		$result = $stmt->fetchAll();

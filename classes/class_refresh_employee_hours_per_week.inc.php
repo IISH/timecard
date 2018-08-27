@@ -165,8 +165,6 @@ ORDER BY protime_lnk_curric_profile.DATEFROM DESC, MOD(CAST(protime_cyc_dp.DAYNR
 			$date = $oTCDate->getToString("Y-m-d");
 
 			//
-//			$dayOfWeek = $row['DAYNR'];
-//			$minutes = $row['NORM'];
 			$dayOfWeek = $row['DAG'];
 			$minutes = $row['HOEVEEL'];
 

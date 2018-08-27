@@ -453,7 +453,7 @@ class class_employee {
 		$query = "SELECT SUBSTR(BOOKDATE, 1, 10) AS BOOKDATUM, WEEKPRES1, EXTRA
 FROM protime_pr_month
 WHERE PERSNR=" . $protime_id . " AND BOOKDATE LIKE '" . $date["y"] . str_pad( $date["m"], 2, '0', STR_PAD_LEFT) . "%'
-GROUP BY SUBSTR(BOOKDATE, 1, 10)
+GROUP BY SUBSTR(BOOKDATE, 1, 10), WEEKPRES1, EXTRA
 ";
 
 		$stmt = $dbConn->prepare($query);
