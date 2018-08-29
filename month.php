@@ -42,12 +42,6 @@ function createMonthContent( $date ) {
 
 		$oView = new class_view($settings, $dbConn);
 
-		// if legacy, then no edit link
-		$add_new_url = '';
-		if ( $oDate->get("Y-m-d") >= $oWebuser->getAllowAdditionsStartingDate() ) {
-			$add_new_url = "edit.php?ID=0&d=" . $oDate->get("Ymd") . "&backurl=[BACKURL]";
-		}
-
 		$oView->set_view( array(
 			'query' => 'SELECT * FROM vw_hours_user WHERE Employee=' . $oWebuser->getTimecardId() . ' AND DateWorked LIKE \'' . $oDate->get("Y-m") . '-%\' '
 			, 'count_source_type' => 'query'
@@ -55,7 +49,6 @@ function createMonthContent( $date ) {
 			, 'anchor_field' => 'ID'
 			, 'viewfilter' => true
 			, 'calculate_total' => array('nrofcols' => 7, 'totalcol' => 4, 'field' => 'TimeInMinutes')
-			, 'add_new_url' => $add_new_url
 			, 'table_parameters' => ' cellspacing="0" cellpadding="0" border="0" '
 			, 'extra_hidden_viewfilter_fields' => '<input type="hidden" name="d" value="' . $date["Ymd"] . '">'
 			));

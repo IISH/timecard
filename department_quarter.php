@@ -56,12 +56,6 @@ function createAdminQuarterContent( $date ) {
 				$tmp_query = 'SELECT * FROM vw_hours_admin WHERE Employee=' . $oEmployee->getTimecardId() . ' AND DateWorked LIKE \'' . $oDate->get("Y") . '-%\' ' . $extra_month_criterium . ' ';
 			}
 
-			// if legacy, then no edit link
-			$add_new_url = '';
-			if ( $oDate->get("Y-m-d") >= $oEmployee->getAllowAdditionsStartingDate() ) {
-				$add_new_url = "department_edit.php?ID=0&d=" . $oDate->get("Ymd") . "&eid=" . $oEmployee->getTimecardId() . "&backurl=[BACKURL]";
-			}
-
 			$oView->set_view( array(
 				'query' => $tmp_query
 				, 'count_source_type' => 'query'
@@ -69,7 +63,6 @@ function createAdminQuarterContent( $date ) {
 				, 'anchor_field' => 'ID'
 				, 'viewfilter' => true
 				, 'calculate_total' => array('nrofcols' => 7, 'totalcol' => 5, 'field' => 'TimeInMinutes')
-				, 'add_new_url' => $add_new_url
 				, 'table_parameters' => ' cellspacing="0" cellpadding="0" border="0" '
 				, 'extra_hidden_viewfilter_fields' => '<input type="hidden" name="d" value="' . $date["Ymd"] . '"><input type="hidden" name="eid" value="' . $oEmployee->getTimecardId() . '">'
 				));
