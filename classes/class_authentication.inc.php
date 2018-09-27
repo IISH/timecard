@@ -80,7 +80,6 @@ class Authentication {
 									foreach($entries[0]['memberof'] as $grps) {
 										if ( $grps == trim($bl)) {
 											$login_correct = 2; // authenticated but not authorised
-//											preprint("222 AUTHORISATION FAILED $user from " . Misc::get_remote_addr() . " (LDAP: " . $server . ")");
 											error_log("AUTHORISATION FAILED $user from " . Misc::get_remote_addr() . " (LDAP: " . $server . ")");
 											break;
 										}

@@ -271,97 +271,59 @@ class class_employee {
 		return $retval;
 	}
 
-	function getOvertimeInMinutes( $yyyy_mm = '' ) {
-		global $settings, $oWebuser;
+	function getOvertimeInMinutes() {
+		$oDate = new class_date( date('Y'), date('m'), 1 );
 
-		$ret = 0;
+		$number_of_days_in_current_month = $oDate->get('t');
 
-		if ( $yyyy_mm == '' ) {
-			$yyyy_mm = date("Ym");
+		$date2["y"] = $oDate->get('Y');
+		$date2["m"] = $oDate->get('n');
+		$date2["d"] = 1;
+
+		$protime_day_overtimes = $this->getProtimeDayOvertimes( $oDate->get('Ym') );
+
+		$total_overtime = 0;
+		for ( $i = 1; $i <= $number_of_days_in_current_month; $i++ ) {
+			$date2["d"] = $i;
+
+			// OVERTIME +/-
+			if ( $oDate->get('Ym') . substr('0'.$i,-2) < date("Ymd")) {
+				$extra = $protime_day_overtimes[$i];
+			} else {
+				$extra = 0;
+			}
+			$total_overtime += $extra;
 		}
 
+		return $total_overtime;
+	}
 
-			$oDate = new class_date( date('Y'), date('m'), 1 );
+	function getFutureVacationInMinutes($bookdate = '') {
+		global $dbConn;
 
-			$ret .= "<tr><td><strong><font size=\"-2\">Day</font></strong></td><td><strong><font size=\"-2\">Timecard</font></strong></td><td><strong><font size=\"-2\">Protime</font></strong></td><td><font size=\"-2\"><strong>Overtime</strong></font></td></tr>";
+		$minutes = 0;
 
-			$number_of_days_in_current_month = $oDate->get('t');
+		if ( $bookdate == '' ) {
+			$bookdate = date("Ymd");
+		}
 
-//			$oEmployee = new class_employee( $oWebuser->getTimecardId(), $settings );
+		if ( $this->getProtimeId() != '0' ) {
 
-			$date2["y"] = $oDate->get('Y');
-			$date2["m"] = $oDate->get('n');
-			$date2["d"] = 1;
-			$timecard_day_totals = $this->getTimecardDayTotals( $oDate->get('Y'), $oDate->get('n') );
-
-			$dagvakantie2 = $this->getEerderNaarHuisDayTotals( $oDate->get('Y'), $oDate->get('n') );
-			$protime_day_totals = $this->getProtimeDayTotals( $oDate->get('Ym') );
-			$protime_day_overtimes = $this->getProtimeDayOvertimes( $oDate->get('Ym') );
-
-			$total_overtime = 0;
-			for ( $i = 1; $i <= $number_of_days_in_current_month; $i++ ) {
-				$date2["d"] = $i;
-
-				$timecard_day_total = 0;
-				if ( isset($timecard_day_totals[$i]) ) {
-					$timecard_day_total += $timecard_day_totals[$i];
-				}
-				if ( isset($dagvakantie2[$i]) ) {
-					$timecard_day_total += $dagvakantie2[$i];
-				}
-
-				$protime_day_total = 0;
-				if ( isset($protime_day_totals[$i]) ) {
-					$protime_day_total = $protime_day_totals[$i];
-				}
-
-				// TIMECARD
-				if ( $timecard_day_total == 0 && $protime_day_total == 0 ) {
-					$timecard_day_total_nice = '&nbsp;';
-				} else {
-					$timecard_day_total_nice = class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes( $timecard_day_total );
-				}
-
-				// PROTIME
-				if ( $protime_day_total == 0 ) {
-					$protime_day_total_nice = '&nbsp;';
-				} else {
-					$protime_day_total_nice = class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes( $protime_day_total );
-				}
-
-				// OVERTIME +/-
-				$sign = '';
-				if ( $oDate->get('Ym') . substr('0'.$i,-2) < date("Ymd")) {
-					$extra = $protime_day_overtimes[$i];
-				} else {
-					$extra = 0;
-				}
-				$total_overtime += $extra;
-
-				if ( $extra > 0 ) {
-					$sign = '+';
-				}
-
-				if ( $extra == 0 ) {
-					$extra_nice = '&nbsp;';
-				} else {
-					$extra_nice =  $sign . class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes( $extra );
-				}
-
-
-				$oCurrentDay = new class_date( $date2["y"], $date2["m"], $i );
-				$weekday = $oCurrentDay->get('D j');
-				$ret .= "<tr><td><a href=\"\">$weekday</a></td><td>$timecard_day_total_nice</td><td>$protime_day_total_nice</td></tr>";
+			$query = "SELECT sum(ABSENCE_VALUE) AS toekomstige_vakantie_minuten FROM `protime_p_absence` WHERE PERSNR=" . $this->getProtimeId() . " AND BOOKDATE > '$bookdate' AND ABSENCE=12 ";
+			$stmt = $dbConn->prepare($query);
+			$stmt->execute();
+			$result = $stmt->fetchAll();
+			foreach ($result as $row) {
+				$minutes = $row["toekomstige_vakantie_minuten"];
 			}
+		}
 
-			$ret = $total_overtime;
-
-
-		return $ret;
+		return $minutes;
 	}
 
 	function getVacationInMinutes() {
-		$retval = 0;
+		$minutes = 0;
+		$bookdate = '';
 
 		if ( $this->getProtimeId() != '0' ) {
 
@@ -374,31 +336,28 @@ class class_employee {
 				, "BOOKDATE DESC"
 			);
 
-			$end_val = $vakantie["end_val"];
-			if ( $end_val != '' ) {
-				$retval = $end_val;
-			} else {
-				$retval = 0;
-			}
-
+			$minutes = $vakantie["end_val"];
+			$bookdate = $vakantie["bookdate"];
 		}
 
-		return $retval;
+		return array('minutes' => $minutes, 'bookdate' => $bookdate);
 	}
 
 	function calculateVacationHoursUntilToday() {
-		$vac = 0;
-		$overtime = 0;
+		// overgebleven vakantie t.o.v. laatste verwerkings datum (kan maand ouder zijn)
+		$aaa = $this->getVacationInMinutes();
+		$vac = $aaa['minutes'];
+		$bookdate = $aaa['bookdate'];
 
-		$vac = $this->getVacationInMinutes();
+		// toekomstige nog verwerkte vakantie uren
+		$futureAbsences = $this->getFutureVacationInMinutes($bookdate);
+
+		// overtime deze maand
 		$overtime = $this->getOvertimeInMinutes();
 
-		$holidayFormatted = class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes($vac + $overtime);
-		$overtimeFormatted = class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes($overtime);
+		$holidayFormatted = class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes($vac - $futureAbsences + $overtime) . ' hours';
 
-		$retval = $holidayFormatted . ' hours <i>(including ' . $overtimeFormatted . ' hours overtime this month)</i>';
-
-		return $retval;
+		return $holidayFormatted;
 	}
 
 	function findTimecardIdUsingProtimeId($protime_id) {

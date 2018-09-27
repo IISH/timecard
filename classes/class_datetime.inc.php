@@ -121,7 +121,7 @@ class class_datetime {
 		return $date;
 	}
 
-	public static function formatDatePresentOrNot($date) {
+	public static function formatDatePresentOrNot($date, $format = 'D d M') {
 		$retval = trim($date);
 
 		if ( $retval != '' ) {
@@ -136,7 +136,8 @@ class class_datetime {
 
 					$dag = mktime(0, 0, 0, $month, $day, $year);
 
-					$retval = date("D", $dag) . " " . date("d", $dag) . " " . date("M", $dag);
+//					$retval = date("D", $dag) . " " . date("d", $dag) . " " . date("M", $dag);
+					$retval = date($format, $dag);
 				}
 			}
 		}
