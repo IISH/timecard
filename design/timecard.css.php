@@ -39,6 +39,10 @@ td.misc {
 	padding: 3px;
 }
 
+th {
+	padding-right: 10px;
+}
+
 th.misc {
 	border: 1px solid black;
 	font-weight: bold;

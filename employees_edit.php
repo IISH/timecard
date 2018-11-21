@@ -112,6 +112,12 @@ function createEmployeesEditContent() {
 		, 'onNew' => date("Y-m-01")
 		)));
 
+	$oForm->add_field( new class_field_integer ( array(
+		'fieldname' => 'taak_nummer'
+		, 'fieldlabel' => 'Taak nummer'
+		, 'size' => 5
+		)));
+
 	$oForm->add_field( new class_field_readonly ( array(
 		'fieldname' => 'REGISTERNR'
 		, 'fieldlabel' => 'KNAW #'

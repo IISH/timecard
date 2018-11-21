@@ -48,21 +48,21 @@ function createEmployeesContent() {
 		, 'table_parameters' => ' cellspacing="0" cellpadding="0" border="0" '
 		));
 
-	$oView->add_field( new class_field_string ( array(
-		'fieldname' => 'ID'
-		, 'fieldlabel' => '#'
-		, 'href' => 'employees_edit.php?ID=[FLD:ID]&backurl=[BACKURL]'
-		, 'viewfilter' => array(
-				'labelfilterseparator' => '<br>'
-				, 'filter' => array (
-					array (
-						'fieldname' => 'ID'
-						, 'type' => 'string'
-						, 'size' => 2
-						)
-					)
-				)
-		)));
+//	$oView->add_field( new class_field_string ( array(
+//		'fieldname' => 'ID'
+//		, 'fieldlabel' => '#'
+//		, 'href' => 'employees_edit.php?ID=[FLD:ID]&backurl=[BACKURL]'
+//		, 'viewfilter' => array(
+//				'labelfilterseparator' => '<br>'
+//				, 'filter' => array (
+//					array (
+//						'fieldname' => 'ID'
+//						, 'type' => 'string'
+//						, 'size' => 2
+//						)
+//					)
+//				)
+//		)));
 
 	$oView->add_field( new class_field_string ( array(
 		'fieldname' => 'FIRSTNAME'
@@ -101,19 +101,34 @@ function createEmployeesContent() {
 		)));
 
 	$oView->add_field( new class_field_string ( array(
-		'fieldname' => 'LongCode'
-		, 'fieldlabel' => 'IISG SA login'
+		'fieldname' => 'taak_nummer'
+		, 'fieldlabel' => 'Taak'
 		, 'viewfilter' => array(
-							'labelfilterseparator' => '<br>'
-							, 'filter' => array (
-												array (
-													'fieldname' => 'LongCode'
-													, 'type' => 'string'
-													, 'size' => 10
-												)
-											)
-							)
+			'labelfilterseparator' => '<br>'
+			, 'filter' => array (
+					array (
+						'fieldname' => 'taak_nummer'
+					, 'type' => 'string'
+					, 'size' => 1
+					)
+				)
+			)
 		)));
+
+//	$oView->add_field( new class_field_string ( array(
+//		'fieldname' => 'LongCode'
+//		, 'fieldlabel' => 'IISG SA login'
+//		, 'viewfilter' => array(
+//							'labelfilterseparator' => '<br>'
+//							, 'filter' => array (
+//												array (
+//													'fieldname' => 'LongCode'
+//													, 'type' => 'string'
+//													, 'size' => 10
+//												)
+//											)
+//							)
+//		)));
 
 	$oView->add_field( new class_field_string ( array(
 		'fieldname' => 'LongCodeKnaw'
