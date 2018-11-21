@@ -24,7 +24,7 @@ class class_pdo {
 
 	private function connect() {
 		try {
-			$this->conn = new PDO($this->driver . ':host=' . $this->server . ';dbname=' . $this->database, $this->user, $this->password);
+			$this->conn = new PDO($this->driver . ':host=' . $this->server . ';dbname=' . $this->database . ";charset=utf8", $this->user, $this->password, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
 		} catch (PDOException $e) {
 			die( 'Connection failed: ' . $e->getMessage() );
 		}

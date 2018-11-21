@@ -131,9 +131,6 @@ class class_field_list extends class_field {
 			}
 
 			$optionValue = stripslashes($row2[$this->m_description_field]);
-			if ( $this->get_protectSpecialChars() ) {
-				$optionValue = fixSpecialChars(  $optionValue );
-			}
 			$inputfield .= ">" . $optionValue . "</option>\n";
 		}
 

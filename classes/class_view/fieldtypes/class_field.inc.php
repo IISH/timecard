@@ -22,7 +22,6 @@ class class_field {
 	private $m_class = '';
 	private $m_style = '';
 	private $m_noheader;
-	private $m_protectSpecialChars = 0;
 
 	function __construct($fieldsettings) {
 		$this->oClassMisc = new class_misc();
@@ -103,9 +102,6 @@ class class_field {
 					case "noheader":
 						$this->m_noheader = $fieldsettings["noheader"];
 						break;
-					case "protectSpecialChars":
-						$this->m_protectSpecialChars = $fieldsettings["protectSpecialChars"];
-						break;
 				}
 			}
 		}
@@ -177,10 +173,6 @@ class class_field {
 	function get_value($row) {
 		$retval = stripslashes($row[$this->get_fieldname()]);
 		return $retval;
-	}
-
-	function get_protectSpecialChars() {
-		return $this->m_protectSpecialChars;
 	}
 
 	function view_field($row) {

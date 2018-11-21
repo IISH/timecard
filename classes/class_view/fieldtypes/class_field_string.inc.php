@@ -26,10 +26,6 @@ class class_field_string extends class_field {
 			if ( $href2otherpage <> "" ) {
 				$retval = $this->get_if_no_value($retval);
 
-				if ( $this->get_protectSpecialChars() ) {
-					$retval = fixSpecialChars($retval);
-				}
-
 				$no_href = 0;
 				$noHrefIf = $this->get_no_href_if();
 

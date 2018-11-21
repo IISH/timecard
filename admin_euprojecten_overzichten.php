@@ -78,8 +78,6 @@ function createEuProjectsContent() {
 		$nameLabel = trim($user["firstname"] .  ' ' . verplaatsTussenvoegselNaarBegin($user["lastname"]));
 		if ( $nameLabel == '' ) {
 				$nameLabel = $user['longcode'];
-		} else {
-			$nameLabel = fixSpecialChars($nameLabel);
 		}
 
 		$nameLabel .= ' (#' . $user['id'] . ')';

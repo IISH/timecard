@@ -53,13 +53,6 @@ function hoursLeft_formatNumber($value, $decimal = 1, $show_zero = false) {
 	return $ret;
 }
 
-function fixSpecialChars($text ) {
-	$text = trim( $text );
-	$text = iconv("ISO-8859-1", "UTF-8//TRANSLIT", $text);
-
-	return $text;
-}
-
 function convertToJiraUrl( $jira_issue_nr ) {
 	$ret = '';
 	$separator = '';

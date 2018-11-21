@@ -65,7 +65,6 @@ function createProjectContent( $tab, $contentdesign ) {
 	$oView->add_field( new class_field_string ( array(
 		'fieldname' => 'Description'
 		, 'fieldlabel' => 'Project'
-		, 'protectSpecialChars' => 1
 		, 'if_no_value' => '-no value-'
 		, 'href' => 'project_totals.php?ID=[FLD:ID]&tab=' . $tab . '&backurl=[BACKURL]'
 		, 'viewfilter' => array(

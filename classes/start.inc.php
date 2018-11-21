@@ -76,4 +76,4 @@ require_once dirname(__FILE__) . "/class_menu.inc.php";
 // make menu sublist depending on authentication
 $menuList = $menu->getMenuSubset();
 
-header('Content-Type: text/html; charset=iso-8859-1');
+header('Content-Type: text/html; charset=utf-8');
