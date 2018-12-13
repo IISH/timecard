@@ -25,9 +25,9 @@ switch ( $switch ) {
 		die('Error 742564: Unknown switch: ' . $switch);
 }
 
-$query_update = "UPDATE Employees SET $field=($field+1)%$howManyChoices WHERE ID=" . $oWebuser->getTimecardId();
-//$query_update = "UPDATE Employees SET $field=$field*(-1) WHERE ID=" . $oWebuser->getTimecardId();
-$result_update = mysql_query($query_update, $oConn->getConnection());
+$query = "UPDATE Employees SET $field=($field+1)%$howManyChoices WHERE ID=" . $oWebuser->getTimecardId();
+$stmt = $dbConn->prepare($query);
+$stmt->execute();
 
 require_once "classes/_db_disconnect.inc.php";
 

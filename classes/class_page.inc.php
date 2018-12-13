@@ -26,7 +26,7 @@ class class_page {
 		$this->recentlyused = '';
 		$this->tab = 0;
 		$this->title = '';
-		$this->color = '73A0C9';
+		$this->color = '707070';
 		$this->left_menu = '';
 		$this->cssextension = '';
 	}
@@ -80,7 +80,7 @@ class class_page {
 		$logout = '';
 		if ( $oWebuser->isLoggedIn() ) {
 			if ( trim( $oWebuser->getFirstLastname() ) != '' ) {
-				$welcome .= ', ' . trim( $oWebuser->getFirstLastname() );
+				$welcome .= ', ' . '<a href="aboutme.php">' . trim( $oWebuser->getFirstLastname() . '</a>');
 			}
 			$logout = '<a href="logout.php" onclick="if (!confirm(\'Please confirm logout\')) return false;">(logout)</a>';
 		}
@@ -88,11 +88,22 @@ class class_page {
 		$page = str_replace('{logout}', $logout, $page);
 
 		if ( $oWebuser->isLoggedIn() ) {
-			$vac = $oWebuser->getVacationInMinutes();
-			$overtime = $oWebuser->getOvertimeInMinutes();
-			$holidayFormatted = class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes($vac + $overtime);
 
-			$page = str_replace('{holiday}', 'Vacation left: ' . $holidayFormatted . ' h', $page);
+			// overgebleven vakantie t.o.v. laatste verwerkings datum (kan maand ouder zijn)
+			$aaa = $oWebuser->getVacationInMinutes();
+			$vac = $aaa['minutes'];
+			$bookdate = $aaa['bookdate'];
+
+			// toekomstige nog verwerkte vakantie uren
+			$futureAbsences = $oWebuser->getFutureVacationInMinutes($bookdate);
+
+			// overtime deze maand
+			$overtime = $oWebuser->getOvertimeInMinutes();
+
+			//
+			$holidayFormatted = class_datetime::ConvertTimeInMinutesToTimeInHoursAndMinutes($vac - $futureAbsences + $overtime);
+
+			$page = str_replace('{holiday}', 'Vacation left: ' . $holidayFormatted, $page);
 		} else {
 			$page = str_replace('{holiday}', '', $page);
 		}
@@ -121,10 +132,9 @@ class class_page {
 		<ul>
 ";
 
-		// TODOTODO MODIFY
+		//
 		foreach ( $menuList as $a=>$b ) {
 			$counter = 0;
-
 			foreach ( $b as $c ) {
 				$sMenu .= "			<li><a href=\"#tabs-" . $counter . "\">" . $c->getLabel() . "</a></li>\n";
 				$counter++;
@@ -136,7 +146,6 @@ class class_page {
 
 		// FOR EACH GROUP ADD ITEMS
 		$counter = 0;
-		// TODOTODO MODIFY
 		foreach ( $menuList as $a=>$b ) {
 			foreach ( $b as $c ) {
 				$sMenu .= "		<div id=\"tabs-" . $counter . "\">

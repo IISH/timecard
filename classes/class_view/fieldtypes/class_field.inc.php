@@ -38,7 +38,6 @@ class class_field {
 		$this->m_target = '';
 		$this->m_viewfilter = '';
 		$this->m_table_cell_width = '';
-//		$this->m_template = '';
 		$this->m_show_different_value = '';
 		$this->m_no_href_if = '';
 		$this->m_alttitle = '';

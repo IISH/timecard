@@ -1,6 +1,6 @@
 <?php 
 require_once("./classes/class_form/fieldtypes/class_field.inc.php");
-require_once "./classes/class_mysql.inc.php";
+require_once "./classes/pdo.inc.php";
 require_once("./classes/class_misc.inc.php");
 
 class class_field_list extends class_field {
@@ -14,10 +14,9 @@ class class_field_list extends class_field {
 	private $m_empty_value;
 	private $m_show_empty_row;
 	private $m_onchange;
-	private $m_javascriptcode;
 
 	function __construct($settings, $fieldsettings) {
-		global $databases;
+		global $dbConn;
 
 		parent::__construct($fieldsettings);
 
@@ -28,10 +27,8 @@ class class_field_list extends class_field {
 		$this->m_empty_value = '';
 		$this->m_show_empty_row = "0";
 		$this->m_onchange = '';
-		$this->m_javascriptcode = '';
-		$this->m_dbhandle = null;
 
-		$this->oDb = new class_mysql($databases['default']);
+		$this->oDb = $dbConn;
 		$this->oMisc = new class_misc();
 
 		if ( is_array( $fieldsettings ) ) {
@@ -67,19 +64,14 @@ class class_field_list extends class_field {
 						$this->m_onchange = $fieldsettings["onchange"];
 						break;
 
-					case "javascriptcode":
-						$this->m_javascriptcode = $fieldsettings["javascriptcode"];
-						break;
-
-					case "dbhandle":
-						$this->m_dbhandle = $fieldsettings["dbhandle"];
-						break;
 				}
 			}
 		}
 	}
 
 	function form_field($row, $m_form, $required_typecheck_result = 0 ) {
+		global $dbConn;
+
 		// welke waarde moeten we gebruiken, uit de db? of uit de form?
 		// indien niet goed bewaard gebruik dan de form waarde
 		if ( $required_typecheck_result == 0 ) {
@@ -95,9 +87,10 @@ class class_field_list extends class_field {
 
 		// strip slashes
 		$veldwaarde = stripslashes($veldwaarde);
+
 		$veldwaarde = str_replace("\"", "&quot;", $veldwaarde);
 
-		$inputfield = "::JAVASCRIPTCODE::<select name=\"FORM_::FIELDNAME::\" ::STYLE:: ::ONCHANGE::>\n";
+		$inputfield = "<select name=\"FORM_::FIELDNAME::\" ::STYLE:: ::ONCHANGE::>\n";
 
 		if ( $this->m_select_style != '' ) {
 			$inputfield = str_replace("::STYLE::", "STYLE=\"" . $this->m_select_style . "\"", $inputfield);
@@ -111,15 +104,6 @@ class class_field_list extends class_field {
 			$inputfield = str_replace("::ONCHANGE::", '', $inputfield);
 		}
 
-		if ( $this->m_javascriptcode != '' ) {
-			$inputfield = str_replace("::JAVASCRIPTCODE::", "\n<script type=\"text/javascript\">\n<!--\n" . $this->m_javascriptcode . "\n//-->\n</script>\n", $inputfield);
-		} else {
-			$inputfield = str_replace("::JAVASCRIPTCODE::", '', $inputfield);
-		}
-
-		// connect to server
-		$this->oDb->connect();
-
 		// execute query
 		$veldwaarde_currentvalue = $veldwaarde;
 		if ( $veldwaarde_currentvalue == '' ) {
@@ -127,23 +111,17 @@ class class_field_list extends class_field {
 		}
 		$this->m_query = str_replace('[CURRENTVALUE]', $veldwaarde_currentvalue, $this->m_query);
 
-		if ( $this->m_dbhandle == null ) {
-			// TODOTODO
-			$res2 = mysql_query($this->oMisc->PlaceURLParametersInQuery($this->m_query), $this->oDb->getConnection()) or die(mysql_error());
-		} else {
-			// TODOTODO
-			$res2 = mysql_query($this->oMisc->PlaceURLParametersInQuery($this->m_query), $this->m_dbhandle) or die(mysql_error());
-		}
-
-		$selectedOption = (string)$row[$this->get_fieldname()];
+		$stmt = $dbConn->prepare($this->oMisc->PlaceURLParametersInQuery($this->m_query));
+		$stmt->execute();
+		$res2 = $stmt->fetchAll();
 
 		// required, no? add empty option
 		if ( $this->is_field_required() == false || $this->m_show_empty_row === true ) {
 			$inputfield .= "\t<option value=\"" . $this->m_empty_value . "\"></option>\n";
 		}
 
-		// TODOTODO
-		while( $row2 = mysql_fetch_assoc($res2) ){
+		//
+		foreach ($res2 as $row2) {
 
 			$optionvalue = $row2[$this->m_id_field];
 			$inputfield .= "\t<option value=\"" . $optionvalue . "\"";
@@ -151,7 +129,9 @@ class class_field_list extends class_field {
 			if ( $optionvalue == $veldwaarde ) {
 				$inputfield .= " SELECTED";
 			}
-			$inputfield .= ">" . fixCharErrors(stripslashes(trim($row2[$this->m_description_field]))) . "</option>\n";
+
+			$optionValue = stripslashes($row2[$this->m_description_field]);
+			$inputfield .= ">" . $optionValue . "</option>\n";
 		}
 
 		$inputfield .= "</select>\n";
@@ -161,9 +141,6 @@ class class_field_list extends class_field {
 		//
 		$inputfield = $this->setInputFieldAttributes($inputfield);
 		$inputfield = $this->cleanUpLabels($inputfield);
-
-		// TODOTODO
-		mysql_free_result($res2);
 
 		return $inputfield;
 	}

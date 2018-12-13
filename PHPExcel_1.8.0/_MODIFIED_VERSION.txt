@@ -1,0 +1,1 @@
+This is a modified version of PHPExcel (to make it working with PHP7). 1 line modified :)

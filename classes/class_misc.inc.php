@@ -1,4 +1,7 @@
 <?php
+/*
+ * version: 2017-06-05 14:34
+ */
 
 function preprint( $object ) {
 	echo '<pre>';
@@ -74,7 +77,7 @@ class class_misc {
 		return $retval;
 	}
 
-	function multiplyTag($tag, $code, $start, $end) {
+	public static function multiplyTag($tag, $code, $start, $end) {
 		$ret = '';
 		$separator = '';
 

@@ -72,7 +72,7 @@ doc_submit('saveclose')
 }
 
 function getAdminDayEdit( $date, $oShortcutTemplate ) {
-	global $settings, $oEmployee, $oWebuser, $oDate, $protect, $databases;
+	global $settings, $oEmployee, $oWebuser, $oDate, $protect, $databases, $dbConn;
 
 	// get 'on new' project id from shortcut template
 	$onNew["project"] = $oShortcutTemplate->getWorkCode();
@@ -130,9 +130,8 @@ function getAdminDayEdit( $date, $oShortcutTemplate ) {
 	require_once("./classes/class_form/fieldtypes/class_field_time_single_field.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_time_free_input_field.inc.php");
 
-	// TODOTODO DIRTY
-	$oDb = new class_mysql($databases['default']);
-	$oForm = new workhours_class_form($settings, $oDb);
+	//
+	$oForm = new workhours_class_form($settings, $dbConn);
 
 	$oForm->set_form( array(
 		'query' => 'SELECT * FROM Workhours WHERE ID=[FLD:ID] '

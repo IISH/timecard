@@ -1,26 +1,18 @@
 <?php
 
 require_once dirname(__FILE__) . "/../sites/default/settings.php";
-require_once "class_mysql.inc.php";
+require_once "pdo.inc.php";
 
 class class_employee_hours_per_week {
 	private $oEmployee;
-	private $databases;
 	private $year;
 	private $hours_per_week;
 	private $hours_per_week_text;
 	private $last_refresh;
 
 	function __construct( $oEmployee, $year ) {
-		global $databases;
-
 		$this->oEmployee = $oEmployee;
 		$this->year = $year;
-		$this->databases = $databases;
-
-		// TODO remove refresh
-		//$this->refresh( true );
-
 		$this->initValues( true );
 	}
 
@@ -37,15 +29,15 @@ class class_employee_hours_per_week {
 	}
 
 	private function initValues( $recursive = false ) {
-		$oConn = new class_mysql($this->databases['default']);
-		$oConn->connect();
+		global $dbConn;
 
 		$isRecordFound = false;
 
 		$query = "SELECT * FROM Employee_Cache_Hours_Per_Week WHERE EmployeeID={$this->oEmployee->getTimecardId()} AND year={$this->year}";
 
-		$result = mysql_query($query, $oConn->getConnection());
-		if ($row = mysql_fetch_assoc($result)) {
+		$stmt = $dbConn->prepare($query);
+		$stmt->execute();
+		if ( $row = $stmt->fetch() ) {
 			$this->hours_per_week = $row['hours_per_week'];
 			$this->hours_per_week_text = $row['hours_per_week_text'];
 			$this->last_refresh = $row['last_refresh'];

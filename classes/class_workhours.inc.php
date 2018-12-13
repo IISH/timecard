@@ -1,9 +1,10 @@
 <?php 
 require_once dirname(__FILE__) . "/../sites/default/settings.php";
-require_once "class_mysql.inc.php";
+require_once "pdo.inc.php";
 
 class class_workhours {
 	private $settings;
+	private $dbConn;
 
 	private $id;
 	private $employeeId;
@@ -16,8 +17,8 @@ class class_workhours {
 	private $is_time_fixed;
 
 	function __construct($id) {
-		global $databases;
-		$this->databases = $databases;
+		global $dbConn;
+		$this->dbConn = $dbConn;
 
 		$this->id = $id;
 		$this->employeeId = 0;
@@ -34,13 +35,11 @@ class class_workhours {
 
 	private function initValues() {
 		if ( $this->getId() > 0 ) {
-			$oConn = new class_mysql($this->databases['default']);
-			$oConn->connect();
-
 			$query = "SELECT * FROM Workhours WHERE ID=" . $this->getId();
 
-			$res = mysql_query($query, $oConn->getConnection());
-			if ($r = mysql_fetch_assoc($res)) {
+			$stmt = $this->dbConn->prepare($query);
+			$stmt->execute();
+			if ( $r = $stmt->fetch() ) {
 				$this->employeeId = $r["Employee"];
 				$this->dateWorked = $r["DateWorked"];
 				$this->workCode = $r["WorkCode"];
@@ -50,7 +49,6 @@ class class_workhours {
 				$this->daily_automatic_addition_id = $r["daily_automatic_addition_id"];
 				$this->is_time_fixed = $r["fixed_time"];
 			}
-			mysql_free_result($res);
 		}
 	}
 
@@ -85,10 +83,8 @@ class class_workhours {
 		$query = str_replace("::DAAID::", $this->daily_automatic_addition_id, $query);
 		$query = str_replace("::ISTIMEFIXED::", $this->is_time_fixed, $query);
 
-		$oConn = new class_mysql($this->databases['default']);
-		$oConn->connect();
-
-		mysql_query($query, $oConn->getConnection());
+		$stmt = $this->dbConn->prepare($query);
+		$stmt->execute();
 	}
 
 	function delete() {
@@ -97,10 +93,8 @@ class class_workhours {
 
 			$query = str_replace("::ID::", $this->getId(), $query);
 
-			$oConn = new class_mysql($this->databases['default']);
-			$oConn->connect();
-
-			mysql_query($query, $oConn->getConnection());
+			$stmt = $this->dbConn->prepare($query);
+			$stmt->execute();
 		}
 	}
 
@@ -116,14 +110,11 @@ class class_workhours {
 		$query = str_replace("::DAAID::", $this->daily_automatic_addition_id, $query);
 		$query = str_replace("::ISTIMEFIXED::", $this->is_time_fixed, $query);
 
-		$oConn = new class_mysql($this->databases['default']);
-		$oConn->connect();
-
-		mysql_query($query, $oConn->getConnection());
+		$stmt = $this->dbConn->prepare($query);
+		$stmt->execute();
 
 		// set new id
-		// todo
-		$id = mysql_insert_id();
+		$id = $this->dbConn->lastInsertId();
 		$this->setId( $id );
 	}
 
@@ -200,19 +191,16 @@ class class_workhours {
 	}
 
 	public static function findDaaRecord( $employeeId, $daaId, $oDate ) {
-		global $settings, $databases;
+		global $dbConn;
+
 		$recordId = 0;
 
-		$oConn = new class_mysql($databases['default']);
-		$oConn->connect();
-
 		$query = "SELECT ID FROM Workhours WHERE Employee=" . $employeeId->getTimecardId() . " AND DateWorked LIKE '" . $oDate->get("Y-m-d") . "%' AND daily_automatic_addition_id=" . $daaId;
-
-		$res = mysql_query($query, $oConn->getConnection());
-		if ($r = mysql_fetch_assoc($res)) {
+		$stmt = $dbConn->prepare($query);
+		$stmt->execute();
+		if ( $r = $stmt->fetch() ) {
 			$recordId = $r["ID"];
 		}
-		mysql_free_result($res);
 
 		return new class_workhours($recordId);
 	}

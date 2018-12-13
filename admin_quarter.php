@@ -37,7 +37,7 @@ function createAdminQuarterContent( $date ) {
 	return $ret;
 }
 	function getAdminQuarter( $date ) {
-		global $settings, $oEmployee, $oDate, $databases;
+		global $settings, $oEmployee, $oDate, $databases, $dbConn;
 
 		if ( $oEmployee->getTimecardId() != '' ) {
 			require_once("./classes/class_view/class_view.inc.php");
@@ -45,8 +45,7 @@ function createAdminQuarterContent( $date ) {
 			require_once("./classes/class_view/fieldtypes/class_field_time.inc.php");
 			require_once("./classes/class_view/fieldtypes/class_field_date.inc.php");
 
-			$oDb = new class_mysql($databases['default']);
-			$oView = new class_view($settings, $oDb);
+			$oView = new class_view($settings, $dbConn);
 
 			$oPrevNext = new class_prevnext($date);
 			$extra_month_criterium = $oPrevNext->getExtraMonthCriterium();
@@ -57,12 +56,6 @@ function createAdminQuarterContent( $date ) {
 				$tmp_query = 'SELECT * FROM vw_hours_admin WHERE Employee=' . $oEmployee->getTimecardId() . ' AND DateWorked LIKE \'' . $oDate->get("Y") . '-%\' ' . $extra_month_criterium . ' ';
 			}
 
-			// if legacy, then no edit link
-			$add_new_url = '';
-			if ( $oDate->get("Y-m-d") >= $oEmployee->getAllowAdditionsStartingDate() ) {
-				$add_new_url = "admin_edit.php?ID=0&d=" . $oDate->get("Ymd") . "&eid=" . $oEmployee->getTimecardId() . "&backurl=[BACKURL]";
-			}
-
 			$oView->set_view( array(
 				'query' => $tmp_query
 				, 'count_source_type' => 'query'
@@ -70,7 +63,6 @@ function createAdminQuarterContent( $date ) {
 				, 'anchor_field' => 'ID'
 				, 'viewfilter' => true
 				, 'calculate_total' => array('nrofcols' => 7, 'totalcol' => 5, 'field' => 'TimeInMinutes')
-				, 'add_new_url' => $add_new_url
 				, 'table_parameters' => ' cellspacing="0" cellpadding="0" border="0" '
 				, 'extra_hidden_viewfilter_fields' => '<input type="hidden" name="d" value="' . $date["Ymd"] . '"><input type="hidden" name="eid" value="' . $oEmployee->getTimecardId() . '">'
 				));
@@ -85,13 +77,13 @@ function createAdminQuarterContent( $date ) {
 
 			if ( $oEmployee->getTimecardId() == -1 ) {
 				$oView->add_field( new class_field_string ( array(
-					'fieldname' => 'LongCode'
+					'fieldname' => 'LongCodeKnaw'
 					, 'fieldlabel' => 'Employee'
 					, 'viewfilter' => array(
 										'labelfilterseparator' => '<br>'
 										, 'filter' => array (
 															array (
-																'fieldname' => 'LongCode'
+																'fieldname' => 'LongCodeKnaw'
 																, 'type' => 'string'
 																, 'size' => 10
 															)
@@ -101,7 +93,7 @@ function createAdminQuarterContent( $date ) {
 					)));
 			} else {
 				$oView->add_field( new class_field_string ( array(
-					'fieldname' => 'LongCode'
+					'fieldname' => 'LongCodeKnaw'
 					, 'fieldlabel' => 'Employee'
 					)));
 			}

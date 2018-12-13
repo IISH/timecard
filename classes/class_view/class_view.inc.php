@@ -431,16 +431,13 @@ function onchange_change_filter_doc_submit(obj) {
 
 	// generate_view
 	function generate_view() {
+		global $dbConn;
+
 		if ( !isset( $_POST["form_fld_pressed_button"] ) ) {
 			$_POST["form_fld_pressed_button"] = '';
 		}
 
-//		$extra_left_criterium = ( isset($value["extra_left_criterium"]) ? $value["extra_left_criterium"] : '' );
-
 		$return_value = '';
-
-		// connect to server
-		$this->oDb->connect();
 
 		// preload templates
 		$preloaded_templates = array();
@@ -486,7 +483,9 @@ function onchange_change_filter_doc_submit(obj) {
 		}
 
 		// execute query
-		$res = mysql_query($this->m_view["query"], $this->oDb->getConnection()) or die( "error 8712378" . "<br>" . mysql_error());
+		$stmt = $dbConn->prepare($this->m_view["query"]);
+		$stmt->execute();
+		$res = $stmt->fetchAll();
 
 		// get submit buttons (add new / go back)
 		// show buttons at top
@@ -507,13 +506,13 @@ function onchange_change_filter_doc_submit(obj) {
 				foreach ( $array_of_records as $record_id ) {
 					$query_delete = $tmp_query_delete . $record_id;
 
-					$res_delete = mysql_query($query_delete, $this->oDb->getConnection()) or die( "error 52129398" . "<br>" . mysql_error());
+					$stmt = $dbConn->prepare($query_delete);
+					$stmt->execute();
 				}
 			}
 
 			$return_value .= 'Record(s) deleted...';
 			$return_value .= "<br>\n&nbsp;<br>\n&nbsp;<br>\n";
-
 		}
 
 		if($res){
@@ -591,7 +590,7 @@ function onchange_change_filter_doc_submit(obj) {
 				}
 
 				// doorloop gevonden recordset
-				while($row = mysql_fetch_assoc($res)){
+				foreach ($res as $row) {
 					$total_data = '';
 					$anchor = '';
 
@@ -650,9 +649,6 @@ function onchange_change_filter_doc_submit(obj) {
 			}
 
 		}
-
-		// free result set
-		mysql_free_result($res);
 
 		// return result
 		return $return_value;

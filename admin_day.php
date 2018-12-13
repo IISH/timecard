@@ -52,10 +52,7 @@ function createAdminDayContent( $date ) {
 }
 
 function getAdminDay( $date ) {
-	global $settings, $oEmployee, $oDate, $databases;
-
-	$oConn = new class_mysql($databases['default']);
-	$oConn->connect();
+	global $settings, $oEmployee, $oDate, $databases, $dbConn;
 
 	$ret = '';
 
@@ -68,8 +65,7 @@ function getAdminDay( $date ) {
 			require_once("./classes/class_view/fieldtypes/class_field_string.inc.php");
 			require_once("./classes/class_view/fieldtypes/class_field_time.inc.php");
 
-			$oDb = new class_mysql($databases['default']);
-			$oView = new class_view($settings, $oDb);
+			$oView = new class_view($settings, $dbConn);
 
 			// if legacy, then no edit link
 			$add_new_url = '';
@@ -90,13 +86,13 @@ function getAdminDay( $date ) {
 				));
 
 			$oView->add_field( new class_field_string ( array(
-				'fieldname' => 'LongCode'
+				'fieldname' => 'LongCodeKnaw'
 				, 'fieldlabel' => 'Employee'
 				, 'viewfilter' => array(
 									'labelfilterseparator' => '<br>'
 									, 'filter' => array (
 														array (
-															'fieldname' => 'LongCode'
+															'fieldname' => 'LongCodeKnaw'
 															, 'type' => 'string'
 															, 'size' => 10
 														)
@@ -208,9 +204,10 @@ function getAdminDay( $date ) {
 			$timecard_deeltotaal = 0;
 
 			$query = 'SELECT * FROM vw_hours_admin WHERE Employee=' . $oEmployee->getTimecardId() . ' AND DateWorked LIKE "' . $oDate->get("Y-m-d") . '%" AND protime_absence_recnr>=0 ORDER BY Description, TimeInMinutes DESC ';
-
-			$result = mysql_query($query, $oConn->getConnection());
-			while ($row = mysql_fetch_assoc($result)) {
+			$stmt = $dbConn->prepare($query);
+			$stmt->execute();
+			$result = $stmt->fetchAll();
+			foreach ($result as $row) {
 				$timecard_deeltotaal += $row["TimeInMinutes"];
 				$description = $row["WorkDescription"];
 				if ( strlen($description) > 35 ) {
@@ -262,7 +259,6 @@ function getAdminDay( $date ) {
 ";
 
 			}
-			mysql_free_result($result);
 
 			$dagvakantie = getEerderNaarHuisDayTotal( $oEmployee->getTimecardId(), $oDate );
 

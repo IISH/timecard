@@ -66,12 +66,16 @@ function createExportOracleContent() {
 
 	$ret .= "
 	</td>
-</tr>";
+</tr>
+";
 
 	// show submit button
 	$ret .= "
 <tr>
 	<td></td><td>&nbsp;<br><input type=\"hidden\" name=\"output\" value=\"xlsx\"><input type=\"submit\" value=\"Create Export\"></td>
+</tr>
+<tr>
+	<td colspan=\"2\"><br><i>(Only projects with project number 300- and 320-)</i></td>
 </tr>
 </table>
 </form>

@@ -8,6 +8,21 @@ if ( isset($_GET["cron_key"]) ) {
 	$cron_key = $_GET["cron_key"];
 } elseif ( isset($_POST["cron_key"]) ) {
 	$cron_key = $_POST["cron_key"];
+} else {
+	// if run CLI
+	foreach ($argv as $arg) {
+		$e = explode("=", $arg, 2);
+		// if 2 elemenents (part before, part after equal sign)
+		if ( count($e) == 2 ) {
+			// only if not already set
+			if ( !isset($_GET[$e[0]]) ) {
+				$_GET[$e[0]] = $e[1];
+			}
+		}
+	}
+	if ( isset($_GET["cron_key"]) ) {
+		$cron_key = $_GET["cron_key"];
+	}
 }
 if ( trim( $cron_key ) != Settings::get('cron_key') ) {
 	die('Error: Incorrect cron key...');

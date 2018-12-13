@@ -36,7 +36,7 @@ class class_website_protection {
 			$message = $message . "Warning: " . $tekst;
 
 			// send e-mail
-			mail($recipients, $subject, $message, $headers);
+			Mail::sendEmail($recipients, $subject, $message);
 		}
 	}
 
@@ -376,8 +376,7 @@ class class_website_protection {
 			$headers = "From: " . $fromname . " <" . $fromaddress . ">";
 
 			// send e-mail
-			mail($recipients, $subject, $message, $headers);
-
+			Mail::sendEmail($recipients, $subject, $message);
 		}
 	}
 

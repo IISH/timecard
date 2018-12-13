@@ -21,7 +21,7 @@ echo $oPage->getPage();
 require_once "classes/_db_disconnect.inc.php";
 
 function createProjectContent() {
-	global $settings, $databases, $oWebuser;
+	global $settings, $databases, $oWebuser, $dbConn;
 
 	// get design
 	$design = new class_contentdesign("page_projects");
@@ -35,8 +35,7 @@ function createProjectContent() {
 	require_once("./classes/class_view/class_view.inc.php");
 	require_once("./classes/class_view/fieldtypes/class_field_string.inc.php");
 
-	$oDb = new class_mysql($databases['default']);
-	$oView = new class_view($settings, $oDb);
+	$oView = new class_view($settings, $dbConn);
 
 	// order of listing
 	if ( $oWebuser->getSortProjectsOnName() == 1 ) {

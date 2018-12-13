@@ -1,9 +1,8 @@
 <?php
 require_once dirname(__FILE__) . "/../sites/default/settings.php";
-require_once "class_mysql.inc.php";
+require_once "pdo.inc.php";
 
 class class_project {
-	private $databases;
 
 	private $id;
 	private $description;
@@ -17,9 +16,6 @@ class class_project {
 	private $minutes_booked;
 
 	function __construct($id, $year = '') {
-		global $databases;
-		$this->databases = $databases;
-
 		if ( $year == '' ) {
 			$this->year = date("Y");
 		} else {
@@ -39,23 +35,23 @@ class class_project {
 	}
 
 	private function initValues() {
-		if ( $this->getId() > 0 ) {
-			$oConn = new class_mysql($this->databases['default']);
-			$oConn->connect();
+		global $dbConn;
 
+		if ( $this->getId() > 0 ) {
 			$postfix = getTablePostfix( $this->year );
 
 			$query = "SELECT * FROM Workcodes$postfix WHERE ID=" . $this->getId();
 
-			$res = mysql_query($query, $oConn->getConnection());
-			if ($r = mysql_fetch_assoc($res)) {
+			$stmt = $dbConn->prepare($query);
+			$stmt->execute();
+
+			if ( $r = $stmt->fetch() ) {
 				$this->description = $r["Description"];
 				$this->projectnummer = $r["Projectnummer"];
 				$this->projectleader = $r["projectleader"];
 				$this->enddate = $r["lastdate"];
 				$this->enable_weekly_report_mail = $r["enable_weekly_report_mail"];
 			}
-			mysql_free_result($res);
 		}
 	}
 
@@ -92,21 +88,20 @@ class class_project {
 	}
 
 	public function getBookedMinutes($force_recalculate = 0 ) {
+		global $dbConn;
+
 		$ret = 0;
 
 		if ( $force_recalculate || $this->minutes_booked == null ) {
 
-			$oConn = new class_mysql($this->databases['default']);
-			$oConn->connect();
-
 			$postfix = getTablePostfix( $this->year );
 
 			$query = "SELECT SUM(TimeInMinutes) AS AANTAL FROM Workhours$postfix WHERE WorkCode=" . $this->getId() . " AND isdeleted=0 ";
-			$res = mysql_query($query, $oConn->getConnection());
-			if ($r = mysql_fetch_assoc($res)) {
-				$ret = $r["AANTAL"];
+			$stmt = $dbConn->prepare($query);
+			$stmt->execute();
+			if ( $row = $stmt->fetch() ) {
+				$ret = $row["AANTAL"];
 			}
-			mysql_free_result($res);
 
 			$this->minutes_booked = $ret;
 		}

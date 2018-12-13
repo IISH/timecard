@@ -1,6 +1,6 @@
 <?php 
 require_once dirname(__FILE__) . "/../sites/default/settings.php";
-require_once "class_mysql.inc.php";
+require_once "pdo.inc.php";
 
 class class_feestdag {
 	private $id;
@@ -20,21 +20,18 @@ class class_feestdag {
 	}
 
 	private function initValues() {
-		global $databases;
-
-		$oConn = new class_mysql($databases['default']);
-		$oConn->connect();
+		global $dbConn;
 
 		$query = "SELECT * FROM Feestdagen WHERE ID=" . $this->getId();
 
-		$res = mysql_query($query, $oConn->getConnection());
-		if ($r = mysql_fetch_assoc($res)) {
+		$stmt = $dbConn->prepare($query);
+		$stmt->execute();
+		if ( $r = $stmt->fetch() ) {
 			$this->date = $r["datum"];
 			$this->description = $r["omschrijving"];
 			$this->vooreigenrekening = $r["vooreigenrekening"];
 			$this->isdeleted = $r["isdeleted"];
 		}
-		mysql_free_result($res);
 	}
 
 	public function getId() {

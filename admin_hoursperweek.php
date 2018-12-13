@@ -23,7 +23,7 @@ echo $oPage->getPage();
 require_once "classes/_db_disconnect.inc.php";
 
 function createHoursperweekContent() {
-	global $settings, $databases;
+	global $settings, $databases, $dbConn;
 
 	// get design
 	$design = new class_contentdesign("page_admin_hoursperweek");
@@ -46,8 +46,7 @@ function createHoursperweekContent() {
 	require_once("./classes/class_view/fieldtypes/class_field_integer.inc.php");
 	require_once("./classes/class_view/fieldtypes/class_field_decimal.inc.php");
 
-	$oDb = new class_mysql($databases['default']);
-	$oView = new class_view($settings, $oDb);
+	$oView = new class_view($settings, $dbConn);
 
 	$oView->set_view( array(
 		'query' => "SELECT HoursPerWeek.ID, HoursPerWeek.year, HoursPerWeek.startmonth, HoursPerWeek.endmonth, HoursPerWeek.hoursperweek, FULLNAME

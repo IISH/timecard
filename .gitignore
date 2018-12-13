@@ -4,7 +4,9 @@ timecard.settings.inc.php
 settings.inc.php
 settings.php
 .idea
+.git
 *.ipr
 *.iml
-phpinfo.php
 test.php
+testtest.php
+testmailserver.php

@@ -21,7 +21,7 @@ echo $oPage->getPage();
 require_once "classes/_db_disconnect.inc.php";
 
 function createVastWerkContent() {
-	global $settings, $databases;
+	global $settings, $databases, $dbConn;
 
 	// get design
 	$design = new class_contentdesign("page_vastwerk");
@@ -35,8 +35,7 @@ function createVastWerkContent() {
 	require_once("./classes/class_view/class_view.inc.php");
 	require_once("./classes/class_view/fieldtypes/class_field_string.inc.php");
 
-	$oDb = new class_mysql($databases['default']);
-	$oView = new class_view($settings, $oDb);
+	$oView = new class_view($settings, $dbConn);
 
 	$oView->set_view( array(
 		'query' => "SELECT * FROM vw_VastWerk WHERE isdeleted=0 AND year>=" . date("Y")

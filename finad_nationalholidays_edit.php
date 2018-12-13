@@ -21,7 +21,7 @@ echo $oPage->getPage();
 require_once "classes/_db_disconnect.inc.php";
 
 function createFeestdagenEditContent() {
-	global $settings, $databases;
+	global $settings, $databases, $dbConn;
 
 	// get design
 	$design = new class_contentdesign("page_nationalholidays_edit");
@@ -34,8 +34,7 @@ function createFeestdagenEditContent() {
 	require_once("./classes/class_form/fieldtypes/class_field_bit.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_hidden.inc.php");
 
-	$oDb = new class_mysql($databases['default']);
-	$oForm = new class_form($settings, $oDb);
+	$oForm = new class_form($settings, $dbConn);
 
 	$oForm->set_form( array(
 		'query' => 'SELECT * FROM Feestdagen WHERE ID=[FLD:ID] '

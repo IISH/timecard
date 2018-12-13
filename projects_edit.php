@@ -21,7 +21,7 @@ echo $oPage->getPage();
 require_once "classes/_db_disconnect.inc.php";
 
 function createProjectEditContent() {
-	global $protect, $settings, $databases;
+	global $protect, $settings, $databases, $dbConn;
 
 	// get design
 	$design = new class_contentdesign("page_projects_edit");
@@ -54,8 +54,7 @@ function createProjectEditContent() {
 	require_once("./classes/class_form/fieldtypes/class_field_textarea.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_readonly.inc.php");
 
-	$oDb = new class_mysql($databases['default']);
-	$oForm = new class_form($settings, $oDb);
+	$oForm = new class_form($settings, $dbConn);
 
 	$oForm->set_form( array(
 		'query' => 'SELECT * FROM Workcodes WHERE ID=[FLD:ID] '
@@ -105,11 +104,9 @@ function createProjectEditContent() {
 	$oForm->add_field( new class_field_list ( $settings, array(
 		'fieldname' => 'projectleader'
 		, 'fieldlabel' => 'Project leader'
-		, 'query' => "SELECT ID, CONCAT(RTRIM(LTRIM(FIRSTNAME)), ' ', RTRIM(LTRIM(NAME)), ' (#', ID, IF(is_test_account=1, ', testaccount', ''), ')') AS FULLNAME FROM vw_Employees WHERE isdisabled=0 ORDER BY FIRSTNAME, NAME "
-
+		, 'query' => "SELECT ID, CONCAT(RTRIM(LTRIM(FIRSTNAME)), ' ', RTRIM(LTRIM(NAME)), ' (#', ID, IF(is_test_account=1, ', testaccount', ''), ')') AS FULLNAME FROM vw_Employees WHERE isdisabled=0 AND FIRSTNAME IS NOT NULL AND NAME IS NOT NULL ORDER BY FIRSTNAME, NAME "
 		, 'id_field' => 'ID'
 		, 'description_field' => 'FULLNAME'
-
 		, 'empty_value' => '0'
 		, 'required' => 0
 		, 'show_empty_row' => true

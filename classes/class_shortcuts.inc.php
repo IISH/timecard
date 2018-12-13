@@ -1,19 +1,15 @@
 <?php 
 require_once dirname(__FILE__) . "/../sites/default/settings.php";
-require_once "class_mysql.inc.php";
+require_once "pdo.inc.php";
 require_once "class_date.inc.php";
 
 class class_shortcuts {
-	private $databases;
 	private $oTimecardUser;
 	private $settings;
 	private $oDate;
 	private $oProtimeUser;
 
 	function __construct($oTimecardUser, $settings, $oDate) {
-		global $databases;
-
-		$this->databases = $databases;
 		$this->oTimecardUser = $oTimecardUser;
 		$this->settings = $settings;
 		$this->oDate = $oDate;
@@ -22,12 +18,11 @@ class class_shortcuts {
 	}
 
 	function getEnabledShortcuts( $type ) {
+		global $dbConn;
+
 		$arr = array();
 
-		$oConn = new class_mysql($this->databases['default']);
-		$success = $oConn->connect();
-
-		// TODOTODO
+		//
 		$query = "SELECT Workcodes.Description, UserCreatedQuickAdds.ID, UserCreatedQuickAdds.Employee, UserCreatedQuickAdds.WorkCode, UserCreatedQuickAdds.WorkDescription, UserCreatedQuickAdds.isvisible, UserCreatedQuickAdds.isdeleted, UserCreatedQuickAdds.TimeInMinutes, UserCreatedQuickAdds.onNewAutoSave, UserCreatedQuickAdds.extra_explanation
 FROM UserCreatedQuickAdds INNER JOIN Workcodes ON UserCreatedQuickAdds.WorkCode = Workcodes.ID
 WHERE ::CRITERIUM::
@@ -55,26 +50,22 @@ ORDER BY Workcodes.Description, UserCreatedQuickAdds.WorkDescription, UserCreate
 		}
 		$query = str_replace('::DEPARTMENT::', $department, $query);
 
-		$result = mysql_query($query, $oConn->getConnection());
-		if ( mysql_num_rows($result) > 0 ) {
-
-			while ($row = mysql_fetch_assoc($result)) {
-				$arr[] = $this->createItem($row);
-			}
-			mysql_free_result($result);
-
+		$stmt = $dbConn->prepare($query);
+		$stmt->execute();
+		$result = $stmt->fetchAll();
+		foreach ($result as $row) {
+			$arr[] = $this->createItem($row);
 		}
 
 		return $arr;
 	}
 
 	function getAllShortcuts() {
+		global $dbConn;
+
 		$arr = array();
 
-		$oConn = new class_mysql($this->databases['default']);
-		$oConn->connect();
-
-		// TODOTODO
+		//
 		$query = "SELECT vw_UserCreatedQuickAdds.ID, vw_UserCreatedQuickAdds.Description, vw_UserCreatedQuickAdds.WorkCode, vw_UserCreatedQuickAdds.TimeInMinutes, vw_UserCreatedQuickAdds.onNewAutoSave, vw_UserCreatedQuickAdds.WorkDescription, vw_UserCreatedQuickAdds.isvisible, vw_UserCreatedQuickAdds.Projectnummer, vw_UserCreatedQuickAdds.extra_explanation
 FROM vw_UserCreatedQuickAdds INNER JOIN Workcodes ON vw_UserCreatedQuickAdds.WorkCode = Workcodes.ID
 WHERE vw_UserCreatedQuickAdds.Employee=::USER::
@@ -84,15 +75,11 @@ AND (
 ORDER BY Projectnummer, Description, TimeInMinutes DESC, WorkDescription ";
 
 		$query = str_replace('::USER::', $this->oTimecardUser->getTimecardId(), $query);
-
-		$result = mysql_query($query, $oConn->getConnection());
-		if ( mysql_num_rows($result) > 0 ) {
-
-			while ($row = mysql_fetch_assoc($result)) {
+		$stmt = $dbConn->prepare($query);
+		$stmt->execute();
+		$result = $stmt->fetchAll();
+		foreach ($result as $row) {
 				$arr[] = $this->createItem($row);
-			}
-			mysql_free_result($result);
-
 		}
 
 		return $arr;

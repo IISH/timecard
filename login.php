@@ -41,7 +41,7 @@ function createLoginPage() {
 		// check if both field are entered
 		if ( $fldLogin != '' && $fldPassword != '' ) {
 
-			$result_login_check = class_authentication::authenticate($fldLogin, $fldPassword);
+			$result_login_check = Authentication::authenticate($fldLogin, $fldPassword);
 
 			if ( $result_login_check == 1 ) {
 				// check if person can be found in database, get id
@@ -61,7 +61,6 @@ function createLoginPage() {
 
                     // update wanneer gebruiker voor het laatst is ingelogd op timecard
                     updateLastUserLogin($oWebuser->getTimecardId());
-//die('aaaaa');
 
                     // redirect to prev page
                     if ($burl == '') {
@@ -97,17 +96,17 @@ function createLoginPage() {
 <input type=\"hidden\" name=\"issubmitted\" value=\"1\">
 <tr>
 	<td>Login name:</td>
-	<td><input type=\"text\" name=\"fldLogin\" class=\"login\" maxlength=\"50\" value=\"" . $fldLogin . "\" placeholder=\"firstname.lastname\"></td>
+	<td><input type=\"text\" name=\"fldLogin\" class=\"login\" maxlength=\"50\" value=\"" . $fldLogin . "\" placeholder=\"FirstnameL\"></td>
 </tr>
 <tr>
 	<td>Password:&nbsp;</td>
-	<td><input type=\"password\" name=\"fldPassword\" class=\"password\" maxlength=\"50\" value=\"\" placeholder=\"password\"></td>
+	<td><input type=\"password\" name=\"fldPassword\" class=\"password\" maxlength=\"50\" value=\"\" placeholder=\"Password\"></td>
 </tr>
 <tr>
 	<td></td>
 </tr>
 <tr>
-	<td align=\"right\"><input class=\"button\" type=\"reset\" name=\"btnReset\" value=\"Clear\">&nbsp;</td>
+	<td align=\"right\">&nbsp;</td>
 	<td>&nbsp;<input class=\"button\" type=\"submit\" name=\"btnSubmit\" value=\"Submit\"></td>
 </tr>
 </form>

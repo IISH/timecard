@@ -1,19 +1,14 @@
 <?php 
 require_once dirname(__FILE__) . "/../sites/default/settings.php";
-require_once "class_mysql.inc.php";
+require_once "pdo.inc.php";
 
 class class_project_totals {
-	private $databases;
-
 	private $projectId;
 	private $year;
 	private $arr = array();
 	private $ids = array();
 
 	function __construct($projectId, $year) {
-		global $databases;
-		$this->databases = $databases;
-
 		$this->projectId = $projectId;
 		$this->year = $year;
 
@@ -21,8 +16,7 @@ class class_project_totals {
 	}
 
 	private function initValues() {
-		$oConn = new class_mysql($this->databases['default']);
-		$oConn->connect();
+		global $dbConn;
 
 		$postfix = getTablePostfix( $this->year );
 
@@ -38,8 +32,10 @@ GROUP BY LEFT(DateWorked, 7), WorkCode, Employees.ID, ProtimePersNr, NAME, FIRST
 ORDER BY FIRSTNAME, NAME, LEFT(DateWorked, 7)
 ";
 
-		$res = mysql_query($query, $oConn->getConnection());
-		while ($r = mysql_fetch_assoc($res)) {
+		$stmt = $dbConn->prepare($query);
+		$stmt->execute();
+		$result = $stmt->fetchAll();
+		foreach ($result as $r) {
 			//
 			$item = new class_project_totals_item();
 			$item->setYearMonth( $r['YearMonth'] );
@@ -55,10 +51,7 @@ ORDER BY FIRSTNAME, NAME, LEFT(DateWorked, 7)
 
 			//
 			$this->arr[] = $item;
-
 		}
-		mysql_free_result($res);
-
 	}
 
 	public function getIds() {

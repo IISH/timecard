@@ -23,7 +23,7 @@ echo $oPage->getPage();
 require_once "classes/_db_disconnect.inc.php";
 
 function createHoursperweekEditContent() {
-	global $settings, $protect, $databases;
+	global $settings, $protect, $databases, $dbConn;
 
 	// get design
 	$design = new class_contentdesign("page_admin_hoursperweek_edit");
@@ -38,8 +38,7 @@ function createHoursperweekEditContent() {
 	require_once("./classes/class_form/fieldtypes/class_field_list.inc.php");
 	require_once("./classes/class_form/fieldtypes/class_field_hidden.inc.php");
 
-	$oDb = new class_mysql($databases['default']);
-	$oForm = new class_form($settings, $oDb);
+	$oForm = new class_form($settings, $dbConn);
 
 	$oForm->set_form( array(
 		'query' => 'SELECT * FROM HoursPerWeek WHERE ID=[FLD:ID] '

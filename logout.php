@@ -5,4 +5,3 @@ $_SESSION["timecard"]["id"] = 0;
 Header("Location: login.php");
 
 die();
-?>

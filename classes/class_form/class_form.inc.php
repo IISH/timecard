@@ -7,7 +7,7 @@ class class_form {
 	protected $settings;
 	private $m_array_of_fields = array();
 
-	protected $oDb;
+	protected $dbConn;
 	protected $oClassFile;
 	protected $oClassMisc;
 
@@ -16,10 +16,12 @@ class class_form {
 	private $m_old_doc_id;
 
 	function __construct($settings, $oDb) {
+		global $dbConn;
 		$this->settings = $settings;
-		$this->oDb = $oDb;
 		$this->oClassFile = new class_file();
 		$this->oClassMisc = new class_misc();
+
+		$this->dbConn = $dbConn;
 	}
 
 	// function calculate_document_id
@@ -67,6 +69,8 @@ class class_form {
 
 	//
 	function form_save() {
+		global $dbConn;
+
 		$result = 1; // default = okay
 		$query_fields = array();
 
@@ -85,7 +89,8 @@ class class_form {
 		}
 
 		// execute query
-		$res = mysql_query($query, $this->oDb->getConnection()) or die(mysql_error());
+		$stmt = $dbConn->prepare($query);
+		$stmt->execute();
 
 		// if current id = 0
 		// get the last id
@@ -112,14 +117,16 @@ class class_form {
 	}
 
 	function timecard_mysql_insert_id($table) {
+		global $dbConn;
+
 		$retval = '0';
 
 		$query = "SELECT ID FROM $table ORDER BY ID DESC LIMIT 0, 1 ";
-		$result = mysql_query($query, $this->oDb->getConnection());
-		if ( $row = mysql_fetch_assoc($result) ) {
+		$stmt = $dbConn->prepare($query);
+		$stmt->execute();
+		if ( $row = $stmt->fetch() ) {
 			$retval = $row["ID"];
 		}
-		mysql_free_result($result);
 
 		return $retval;
 	}
@@ -204,7 +211,7 @@ class class_form {
 
 	// generate_form
 	function generate_form() {
-		global $protect;
+		global $protect, $dbConn;
 
 		// document id
 		$this->calculate_document_id();
@@ -212,9 +219,6 @@ class class_form {
 		$return_value = '';
 		$required_typecheck_result = -1;	// default, nog nix geprobeerd te bewaren
 								// -1 nix, 0 errors bij bewaren, 1 bewaren okay
-
-		// connect to server
-		$this->oDb->connect();
 
 		// if form submitted try to save document
 		if ( isset($_POST["issubmitted"]) && $_POST["issubmitted"] == "1" ) {
@@ -297,51 +301,42 @@ class class_form {
 		$this->m_form["query"] = $this->oClassMisc->PlaceURLParametersInQuery($this->m_form["query"]);
 
 		// execute query
-		$res = mysql_query($this->m_form["query"], $this->oDb->getConnection()) or die(mysql_error());
+		$stmt = $dbConn->prepare( $this->m_form["query"] );
+		$stmt->execute();
 
-		if ($res){
-
-			$form_template = "::CONTENT::";
-
-// + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
-
-			// start table
-			$all_fields = "<table border=\"0\" cellspacing=\"0\" cellpadding=\"2\">";
-
-			// get submit buttons
-			$submitbuttons = $this->get_form_edit_buttons();
-
-			$total_row = '';
-
-			$row = mysql_fetch_assoc($res);
-
-			foreach ($this->m_array_of_fields as $one_field_in_array_of_fields) {
-
-				// get row template (label + input field)
-				$tmp_data = $this->Get_PreloadedTemplateDesign($preloaded_templates, "default");
-
-				$tmp_data = $one_field_in_array_of_fields->form_row($row, $tmp_data, $this->m_form, $required_typecheck_result);
-
-				$total_row .= $tmp_data . "\n";
-			}
-
-			// voeg alle rijen toe aan tabel
-			$all_fields .= $total_row;
-
-			// add submit buttons to view (and extra empty row)
-			$all_fields .= "<tr><td>&nbsp;</td></tr>" . $submitbuttons;
-
-			// end table
-			$all_fields .= "</table>";
+		$form_template = "::CONTENT::";
 
 // + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
 
-			$return_value .= str_replace("::CONTENT::", $all_fields, $form_template);
+		// start table
+		$all_fields = "<table border=\"0\" cellspacing=\"0\" cellpadding=\"2\">";
 
+		// get submit buttons
+		$submitbuttons = $this->get_form_edit_buttons();
+
+		$total_row = '';
+		$row = $stmt->fetch();
+		foreach ($this->m_array_of_fields as $one_field_in_array_of_fields) {
+			// get row template (label + input field)
+			$tmp_data = $this->Get_PreloadedTemplateDesign($preloaded_templates, "default");
+
+			$tmp_data = $one_field_in_array_of_fields->form_row($row, $tmp_data, $this->m_form, $required_typecheck_result);
+
+			$total_row .= $tmp_data . "\n";
 		}
 
-		// free result set
-		mysql_free_result($res);
+		// voeg alle rijen toe aan tabel
+		$all_fields .= $total_row;
+
+		// add submit buttons to view (and extra empty row)
+		$all_fields .= "<tr><td>&nbsp;</td></tr>" . $submitbuttons;
+
+		// end table
+		$all_fields .= "</table>";
+
+// + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
+
+		$return_value .= str_replace("::CONTENT::", $all_fields, $form_template);
 
 		// get form_start
 		$form_start = $this->Get_PreloadedTemplateDesign($preloaded_templates, "form_start");

@@ -46,7 +46,7 @@ function createChangeUserContent() {
 		if ( $fldUserName != '' ) {
 
 			// check if person can be found in database, get id
-			$persinfo = getEmployeeIdByLongCode($fldUserName);
+			$persinfo = getEmployeeIdByLoginName($fldUserName);
 
 			if ( $persinfo["id"] != "" && $persinfo["id"] != "0" ) {
 				// save id
@@ -73,19 +73,37 @@ function createChangeUserContent() {
 		$ret .= "<span class=\"error\">" . $error . "</span><br>";
 	}
 
+
+	$allEmployees = getAllEmployeesLoginnameAndFullname();
+
+	$options = "\t\t<option value=\"\"></option>\n";
+	foreach ( $allEmployees as $med ) {
+		$label = trim($med['FIRSTNAME'] . ' ' . verplaatsTussenvoegselNaarBegin($med['NAME']));
+		if ( $label == '' ) {
+			$label = $med['LongCodeKnaw'];
+		}
+		$value = $med['LongCodeKnaw'];
+
+		$options .= "\t\t<option value=\"$value\">$label</option>\n";
+	}
+
 	$ret .= "
 <table border=\"0\" cellspacing=\"0\" cellpadding=\"2\">
 <form name=\"frmA\" method=\"POST\">
 <input type=\"hidden\" name=\"issubmitted\" value=\"1\">
 <tr>
-	<td>User login name:</td>
-	<td><input type=\"text\" name=\"fldUserName\" class=\"login\" maxlength=\"50\" value=\"" . $fldUserName . "\" placeholder=\"firstname.lastname\"></td>
+	<td>User name:</td>
+	<td>
+		<select name=\"fldUserName\" class=\"login\">
+$options	
+		</select>
+	</td>
 </tr>
 <tr>
 	<td></td>
 </tr>
 <tr>
-	<td align=\"right\"><input class=\"button\" type=\"reset\" name=\"btnReset\" value=\"Clear\">&nbsp;</td>
+	<td align=\"right\">&nbsp;</td>
 	<td>&nbsp;<input class=\"button\" type=\"submit\" name=\"btnSubmit\" value=\"Submit\"></td>
 </tr>
 </form>

@@ -11,21 +11,16 @@ class Settings {
 	 * Load the settings from the database
 	 */
 	private static function load() {
-		global $databases;
-
-		$oConn = new class_mysql($databases['default']);
-		$oConn->connect();
+		global $dbConn;
 
 		$arr = array();
 
-		$result = mysql_query('SELECT * FROM settings ', $oConn->getConnection());
-		if ( mysql_num_rows($result) > 0 ) {
-
-			while ($row = mysql_fetch_assoc($result)) {
-				$arr[ $row["property"] ] = $row["value"];
-			}
-			mysql_free_result($result);
-
+		$query = 'SELECT * FROM settings ';
+		$stmt = $dbConn->prepare($query);
+		$stmt->execute();
+		$result = $stmt->fetchAll();
+		foreach ($result as $row) {
+			$arr[ $row["property"] ] = $row["value"];
 		}
 
 		self::$settings = $arr;
@@ -49,7 +44,7 @@ class Settings {
 	}
 
 	public static function save( $setting_name, $value, $settingsTable = '' ) {
-		global $settings, $databases;
+		global $dbConn;
 		$setting_name = trim($setting_name);
 
 		$settingsTable = trim($settingsTable);
@@ -59,19 +54,17 @@ class Settings {
 		}
 
 		if ( $setting_name != '' ) {
-			$oConn = new class_mysql($databases['default']);
-			$oConn->connect();
-
 			$query = "SELECT * FROM `$settingsTable` WHERE `property`='" . $setting_name . "' ";
-			$result = mysql_query($query);
-			$num_rows = mysql_num_rows($result);
+			$stmt = $dbConn->prepare($query);
+			$stmt->execute();
 
-			if ($num_rows > 0) {
-				$result = mysql_query("UPDATE `$settingsTable` SET `value`='" . addslashes($value) . "' WHERE `property`='" . $setting_name . "' ", $oConn->getConnection());
+			if ( $row = $stmt->fetch() ) {
+				$query = "UPDATE `$settingsTable` SET `value`='" . addslashes($value) . "' WHERE `property`='" . $setting_name . "' ";
+			} else {
+				$query = "INSERT INTO `$settingsTable` (`value`, `property`) VALUES ( '" . addslashes($value) . "', '" . $setting_name . "' ) ";
 			}
-			else {
-				$result = mysql_query("INSERT INTO `$settingsTable` (`value`, `property`) VALUES ( '" . addslashes($value) . "', '" . $setting_name . "' ) ", $oConn->getConnection());
-			}
+			$stmt = $dbConn->prepare($query);
+			$stmt->execute();
 		}
 	}
 

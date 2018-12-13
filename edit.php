@@ -41,7 +41,6 @@ function createDayEditContent( $date ) {
 	//
 	$ret .= getUserDayEdit( $date, $oShortcutTemplate );
 
-	// TODOTODO niet als old data, dan dit stuk overslaan
 	// AUTO SAVE
 	if ( $_SERVER['REQUEST_METHOD'] != 'POST' ) {
 		if ( $oShortcutTemplate->getOnNewAutoSave() == '1' ) {
@@ -64,7 +63,7 @@ doc_submit('saveclose')
 }
 
 	function getUserDayEdit( $date, $oShortcutTemplate ) {
-		global $settings, $oWebuser, $oDate, $protect, $databases;
+		global $settings, $oWebuser, $oDate, $protect, $databases, $dbConn;
 
 		// get 'on new' project id from shortcut template
 		$onNew["project"] = $oShortcutTemplate->getWorkCode();
@@ -121,9 +120,8 @@ doc_submit('saveclose')
 		require_once("./classes/class_form/fieldtypes/class_field_time_single_field.inc.php");
 		require_once("./classes/class_form/fieldtypes/class_field_time_free_input_field.inc.php");
 
-		// TODOTODO DIRTY
-		$oDb = new class_mysql($databases['default']);
-		$oForm = new workhours_class_form($settings, $oDb);
+		// 
+		$oForm = new workhours_class_form($settings, $dbConn);
 
 		$oForm->set_form( array(
 			'query' => 'SELECT * FROM Workhours WHERE ID=[FLD:ID] AND Employee=' . $oWebuser->getTimecardId() . ' AND protime_absence_recnr=0 '

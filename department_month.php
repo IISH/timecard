@@ -38,7 +38,7 @@ function createAdminMonthContent( $date ) {
 }
 
 	function getAdminMonth( $date ) {
-		global $settings, $oEmployee, $oDate, $databases;
+		global $settings, $oEmployee, $oDate, $databases, $dbConn;
 		$ret = '';
 
 		if ( $oEmployee->getTimecardId() != '' ) {
@@ -47,19 +47,12 @@ function createAdminMonthContent( $date ) {
 			require_once("./classes/class_view/fieldtypes/class_field_time.inc.php");
 			require_once("./classes/class_view/fieldtypes/class_field_date.inc.php");
 
-			$oDb = new class_mysql($databases['default']);
-			$oView = new class_view($settings, $oDb);
+			$oView = new class_view($settings, $dbConn);
 
 			if ( $oEmployee->getTimecardId() == -1 ) {
 				$tmp_query = 'SELECT * FROM vw_hours_admin WHERE DateWorked LIKE \'' . $oDate->get("Y-m") . '-%\' ';
 			} else {
 				$tmp_query = 'SELECT * FROM vw_hours_admin WHERE Employee=' . $oEmployee->getTimecardId() . ' AND DateWorked LIKE \'' . $oDate->get("Y-m") . '-%\' ';
-			}
-
-			// if legacy, then no edit link
-			$add_new_url = '';
-			if ( $oDate->get("Y-m-d") >= $oEmployee->getAllowAdditionsStartingDate() ) {
-				$add_new_url = "department_edit.php?ID=0&d=" . $oDate->get("Ymd") . "&eid=" . $oEmployee->getTimecardId() . "&backurl=[BACKURL]";
 			}
 
 			$oView->set_view( array(
@@ -69,7 +62,6 @@ function createAdminMonthContent( $date ) {
 				, 'anchor_field' => 'ID'
 				, 'viewfilter' => true
 				, 'calculate_total' => array('nrofcols' => 7, 'totalcol' => 5, 'field' => 'TimeInMinutes')
-				, 'add_new_url' => $add_new_url
 				, 'table_parameters' => ' cellspacing="0" cellpadding="0" border="0" '
 				, 'extra_hidden_viewfilter_fields' => '<input type="hidden" name="d" value="' . $date["Ymd"] . '"><input type="hidden" name="eid" value="' . $oEmployee->getTimecardId() . '">'
 				));
@@ -84,13 +76,13 @@ function createAdminMonthContent( $date ) {
 
 			if ( $oEmployee->getTimecardId() == -1 ) {
 				$oView->add_field( new class_field_string ( array(
-					'fieldname' => 'LongCode'
+					'fieldname' => 'LongCodeKnaw'
 					, 'fieldlabel' => 'Employee'
 					, 'viewfilter' => array(
 										'labelfilterseparator' => '<br>'
 										, 'filter' => array (
 															array (
-																'fieldname' => 'LongCode'
+																'fieldname' => 'LongCodeKnaw'
 																, 'type' => 'string'
 																, 'size' => 10
 															)
@@ -100,7 +92,7 @@ function createAdminMonthContent( $date ) {
 					)));
 			} else {
 				$oView->add_field( new class_field_string ( array(
-					'fieldname' => 'LongCode'
+					'fieldname' => 'LongCodeKnaw'
 					, 'fieldlabel' => 'Employee'
 					)));
 			}

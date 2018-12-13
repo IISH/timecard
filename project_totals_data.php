@@ -115,8 +115,8 @@ $style_highlight_background_year = array(
 // + + + + + + + + +
 
 /** PHPExcel */
-require_once 'PHPExcel_1.8.0/PHPExcel.php';
-require_once('PHPExcel_1.8.0/PHPExcel/IOFactory.php');
+require_once 'PHPExcel/PHPExcel.php';
+require_once 'PHPExcel/PHPExcel/IOFactory.php';
 
 // Create new PHPExcel object
 $objPHPExcel = new PHPExcel();
@@ -252,7 +252,6 @@ $sheet->mergeCells('A'.$r.':R'.$r);
 
 if ( count($oProjectTotals->getIds()) > 0 ) {
 
-
 	// HEADER LINE
 	$r++;
 	$sheet->SetCellValue( rc($r,1), 'Employee');
@@ -357,6 +356,7 @@ if ( count($oProjectTotals->getIds()) > 0 ) {
 	$sheet->getStyle( rc($r,$c) )->applyFromArray($style_highlight_background_month);
 	$sheet->getStyle( rc($r,$c) )->getFont()->setBold(true);
 	for ( $loop = 1; $loop <= 4; $loop++ ) {
+
 		// loop months in quarter
 		for ($m = 1; $m <= 3; $m++) {
 			$c++;
@@ -397,6 +397,6 @@ switch ( $output ) {
 	default:
 		$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'HTML');
 		$objWriter->setUseInlineCss( true );
-//		ob_end_clean();
+		//ob_end_clean();
 		$objWriter->save('php://output');
 }

@@ -77,8 +77,9 @@ function createEuProjectsContent() {
 	foreach ( getListOfUsersActiveInSpecificYear($selyear) as $user ) {
 		$nameLabel = trim($user["firstname"] .  ' ' . verplaatsTussenvoegselNaarBegin($user["lastname"]));
 		if ( $nameLabel == '' ) {
-				$nameLabel = $user['longcode'];
+				$nameLabel = $user['longcodeknaw'];
 		}
+
 		$nameLabel .= ' (#' . $user['id'] . ')';
 
 		$list_of_employees .= $separator . '<a href="#" onclick="createOverzicht(' . $user['id'] . ');return false;">' . $nameLabel . '</a>';

@@ -21,7 +21,7 @@ echo $oPage->getPage();
 require_once "classes/_db_disconnect.inc.php";
 
 function createEmployeesContent() {
-	global $settings, $databases;
+	global $settings, $databases, $dbConn;
 
 	// get design
 	$design = new class_contentdesign("page_employees_disabled");
@@ -36,13 +36,12 @@ function createEmployeesContent() {
 	require_once("./classes/class_view/fieldtypes/class_field_string.inc.php");
 	require_once("./classes/class_view/fieldtypes/class_field_bit.inc.php");
 
-	$oDb = new class_mysql($databases['default']);
-	$oView = new class_view($settings, $oDb);
+	$oView = new class_view($settings, $dbConn);
 
 	$oView->set_view( array(
-		'query' => "SELECT * FROM vw_Employees WHERE 1=1 AND isdisabled=1 "
+		'query' => "SELECT * FROM vw_Employees WHERE isdisabled=1 OR lastyear<" . date("Y")
 		, 'count_source_type' => 'query'
-		, 'order_by' => 'LongCode, ID DESC '
+		, 'order_by' => 'LongCodeKnaw, ID DESC '
 		, 'anchor_field' => 'ID'
 		, 'viewfilter' => true
 		, 'table_parameters' => ' cellspacing="0" cellpadding="0" border="0" '
@@ -97,18 +96,18 @@ function createEmployeesContent() {
 		)));
 
 	$oView->add_field( new class_field_string ( array(
-		'fieldname' => 'LongCode'
-		, 'fieldlabel' => 'SA/2X login'
+		'fieldname' => 'LongCodeKnaw'
+		, 'fieldlabel' => 'KNAW login'
 		, 'viewfilter' => array(
-							'labelfilterseparator' => '<br>'
-							, 'filter' => array (
-												array (
-													'fieldname' => 'LongCode'
-													, 'type' => 'string'
-													, 'size' => 10
-												)
-											)
-							)
+			'labelfilterseparator' => '<br>'
+			, 'filter' => array (
+					array (
+						'fieldname' => 'LongCodeKnaw'
+						, 'type' => 'string'
+						, 'size' => 10
+					)
+				)
+			)
 		)));
 
 	$oView->add_field( new class_field_string ( array(
@@ -133,22 +132,7 @@ function createEmployeesContent() {
 		, 'different_true_value' => 'test'
 		, 'different_false_value' => ''
 	)));
-/*
-	$oView->add_field( new class_field_string ( array(
-		'fieldname' => 'SHORT_1'
-		, 'fieldlabel' => 'Work location'
-        , 'viewfilter' => array(
-                'labelfilterseparator' => '<br>'
-            , 'filter' => array (
-                    array (
-                        'fieldname' => 'SHORT_1'
-                    , 'type' => 'string'
-                    , 'size' => 10
-                    )
-                )
-            )
-		)));
-*/
+
 	$oView->add_field( new class_field_string ( array(
 		'fieldname' => 'allow_additions_starting_date'
 		, 'fieldlabel' => 'Allow additions'

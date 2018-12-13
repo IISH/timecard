@@ -13,7 +13,6 @@ class class_field_string extends class_field {
 				}
 			}
 		}
-
 	}
 
 	function view_field($row) {

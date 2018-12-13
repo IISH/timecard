@@ -64,7 +64,7 @@ foreach ( $projects as $oProject ) {
 	$mail_body .=  number_format(class_misc::convertMinutesToHours($total),2, ',', '.') . " hour(s) \n";
 
 	// see also
-	$mail_body .= "\nSee also: https://timecard.socialhistoryservices.org/project_totals.php?ID=" . $oProject->getId() . "\n";
+	$mail_body .= "\nSee also: https://intranet.bb.huc.knaw.nl/timecard/project_totals.php?ID=" . $oProject->getId() . "\n";
 
 	// questions? contact functional maintainer
 	$mail_body .= "\n" . Settings::get('text_functional_maintainer_in_email') . "\n";
@@ -75,29 +75,25 @@ foreach ( $projects as $oProject ) {
 	// show message on screen
 	echo str_replace("\t", " &nbsp; &nbsp; ", str_replace("\n", "<br>\n", $mail_subject)) . "<br>\n";
 
-	// set headers
-	$mail_headers = 'From: "' . Settings::get('email_sender_name') . '" <' . Settings::get('email_sender_email') . '>' . "\r\n" .
-		'Reply-To: "' . Settings::get('email_sender_name') . '" <' . Settings::get('email_sender_email') . '>';
-
 	// check if weekly report e-mail is enabled
 	if ( !$oProject->getEnableweeklyreportmail() ) {
 		$m = "SKIPPED: Weekly report e-mail is disabled for this project.";
 		echo $m;
 		$mail_body .= $m;
-		mail(Settings::get('admin_email'), 'SKIPPED ' . $mail_subject, $mail_body, $mail_headers);
+		Mail::sendEmail(Settings::get('admin_email'), 'SKIPPED ' . $mail_subject, $mail_body);
 	} else {
 		// get email projectleader
 		$projectleaderEmail = $oProjectleader->getEmail();
 		if ( $projectleaderEmail != '' ) {
 			// send email to projectleader
-			$mail_headers .= "\r\n" . 'bcc: ' . Settings::get('admin_email');
-			mail($projectleaderEmail, $mail_subject, $mail_body, $mail_headers);
+			Mail::sendEmail($projectleaderEmail, $mail_subject, $mail_body);
+			Mail::sendEmail(Settings::get('bbc_email'), $mail_subject, $mail_body); // TODO deze moet verwijderd worden?
 			echo "E-mail sent to $projectleaderEmail";
 		} else {
 			$m = "SKIPPED: The project leader for this project has no e-mail (contact IISG reception).";
 			echo $m;
 			$mail_body .= $m;
-			mail(Settings::get('admin_email'), 'SKIPPED ' . $mail_subject, $mail_body, $mail_headers);
+			Mail::sendEmail(Settings::get('admin_email'), 'SKIPPED ' . $mail_subject, $mail_body);
 		}
 	}
 
