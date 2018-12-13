@@ -122,7 +122,7 @@ function getDepartmentEmployeesRibbon($currentlySelectedEmployee, $year) {
 
 		$current_employee = trim($user["firstname"] . ' ' . verplaatsTussenvoegselNaarBegin($user["lastname"]));
 		if ( $current_employee == '' ) {
-			$current_employee = trim($user["longcode"]);
+			$current_employee = trim($user["longcodeknaw"]);
 		}
 
 		$ret .= "<a href=\"" . GetModifyReturnQueryString("?", "eid", $user["id"]) . "\" title=\"" . $current_employee . "\">" . $current_employee . "</a>";
@@ -194,7 +194,7 @@ function getEmployeesRibbon($currentlySelectedEmployee, $year, $hide_all_employe
 
 		$current_employee = trim($user["firstname"] . ' ' . verplaatsTussenvoegselNaarBegin($user["lastname"]));
 		if ( $current_employee == '' ) {
-			$current_employee = trim($user["longcode"]);
+			$current_employee = trim($user["longcodeknaw"]);
 		}
 
 		$ret .= "<a href=\"" . GetModifyReturnQueryString("?", "eid", $user["id"]) . "\" title=\"" . $current_employee . "\">" . $current_employee . "</a>";
@@ -254,7 +254,7 @@ WHERE
 			protime_curric.DEPART IN (" . implode(", ", $arrDepartments) . ")
 			OR protime_curric.PERSNR IN (" . implode(", ", $arrUsers) . ")
 		)
-ORDER BY longcode
+ORDER BY LongCodeKnaw
 ";
 
 	$item = array();
@@ -271,7 +271,7 @@ ORDER BY longcode
 		$item["id"] = $row_users["ID"];
 		$item["firstname"] = $row_users["FIRSTNAME"];
 		$item["lastname"] = $row_users["NAME"];
-		$item["longcode"] = $row_users["LongCode"];
+		$item["longcodeknaw"] = $row_users["LongCodeKnaw"];
 		$item["prev"] = $last_id;
 		$last_id = $row_users["ID"];
 	}
@@ -286,7 +286,7 @@ function getListOfUsersActiveInSpecificYear($year) {
 	$ret = array();
 	$item = array();
 	$last_id = '';
-	$query_users = "SELECT * FROM vw_Employees WHERE firstyear<=" . $year . " AND lastyear>=" . $year . " AND is_test_account=0 ORDER BY longcode ";
+	$query_users = "SELECT * FROM vw_Employees WHERE firstyear<=" . $year . " AND lastyear>=" . $year . " AND is_test_account=0 ORDER BY LongCodeKnaw ";
 	$stmt = $dbConn->prepare($query_users);
 	$stmt->execute();
 	$result = $stmt->fetchAll();
@@ -299,7 +299,7 @@ function getListOfUsersActiveInSpecificYear($year) {
 		$item["id"] = $row_users["ID"];
 		$item["firstname"] = $row_users["FIRSTNAME"];
 		$item["lastname"] = $row_users["NAME"];
-		$item["longcode"] = $row_users["LongCode"];
+		$item["longcodeknaw"] = $row_users["LongCodeKnaw"];
 		$item["prev"] = $last_id;
 		$last_id = $row_users["ID"];
 	}
@@ -717,33 +717,26 @@ function getEmployeeIdByLoginName($loginName) {
 
 	$retval["id"] = '0';
 
-	if ( $loginName != '' && $loginName != '-'  ) {
-
-		$query = "SELECT ID FROM Employees WHERE LongCode='" . addslashes($loginName) . "' OR LongCodeKnaw='" . addslashes($loginName) . "' ORDER BY ID DESC ";
+	if ( $loginName != '' && $loginName != '-' ) {
+		$query = "SELECT ID FROM Employees WHERE LongCodeKnaw='" . addslashes($loginName) . "' ORDER BY ID DESC ";
 		$stmt = $dbConn->prepare($query);
 		$stmt->execute();
 		$result = $stmt->fetchAll();
 		foreach ($result as $row) {
 			$retval["id"] = $row["ID"];
 		}
-
 	}
 
 	return $retval;
 }
 
-function getAddEmployeeToTimecard($longcode) {
+function getAddEmployeeToTimecard($longcodeknaw) {
 	global $protect, $dbConn;
 
 	$retval["id"] = '0';
 
-	if ( strpos($longcode, '.') !== false ) {
-		// IISG
-		$query = "SELECT ID, LongCode FROM Employees WHERE LongCode='" . addslashes($longcode) . "' ORDER BY ID DESC ";
-	} else {
-		// KNAW
-		$query = "SELECT ID, LongCode FROM Employees WHERE LongCodeKnaw='" . addslashes($longcode) . "' ORDER BY ID DESC ";
-	}
+	//
+	$query = "SELECT ID, LongCodeKnaw FROM Employees WHERE LongCodeKnaw='" . addslashes($longcodeknaw) . "' ORDER BY ID DESC ";
 
 	$stmt = $dbConn->prepare($query);
 	$stmt->execute();
@@ -752,63 +745,24 @@ function getAddEmployeeToTimecard($longcode) {
 	if ( $row = $stmt->fetch() ) {
 		$retval["id"] = $row["ID"];
 	} else {
-		//
-		$a = new TCDateTime();
-		$allow_additions_starting_date = $a->getFirstDate()->format("Y-m-d");
-		$year = date("Y");
-
-		$created_on = date("Y-m-d H:i:s");
-
-		if ( strpos($longcode, '.') !== false ) {
-			// IISG
-			// everyone with a IISG account is allowed to use timecard
-			// so without any problems we can add the user to the database
-
-			// insert new record in Employees database
-			$queryInsert = "INSERT INTO Employees (LongCode, firstyear, lastyear, allow_additions_starting_date, created_on) VALUES ('" . addslashes($longcode) . "', $year, $year, '$allow_additions_starting_date', '$created_on') ";
-			$stmt = $dbConn->prepare($queryInsert);
-			$stmt->execute();
-
-			// get the id of the last created document
-			$stmt = $dbConn->prepare($query);
-			$stmt->execute();
-			if ( $row2 = $stmt->fetch() ) {
-				$retval["id"] = $row2["ID"];
-			}
-
-			// send mail to admin to check the data
-			$newUserBody = "A new timecard user has registered (" . $longcode . ").
-Go to website and check the user(s) without a protime link
-https://intranet.bb.huc.knaw.nl/timecard/admin_not_linked_employees.php
-- click on an user
-- enter the users KNAW login
-- select user's name in the Protime field
-- and save the record
-(that's all.)
-After that you can close the Jira call.";
-			$protect->send_email( Settings::get("email_new_employees_to"), "IISG Timecard - new user added (" . $longcode . ")", $newUserBody );
-
-		} else {
-			// KNAW
-			// not overyone with a KNAW account is allowed to use the timecard application
-			// do not add users automatically to the database
-			// send mail to admin to check the data
-			$newUserBody = "An unknown KNAW employee has tried to login in timecard (" . $longcode . ").
+		// not overyone with a KNAW account is allowed to use the timecard application
+		// do not add users automatically to the database
+		// send mail to admin to check the data
+		$newUserBody = "An unknown KNAW employee has tried to login in timecard (" . $longcodeknaw . ").
 If this user should be authorized to use timecard, please add him/her via:
 https://intranet.bb.huc.knaw.nl/timecard/employees.php
 - click on 'Add employee'
-- enter the users SA login
 - enter the users KNAW login
 - select user's name in the Protime field
 - and save the record
-(that's all.)
-After that you can close the Jira call.";
-			$protect->send_email( Settings::get("email_new_employees_to"), "IISG Timecard - blocked unknown KNAW employee (" . $longcode . ")", $newUserBody );
+- mail the new user
+- close the Jira call
+(that's all.)";
+		$protect->send_email( Settings::get("email_new_employees_to"), "Timecard - blocked unknown KNAW employee (" . $longcodeknaw . ")", $newUserBody );
 
-			//
-			$_SESSION["timecard"]["id"] = 0;
-			die('Error: You are not authorized to use this application. Please send an email to: servicedesk at social history services dot org.');
-		}
+		//
+		$_SESSION["timecard"]["id"] = 0;
+		die('Error: You are not authorized to use this application. Please send an email to: timecard@socialhistoryservices.org');
 	}
 
 	return $retval;

@@ -77,13 +77,13 @@ function createAdminQuarterContent( $date ) {
 
 			if ( $oEmployee->getTimecardId() == -1 ) {
 				$oView->add_field( new class_field_string ( array(
-					'fieldname' => 'LongCode'
+					'fieldname' => 'LongCodeKnaw'
 					, 'fieldlabel' => 'Employee'
 					, 'viewfilter' => array(
 										'labelfilterseparator' => '<br>'
 										, 'filter' => array (
 															array (
-																'fieldname' => 'LongCode'
+																'fieldname' => 'LongCodeKnaw'
 																, 'type' => 'string'
 																, 'size' => 10
 															)
@@ -93,7 +93,7 @@ function createAdminQuarterContent( $date ) {
 					)));
 			} else {
 				$oView->add_field( new class_field_string ( array(
-					'fieldname' => 'LongCode'
+					'fieldname' => 'LongCodeKnaw'
 					, 'fieldlabel' => 'Employee'
 					)));
 			}

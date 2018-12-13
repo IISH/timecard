@@ -35,7 +35,7 @@ function createSettingsPage() {
 
 		$data["firstname"] = $row["FIRSTNAME"];
 		$data["lastname"] = $row["NAME"];
-		$data["longcode"] = $row["LongCode"];
+		$data["longcodeknaw"] = $row["LongCodeKnaw"];
 		$data["hours"] = $oWebuser->calculateVacationHoursUntilToday();
 		$data["checkinout"] = $oWebuser->getCheckInOut();
 

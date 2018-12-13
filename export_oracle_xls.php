@@ -36,7 +36,7 @@ $fnaam = protectFilename('export-for-oracle-' . $year . '-' . str_pad( $month, 2
 // + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
 
 $query = "
-SELECT vw_Employees.REGISTERNR, vw_Employees.FIRSTNAME, vw_Employees.NAME, vw_Employees.LongCode, vw_Employees.LongCodeKnaw, vw_Employees.WORKLOCATION, Workcodes.Projectnummer, Workcodes.Description AS Projectname, SUM(Workhours.TimeInMinutes) AS AantalMinuten
+SELECT vw_Employees.REGISTERNR, vw_Employees.FIRSTNAME, vw_Employees.NAME, vw_Employees.LongCodeKnaw, vw_Employees.WORKLOCATION, Workcodes.Projectnummer, Workcodes.Description AS Projectname, SUM(Workhours.TimeInMinutes) AS AantalMinuten
 FROM Workhours
 	INNER JOIN Workcodes ON Workhours.Workcode = Workcodes.ID
 	INNER JOIN vw_Employees ON Workhours.Employee = vw_Employees.ID
@@ -45,9 +45,9 @@ AND Workhours.isdeleted = 0
 AND ( Workcodes.Projectnummer LIKE '300-%' OR Workcodes.Projectnummer LIKE '320-%' )
 AND vw_Employees.is_test_account = 0
 AND vw_Employees.export_to_oracle = 1
-GROUP BY vw_Employees.REGISTERNR, vw_Employees.FIRSTNAME, vw_Employees.NAME, vw_Employees.LongCode, vw_Employees.LongCodeKnaw, vw_Employees.WORKLOCATION, Workcodes.Projectnummer, Workcodes.Description
+GROUP BY vw_Employees.REGISTERNR, vw_Employees.FIRSTNAME, vw_Employees.NAME, vw_Employees.LongCodeKnaw, vw_Employees.WORKLOCATION, Workcodes.Projectnummer, Workcodes.Description
 HAVING SUM(Workhours.TimeInMinutes) > 0
-ORDER BY vw_Employees.REGISTERNR, vw_Employees.WORKLOCATION, vw_Employees.LongCode, vw_Employees.LongCodeKnaw, Workcodes.Projectnummer, Projectname
+ORDER BY vw_Employees.REGISTERNR, vw_Employees.WORKLOCATION, vw_Employees.LongCodeKnaw, Workcodes.Projectnummer, Projectname
 ";
 
 //preprint( $query );

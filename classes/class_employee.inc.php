@@ -49,7 +49,7 @@ class class_employee {
 			$this->protime_id = $row_project["ProtimePersNr"];
 			$this->lastname = $row_project["NAME"];
 			$this->firstname = $row_project["FIRSTNAME"];
-			$this->loginname = $row_project["LongCode"];
+			$this->loginname = $row_project["LongCodeKnaw"];
 			$this->hoursperweek = $row_project["hoursperweek"];
 			$this->daysperweek = $row_project["daysperweek"];
 			$this->allow_additions_starting_date = $row_project["allow_additions_starting_date"];

@@ -38,7 +38,7 @@ function createEmployeesContent() {
 	$oView->set_view( array(
 		'query' => 'SELECT * FROM vw_Employees WHERE 1=1 AND isdisabled=0 AND ProtimePersNr=0 '
 		, 'count_source_type' => 'query'
-		, 'order_by' => 'FIRSTNAME, NAME, LongCode, ID DESC '
+		, 'order_by' => 'FIRSTNAME, NAME, LongCodeKnaw, ID DESC '
 		, 'anchor_field' => 'ID'
 		, 'viewfilter' => true
 		, 'add_new_url' => "employees_edit.php?ID=0&backurl=[BACKURL]"
@@ -46,14 +46,14 @@ function createEmployeesContent() {
 		));
 
 	$oView->add_field( new class_field_string ( array(
-		'fieldname' => 'LongCode'
+		'fieldname' => 'LongCodeKnaw'
 		, 'fieldlabel' => 'IISG SA login'
 		, 'href' => 'employees_edit.php?ID=[FLD:ID]&backurl=[BACKURL]'
 		, 'viewfilter' => array(
 				'labelfilterseparator' => '<br>'
 				, 'filter' => array (
 						array (
-							'fieldname' => 'LongCode'
+							'fieldname' => 'LongCodeKnaw'
 							, 'type' => 'string'
 							, 'size' => 10
 						)

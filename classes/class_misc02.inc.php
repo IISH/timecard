@@ -9,18 +9,17 @@ class class_misc02 {
 		$ret[] = array('Name', 'User Rights');
 
 		//
-		$query = "
-SELECT LongCode, authorisation
+		$query = "SELECT LongCodeKnaw, authorisation
 FROM Employee_Authorisation
 INNER JOIN Employees ON Employee_Authorisation.EmployeeID = Employees.ID
-ORDER BY authorisation, LongCode
+ORDER BY authorisation, LongCodeKnaw
 ";
 
 		$stmt = $dbConn->prepare($query);
 		$stmt->execute();
 		$result = $stmt->fetchAll();
 		foreach ($result as $row) {
-			$ret[] = array($row["LongCode"], $row["authorisation"] );
+			$ret[] = array($row["LongCodeKnaw"], $row["authorisation"] );
 		}
 
 		return $ret;

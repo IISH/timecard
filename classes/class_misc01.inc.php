@@ -10,13 +10,13 @@ class class_misc01 {
 
 		//
 		$query = "
-SELECT vw_Employees.NAME, vw_Employees.FIRSTNAME, LongCode, WorkDescription, TimeInMinutes
+SELECT vw_Employees.NAME, vw_Employees.FIRSTNAME, LongCodeKnaw, WorkDescription, TimeInMinutes
 FROM Workhours
 	INNER JOIN vw_Employees on Workhours.Employee = vw_Employees.ID
 WHERE Workhours.isdeleted = 0
 	AND DateWorked LIKE '" . $yyyy_mm . "%'
 	AND WorkCode = 4
-ORDER BY vw_Employees.FULLNAME, LongCode, WorkDescription ";
+ORDER BY vw_Employees.FULLNAME, LongCodeKnaw, WorkDescription ";
 
 		$lastUser = '';
 		$lastTask = '';
@@ -30,7 +30,7 @@ ORDER BY vw_Employees.FULLNAME, LongCode, WorkDescription ";
 			$currentTask = class_misc01::CutTask($row["WorkDescription"]);
 
 			if ( $currentUser == '' ) {
-				$currentUser = $row['LongCode'];
+				$currentUser = $row['LongCodeKnaw'];
 			}
 
 			//

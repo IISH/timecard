@@ -55,24 +55,12 @@ function createEmployeesEditContent() {
 
 	if ( $oWebuser->hasAdminAuthorisation() ) {
 		$oForm->add_field( new class_field_string ( array(
-			'fieldname' => 'LongCode'
-			, 'fieldlabel' => 'IISG SA login (firstname.lastname)'
-			, 'required' => 1
-			, 'size' => 35
-			)));
-
-		$oForm->add_field( new class_field_string ( array(
 			'fieldname' => 'LongCodeKnaw'
 			, 'fieldlabel' => 'KNAW login (FirstnameL)'
 			, 'required' => 1
 			, 'size' => 35
 			)));
 	} else {
-		$oForm->add_field( new class_field_readonly ( array(
-			'fieldname' => 'LongCode'
-			, 'fieldlabel' => 'IISG SA login'
-			)));
-
 		$oForm->add_field( new class_field_readonly ( array(
 			'fieldname' => 'LongCodeKnaw'
 			, 'fieldlabel' => 'KNAW login'
@@ -114,6 +102,7 @@ function createEmployeesEditContent() {
 		'fieldname' => 'taak_nummer'
 		, 'fieldlabel' => 'Taak nummer'
 		, 'size' => 5
+		, 'onNew' => '99'
 		)));
 
 	$oForm->add_field( new class_field_readonly ( array(

@@ -42,7 +42,7 @@ function createEmployeesContent() {
 	$oView->set_view( array(
 		'query' => "SELECT * FROM vw_Employees WHERE 1=1 "
 		, 'count_source_type' => 'query'
-		, 'order_by' => 'LongCode, ID DESC '
+		, 'order_by' => 'LongCodeKnaw, ID DESC '
 		, 'anchor_field' => 'ID'
 		, 'viewfilter' => true
 		, 'table_parameters' => ' cellspacing="0" cellpadding="0" border="0" '
@@ -113,21 +113,6 @@ function createEmployeesContent() {
 			)
 		)));
 
-//	$oView->add_field( new class_field_string ( array(
-//		'fieldname' => 'LongCode'
-//		, 'fieldlabel' => 'IISG SA login'
-//		, 'viewfilter' => array(
-//							'labelfilterseparator' => '<br>'
-//							, 'filter' => array (
-//												array (
-//													'fieldname' => 'LongCode'
-//													, 'type' => 'string'
-//													, 'size' => 10
-//												)
-//											)
-//							)
-//		)));
-
 	$oView->add_field( new class_field_string ( array(
 		'fieldname' => 'LongCodeKnaw'
 		, 'fieldlabel' => 'KNAW login'
@@ -142,22 +127,7 @@ function createEmployeesContent() {
 				)
 			)
 		)));
-/*
-	$oView->add_field( new class_field_string ( array(
-		'fieldname' => 'REGISTERNR'
-		, 'fieldlabel' => 'KNAW #'
-		, 'viewfilter' => array(
-							'labelfilterseparator' => '<br>'
-							, 'filter' => array (
-												array (
-													'fieldname' => 'REGISTERNR'
-													, 'type' => 'string'
-													, 'size' => 10
-												)
-											)
-							)
-		)));
-*/
+
 	$oView->add_field( new class_field_bit ( array(
 		'fieldname' => 'is_test_account'
 		, 'fieldlabel' => 'Test?'
@@ -165,22 +135,7 @@ function createEmployeesContent() {
 		, 'different_true_value' => 'test'
 		, 'different_false_value' => ''
 	)));
-/*
-	$oView->add_field( new class_field_string ( array(
-		'fieldname' => 'SHORT_1'
-		, 'fieldlabel' => 'Work location'
-        , 'viewfilter' => array(
-                'labelfilterseparator' => '<br>'
-            , 'filter' => array (
-                    array (
-                        'fieldname' => 'SHORT_1'
-                    , 'type' => 'string'
-                    , 'size' => 10
-                    )
-                )
-            )
-		)));
-*/
+
 	$oView->add_field( new class_field_string ( array(
 		'fieldname' => 'allow_additions_starting_date'
 		, 'fieldlabel' => 'Allow additions'
