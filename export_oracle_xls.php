@@ -36,7 +36,7 @@ $fnaam = protectFilename('export-for-oracle-' . $year . '-' . str_pad( $month, 2
 // + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
 
 $query = "
-SELECT vw_Employees.REGISTERNR, vw_Employees.FIRSTNAME, vw_Employees.NAME, vw_Employees.LongCodeKnaw, vw_Employees.WORKLOCATION, Workcodes.Projectnummer, Workcodes.Description AS Projectname, SUM(Workhours.TimeInMinutes) AS AantalMinuten
+SELECT vw_Employees.REGISTERNR, vw_Employees.FIRSTNAME, vw_Employees.NAME, vw_Employees.LongCodeKnaw, vw_Employees.WORKLOCATION, vw_Employees.taak_nummer, Workcodes.Projectnummer, Workcodes.Description AS Projectname, SUM(Workhours.TimeInMinutes) AS AantalMinuten
 FROM Workhours
 	INNER JOIN Workcodes ON Workhours.Workcode = Workcodes.ID
 	INNER JOIN vw_Employees ON Workhours.Employee = vw_Employees.ID
@@ -45,7 +45,7 @@ AND Workhours.isdeleted = 0
 AND ( Workcodes.Projectnummer LIKE '300-%' OR Workcodes.Projectnummer LIKE '320-%' )
 AND vw_Employees.is_test_account = 0
 AND vw_Employees.export_to_oracle = 1
-GROUP BY vw_Employees.REGISTERNR, vw_Employees.FIRSTNAME, vw_Employees.NAME, vw_Employees.LongCodeKnaw, vw_Employees.WORKLOCATION, Workcodes.Projectnummer, Workcodes.Description
+GROUP BY vw_Employees.REGISTERNR, vw_Employees.FIRSTNAME, vw_Employees.NAME, vw_Employees.LongCodeKnaw, vw_Employees.WORKLOCATION, vw_Employees.taak_nummer, Workcodes.Projectnummer, Workcodes.Description
 HAVING SUM(Workhours.TimeInMinutes) > 0
 ORDER BY vw_Employees.REGISTERNR, vw_Employees.WORKLOCATION, vw_Employees.LongCodeKnaw, Workcodes.Projectnummer, Projectname
 ";
@@ -56,20 +56,7 @@ ORDER BY vw_Employees.REGISTERNR, vw_Employees.WORKLOCATION, vw_Employees.LongCo
 // calculate data
 $data = array();
 
-if ( $year >= 2019 ) {
-	$data[] = array(
-		'Projectnummer'            // column 1
-		, 'Organisatienaam'        // column 2
-		, 'Taaknummer'            // column 3
-		, 'Kostensoort'            // column 4
-		, 'Werknemersnummer'    // column 5
-		, 'Aantaluur'            // column 6
-		, 'Toelichting'            // column 7
-		, 'Werknemer'            // column 8
-		, 'Taak nummer'            // column 9
-		, 'Projectnaam'            // column 10
-		);
-} else {
+//if ( $year >= 2019 ) {
 	$data[] = array(
 		'Projectnummer'            // column 1
 		, 'Organisatienaam'        // column 2
@@ -81,9 +68,21 @@ if ( $year >= 2019 ) {
 		, 'Werknemer'            // column 8
 		, 'Projectnaam'            // column 9
 		);
-}
+//} else {
+//	$data[] = array(
+//		'Projectnummer'            // column 1
+//		, 'Organisatienaam'        // column 2
+//		, 'Taaknummer'            // column 3
+//		, 'Kostensoort'            // column 4
+//		, 'Werknemersnummer'    // column 5
+//		, 'Aantaluur'            // column 6
+//		, 'Toelichting'            // column 7
+//		, 'Werknemer'            // column 8
+//		, 'Projectnaam'            // column 9
+//		);
+//}
 
-$col_taaknummer = '1';	// always 1
+//$col_taaknummer = '1';	// always 1
 $col_maand = date("F Y", mktime (0, 0, 0, $month, 1, $year));
 
 $stmt = $dbConn->prepare($query);
@@ -91,6 +90,7 @@ $stmt->execute();
 $result = $stmt->fetchAll();
 foreach ($result as $row) {
 
+	$col_taak_nummer = '';
 	$col_projectnummer = '';
 	$col_organisatienaam = '';
 	$col_kostensoort = '';
@@ -137,24 +137,11 @@ foreach ($result as $row) {
 		$col_projectnaam = trim($row["Projectname"]);
 	}
 
-	if ( $year >= 2019 ) {
+//	if ( $year >= 2019 ) {
 		$data[] = array(
 			$col_projectnummer
 			, $col_organisatienaam
-			, $col_taaknummer
-			, $col_kostensoort
-			, $col_knawpersnr
-			, $col_hoeveeltijd
-			, $col_maand
-			, $col_werknemernaam
 			, $col_taak_nummer
-			, $col_projectnaam
-			);
-	} else {
-		$data[] = array(
-			$col_projectnummer
-			, $col_organisatienaam
-			, $col_taaknummer
 			, $col_kostensoort
 			, $col_knawpersnr
 			, $col_hoeveeltijd
@@ -162,7 +149,19 @@ foreach ($result as $row) {
 			, $col_werknemernaam
 			, $col_projectnaam
 			);
-	}
+//	} else {
+//		$data[] = array(
+//			$col_projectnummer
+//			, $col_organisatienaam
+//			, $col_taak_nummer
+//			, $col_kostensoort
+//			, $col_knawpersnr
+//			, $col_hoeveeltijd
+//			, $col_maand
+//			, $col_werknemernaam
+//			, $col_projectnaam
+//			);
+//	}
 }
 
 //
