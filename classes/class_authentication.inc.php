@@ -24,9 +24,10 @@ class Authentication {
 		$sAMAccountName = $user;
 
 		// add prefix
-		$user = $auth['prefix'] . $user;
+		$user = $auth['prefix'] . $user . $auth['postfix'];
 		// remove double prefix
 		$user = str_replace($auth['prefix'] . $auth['prefix'], $auth['prefix'], $user);
+		$user = str_replace($auth['postfix'] . $auth['postfix'], $auth['postfix'], $user);
 
 		// loop all Active Directory servers
 		//foreach ( unserialize($auth['servers']) as $server ) {
@@ -35,13 +36,14 @@ class Authentication {
 
 				// try to connect to the ldap server
 				$ad = ldap_connect($server->getProtocolAndServer(), $server->getPort());
+
 				// set some variables
 				ldap_set_option($ad, LDAP_OPT_PROTOCOL_VERSION, 3);
 				ldap_set_option($ad, LDAP_OPT_REFERRALS, 0);
 
 				// bind to the ldap directory
-				//$bd = @ldap_bind($ad, $user, $pw);
-				$bd = ldap_bind($ad, $user, $pw);
+				$bd = @ldap_bind($ad, $user, $pw);
+				//$bd = ldap_bind($ad, $user, $pw);
 
 				// verify binding, if binding succeeds then login is correct
 				if ( $bd ) {
