@@ -47,7 +47,6 @@ function createLoginPage() {
 				// check if person can be found in database, get id
 				// if not add new user
 				$persinfo = getAddEmployeeToTimecard($fldLogin);
-
                 // get user
                 $oWebuser = new class_employee($persinfo["id"], $settings);
 
@@ -57,6 +56,8 @@ function createLoginPage() {
                     $error .= "Your account is disabled. Please contact the Functional Maintainer of the application.";
                 } else {
                     // save id
+					error_log( 'Just logged in: ' . $fldLogin );
+
                     $_SESSION["timecard"]["id"] = $persinfo["id"];
 
                     // update wanneer gebruiker voor het laatst is ingelogd op timecard

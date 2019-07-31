@@ -40,6 +40,7 @@ class class_employee {
 	function getTimecardValues() {
 		//
 		$query_project = "SELECT * FROM vw_Employees WHERE ID=" . $this->timecard_id;
+
 		$stmt = $this->dbConn->prepare($query_project);
 		$stmt->execute();
 		$result = $stmt->fetchAll();

@@ -614,6 +614,7 @@ function advancedRecordInsert($db, $table, $fields, $test = 0 ) {
 		$oConn = new class_pdo($databases[$db]);
 
 		// run
+
 		//debug($advQuery, "advancedRecordInsert: ");
 		$stmt = $oConn->getConnection()->prepare($advQuery);
 		$stmt->execute();
@@ -733,6 +734,7 @@ function getEmployeeIdByLoginName($loginName) {
 function getAddEmployeeToTimecard($longcodeknaw) {
 	global $protect, $dbConn;
 
+	$retval = array();
 	$retval["id"] = '0';
 
 	//

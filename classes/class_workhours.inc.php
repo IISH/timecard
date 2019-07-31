@@ -109,7 +109,6 @@ class class_workhours {
 		$query = str_replace("::TIMEINMINUTES::", $this->timeInMinutes, $query);
 		$query = str_replace("::DAAID::", $this->daily_automatic_addition_id, $query);
 		$query = str_replace("::ISTIMEFIXED::", $this->is_time_fixed, $query);
-
 		$stmt = $this->dbConn->prepare($query);
 		$stmt->execute();
 

@@ -14,7 +14,6 @@ class class_protime_user {
 
 		$this->protime_id = $protime_id;
 		$this->settings = $settings;
-
 		if ( $protime_id > 0 ) {
 			$this->getProtimeValues();
 		}

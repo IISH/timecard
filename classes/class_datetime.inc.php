@@ -69,7 +69,7 @@ class class_datetime {
 		}
 
 		// get d value via regexp, is dus altijd 6 lang (of leeg)
-		$d = $protect->request('get', $field, "/^20[0-1][0-9][0-1][0-9][0-3][0-9]$/");
+		$d = $protect->request('get', $field, "/^20[0-2][0-9][0-1][0-9][0-3][0-9]$/");
 		if ( $d != '' ) {
 			$year = substr($d, 0, 4);
 			$month = substr($d, 4, 2);
