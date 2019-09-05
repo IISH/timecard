@@ -80,7 +80,7 @@ function createEmployeesEditContent() {
 	$oForm->add_field( new class_field_list ( $settings, array(
 		'fieldname' => 'ProtimePersNr'
 		, 'fieldlabel' => 'Protime link'
-		, 'query' => "SELECT PERSNR, CONCAT(RTRIM(LTRIM(FIRSTNAME)), ' ', RTRIM(LTRIM(NAME))) AS FULLNAME FROM protime_curric WHERE 1=1 ORDER BY FIRSTNAME, NAME "
+		, 'query' => "SELECT PERSNR, CONCAT(RTRIM(LTRIM(FIRSTNAME)), ' ', RTRIM(LTRIM(NAME)), ' (badgenr: ', BADGENR, ', interne persnr: ', PERSNR, ')') AS FULLNAME FROM protime_curric WHERE 1=1 ORDER BY FIRSTNAME, NAME "
 
 		, 'id_field' => 'PERSNR'
 		, 'description_field' => 'FULLNAME'
